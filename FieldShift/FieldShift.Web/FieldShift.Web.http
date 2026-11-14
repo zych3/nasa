@@ -4,3 +4,8 @@ GET {{FieldShift.Web_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{FieldShift.Web_HostAddress}}/api/field-profile?lat=52.20&lon=21.48
+Accept: application/json
+
+###

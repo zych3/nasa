@@ -1,5 +1,6 @@
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
+using FieldShift.Web.FieldProfile;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
 
@@ -16,6 +17,7 @@ builder.Services.AddScoped<CropPriceService>();
 builder.Services.AddOpenApi();
 
 builder.AddPoland();
+builder.AddFieldProfile();
 
 var app = builder.Build();
 
