@@ -6,9 +6,11 @@ import 'crop_multi_selector.dart';
 import 'plot_data.dart';
 
 class PlotInput extends StatefulWidget {
-  const PlotInput({super.key, required this.onSubmitPlot, this.onFindParcel});
+  const PlotInput({super.key, this.onSubmitPlot, this.onFindParcel});
 
-  final void Function(PlotData) onSubmitPlot;
+  /// Saves the plot. Without it there is no "Save" button: a button that
+  /// clears what the user typed without saving it would lose their input.
+  final void Function(PlotData)? onSubmitPlot;
 
   /// Called when the user searches for the parcel at the typed address.
   final void Function(String address)? onFindParcel;
@@ -27,10 +29,10 @@ class _PlotInputState extends State<PlotInput> {
     super.dispose();
   }
 
-  void _handleSubmit() {
+  void _handleSubmit(void Function(PlotData) onSubmitPlot) {
     final address = _addressController.text.trim();
     if (address.isNotEmpty && _selectedCrops.isNotEmpty) {
-      widget.onSubmitPlot(
+      onSubmitPlot(
         PlotData(address: address, crops: List.from(_selectedCrops)),
       );
 
@@ -68,12 +70,14 @@ class _PlotInputState extends State<PlotInput> {
               });
             },
           ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: _handleSubmit,
-            icon: const Icon(Icons.send),
-            label: Text(l10n.submitPlot),
-          ),
+          if (widget.onSubmitPlot case final onSubmitPlot?) ...[
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: () => _handleSubmit(onSubmitPlot),
+              icon: const Icon(Icons.send),
+              label: Text(l10n.submitPlot),
+            ),
+          ],
         ],
       ),
     );

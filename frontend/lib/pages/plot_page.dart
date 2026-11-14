@@ -106,10 +106,11 @@ class _PlotPageState extends State<PlotPage> {
           const SizedBox(height: 24),
         ],
 
-        // Plot input form (left as-is)
+        // Plot input form. No "Save" button until the plot can be saved
+        // somewhere (it used to clear the form without saving anything).
         Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
-        PlotInput(onSubmitPlot: (_) {}, onFindParcel: _findParcel),
+        PlotInput(onFindParcel: _findParcel),
         const SizedBox(height: 24),
 
         // Info cards
