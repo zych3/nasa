@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
-=======
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
->>>>>>> 2334715 (Crops outline)
 
 var builder = WebApplication.CreateBuilder(args);
 
