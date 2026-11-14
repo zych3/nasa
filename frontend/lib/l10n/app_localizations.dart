@@ -781,6 +781,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'© OpenStreetMap contributors'**
   String get overlaysMapAttribution;
+
+  /// No description provided for @overlaysValueHeadingExample.
+  ///
+  /// In en, this message translates to:
+  /// **'In the example place'**
+  String get overlaysValueHeadingExample;
 }
 
 class _AppLocalizationsDelegate

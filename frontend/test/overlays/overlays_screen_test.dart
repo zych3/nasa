@@ -25,8 +25,12 @@ const _parcel = Parcel(
   ],
 );
 
-Widget _app(Widget child, {double textScale = 1}) => MaterialApp(
-  locale: const Locale('pl'),
+Widget _app(
+  Widget child, {
+  double textScale = 1,
+  Locale locale = const Locale('pl'),
+}) => MaterialApp(
+  locale: locale,
   supportedLocales: AppLocalizations.supportedLocales,
   localizationsDelegates: const [
     AppLocalizations.delegate,
@@ -55,6 +59,7 @@ void main() {
     bool active = true,
     VoidCallback? onChooseField,
     double textScale = 1,
+    Locale locale = const Locale('pl'),
   }) async {
     await tester.pumpWidget(
       _app(
@@ -65,6 +70,7 @@ void main() {
           onChooseField: onChooseField,
         ),
         textScale: textScale,
+        locale: locale,
       ),
     );
   }
@@ -87,6 +93,9 @@ void main() {
       find.text(_pl.overlaysSource('ISRIC SoilGrids v2.0 (0–30 cm)')),
       findsOneWidget,
     );
+    // No field chosen: the value is clearly for the example place.
+    expect(find.text(_pl.overlaysValueHeadingExample), findsOneWidget);
+    expect(find.text(_pl.overlaysValueHeading), findsNothing);
 
     // Legend below: every step, this place marked.
     await tester.scrollUntilVisible(find.text(_pl.soilClassHeavy), 100);
@@ -102,6 +111,8 @@ void main() {
     await pumpScreen(tester, onChooseField: () => chooseTaps++);
 
     expect(find.text(_pl.overlaysNoField), findsOneWidget);
+    await tester.ensureVisible(find.text(_pl.overlaysChooseField));
+    await tester.pump();
     await tester.tap(find.text(_pl.overlaysChooseField));
     expect(chooseTaps, 1);
   });
@@ -114,6 +125,9 @@ void main() {
 
     expect(repo.requests, [_parcel.center]);
     expect(find.text(_pl.overlaysNoField), findsNothing);
+    repo.complete(_parcel.center, loadSample());
+    await tester.pump();
+    expect(find.text(_pl.overlaysValueHeading), findsOneWidget);
     expect(find.text(_pl.myFieldMarker), findsOneWidget);
 
     const moved = LatLng(50.06, 19.94);
@@ -158,46 +172,54 @@ void main() {
   });
 
   group('accessibility', () {
-    // Phone in portrait and a wide browser window.
-    for (final size in const [Size(360, 640), Size(1280, 800)]) {
-      testWidgets('no overflow at 1.5× text in every state, $size', (
-        tester,
-      ) async {
-        tester.view.physicalSize = size;
-        tester.view.devicePixelRatio = 1;
-        addTearDown(tester.view.reset);
-
-        await store.select(_parcel);
-        await pumpScreen(tester, textScale: 1.5);
-        expect(tester.takeException(), isNull, reason: 'loading');
-
-        repo.fail(_parcel.center, ApiException('x'));
-        await tester.pump();
-        expect(tester.takeException(), isNull, reason: 'error');
-
-        await tester.scrollUntilVisible(find.text(_pl.overlaysShowDemo), 100);
-        expect(tester.takeException(), isNull, reason: 'error buttons');
-        await tester.tap(find.text(_pl.tryAgain));
-        await tester.pump();
-        repo.complete(_parcel.center, loadSample());
-        await tester.pump();
-        expect(tester.takeException(), isNull, reason: 'ready');
-        await tester.scrollUntilVisible(find.text(_pl.soilClassHeavy), 100);
-        expect(tester.takeException(), isNull, reason: 'legend');
-      });
-    }
-
-    testWidgets('touch targets, labels and text contrast', (tester) async {
-      final handle = tester.ensureSemantics();
-      await pumpScreen(tester, textScale: 1.5);
-      repo.complete(OverlaysScreen.examplePlace, loadSample());
-      await tester.pump();
-
+    Future<void> checkGuidelines(WidgetTester tester, String state) async {
+      expect(tester.takeException(), isNull, reason: 'overflow: $state');
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       await expectLater(tester, meetsGuideline(textContrastGuideline));
-      handle.dispose();
-    });
+    }
+
+    // Phone in portrait and a wide browser window, both languages: no
+    // overflow at 1.5× text, 48 dp targets, labels and contrast in every
+    // state.
+    for (final locale in AppLocalizations.supportedLocales) {
+      for (final size in const [Size(360, 640), Size(1280, 800)]) {
+        testWidgets('1.5× text, every state, $locale, $size', (tester) async {
+          final l10n = lookupAppLocalizations(locale);
+          final handle = tester.ensureSemantics();
+          tester.view.physicalSize = size;
+          tester.view.devicePixelRatio = 1;
+          addTearDown(tester.view.reset);
+
+          await pumpScreen(tester, textScale: 1.5, locale: locale);
+          await checkGuidelines(tester, 'loading, no field');
+
+          repo.fail(OverlaysScreen.examplePlace, ApiException('x'));
+          await tester.pump();
+          await checkGuidelines(tester, 'error');
+          await tester.scrollUntilVisible(
+            find.text(l10n.overlaysShowDemo),
+            100,
+          );
+          await checkGuidelines(tester, 'error buttons');
+
+          await tester.tap(find.text(l10n.overlaysShowDemo));
+          await tester.pump();
+          await checkGuidelines(tester, 'demo');
+
+          await tester.scrollUntilVisible(find.text(l10n.tryAgain), -100);
+          await tester.tap(find.text(l10n.tryAgain));
+          await tester.pump();
+          repo.complete(OverlaysScreen.examplePlace, loadSample());
+          await tester.pump();
+          await checkGuidelines(tester, 'ready');
+
+          await tester.scrollUntilVisible(find.text(l10n.soilClassHeavy), 100);
+          await checkGuidelines(tester, 'legend');
+          handle.dispose();
+        });
+      }
+    }
 
     testWidgets('the chosen overlay is announced as selected', (tester) async {
       final handle = tester.ensureSemantics();

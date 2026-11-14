@@ -417,4 +417,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysMapAttribution => '© OpenStreetMap contributors';
+
+  @override
+  String get overlaysValueHeadingExample => 'In the example place';
 }

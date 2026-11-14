@@ -21,15 +21,27 @@ class OverlayArea {
   final LatLng center;
   final double radiusMeters;
 
+  static const _metersPerDegree = 111320.0;
+
+  double get _dLat => radiusMeters / _metersPerDegree;
+
+  /// Northernmost point of the circle (where the map puts its label).
+  LatLng get top =>
+      LatLng(math.min(center.latitude + _dLat, 90), center.longitude);
+
   /// Box around the circle, for fitting the camera.
   List<LatLng> get boundingPoints {
-    const metersPerDegree = 111320.0;
-    final dLat = radiusMeters / metersPerDegree;
     final cosLat = math.cos(center.latitude * math.pi / 180).abs();
-    final dLon = radiusMeters / (metersPerDegree * math.max(cosLat, 0.01));
+    final dLon = radiusMeters / (_metersPerDegree * math.max(cosLat, 0.01));
     return [
-      LatLng(center.latitude - dLat, center.longitude - dLon),
-      LatLng(center.latitude + dLat, center.longitude + dLon),
+      LatLng(
+        math.max(center.latitude - _dLat, -90),
+        math.max(center.longitude - dLon, -180),
+      ),
+      LatLng(
+        math.min(center.latitude + _dLat, 90),
+        math.min(center.longitude + dLon, 180),
+      ),
     ];
   }
 

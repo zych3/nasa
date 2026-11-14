@@ -269,5 +269,6 @@
   },
   "overlaysLegendHeading": "What the colours mean",
   "overlaysLegendHere": "Here",
-  "overlaysMapAttribution": "© OpenStreetMap contributors"
+  "overlaysMapAttribution": "© OpenStreetMap contributors",
+  "overlaysValueHeadingExample": "In the example place"
 }

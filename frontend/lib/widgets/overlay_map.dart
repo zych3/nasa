@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -118,14 +120,16 @@ class _OverlayMapState extends State<OverlayMap> {
           maxScaleFactor: _maxLabelTextScale,
           child: MarkerLayer(
             markers: [
-              // Value above the point and "My field" below it, so the two
-              // labels do not cover each other when the points are close.
+              // Value just inside the top edge of the area and "My field"
+              // under the field's outline: the field is near the centre (the
+              // backend rounds the point by < 1 km), so the two labels do not
+              // cover each other or the outline.
               if (layer != null)
                 Marker(
-                  point: layer.area.center,
+                  point: layer.area.top,
                   width: 280,
                   height: 56,
-                  alignment: Alignment.topCenter,
+                  alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
                     child: _ValueLabel(
                       color: color,
@@ -139,7 +143,7 @@ class _OverlayMapState extends State<OverlayMap> {
                 ),
               if (field != null)
                 Marker(
-                  point: field.center,
+                  point: _below(field),
                   width: 180,
                   height: 52,
                   alignment: Alignment.bottomCenter,
@@ -172,6 +176,14 @@ class _OverlayMapState extends State<OverlayMap> {
       ],
     );
   }
+}
+
+/// Middle of the south edge of the field's outline.
+LatLng _below(Parcel field) {
+  final south = field.ring.isEmpty
+      ? field.center.latitude
+      : field.ring.map((p) => p.latitude).reduce(math.min);
+  return LatLng(south, field.center.longitude);
 }
 
 /// Black or white, whichever reads better on [background] (WCAG contrast).

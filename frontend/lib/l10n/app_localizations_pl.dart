@@ -421,4 +421,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysMapAttribution => '© Współtwórcy OpenStreetMap';
+
+  @override
+  String get overlaysValueHeadingExample => 'W przykładowym miejscu';
 }

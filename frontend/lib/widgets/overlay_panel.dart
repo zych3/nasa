@@ -32,24 +32,17 @@ class OverlayPanel extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
+    final layer = controller.status == OverlayStatus.ready
+        ? controller.layer
+        : null;
+
+    // Most important first: on a phone with large text only the top fits
+    // under the map, so the value comes before the notes and the legend.
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(l10n.overlaysTitle, style: theme.textTheme.headlineSmall),
-        if (showNoFieldNotice) ...[
-          const SizedBox(height: 12),
-          _Notice(icon: Icons.info_outline, text: l10n.overlaysNoField),
-          if (onChooseField != null) ...[
-            const SizedBox(height: 8),
-            _BigButton(
-              icon: Icons.map,
-              label: l10n.overlaysChooseField,
-              onPressed: onChooseField!,
-              outlined: true,
-            ),
-          ],
-        ],
-        const SizedBox(height: 16),
+        Text(l10n.overlaysTitle, style: theme.textTheme.titleLarge),
+        const SizedBox(height: 12),
         Text(l10n.overlaysChooseHeading, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
         Wrap(
@@ -65,12 +58,30 @@ class OverlayPanel extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        ..._content(context, l10n),
+        ..._status(l10n),
+        if (showNoFieldNotice) ...[
+          const SizedBox(height: 16),
+          _Notice(icon: Icons.info_outline, text: l10n.overlaysNoField),
+          if (onChooseField != null) ...[
+            const SizedBox(height: 8),
+            _BigButton(
+              icon: Icons.map,
+              label: l10n.overlaysChooseField,
+              onPressed: onChooseField!,
+              outlined: true,
+            ),
+          ],
+        ],
+        if (layer != null && layer.legend.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          _Legend(layer: layer),
+        ],
       ],
     );
   }
 
-  List<Widget> _content(BuildContext context, AppLocalizations l10n) {
+  /// Loading, error or the value card.
+  List<Widget> _status(AppLocalizations l10n) {
     switch (controller.status) {
       case OverlayStatus.idle:
         return const [];
@@ -136,9 +147,10 @@ class OverlayPanel extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
-          _ValueCard(layer: layer),
-          const SizedBox(height: 16),
-          if (layer.legend.isNotEmpty) _Legend(layer: layer),
+          _ValueCard(
+            layer: layer,
+            examplePlace: showNoFieldNotice || controller.isDemo,
+          ),
         ];
     }
   }
@@ -224,9 +236,12 @@ class _OverlayChoice extends StatelessWidget {
 /// The value at the place: level + word, when, source, estimate and how
 /// precise it is in space.
 class _ValueCard extends StatelessWidget {
-  const _ValueCard({required this.layer});
+  const _ValueCard({required this.layer, required this.examplePlace});
 
   final OverlayLayer layer;
+
+  /// The value is not for the user's field (no field chosen, or demo data).
+  final bool examplePlace;
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +259,12 @@ class _ValueCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(l10n.overlaysValueHeading, style: theme.textTheme.titleMedium),
+            Text(
+              examplePlace
+                  ? l10n.overlaysValueHeadingExample
+                  : l10n.overlaysValueHeading,
+              style: theme.textTheme.titleMedium,
+            ),
             const SizedBox(height: 8),
             Semantics(
               liveRegion: true,

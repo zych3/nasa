@@ -112,5 +112,6 @@
   "overlaysSource": "Źródło: {source}",
   "overlaysLegendHeading": "Co oznaczają kolory",
   "overlaysLegendHere": "Tutaj",
-  "overlaysMapAttribution": "© Współtwórcy OpenStreetMap"
+  "overlaysMapAttribution": "© Współtwórcy OpenStreetMap",
+  "overlaysValueHeadingExample": "W przykładowym miejscu"
 }
