@@ -1,60 +1,147 @@
+using System.Text.Json;
+using FieldShift.Web.Countries;
 using FieldShift.Web.Data;
 
 namespace FieldShift.Web.Repositories;
 
 public interface ICropRepository
 {
-    IReadOnlyList<Crop> GetAll();
-    Crop? GetById(CropId id);
+    /// <param name="prices">Crops that have stored prices, from <see cref="IPriceHistoryRepository"/>.</param>
+    IReadOnlyList<Crop> GetAll(IReadOnlyDictionary<CropId, PriceSeriesSummary> prices);
+
+    Crop? GetById(CropId id, IReadOnlyDictionary<CropId, PriceSeriesSummary> prices);
 }
 
 /// <summary>
-/// Static crop catalogue. Values match frontend/assets/mock/trends_*.json.
-/// Prices are DEMO values, not real market prices.
+/// One crop in the catalogue and where its facts come from. Only identifiers live here; all values are
+/// fetched from Wikidata and Eurostat (<see cref="CropDataRefreshService"/>), read from FAO ECOCROP,
+/// or, for prices, read from the database.
+/// </summary>
+public sealed record CropDefinition(
+    CropId Id,
+    string NamePl,
+    string NameEn,
+    string ScientificName,
+    string WikidataId,
+    string? EurostatCode,
+    string? ProductionNoteCode = null);
+
+/// <summary>Most widely grown field crops in Poland, plus buckwheat (used by the frontend mock).</summary>
+public static class CropCatalog
+{
+    /// <summary>Note codes; the frontend translates them (lib/l10n/crop_note_text.dart).</summary>
+    public const string AllSweetLupins = "all_sweet_lupins";
+    public const string GrainMaizeOnly = "grain_maize_only";
+    public const string NoEurostatFigure = "no_eurostat_figure";
+
+    public static readonly IReadOnlyList<CropDefinition> All =
+    [
+        new(new("wheat"), "Pszenica ozima", "Winter wheat", "Triticum aestivum", "Q161098", "C1111"),
+        new(new("maize"), "Kukurydza", "Maize", "Zea mays", "Q11575", "C1500", GrainMaizeOnly),
+        new(new("triticale"), "Pszenżyto", "Triticale", "×Triticosecale", "Q380329", "C1600"),
+        new(new("rapeseed"), "Rzepak ozimy", "Winter rapeseed", "Brassica napus", "Q177932", "I1111"),
+        new(new("rye"), "Żyto ozime", "Winter rye", "Secale cereale", "Q12099", "C1210"),
+        new(new("oats"), "Owies", "Oats", "Avena sativa", "Q12104", "C1410"),
+        new(new("winter_barley"), "Jęczmień ozimy", "Winter barley", "Hordeum vulgare", "Q11577", "C1310"),
+        new(new("spring_barley"), "Jęczmień jary", "Spring barley", "Hordeum vulgare", "Q11577", "C1320"),
+        new(new("sugar_beet"), "Burak cukrowy", "Sugar beet", "Beta vulgaris", "Q151964", "R2000"),
+        new(new("narrow_leaf_lupin"), "Łubin wąskolistny", "Narrow-leaved lupin", "Lupinus angustifolius", "Q164148", "P1300", AllSweetLupins),
+        new(new("potato"), "Ziemniaki", "Potatoes", "Solanum tuberosum", "Q10998", "R1000"),
+        new(new("field_pea"), "Groch", "Field pea", "Pisum sativum", "Q25237", "P1100"),
+        new(new("soybean"), "Soja", "Soybean", "Glycine max", "Q11006", "I1130"),
+        new(new("sunflower"), "Słonecznik", "Sunflower", "Helianthus annuus", "Q171497", "I1120"),
+        new(new("white_lupin"), "Łubin biały", "White lupin", "Lupinus albus", "Q161372", "P1300", AllSweetLupins),
+        new(new("buckwheat"), "Gryka", "Buckwheat", "Fagopyrum esculentum", "Q132734", null, NoEurostatFigure),
+    ];
+
+    public static readonly IReadOnlyDictionary<CropId, CropDefinition> ById = All.ToDictionary(c => c.Id);
+}
+
+/// <summary>
+/// Crop catalogue built from <see cref="CropCatalog"/>, the latest saved snapshot in <see cref="CropDataStore"/>
+/// and the FAO ECOCROP extract in <c>Data/ecocrop-extract.json</c>.
 /// </summary>
 public sealed class InMemoryCropRepository : ICropRepository
 {
-    private const string Currency = "PLN";
-    private const string Ecocrop = "FAO ECOCROP";
+    public const string EcocropFile = "Data/ecocrop-extract.json";
+    public const string EcocropSourceName = "FAO ECOCROP";
 
-    private static readonly IReadOnlyList<Crop> Crops =
-    [
-        new(new CropId("wheat"),
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Vehn%C3%A4pelto_6.jpg/330px-Vehn%C3%A4pelto_6.jpg",
-            PricePerTonne: 1020m, Currency,
-            Sowing: new(9, 10), Harvest: new(7, 8),
-            WaterNeed.Medium, TypicalYield: new(6, 8), Ecocrop),
+    private readonly CropDataStore _store;
+    private readonly IReadOnlyDictionary<string, CropTraits> _traits;
 
-        new(new CropId("rapeseed"),
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Brassica_napus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-169.jpg/330px-Brassica_napus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-169.jpg",
-            PricePerTonne: 2150m, Currency,
-            Sowing: new(8, 8), Harvest: new(7, 7),
-            WaterNeed.Medium, TypicalYield: new(3, 4), Ecocrop),
+    public InMemoryCropRepository(CropDataStore store, IHostEnvironment env, ILogger<InMemoryCropRepository> log)
+    {
+        _store = store;
+        var path = Path.Combine(env.ContentRootPath, EcocropFile);
+        try
+        {
+            _traits = LoadEcocrop(File.ReadAllText(path));
+        }
+        catch (Exception e) when (e is IOException or JsonException)
+        {
+            log.LogWarning(e, "Could not read ECOCROP extract {Path}; crop traits will be empty", path);
+            _traits = new Dictionary<string, CropTraits>();
+        }
+    }
 
-        new(new CropId("maize"),
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg/330px-Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg",
-            PricePerTonne: 880m, Currency,
-            Sowing: new(4, 5), Harvest: new(9, 10),
-            WaterNeed.High, TypicalYield: new(8, 10), Ecocrop),
+    public IReadOnlyList<Crop> GetAll(IReadOnlyDictionary<CropId, PriceSeriesSummary> prices) =>
+        CropCatalog.All.Select(d => Build(d, prices)).ToList();
 
-        new(new CropId("buckwheat"),
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Japanese_Buckwheat_Flower.JPG/330px-Japanese_Buckwheat_Flower.JPG",
-            PricePerTonne: 1650m, Currency,
-            Sowing: new(5, 6), Harvest: new(8, 9),
-            WaterNeed.Low, TypicalYield: new(1.5, 2.5), Ecocrop),
+    public Crop? GetById(CropId id, IReadOnlyDictionary<CropId, PriceSeriesSummary> prices) =>
+        CropCatalog.ById.TryGetValue(id, out var d) ? Build(d, prices) : null;
 
-        new(new CropId("soybean"),
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Soybean.USDA.jpg/330px-Soybean.USDA.jpg",
-            PricePerTonne: 1780m, Currency,
-            Sowing: new(5, 5), Harvest: new(9, 9),
-            WaterNeed.Medium, TypicalYield: new(2.5, 3.5), Ecocrop),
-    ];
+    private Crop Build(CropDefinition d, IReadOnlyDictionary<CropId, PriceSeriesSummary> priceSummaries)
+    {
+        var snapshot = _store.Current;
+        var wiki = snapshot.Wikidata.GetValueOrDefault(d.WikidataId);
+        var production = d.EurostatCode is null ? null : snapshot.Production.GetValueOrDefault(d.EurostatCode);
+        var prices = priceSummaries.GetValueOrDefault(d.Id);
 
-    private static readonly Dictionary<CropId, Crop> ById = Crops.ToDictionary(c => c.Id);
+        var wikipedia = new Dictionary<string, string>();
+        if (wiki?.WikipediaUrlPl is { } pl) wikipedia["pl"] = pl;
+        if (wiki?.WikipediaUrlEn is { } en) wikipedia["en"] = en;
 
-    public IReadOnlyList<Crop> GetAll() => Crops;
+        return new Crop(
+            d.Id,
+            new Dictionary<string, string> { ["pl"] = d.NamePl, ["en"] = d.NameEn },
+            d.ScientificName,
+            wiki?.ImageUrl,
+            wikipedia,
+            d.WikidataId,
+            production,
+            _traits.GetValueOrDefault(d.ScientificName),
+            HasPrices: prices is { PointCount: > 0 },
+            ProductionNoteCode: d.ProductionNoteCode,
+            PriceNoteCode: prices?.NoteCode);
+    }
 
-    public Crop? GetById(CropId id) => ById.GetValueOrDefault(id);
+    /// <summary>Reads the ECOCROP extract, keyed by scientific name.</summary>
+    public static IReadOnlyDictionary<string, CropTraits> LoadEcocrop(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        var result = new Dictionary<string, CropTraits>();
+        foreach (var c in doc.RootElement.GetProperty("crops").EnumerateArray())
+        {
+            result[c.GetProperty("scientificName").GetString()!] = new CropTraits(
+                Range(c, "growingCycleDays"),
+                Range(c, "optimalRainfallMm"),
+                Range(c, "rainfallMm"),
+                Range(c, "optimalTemperatureC"),
+                Range(c, "temperatureC"),
+                Range(c, "optimalSoilPh"),
+                EcocropSourceName);
+        }
+        return result;
+    }
 
-    private static Dictionary<string, string> Names(string en, string pl) => new() { ["en"] = en, ["pl"] = pl };
+    private static NumberRange? Range(JsonElement crop, string name)
+    {
+        if (!crop.TryGetProperty(name, out var r) || r.ValueKind != JsonValueKind.Object)
+        {
+            return null;
+        }
+        static double? Num(JsonElement e, string p) =>
+            e.TryGetProperty(p, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : null;
+        return new NumberRange(Num(r, "min"), Num(r, "max"));
+    }
 }

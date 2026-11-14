@@ -19,8 +19,10 @@ public class XmlParserTests
             new HttpClient { BaseAddress = new Uri("https://mapy.geoportal.gov.pl/openLSgp/") });
         var uldk = new UldkService(
             new HttpClient { BaseAddress = new Uri("https://uldk.gugik.gov.pl/") });
-        var poland = new PolandCountryProvider(gugik, uldk);
-        var geo = await poland.GetGeocodeAsync("Nowowiejska 14, Warszawa");
+        var uug = new UugReverseGeocodingService(
+            new HttpClient { BaseAddress = new Uri("https://services.gugik.gov.pl/uug/") });
+        var poland = new PolandCountryProvider(gugik, uldk, uug);
+        var geo = await poland.GetGeocodeAsync("Marszałkowska 1, Warszawa");
         Assert.NotNull(geo);
         var parcel = await poland.GetParcelAsync(geo);
         Assert.NotNull(parcel);

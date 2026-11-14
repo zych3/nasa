@@ -1,0 +1,397 @@
+{
+  "_source": "FAO ECOCROP database, via the OpenCLIM mirror https://raw.githubusercontent.com/OpenCLIM/ecocrop/main/EcoCrop_DB.csv (extract: only the crops in the FieldShift catalogue). Triticale (x Triticosecale) is not in ECOCROP.",
+  "crops": [
+    {
+      "scientificName": "Triticum aestivum",
+      "ecoPortCode": 2114,
+      "growingCycleDays": {
+        "min": 90.0,
+        "max": 250.0
+      },
+      "optimalRainfallMm": {
+        "min": 750.0,
+        "max": 900.0
+      },
+      "rainfallMm": {
+        "min": 300.0,
+        "max": 1600.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 23.0
+      },
+      "temperatureC": {
+        "min": 5.0,
+        "max": 27.0
+      },
+      "optimalSoilPh": {
+        "min": 6.0,
+        "max": 7.0
+      }
+    },
+    {
+      "scientificName": "Zea mays",
+      "ecoPortCode": 2175,
+      "growingCycleDays": {
+        "min": 65.0,
+        "max": 365.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 1200.0
+      },
+      "rainfallMm": {
+        "min": 400.0,
+        "max": 1800.0
+      },
+      "optimalTemperatureC": {
+        "min": 18.0,
+        "max": 33.0
+      },
+      "temperatureC": {
+        "min": 10.0,
+        "max": 47.0
+      },
+      "optimalSoilPh": {
+        "min": 5.0,
+        "max": 7.0
+      }
+    },
+    {
+      "scientificName": "Secale cereale",
+      "ecoPortCode": 1929,
+      "growingCycleDays": {
+        "min": 110.0,
+        "max": 270.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 400.0,
+        "max": 2000.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 20.0
+      },
+      "temperatureC": {
+        "min": 3.0,
+        "max": 31.0
+      },
+      "optimalSoilPh": {
+        "min": 5.5,
+        "max": 6.0
+      }
+    },
+    {
+      "scientificName": "Avena sativa",
+      "ecoPortCode": 481,
+      "growingCycleDays": {
+        "min": 110.0,
+        "max": 270.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 250.0,
+        "max": 1500.0
+      },
+      "optimalTemperatureC": {
+        "min": 16.0,
+        "max": 20.0
+      },
+      "temperatureC": {
+        "min": 5.0,
+        "max": 30.0
+      },
+      "optimalSoilPh": {
+        "min": 5.0,
+        "max": 6.0
+      }
+    },
+    {
+      "scientificName": "Hordeum vulgare",
+      "ecoPortCode": 1232,
+      "growingCycleDays": {
+        "min": 90.0,
+        "max": 240.0
+      },
+      "optimalRainfallMm": {
+        "min": 500.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 200.0,
+        "max": 2000.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 20.0
+      },
+      "temperatureC": {
+        "min": 2.0,
+        "max": 40.0
+      },
+      "optimalSoilPh": {
+        "min": 6.5,
+        "max": 7.5
+      }
+    },
+    {
+      "scientificName": "Brassica napus",
+      "ecoPortCode": 549,
+      "growingCycleDays": {
+        "min": 85.0,
+        "max": 340.0
+      },
+      "optimalRainfallMm": {
+        "min": 500.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 400.0,
+        "max": 2800.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 25.0
+      },
+      "temperatureC": {
+        "min": 5.0,
+        "max": 41.0
+      },
+      "optimalSoilPh": {
+        "min": 6.5,
+        "max": 7.6
+      }
+    },
+    {
+      "scientificName": "Beta vulgaris",
+      "ecoPortCode": 514,
+      "growingCycleDays": {
+        "min": 160.0,
+        "max": 240.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 800.0
+      },
+      "rainfallMm": {
+        "min": 500.0,
+        "max": 1000.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 25.0
+      },
+      "temperatureC": {
+        "min": 4.0,
+        "max": 35.0
+      },
+      "optimalSoilPh": {
+        "min": 6.0,
+        "max": 7.0
+      }
+    },
+    {
+      "scientificName": "Lupinus angustifolius",
+      "ecoPortCode": 2519,
+      "growingCycleDays": {
+        "min": 100.0,
+        "max": 180.0
+      },
+      "optimalRainfallMm": {
+        "min": 400.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 350.0,
+        "max": 1700.0
+      },
+      "optimalTemperatureC": {
+        "min": 12.0,
+        "max": 18.0
+      },
+      "temperatureC": {
+        "min": 4.0,
+        "max": 26.0
+      },
+      "optimalSoilPh": {
+        "min": 5.5,
+        "max": 7.0
+      }
+    },
+    {
+      "scientificName": "Solanum tuberosum",
+      "ecoPortCode": 1971,
+      "growingCycleDays": {
+        "min": 90.0,
+        "max": 160.0
+      },
+      "optimalRainfallMm": {
+        "min": 500.0,
+        "max": 800.0
+      },
+      "rainfallMm": {
+        "min": 250.0,
+        "max": 2000.0
+      },
+      "optimalTemperatureC": {
+        "min": 15.0,
+        "max": 25.0
+      },
+      "temperatureC": {
+        "min": 7.0,
+        "max": 30.0
+      },
+      "optimalSoilPh": {
+        "min": 5.0,
+        "max": 6.2
+      }
+    },
+    {
+      "scientificName": "Pisum sativum",
+      "ecoPortCode": 1721,
+      "growingCycleDays": {
+        "min": 60.0,
+        "max": 140.0
+      },
+      "optimalRainfallMm": {
+        "min": 800.0,
+        "max": 1200.0
+      },
+      "rainfallMm": {
+        "min": 350.0,
+        "max": 2500.0
+      },
+      "optimalTemperatureC": {
+        "min": 10.0,
+        "max": 24.0
+      },
+      "temperatureC": {
+        "min": 4.0,
+        "max": 30.0
+      },
+      "optimalSoilPh": {
+        "min": 5.5,
+        "max": 7.0
+      }
+    },
+    {
+      "scientificName": "Glycine max",
+      "ecoPortCode": 1150,
+      "growingCycleDays": {
+        "min": 75.0,
+        "max": 180.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 1500.0
+      },
+      "rainfallMm": {
+        "min": 450.0,
+        "max": 1800.0
+      },
+      "optimalTemperatureC": {
+        "min": 20.0,
+        "max": 33.0
+      },
+      "temperatureC": {
+        "min": 10.0,
+        "max": 38.0
+      },
+      "optimalSoilPh": {
+        "min": 5.5,
+        "max": 6.5
+      }
+    },
+    {
+      "scientificName": "Helianthus annuus",
+      "ecoPortCode": 1191,
+      "growingCycleDays": {
+        "min": 70.0,
+        "max": 200.0
+      },
+      "optimalRainfallMm": {
+        "min": 600.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 300.0,
+        "max": 1600.0
+      },
+      "optimalTemperatureC": {
+        "min": 17.0,
+        "max": 34.0
+      },
+      "temperatureC": {
+        "min": 5.0,
+        "max": 45.0
+      },
+      "optimalSoilPh": {
+        "min": 6.0,
+        "max": 7.5
+      }
+    },
+    {
+      "scientificName": "Lupinus albus",
+      "ecoPortCode": 7431,
+      "growingCycleDays": {
+        "min": 90.0,
+        "max": 180.0
+      },
+      "optimalRainfallMm": {
+        "min": 400.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 360.0,
+        "max": 1800.0
+      },
+      "optimalTemperatureC": {
+        "min": 18.0,
+        "max": 24.0
+      },
+      "temperatureC": {
+        "min": 6.0,
+        "max": 32.0
+      },
+      "optimalSoilPh": {
+        "min": 5.5,
+        "max": 6.4
+      }
+    },
+    {
+      "scientificName": "Fagopyrum esculentum",
+      "ecoPortCode": 2285,
+      "growingCycleDays": {
+        "min": 55.0,
+        "max": 85.0
+      },
+      "optimalRainfallMm": {
+        "min": 700.0,
+        "max": 1000.0
+      },
+      "rainfallMm": {
+        "min": 400.0,
+        "max": 1300.0
+      },
+      "optimalTemperatureC": {
+        "min": 17.0,
+        "max": 27.0
+      },
+      "temperatureC": {
+        "min": 7.0,
+        "max": 40.0
+      },
+      "optimalSoilPh": {
+        "min": 5.0,
+        "max": 6.5
+      }
+    }
+  ]
+}

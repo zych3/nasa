@@ -1,8 +1,11 @@
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
-using FieldShift.Web.Options;
+using FieldShift.Web.Data;
+using FieldShift.Web.FieldProfile;
+using FieldShift.Web.MapLayers;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,15 +14,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton<ICropRepository, InMemoryCropRepository>();
-builder.Services.AddSingleton<IPriceHistoryRepository, InMemoryPriceHistoryRepository>();
+
+// Prices are cached in PostgreSQL through EF Core (schema: Migrations/). The source API is only called
+// when they are stale.
+var pricesDb = builder.Configuration.GetConnectionString("Prices")
+    ?? throw new InvalidOperationException("Missing configuration: ConnectionStrings:Prices");
+builder.Services.AddDbContext<PricesDbContext>(o => o.UseNpgsql(pricesDb));
+builder.Services.AddSingleton<PricesSchema>();
+builder.Services.AddScoped<IPriceHistoryRepository, EfPriceHistoryRepository>();
+builder.Services.Configure<PriceCacheOptions>(builder.Configuration.GetSection("Prices"));
+builder.Services.AddSingleton<PriceSyncGate>();
 builder.Services.AddScoped<CropPriceService>();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-var appOptions = AppOptions.Load(builder.Configuration);
-builder.Services.AddSingleton(appOptions);
-
-builder.AddPoland(appOptions.Poland);
+builder.AddPoland();
+builder.AddFieldProfile();
+builder.AddMapLayers();
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
@@ -27,6 +39,8 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .AllowAnyMethod()));
 
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

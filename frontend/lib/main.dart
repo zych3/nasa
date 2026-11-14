@@ -4,14 +4,22 @@ import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
+import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'pages/trending_crops_page.dart';
-void main() {
-  runApp(const FieldShiftApp());
+import 'repositories/selected_plot_store.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final plotStore = SelectedPlotStore();
+  await plotStore.load();
+  runApp(FieldShiftApp(plotStore: plotStore));
 }
 
 class FieldShiftApp extends StatefulWidget {
-  const FieldShiftApp({super.key});
+  const FieldShiftApp({super.key, required this.plotStore});
+
+  final SelectedPlotStore plotStore;
 
   @override
   State<FieldShiftApp> createState() => _FieldShiftAppState();
@@ -33,11 +41,12 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
         AppLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
-      home: SafeArea(
-        child: MyScaffold(
-          locale: _locale,
-          onLocaleChanged: (locale) => setState(() => _locale = locale),
-        ),
+      // No SafeArea here: the map runs edge to edge and keeps its own
+      // controls clear of the notch; the other tabs add their own.
+      home: MyScaffold(
+        plotStore: widget.plotStore,
+        locale: _locale,
+        onLocaleChanged: (locale) => setState(() => _locale = locale),
       ),
     );
   }
@@ -46,10 +55,12 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
 class MyScaffold extends StatefulWidget {
   const MyScaffold({
     super.key,
+    required this.plotStore,
     required this.locale,
     required this.onLocaleChanged,
   });
 
+  final SelectedPlotStore plotStore;
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
 
@@ -62,31 +73,53 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final pageTitles = [l10n.navMap, l10n.navPlot, l10n.navTrends];
+    final flag = LanguageFlagButton(
+      locale: widget.locale,
+      onLocaleChanged: widget.onLocaleChanged,
+    );
 
     return Scaffold(
-      body: Column(
+      // IndexedStack keeps each tab alive, so the map keeps its position and
+      // does not ask for the location again.
+      body: IndexedStack(
+        index: _selectedIndex,
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: LanguageFlagButton(
-              locale: widget.locale,
-              onLocaleChanged: widget.onLocaleChanged,
-            ),
+          // Full height: the flag sits in the map's own top bar.
+          AreaMapPage(
+            store: widget.plotStore,
+            topBarAction: flag,
+            onParcelChosen: () => setState(() => _selectedIndex = 1),
           ),
-          Expanded(
-            child: switch (_selectedIndex) {
-              1 => const PlotPage(),
-              2 => const TrendingCropsPage(),
-              _ => Center(child: Text(pageTitles[_selectedIndex])),
-            },
+          _TabWithFlag(
+            flag: flag,
+            child: PlotPage(store: widget.plotStore),
           ),
+          _TabWithFlag(flag: flag, child: const TrendingCropsPage()),
         ],
       ),
       bottomNavigationBar: AppNavBar(
         selectedIndex: _selectedIndex,
         onSelected: (index) => setState(() => _selectedIndex = index),
+      ),
+    );
+  }
+}
+
+/// A list tab with the language flag in a small row above it.
+class _TabWithFlag extends StatelessWidget {
+  const _TabWithFlag({required this.flag, required this.child});
+
+  final Widget flag;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Align(alignment: Alignment.centerLeft, child: flag),
+          Expanded(child: child),
+        ],
       ),
     );
   }

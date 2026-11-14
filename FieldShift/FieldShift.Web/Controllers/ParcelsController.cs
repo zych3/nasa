@@ -1,4 +1,6 @@
 ﻿using FieldShift.Web.Countries;
+using System.Text.Json;
+using FieldShift.Web.Data;
 using FieldShift.Web.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,5 +44,84 @@ public class ParcelsController(ICountryProvider country, ILogger<ParcelsControll
             logger.LogWarning(ex, "Parcel lookup failed");
             return Problem("Upstream service error.", statusCode: StatusCodes.Status502BadGateway);
         }
+    }
+
+    private const int NearbyAddressLimit = 8;
+    private const int NearbyRadiusMeters = 300;
+
+    /// <summary>
+    /// Parcels around a point: the parcel at the point itself plus the parcels of the
+    /// nearest address points. Distinct, nearest first.
+    /// </summary>
+    [HttpGet("nearby")]
+    public async Task<ActionResult<IReadOnlyList<NearbyParcelResponse>>> Nearby(
+        [FromQuery] double? lat, [FromQuery] double? lon)
+    {
+        if (lat is not (>= -90 and <= 90) || lon is not (>= -180 and <= 180))
+        {
+            return Problem("Valid lat and lon are required.", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        IReadOnlyList<GeocodeResult> addresses;
+        try
+        {
+            addresses = await country.GetNearbyAddressesAsync(lat.Value, lon.Value, NearbyAddressLimit, NearbyRadiusMeters);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
+        {
+            // Still try the parcel at the point itself.
+            logger.LogWarning(ex, "Reverse geocoding failed");
+            addresses = [];
+        }
+
+        var here = new GeocodeResult(null, null, null, lat.Value, lon.Value, null);
+        var lookups = addresses.Prepend(here).Select(async location =>
+        {
+            try
+            {
+                var parcel = await country.GetParcelAsync(location);
+                return parcel is null ? null : new NearbyParcelResponse(
+                    parcel.Id,
+                    location.Latitude,
+                    location.Longitude,
+                    parcel.GeometryWkt,
+                    Label(location),
+                    DistanceMeters(lat.Value, lon.Value, location.Latitude, location.Longitude));
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                logger.LogWarning(ex, "Parcel lookup failed for nearby point");
+                return null;
+            }
+        });
+
+        var parcels = (await Task.WhenAll(lookups))
+            .OfType<NearbyParcelResponse>()
+            .OrderBy(p => p.DistanceMeters)
+            .GroupBy(p => p.ParcelId)
+            // Keep the nearest hit, but prefer one that has an address label.
+            .Select(g => g.FirstOrDefault(p => p.Address is not null) is { } named
+                ? named with { DistanceMeters = g.First().DistanceMeters }
+                : g.First())
+            .OrderBy(p => p.DistanceMeters)
+            .ToList();
+
+        return parcels;
+    }
+
+    private static string? Label(GeocodeResult a) =>
+        a.Street is null ? a.Municipality
+        : a.Municipality is null || a.Street.StartsWith(a.Municipality) ? a.Street
+        : $"{a.Street}, {a.Municipality}";
+
+    private static double DistanceMeters(double lat1, double lon1, double lat2, double lon2)
+    {
+        const double earthRadius = 6_371_000;
+        static double Rad(double deg) => deg * Math.PI / 180;
+        var dLat = Rad(lat2 - lat1);
+        var dLon = Rad(lon2 - lon1);
+        var h = Math.Pow(Math.Sin(dLat / 2), 2) +
+                Math.Cos(Rad(lat1)) * Math.Cos(Rad(lat2)) * Math.Pow(Math.Sin(dLon / 2), 2);
+        return 2 * earthRadius * Math.Asin(Math.Sqrt(h));
     }
 }
