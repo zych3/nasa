@@ -13,7 +13,7 @@ import '../models/crop.dart';
 /// working offline.
 class CropRepository {
   CropRepository({ApiClient? apiClient, this.useMock = false})
-    : _api = apiClient ?? ApiClient();
+    : _api = apiClient ?? ApiClient.shared;
 
   final ApiClient _api;
   final bool useMock;

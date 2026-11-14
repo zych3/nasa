@@ -26,6 +26,10 @@ class ApiClient {
   ApiClient({http.Client? httpClient, this.baseUrl = apiBaseUrl})
     : _http = httpClient ?? http.Client();
 
+  /// One client for the whole app, used by the repositories by default, so
+  /// requests share connections (each price badge used to open its own).
+  static final ApiClient shared = ApiClient();
+
   final http.Client _http;
   final String baseUrl;
 

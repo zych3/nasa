@@ -16,7 +16,7 @@ import '../models/price_history.dart';
 /// one request per crop.
 class PriceRepository {
   PriceRepository({ApiClient? apiClient, this.useMock = false})
-    : _api = apiClient ?? ApiClient();
+    : _api = apiClient ?? ApiClient.shared;
 
   final ApiClient _api;
   final bool useMock;

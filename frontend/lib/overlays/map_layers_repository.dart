@@ -12,7 +12,7 @@ import '../api/api_client.dart';
 /// place and kept for the session: switching overlays needs no new request.
 class MapLayersRepository {
   MapLayersRepository({ApiClient? apiClient, this.useMock = false})
-    : _api = apiClient ?? ApiClient();
+    : _api = apiClient ?? ApiClient.shared;
 
   /// Saved real response for lat 52.20, lon 21.48 (demo / offline data).
   static const mockAsset = 'assets/mock/map_layers_sample.json';

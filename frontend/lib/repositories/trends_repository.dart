@@ -8,7 +8,7 @@ import '../models/trending_crop.dart';
 /// Source of the "Popular crops" list. Screens use this, never [ApiClient].
 class TrendsRepository {
   TrendsRepository({ApiClient? apiClient, this.useMock = true})
-    : _api = apiClient ?? ApiClient();
+    : _api = apiClient ?? ApiClient.shared;
 
   final ApiClient _api;
 
