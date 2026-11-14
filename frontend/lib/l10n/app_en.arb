@@ -98,13 +98,6 @@
   },
   "noCropsFound": "No crops found",
   "submitPlot": "Save plot",
-  "cropCorn": "Corn",
-  "cropWheat": "Wheat",
-  "cropSoybeans": "Soybeans",
-  "cropBarley": "Barley",
-  "cropRice": "Rice",
-  "cropPotatoes": "Potatoes",
-  "cropTomatoes": "Tomatoes",
   "locationDialogTitle": "Where are you?",
   "locationDialogBody": "Can we use your location? We will show the map around you. We do not save it.",
   "locationAllow": "Use my location",
@@ -128,5 +121,124 @@
   "zoomInForParcels": "Zoom in to see parcels",
   "tapToChooseParcel": "Tap a parcel to choose your field",
   "tapToChooseThis": "Tap to choose this field",
-  "parcelsLoadFailed": "Could not load parcels here. Check your connection and try again."
+  "parcelsLoadFailed": "Could not load parcels here. Check your connection and try again.",
+  "priceNoData": "No data",
+  "priceNoDataDetails": "No public price list exists for this crop.",
+  "priceLatest": "Latest price: {date}",
+  "@priceLatest": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "priceHistoryMonthly": "Monthly prices, last {count}",
+  "@priceHistoryMonthly": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "priceHistoryYearly": "Yearly prices, last {count}",
+  "@priceHistoryYearly": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "priceChartLabel": "Price chart from {from} to {to}, lowest {min}, highest {max} {currency}",
+  "@priceChartLabel": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "sourceOfficial": "Official statistics",
+  "noteOnePriceAllWheat": "GUS publishes one price for all wheat, winter and spring.",
+  "noteOnePriceAllRye": "GUS publishes one price for all rye.",
+  "noteOnePriceAllBarley": "GUS publishes one price for all barley, winter and spring.",
+  "noteGrainMaizePrice": "Price of maize grain.",
+  "noteYearlyOnly": "GUS publishes this price only once a year.",
+  "noteGrainMaizeOnly": "Area and yield are for grain maize only, not silage maize.",
+  "noteAllSweetLupins": "Eurostat gives one figure for all sweet lupins.",
+  "noteNoEurostatFigure": "Eurostat has no separate figures for this crop.",
+  "factAreaPoland": "Area in Poland ({year})",
+  "@factAreaPoland": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "factYieldPoland": "Average yield in Poland ({year})",
+  "@factYieldPoland": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "factGrowingTime": "Time from sowing to harvest",
+  "factRainfall": "Best rainfall in the growing season",
+  "factTemperature": "Best temperature",
+  "factSoilPh": "Best soil pH",
+  "valueHectares": "{value} ha",
+  "@valueHectares": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "valueTonnesPerHectare": "{value} t/ha",
+  "@valueTonnesPerHectare": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "valueDays": "{range} days",
+  "@valueDays": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "valueMillimetres": "{range} mm",
+  "@valueMillimetres": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "valueCelsius": "{range} °C",
+  "@valueCelsius": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "sourceCropDatabase": "Crop database",
+  "cropDataMissing": "No data",
+  "cropListLoadError": "We could not load the crops.",
+  "findParcel": "Find parcel"
 }

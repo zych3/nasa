@@ -1,0 +1,52 @@
+# Whole FieldShift stack: PostgreSQL, .NET backend, Flutter web frontend.
+#
+#   docker compose up --build
+#
+# Frontend: http://localhost:8080
+# Backend:  http://localhost:5066
+# Database: localhost:5432 (fieldshift / fieldshift)
+#
+# Host ports can be changed with DB_PORT, BACKEND_PORT and FRONTEND_PORT
+# (e.g. DB_PORT=5433 when the run.sh database container already uses 5432).
+# BACKEND_PORT is baked into the frontend build, so rebuild after changing it.
+
+name: fieldshift
+
+services:
+  db:
+    build: db
+    environment:
+      POSTGRES_PASSWORD: fieldshift
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - fieldshift-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    build: FieldShift
+    environment:
+      ConnectionStrings__Prices: "Host=db;Port=5432;Database=fieldshift;Username=fieldshift;Password=fieldshift"
+      # Optional: GUS BDL API key from the host environment or a .env file.
+      Poland__GusBdlApiKey: ${GUS_BDL_API_KEY:-}
+    ports:
+      - "${BACKEND_PORT:-5066}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: frontend
+      args:
+        # The browser calls the backend directly, so this is the host-side address.
+        API_BASE_URL: http://localhost:${BACKEND_PORT:-5066}
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  fieldshift-db-data:

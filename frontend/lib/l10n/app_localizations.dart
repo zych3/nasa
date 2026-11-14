@@ -362,48 +362,6 @@ abstract class AppLocalizations {
   /// **'Save plot'**
   String get submitPlot;
 
-  /// No description provided for @cropCorn.
-  ///
-  /// In en, this message translates to:
-  /// **'Corn'**
-  String get cropCorn;
-
-  /// No description provided for @cropWheat.
-  ///
-  /// In en, this message translates to:
-  /// **'Wheat'**
-  String get cropWheat;
-
-  /// No description provided for @cropSoybeans.
-  ///
-  /// In en, this message translates to:
-  /// **'Soybeans'**
-  String get cropSoybeans;
-
-  /// No description provided for @cropBarley.
-  ///
-  /// In en, this message translates to:
-  /// **'Barley'**
-  String get cropBarley;
-
-  /// No description provided for @cropRice.
-  ///
-  /// In en, this message translates to:
-  /// **'Rice'**
-  String get cropRice;
-
-  /// No description provided for @cropPotatoes.
-  ///
-  /// In en, this message translates to:
-  /// **'Potatoes'**
-  String get cropPotatoes;
-
-  /// No description provided for @cropTomatoes.
-  ///
-  /// In en, this message translates to:
-  /// **'Tomatoes'**
-  String get cropTomatoes;
-
   /// No description provided for @locationDialogTitle.
   ///
   /// In en, this message translates to:
@@ -505,6 +463,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load parcels here. Check your connection and try again.'**
   String get parcelsLoadFailed;
+
+  /// No description provided for @priceNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get priceNoData;
+
+  /// No description provided for @priceNoDataDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No public price list exists for this crop.'**
+  String get priceNoDataDetails;
+
+  /// No description provided for @priceLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest price: {date}'**
+  String priceLatest(String date);
+
+  /// No description provided for @priceHistoryMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly prices, last {count}'**
+  String priceHistoryMonthly(int count);
+
+  /// No description provided for @priceHistoryYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly prices, last {count}'**
+  String priceHistoryYearly(int count);
+
+  /// No description provided for @priceChartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price chart from {from} to {to}, lowest {min}, highest {max} {currency}'**
+  String priceChartLabel(
+    String from,
+    String to,
+    String min,
+    String max,
+    String currency,
+  );
+
+  /// No description provided for @sourceOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Official statistics'**
+  String get sourceOfficial;
+
+  /// No description provided for @noteOnePriceAllWheat.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all wheat, winter and spring.'**
+  String get noteOnePriceAllWheat;
+
+  /// No description provided for @noteOnePriceAllRye.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all rye.'**
+  String get noteOnePriceAllRye;
+
+  /// No description provided for @noteOnePriceAllBarley.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all barley, winter and spring.'**
+  String get noteOnePriceAllBarley;
+
+  /// No description provided for @noteGrainMaizePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price of maize grain.'**
+  String get noteGrainMaizePrice;
+
+  /// No description provided for @noteYearlyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes this price only once a year.'**
+  String get noteYearlyOnly;
+
+  /// No description provided for @noteGrainMaizeOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Area and yield are for grain maize only, not silage maize.'**
+  String get noteGrainMaizeOnly;
+
+  /// No description provided for @noteAllSweetLupins.
+  ///
+  /// In en, this message translates to:
+  /// **'Eurostat gives one figure for all sweet lupins.'**
+  String get noteAllSweetLupins;
+
+  /// No description provided for @noteNoEurostatFigure.
+  ///
+  /// In en, this message translates to:
+  /// **'Eurostat has no separate figures for this crop.'**
+  String get noteNoEurostatFigure;
+
+  /// No description provided for @factAreaPoland.
+  ///
+  /// In en, this message translates to:
+  /// **'Area in Poland ({year})'**
+  String factAreaPoland(String year);
+
+  /// No description provided for @factYieldPoland.
+  ///
+  /// In en, this message translates to:
+  /// **'Average yield in Poland ({year})'**
+  String factYieldPoland(String year);
+
+  /// No description provided for @factGrowingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time from sowing to harvest'**
+  String get factGrowingTime;
+
+  /// No description provided for @factRainfall.
+  ///
+  /// In en, this message translates to:
+  /// **'Best rainfall in the growing season'**
+  String get factRainfall;
+
+  /// No description provided for @factTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Best temperature'**
+  String get factTemperature;
+
+  /// No description provided for @factSoilPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Best soil pH'**
+  String get factSoilPh;
+
+  /// No description provided for @valueHectares.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ha'**
+  String valueHectares(String value);
+
+  /// No description provided for @valueTonnesPerHectare.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} t/ha'**
+  String valueTonnesPerHectare(String value);
+
+  /// No description provided for @valueDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} days'**
+  String valueDays(String range);
+
+  /// No description provided for @valueMillimetres.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} mm'**
+  String valueMillimetres(String range);
+
+  /// No description provided for @valueCelsius.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} °C'**
+  String valueCelsius(String range);
+
+  /// No description provided for @sourceCropDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop database'**
+  String get sourceCropDatabase;
+
+  /// No description provided for @cropDataMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get cropDataMissing;
+
+  /// No description provided for @cropListLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the crops.'**
+  String get cropListLoadError;
+
+  /// No description provided for @findParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Find parcel'**
+  String get findParcel;
 }
 
 class _AppLocalizationsDelegate
