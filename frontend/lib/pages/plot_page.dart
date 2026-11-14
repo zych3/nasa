@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../components/input/plotInput.dart';
+import '../components/input/plotInput/plot_input.dart';
 import '../l10n/app_localizations.dart';
 
 /// "Moje pole" – plot data page. Layout only; values are placeholders.
