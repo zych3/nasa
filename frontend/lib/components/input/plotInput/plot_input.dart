@@ -1,9 +1,9 @@
-import 'package:hopito_field_shift/components/input/plotInput/address_input_field.dart';
-import 'package:hopito_field_shift/components/input/plotInput/crop_multi_selector.dart';
-import 'package:hopito_field_shift/components/input/plotInput/plot_data.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../l10n/app_localizations.dart';
+import 'address_input_field.dart';
+import 'crop_multi_selector.dart';
+import 'plot_data.dart';
 
 class PlotInput extends StatefulWidget {
   const PlotInput({super.key, required this.onSubmitPlot, this.onFindParcel});
