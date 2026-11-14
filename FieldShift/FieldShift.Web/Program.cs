@@ -1,11 +1,20 @@
+<<<<<<< HEAD
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
+=======
+using FieldShift.Web.Repositories;
+using FieldShift.Web.Services;
+>>>>>>> 2334715 (Crops outline)
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<ICropRepository, InMemoryCropRepository>();
+builder.Services.AddSingleton<IPriceHistoryRepository, InMemoryPriceHistoryRepository>();
+builder.Services.AddScoped<CropPriceService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
