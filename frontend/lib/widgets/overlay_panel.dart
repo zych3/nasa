@@ -3,8 +3,8 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/overlay_layer.dart';
-import '../overlays/map_overlay.dart';
 import '../overlays/overlay_controller.dart';
+import 'overlay_chooser.dart';
 import 'overlay_level_bars.dart';
 
 /// Side / bottom panel of the "Conditions" screen: choose an overlay, read
@@ -46,17 +46,10 @@ class OverlayPanel extends StatelessWidget {
         const SizedBox(height: 12),
         Text(l10n.overlaysChooseHeading, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final overlay in controller.overlays)
-              _OverlayChoice(
-                overlay: overlay,
-                selected: overlay.id == controller.selected.id,
-                onTap: () => controller.select(overlay),
-              ),
-          ],
+        OverlayChooserButton(
+          overlays: controller.overlays,
+          selected: controller.selected,
+          onSelected: controller.select,
         ),
         const SizedBox(height: 16),
         ..._status(l10n),
@@ -160,83 +153,6 @@ class OverlayPanel extends StatelessWidget {
           ),
         ];
     }
-  }
-}
-
-/// Toggle button for one overlay. Chosen = check icon + bold word + thick
-/// border + fill (not colour alone); at least 56 dp high.
-class _OverlayChoice extends StatelessWidget {
-  const _OverlayChoice({
-    required this.overlay,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final MapOverlay overlay;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final title = overlay.title(AppLocalizations.of(context));
-
-    // One node for screen readers: "Soil, button, selected", with the tap.
-    return MergeSemantics(
-      child: Semantics(
-        button: true,
-        selected: selected,
-        child: Material(
-          color: selected ? scheme.secondaryContainer : scheme.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(
-              color: selected ? scheme.primary : scheme.outline,
-              width: selected ? 3 : 1,
-            ),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 56, minWidth: 56),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      selected ? Icons.check_circle : overlay.icon,
-                      color: selected
-                          ? scheme.onSecondaryContainer
-                          : scheme.onSurface,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: selected
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                          color: selected
-                              ? scheme.onSecondaryContainer
-                              : scheme.onSurface,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

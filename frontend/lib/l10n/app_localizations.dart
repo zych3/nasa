@@ -835,6 +835,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later month'**
   String get overlaysLaterMonth;
+
+  /// No description provided for @overlaysChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get overlaysChange;
 }
 
 class _AppLocalizationsDelegate

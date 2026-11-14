@@ -121,5 +121,6 @@
   "overlayDaysCount": "{count, plural, =1{1 dzień} other{{count} dni}}",
   "overlayStepsSoilMoisture": "{step, select, s0{sucho} s1{umiarkowanie sucho} s2{wilgotno} other{bardzo wilgotno}}",
   "overlaysEarlierMonth": "Poprzedni miesiąc",
-  "overlaysLaterMonth": "Następny miesiąc"
+  "overlaysLaterMonth": "Następny miesiąc",
+  "overlaysChange": "Zmień"
 }

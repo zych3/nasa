@@ -469,4 +469,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysLaterMonth => 'Następny miesiąc';
+
+  @override
+  String get overlaysChange => 'Zmień';
 }

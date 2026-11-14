@@ -465,4 +465,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysLaterMonth => 'Later month';
+
+  @override
+  String get overlaysChange => 'Change';
 }

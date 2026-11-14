@@ -309,5 +309,6 @@
     }
   },
   "overlaysEarlierMonth": "Earlier month",
-  "overlaysLaterMonth": "Later month"
+  "overlaysLaterMonth": "Later month",
+  "overlaysChange": "Change"
 }

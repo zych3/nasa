@@ -44,6 +44,20 @@ Widget _app(
   home: Scaffold(body: child),
 );
 
+/// Opens the overlay list and picks [title].
+Future<void> chooseOverlay(
+  WidgetTester tester,
+  AppLocalizations l10n,
+  String title,
+) async {
+  await tester.ensureVisible(find.text(l10n.overlaysChange));
+  await tester.pump();
+  await tester.tap(find.text(l10n.overlaysChange));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(title).last);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   late FakeMapLayersRepository repo;
   late SelectedPlotStore store;
@@ -111,8 +125,7 @@ void main() {
     repo.complete(OverlaysScreen.examplePlace, loadSample());
     await tester.pump();
 
-    await tester.tap(find.text(_pl.overlayMoistureTitle));
-    await tester.pump();
+    await chooseOverlay(tester, _pl, _pl.overlayMoistureTitle);
 
     // Backend label on the map and in the value card, month, NASA source.
     expect(find.text('umiarkowanie sucho (0,35–0,45)'), findsNWidgets(2));
@@ -258,10 +271,7 @@ void main() {
         await pumpScreen(tester, textScale: 1.5, locale: locale);
         repo.complete(OverlaysScreen.examplePlace, loadSample());
         await tester.pump();
-        await tester.ensureVisible(find.text(l10n.overlayMoistureTitle));
-        await tester.pump();
-        await tester.tap(find.text(l10n.overlayMoistureTitle));
-        await tester.pump();
+        await chooseOverlay(tester, l10n, l10n.overlayMoistureTitle);
         await tester.scrollUntilVisible(
           find.byTooltip(l10n.overlaysEarlierMonth),
           100,
@@ -278,17 +288,56 @@ void main() {
       });
     }
 
-    testWidgets('the chosen overlay is announced as selected', (tester) async {
+    testWidgets('chooser: one button; the list marks the chosen overlay', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
-      await pumpScreen(tester);
+      await pumpScreen(tester, textScale: 1.5);
+      repo.complete(OverlaysScreen.examplePlace, loadSample());
+      await tester.pump();
 
+      // The button says what is shown and that it can be changed.
       expect(
-        tester.getSemantics(find.bySemanticsLabel(_pl.overlaySoilTitle)),
+        find.bySemanticsLabel(
+          RegExp(
+            '${_pl.overlaySoilTitle}.*${_pl.overlaysChange}',
+            dotAll: true,
+          ),
+        ),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text(_pl.overlaysChange));
+      await tester.pumpAndSettle();
+      await checkGuidelines(tester, 'chooser sheet');
+      // Exact labels: the chooser button itself reads "Gleba Zmień".
+      final rows = [
+        for (final title in [_pl.overlaySoilTitle, _pl.overlayMoistureTitle])
+          tester.getSemantics(find.bySemanticsLabel(title)),
+      ];
+      expect(
+        rows[0],
         matchesSemantics(
           label: _pl.overlaySoilTitle,
           isButton: true,
           hasSelectedState: true,
           isSelected: true,
+          hasEnabledState: true,
+          isEnabled: true,
+          isFocusable: true,
+          hasTapAction: true,
+          hasFocusAction: true,
+        ),
+      );
+      expect(
+        rows[1],
+        matchesSemantics(
+          label: _pl.overlayMoistureTitle,
+          isButton: true,
+          hasSelectedState: true,
+          isSelected: false,
+          hasEnabledState: true,
+          isEnabled: true,
           isFocusable: true,
           hasTapAction: true,
           hasFocusAction: true,
