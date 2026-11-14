@@ -1,4 +1,4 @@
-﻿using FieldShift.Web.Services;
+﻿using FieldShift.Web.Countries.Poland;
 using Xunit.Abstractions;
 
 namespace TestProject1;
@@ -15,9 +15,14 @@ public class XmlParserTests
     [Fact]
     public async Task ParseGeolocation()
     {
-        var svc = new ParcelService(new HttpClient());
-        var geo = await svc.GetAddressPosition("ulica Piękna 2, Warszawa");
+        var gugik = new GugikGeocodingService(
+            new HttpClient { BaseAddress = new Uri("https://mapy.geoportal.gov.pl/openLSgp/") });
+        var uldk = new UldkService(
+            new HttpClient { BaseAddress = new Uri("https://uldk.gugik.gov.pl/") });
+        var poland = new PolandCountryProvider(gugik, uldk);
+        var geo = await poland.GetGeocodeAsync("Nowowiejska 14, Warszawa");
         Assert.NotNull(geo);
-        _testOutputHelper.WriteLine($"LAT: {geo.Latitude} LON: {geo.Longitude}");
+        var parcel = await poland.GetParcelAsync(geo);
+        Assert.NotNull(parcel);
     }
 }

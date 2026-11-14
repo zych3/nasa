@@ -1,3 +1,6 @@
+using FieldShift.Web.Countries;
+using FieldShift.Web.Countries.Poland;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.AddPoland();
 
 var app = builder.Build();
 

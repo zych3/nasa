@@ -2,15 +2,14 @@
 using System.Xml.Linq;
 using FieldShift.Web.Data;
 
-namespace FieldShift.Web.Services;
+namespace FieldShift.Web.Countries.Poland;
 
-public class ParcelService(HttpClient http)
+public class GugikGeocodingService(HttpClient http)
 {
-    private const string Url = "https://mapy.geoportal.gov.pl/openLSgp/geocode";
     public async Task<GeocodeResult?> GetAddressPosition(string address)
     {
         var doc = BuildRequest(address);
-        var res = await http.PostAsync(Url, new StringContent(doc.ToString(), Encoding.UTF8, "aplication/xml"));
+        var res = await http.PostAsync("geocode",new StringContent(doc.ToString(), Encoding.UTF8, "application/xml"));
         res.EnsureSuccessStatusCode();
         var content = await res.Content.ReadAsStringAsync();
         return GeocodeParser.Parse(content);
