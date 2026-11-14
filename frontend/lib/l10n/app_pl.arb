@@ -122,5 +122,15 @@
   "overlayStepsSoilMoisture": "{step, select, s0{sucho} s1{umiarkowanie sucho} s2{wilgotno} other{bardzo wilgotno}}",
   "overlaysEarlierMonth": "Poprzedni miesiąc",
   "overlaysLaterMonth": "Następny miesiąc",
-  "overlaysChange": "Zmień"
+  "overlaysChange": "Zmień",
+  "overlayRainTitle": "Opady",
+  "overlayStepsRain": "{step, select, s0{bardzo sucho} s1{sucho} s2{normalnie} other{mokro}}",
+  "overlayTemperatureTitle": "Temperatura",
+  "overlayStepsTemperature": "{step, select, s0{mróz} s1{chłodno} s2{umiarkowanie} other{ciepło}}",
+  "overlayFrostTitle": "Mróz",
+  "overlayStepsFrost": "{step, select, s0{bez mrozu} s1{kilka dni mrozu} s2{częsty mróz} other{długi mróz}}",
+  "overlayHeatTitle": "Upały",
+  "overlayStepsHeat": "{step, select, s0{brak upałów} s1{kilka dni upału} s2{częste upały} other{bardzo częste upały}}",
+  "overlayErosionTitle": "Zmywanie gleby",
+  "overlayStepsRisk": "{step, select, s0{niski} s1{umiarkowany} s2{wysoki} other{bardzo wysoki}}"
 }

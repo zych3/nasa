@@ -310,5 +310,50 @@
   },
   "overlaysEarlierMonth": "Earlier month",
   "overlaysLaterMonth": "Later month",
-  "overlaysChange": "Change"
+  "overlaysChange": "Change",
+  "overlayRainTitle": "Rainfall",
+  "overlayStepsRain": "{step, select, s0{very dry} s1{dry} s2{normal} other{wet}}",
+  "@overlayStepsRain": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayTemperatureTitle": "Temperature",
+  "overlayStepsTemperature": "{step, select, s0{freezing} s1{cool} s2{mild} other{warm}}",
+  "@overlayStepsTemperature": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayFrostTitle": "Frost",
+  "overlayStepsFrost": "{step, select, s0{no frost} s1{a few frost days} s2{frequent frost} other{long frost}}",
+  "@overlayStepsFrost": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayHeatTitle": "Hot days",
+  "overlayStepsHeat": "{step, select, s0{no hot days} s1{a few hot days} s2{frequent hot days} other{very frequent hot days}}",
+  "@overlayStepsHeat": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayErosionTitle": "Soil erosion",
+  "overlayStepsRisk": "{step, select, s0{low} s1{moderate} s2{high} other{very high}}",
+  "@overlayStepsRisk": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  }
 }

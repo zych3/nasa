@@ -232,6 +232,41 @@ void main() {
   });
 
   group('registry', () {
+    test(
+      'every monthly overlay: Polish legend = backend, English translated',
+      () {
+        final json = loadSample();
+        final monthly = overlayRegistry
+            .whereType<MonthlyLayerOverlay>()
+            .toList();
+        expect(monthly, hasLength(greaterThanOrEqualTo(6)));
+
+        for (final overlay in monthly) {
+          final layer = (json['layers'] as List)
+              .cast<Map<String, dynamic>>()
+              .firstWhere((l) => l['id'] == overlay.layerId);
+          final backend = [
+            for (final stop in (layer['legend'] as Map)['stops'] as List)
+              stop['label'] as String,
+          ];
+          expect(overlay.stepWordCount, backend.length, reason: overlay.id);
+
+          final parsed = overlay.parse(json);
+          final polish = [for (final item in parsed.legend) item.label(pl)];
+          final english = [for (final item in parsed.legend) item.label(en)];
+          expect(polish, backend, reason: overlay.id);
+          for (var i = 0; i < english.length; i++) {
+            expect(english[i], isNot(polish[i]), reason: '${overlay.id} $i');
+            expect(
+              english[i],
+              isNot(matches(RegExp('[ąćęłńóśźż]|dni'))),
+              reason: 'no Polish in English: ${english[i]}',
+            );
+          }
+        }
+      },
+    );
+
     test('ids are unique', () {
       final ids = overlayRegistry.map((o) => o.id).toList();
       expect(ids.toSet(), hasLength(ids.length));

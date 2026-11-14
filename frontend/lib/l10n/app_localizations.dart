@@ -841,6 +841,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change'**
   String get overlaysChange;
+
+  /// No description provided for @overlayRainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rainfall'**
+  String get overlayRainTitle;
+
+  /// No description provided for @overlayStepsRain.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{very dry} s1{dry} s2{normal} other{wet}}'**
+  String overlayStepsRain(String step);
+
+  /// No description provided for @overlayTemperatureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature'**
+  String get overlayTemperatureTitle;
+
+  /// No description provided for @overlayStepsTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{freezing} s1{cool} s2{mild} other{warm}}'**
+  String overlayStepsTemperature(String step);
+
+  /// No description provided for @overlayFrostTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost'**
+  String get overlayFrostTitle;
+
+  /// No description provided for @overlayStepsFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{no frost} s1{a few frost days} s2{frequent frost} other{long frost}}'**
+  String overlayStepsFrost(String step);
+
+  /// No description provided for @overlayHeatTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hot days'**
+  String get overlayHeatTitle;
+
+  /// No description provided for @overlayStepsHeat.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{no hot days} s1{a few hot days} s2{frequent hot days} other{very frequent hot days}}'**
+  String overlayStepsHeat(String step);
+
+  /// No description provided for @overlayErosionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil erosion'**
+  String get overlayErosionTitle;
+
+  /// No description provided for @overlayStepsRisk.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{low} s1{moderate} s2{high} other{very high}}'**
+  String overlayStepsRisk(String step);
 }
 
 class _AppLocalizationsDelegate

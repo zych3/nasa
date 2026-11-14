@@ -468,4 +468,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysChange => 'Change';
+
+  @override
+  String get overlayRainTitle => 'Rainfall';
+
+  @override
+  String overlayStepsRain(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'very dry',
+      's1': 'dry',
+      's2': 'normal',
+      'other': 'wet',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayTemperatureTitle => 'Temperature';
+
+  @override
+  String overlayStepsTemperature(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'freezing',
+      's1': 'cool',
+      's2': 'mild',
+      'other': 'warm',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFrostTitle => 'Frost';
+
+  @override
+  String overlayStepsFrost(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'no frost',
+      's1': 'a few frost days',
+      's2': 'frequent frost',
+      'other': 'long frost',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayHeatTitle => 'Hot days';
+
+  @override
+  String overlayStepsHeat(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'no hot days',
+      's1': 'a few hot days',
+      's2': 'frequent hot days',
+      'other': 'very frequent hot days',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayErosionTitle => 'Soil erosion';
+
+  @override
+  String overlayStepsRisk(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'low',
+      's1': 'moderate',
+      's2': 'high',
+      'other': 'very high',
+    });
+    return '$_temp0';
+  }
 }

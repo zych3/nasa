@@ -472,4 +472,74 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysChange => 'Zmień';
+
+  @override
+  String get overlayRainTitle => 'Opady';
+
+  @override
+  String overlayStepsRain(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'bardzo sucho',
+      's1': 'sucho',
+      's2': 'normalnie',
+      'other': 'mokro',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayTemperatureTitle => 'Temperatura';
+
+  @override
+  String overlayStepsTemperature(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'mróz',
+      's1': 'chłodno',
+      's2': 'umiarkowanie',
+      'other': 'ciepło',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFrostTitle => 'Mróz';
+
+  @override
+  String overlayStepsFrost(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'bez mrozu',
+      's1': 'kilka dni mrozu',
+      's2': 'częsty mróz',
+      'other': 'długi mróz',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayHeatTitle => 'Upały';
+
+  @override
+  String overlayStepsHeat(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'brak upałów',
+      's1': 'kilka dni upału',
+      's2': 'częste upały',
+      'other': 'bardzo częste upały',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayErosionTitle => 'Zmywanie gleby';
+
+  @override
+  String overlayStepsRisk(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'niski',
+      's1': 'umiarkowany',
+      's2': 'wysoki',
+      'other': 'bardzo wysoki',
+    });
+    return '$_temp0';
+  }
 }
