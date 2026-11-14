@@ -155,6 +155,9 @@ public sealed partial class FieldProfileService
 
     // ---------------------------------------------------------------- soil
 
+    /// <summary>Soil profile only (same rules as <see cref="Build"/>); reused by the map layers endpoint.</summary>
+    public static SoilProfile? BuildSoilProfile(SoilGridsData? data) => BuildSoil(data, []);
+
     private static SoilProfile? BuildSoil(SoilGridsData? data, List<string> warnings)
     {
         if (data is null)

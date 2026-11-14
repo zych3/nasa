@@ -42,6 +42,8 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Parcel details (polygon, public data, soil, terrain) | `GET /api/parcels/{id}` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |
+| Monthly map layers with legends for a date slider | `GET /api/map-layers?lat=...&lon=...&from=yyyy-MM&to=yyyy-MM&layers=...` |
+| Map layer definitions (no data) | `GET /api/map-layers/definitions` |
 | Map colouring (best crop per parcel) | `POST /api/parcels/suitability` |
 | Ranked rotation plans for one parcel | `POST /api/recommendations` |
 | Crop catalogue for the survey | `GET /api/crops` |

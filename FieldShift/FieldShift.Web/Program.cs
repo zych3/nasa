@@ -1,6 +1,7 @@
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
 using FieldShift.Web.FieldProfile;
+using FieldShift.Web.MapLayers;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
 
@@ -18,6 +19,7 @@ builder.Services.AddOpenApi();
 
 builder.AddPoland();
 builder.AddFieldProfile();
+builder.AddMapLayers();
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
@@ -25,6 +27,8 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .AllowAnyMethod()));
 
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

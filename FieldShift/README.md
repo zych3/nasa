@@ -54,6 +54,30 @@ Data notes: NASA POWER is a ~50 km grid, so climate is regional, not field-level
 record extremes over the period, not averages, which is why `heatRiskMonths` can include months that are
 rarely hot. SoilGrids is a 250 m model estimate that the farmer may correct.
 
+## Map layers endpoint
+
+`GET /api/map-layers?lat={lat}&lon={lon}&from={yyyy-MM}&to={yyyy-MM}&layers={id1,id2}`: monthly series of 9
+climate/soil layers with legends, for a map with a date slider. `GET /api/map-layers/definitions`: layer metadata only.
+Frontend guide with TypeScript types: [docs/map-layers.md](docs/map-layers.md).
+
+```bash
+curl --compressed "http://localhost:5066/api/map-layers?lat=52.20&lon=21.48&from=2016-01&to=2025-12"
+curl "http://localhost:5066/api/map-layers/definitions"
+```
+
+Code in `FieldShift.Web/MapLayers/`: `MonthlyAggregator` (days → months), `DerivedIndices` (plant stress,
+erosion), `TrendCalculator` (anomalies, trends), `LayerDefinitions` (legends), `MapLayersService` (fetch, cache,
+`Compose`). It shares `NasaPowerClient` / `SoilGridsClient` with the field profile.
+
+Terrain slope for erosion comes from `DemoLocations` in `appsettings.json` (empty by default). Add points with a
+slope computed from SRTM in NASA AppEEARS:
+
+```json
+"DemoLocations": [ { "name": "Pole demo", "lat": 52.20, "lon": 21.48, "slopePct": 1.2 } ]
+```
+
+## Field profile data notes
+
 Soil properties fetched: sand, clay, silt, pH, organic carbon, nitrogen, CEC, bulk density, coarse fragments.
 The 0–5 cm layer of organic carbon and nitrogen is skipped when it is more than 2× the 5–15 cm layer
 (typical model overestimate on arable land). CEC looks overestimated on sandy soils (≈ 22 cmol(c)/kg at
