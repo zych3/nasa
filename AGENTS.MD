@@ -38,6 +38,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Health check | `GET /health` |
 | Resolve a parcel from address / coordinates / number | `POST /api/parcels/resolve` |
 | Parcels in the visible map area | `GET /api/parcels?bbox=...` |
+| Parcels nearest to a point (parcel at the point + parcels of nearest addresses) | `GET /api/parcels/nearby?lat=..&lon=..` |
 | Parcel details (polygon, public data, soil, terrain) | `GET /api/parcels/{id}` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Map colouring (best crop per parcel) | `POST /api/parcels/suitability` |

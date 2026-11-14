@@ -403,6 +403,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tomatoes'**
   String get cropTomatoes;
+
+  /// No description provided for @locationDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Where are you?'**
+  String get locationDialogTitle;
+
+  /// No description provided for @locationDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Can we use your location? We will show the map around you. We do not save it.'**
+  String get locationDialogBody;
+
+  /// No description provided for @locationAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my location'**
+  String get locationAllow;
+
+  /// No description provided for @locationDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get locationDeny;
+
+  /// No description provided for @locationMyPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my location'**
+  String get locationMyPosition;
+
+  /// No description provided for @locationServiceOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is turned off on this device. Turn it on and try again.'**
+  String get locationServiceOff;
+
+  /// No description provided for @locationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'We cannot see your location. You can still move the map by hand.'**
+  String get locationPermissionDenied;
+
+  /// No description provided for @locationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not find your location. You can move the map to your field by hand.'**
+  String get locationFailed;
+
+  /// No description provided for @nearbyParcelsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcels near you'**
+  String get nearbyParcelsSection;
+
+  /// No description provided for @parcelHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel where you are'**
+  String get parcelHere;
+
+  /// No description provided for @distanceFromYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} from you'**
+  String distanceFromYou(String distance);
+
+  /// No description provided for @myFieldMarker.
+  ///
+  /// In en, this message translates to:
+  /// **'My field'**
+  String get myFieldMarker;
+
+  /// No description provided for @youAreHere.
+  ///
+  /// In en, this message translates to:
+  /// **'You are here'**
+  String get youAreHere;
+
+  /// No description provided for @zoomInForParcels.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in to see parcels'**
+  String get zoomInForParcels;
+
+  /// No description provided for @tapToChooseParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a parcel to choose your field'**
+  String get tapToChooseParcel;
+
+  /// No description provided for @tapToChooseThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose this field'**
+  String get tapToChooseThis;
+
+  /// No description provided for @parcelsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load parcels here. Check your connection and try again.'**
+  String get parcelsLoadFailed;
 }
 
 class _AppLocalizationsDelegate

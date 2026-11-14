@@ -182,4 +182,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cropTomatoes => 'Tomatoes';
+
+  @override
+  String get locationDialogTitle => 'Where are you?';
+
+  @override
+  String get locationDialogBody =>
+      'Can we use your location? We will show the map around you. We do not save it.';
+
+  @override
+  String get locationAllow => 'Use my location';
+
+  @override
+  String get locationDeny => 'Not now';
+
+  @override
+  String get locationMyPosition => 'Show my location';
+
+  @override
+  String get locationServiceOff =>
+      'Location is turned off on this device. Turn it on and try again.';
+
+  @override
+  String get locationPermissionDenied =>
+      'We cannot see your location. You can still move the map by hand.';
+
+  @override
+  String get locationFailed =>
+      'Could not find your location. You can move the map to your field by hand.';
+
+  @override
+  String get nearbyParcelsSection => 'Parcels near you';
+
+  @override
+  String get parcelHere => 'Parcel where you are';
+
+  @override
+  String distanceFromYou(String distance) {
+    return '$distance from you';
+  }
+
+  @override
+  String get myFieldMarker => 'My field';
+
+  @override
+  String get youAreHere => 'You are here';
+
+  @override
+  String get zoomInForParcels => 'Zoom in to see parcels';
+
+  @override
+  String get tapToChooseParcel => 'Tap a parcel to choose your field';
+
+  @override
+  String get tapToChooseThis => 'Tap to choose this field';
+
+  @override
+  String get parcelsLoadFailed =>
+      'Could not load parcels here. Check your connection and try again.';
 }

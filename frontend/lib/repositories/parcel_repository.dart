@@ -20,4 +20,17 @@ class ParcelRepository {
       rethrow;
     }
   }
+
+  /// Parcels around a point, nearest first. The first one (distance 0, no
+  /// address) is usually the parcel at the point itself.
+  Future<List<Parcel>> nearby(double latitude, double longitude) async {
+    final json = await _api.getJson(
+      '/api/parcels/nearby',
+      query: {'lat': '$latitude', 'lon': '$longitude'},
+    );
+    return [
+      for (final item in json as List<dynamic>)
+        Parcel.fromJson(item as Map<String, dynamic>),
+    ];
+  }
 }
