@@ -42,6 +42,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Parcels nearest to a point (parcel at the point + parcels of nearest addresses) | `GET /api/parcels/nearby?lat=..&lon=..` |
 | Parcel details (polygon, public data, soil, terrain) | `GET /api/parcels/{id}` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
+| Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |
 | Map colouring (best crop per parcel) | `POST /api/parcels/suitability` |
 | Ranked rotation plans for one parcel | `POST /api/recommendations` |
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |

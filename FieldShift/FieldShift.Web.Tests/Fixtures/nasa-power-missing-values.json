@@ -1,0 +1,113 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      21.56,
+      52.18,
+      125.44
+    ]
+  },
+  "properties": {
+    "parameter": {
+      "T2M": {
+        "JAN": -3.97,
+        "FEB": -2.25,
+        "MAR": 2.34,
+        "APR": 8.68,
+        "MAY": 14.41,
+        "JUN": 18.14,
+        "JUL": 20.62,
+        "AUG": 20,
+        "SEP": 14.68,
+        "OCT": 8.4,
+        "NOV": 3.46,
+        "DEC": -1.46,
+        "ANN": 8.64
+      },
+      "T2M_MIN": {
+        "JAN": -30.92,
+        "FEB": -25.39,
+        "MAR": -18.28,
+        "APR": -5.67,
+        "MAY": -3.42,
+        "JUN": 3.48,
+        "JUL": 7.56,
+        "AUG": 6.36,
+        "SEP": -0.02,
+        "OCT": -7.7,
+        "NOV": -14.45,
+        "DEC": -20.89,
+        "ANN": -30.92
+      },
+      "T2M_MAX": {
+        "JAN": 10.5,
+        "FEB": 15.2,
+        "MAR": 21.8,
+        "APR": 28.4,
+        "MAY": 31.2,
+        "JUN": 33.6,
+        "JUL": 34.0,
+        "AUG": 33.9,
+        "SEP": 29.1,
+        "OCT": 23.4,
+        "NOV": 16.0,
+        "DEC": 12.1,
+        "ANN": 34.0
+      },
+      "PRECTOTCORR": {
+        "JAN": 1.46,
+        "FEB": 1.36,
+        "MAR": 1.25,
+        "APR": 1.37,
+        "MAY": 2.38,
+        "JUN": 2.22,
+        "JUL": -999.0,
+        "AUG": 2,
+        "SEP": 1.73,
+        "OCT": 1.57,
+        "NOV": 1.42,
+        "DEC": 1.42,
+        "ANN": 1.72
+      },
+      "GWETROOT": {
+        "JAN": 0.46,
+        "FEB": 0.49,
+        "MAR": -999.0,
+        "APR": 0.49,
+        "MAY": 0.47,
+        "JUN": 0.43,
+        "JUL": 0.4,
+        "AUG": 0.38,
+        "SEP": 0.38,
+        "OCT": 0.4,
+        "NOV": 0.42,
+        "DEC": 0.44,
+        "ANN": 0.44
+      }
+    }
+  },
+  "header": {
+    "title": "NASA/POWER Climatologies",
+    "api": {
+      "version": "v2.8.0",
+      "name": "POWER Climatology API"
+    },
+    "sources": [
+      "merra2"
+    ],
+    "fill_value": -999.0,
+    "range": "January 2001 - December 2025"
+  },
+  "messages": [],
+  "parameters": {
+    "T2M": {
+      "units": "C",
+      "longname": "Temperature at 2 Meters"
+    }
+  },
+  "times": {
+    "data": 1.2,
+    "process": 0.1
+  }
+}
