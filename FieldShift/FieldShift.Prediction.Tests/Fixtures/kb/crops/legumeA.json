@@ -1,0 +1,22 @@
+{
+  "id": "legumeA", "namePl": "Roślina bobowata A", "family": "FamilyLegume", "tags": ["legume", "springCrop"], "type": "spring",
+  "sowWindow": [85, 110], "harvestWindow": [215, 245],
+  "management": { "nRateKgHa": 0, "residue": "incorporate" },
+  "suitability": {
+    "sandPct": { "absMin": 20, "optMin": 40, "optMax": 85, "absMax": 95 },
+    "clayPct": { "absMin": 0, "optMin": 5, "optMax": 25, "absMax": 35 },
+    "heatDaysAbove30AtFlowering": { "optMax": 3, "absMax": 9 },
+    "seasonWaterNeedMm": [300, 450]
+  },
+  "water": { "kc": [0.4, 1.1, 0.3], "stageLengthsDays": [20, 30, 45, 25], "rootDepthM": 0.9, "depletionFraction": 0.45 },
+  "responses": [
+    { "var": "ph", "curve": [[4.0, 0], [4.8, 1], [6.5, 1], [7.5, 0.3]], "target": "yield", "source": "S1" },
+    { "var": "pathogen:p2", "curve": [[0, 1], [0.5, 0.6], [1, 0.2]], "target": "yield", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "humusC", "op": "add", "amount": 80, "source": "S1" },
+    { "var": "residualN", "op": "add", "amount": 40, "source": "S1" },
+    { "var": "pathogen:p2", "op": "load", "amount": 0.5, "source": "S1" }
+  ],
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}

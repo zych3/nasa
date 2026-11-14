@@ -1,0 +1,6 @@
+[
+  {
+    "prev": "family:FamilyCereal", "next": "family:FamilyCereal", "delta": -0.1, "target": "yield",
+    "reason": "synthetic residual cereal-after-cereal penalty", "confidence": "expert_estimate"
+  }
+]

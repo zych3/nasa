@@ -1,0 +1,25 @@
+{
+  "id": "oilseedA", "namePl": "Roślina oleista A", "family": "FamilyOilseed", "tags": ["oilseed", "winterCrop"], "type": "winter",
+  "sowWindow": [225, 250], "harvestWindow": [195, 215],
+  "management": { "nRateKgHa": 180, "residue": "incorporate" },
+  "suitability": {
+    "sandPct": { "absMin": 10, "optMin": 25, "optMax": 65, "absMax": 85 },
+    "clayPct": { "absMin": 5, "optMin": 15, "optMax": 35, "absMax": 45 },
+    "heatDaysAbove30AtFlowering": { "optMax": 3, "absMax": 10 },
+    "winterMinC": -18, "winterMinCWithSnow": -25, "seasonWaterNeedMm": [450, 600]
+  },
+  "water": { "kc": [0.35, 1.15, 0.35], "stageLengthsDays": [40, 60, 50, 30], "rootDepthM": 1.2, "depletionFraction": 0.5 },
+  "responses": [
+    { "var": "ph", "curve": [[5.0, 0], [6.0, 1], [7.5, 1], [8.3, 0.3]], "target": "yield", "source": "S1" },
+    { "var": "pathogen:p3", "curve": [[0, 1], [0.3, 0.6], [1, 0.1]], "target": "survival", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "humusC", "op": "add", "amount": 20, "source": "S1" },
+    { "var": "residualN", "op": "add", "amount": -30, "source": "S1" },
+    { "var": "soilCoverWinter", "op": "add", "amount": 0.7, "source": "S1" },
+    { "var": "pathogen:p3", "op": "load", "amount": 0.6, "source": "S1" }
+  ],
+  "hardRules": { "minReturnYears": 4, "minReturnSource": "S1" },
+  "predecessorRatingIUNG": { "bestBefore": [], "worstBefore": ["oilseedA"], "source": "S1" },
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}

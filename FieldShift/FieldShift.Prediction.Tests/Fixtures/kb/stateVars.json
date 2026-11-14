@@ -1,0 +1,15 @@
+[
+  { "id": "ph", "kind": "stock", "unit": "pH H2O", "default": "fromPlot", "min": 3.5, "max": 8.5 },
+  { "id": "recentLiming", "kind": "event", "default": 0, "min": 0, "max": 1 },
+  { "id": "acidificationCaO", "kind": "stock", "default": 0, "min": -500, "max": 2000 },
+  { "id": "humusC", "kind": "stock", "default": "fromPlot", "min": 0, "max": 150000 },
+  { "id": "residualN", "kind": "pool", "default": 0, "min": 0, "max": 400 },
+  { "id": "nImmobilization", "kind": "pool", "default": 0, "min": 0, "max": 100 },
+  { "id": "compaction", "kind": "stock", "default": 0, "min": -1, "max": 1 },
+  { "id": "mycorrhiza", "kind": "stock", "default": 1, "min": 0, "max": 1 },
+  { "id": "soilCoverWinter", "kind": "event", "default": 0, "min": 0, "max": 1 },
+  { "id": "pathogen:p1", "kind": "pressure", "default": 0, "min": 0, "max": 1, "decayPerYear": 0.4 },
+  { "id": "pathogen:p2", "kind": "pressure", "default": 0, "min": 0, "max": 1, "decayPerYear": 0.5 },
+  { "id": "pathogen:p3", "kind": "pressure", "default": 0, "min": 0, "max": 1, "decayPerYear": 0.8 },
+  { "id": "nematode:n1", "kind": "pressure", "default": 0, "min": 0, "max": 1, "decayPerYear": 0.7 }
+]

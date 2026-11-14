@@ -1,5 +1,6 @@
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
+using FieldShift.Web.Options;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
 
@@ -15,7 +16,10 @@ builder.Services.AddScoped<CropPriceService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.AddPoland();
+var appOptions = AppOptions.Load(builder.Configuration);
+builder.Services.AddSingleton(appOptions);
+
+builder.AddPoland(appOptions.Poland);
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)

@@ -1,0 +1,22 @@
+{
+  "id": "cerealB", "namePl": "Zboże B", "family": "FamilyCereal", "tags": ["cereal", "springCrop"], "type": "spring",
+  "sowWindow": [75, 100], "harvestWindow": [210, 235],
+  "management": { "nRateKgHa": 110, "residue": "incorporate" },
+  "suitability": {
+    "sandPct": { "absMin": 15, "optMin": 30, "optMax": 75, "absMax": 90 },
+    "clayPct": { "absMin": 3, "optMin": 10, "optMax": 30, "absMax": 40 },
+    "heatDaysAbove30AtFlowering": { "optMax": 2, "absMax": 8 },
+    "seasonWaterNeedMm": [350, 500]
+  },
+  "water": { "kc": [0.3, 1.1, 0.3], "stageLengthsDays": [20, 35, 55, 25], "rootDepthM": 1.0, "depletionFraction": 0.55 },
+  "responses": [
+    { "var": "ph", "curve": [[4.5, 0], [5.5, 1], [7.5, 1], [8.2, 0]], "target": "yield", "source": "S1" },
+    { "var": "pathogen:p1", "curve": [[0, 1], [1, 0.8]], "target": "yield", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "humusC", "op": "add", "amount": 40, "source": "S1" },
+    { "var": "residualN", "op": "add", "amount": -10, "source": "S1" },
+    { "var": "pathogen:p1", "op": "load", "amount": 0.2, "source": "S1" }
+  ],
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}

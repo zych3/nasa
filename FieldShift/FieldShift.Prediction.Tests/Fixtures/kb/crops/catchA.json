@@ -1,0 +1,14 @@
+{
+  "id": "catchA", "namePl": "Poplon A", "family": "FamilyCatch", "tags": ["catchCrop"], "type": "catch",
+  "sowWindow": [215, 250], "harvestWindow": [300, 330],
+  "suitability": { "sandPct": { "absMin": 0, "optMin": 10, "optMax": 90, "absMax": 100 } },
+  "water": { "kc": [0.4, 0.9, 0.5], "stageLengthsDays": [10, 20, 30, 10], "rootDepthM": 0.6, "depletionFraction": 0.5 },
+  "responses": [
+    { "var": "ph", "curve": [[4.5, 0], [5.5, 1], [8.0, 1]], "target": "yield", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "soilCoverWinter", "op": "add", "amount": 0.7, "source": "S1" },
+    { "var": "humusC", "op": "add", "amount": 60, "source": "S1" }
+  ],
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}
