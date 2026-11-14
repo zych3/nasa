@@ -93,10 +93,11 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
           layer: _controller.layer,
           field: parcel,
         );
-        final panel = OverlayPanel(
+        OverlayPanel panel({required bool wide}) => OverlayPanel(
           controller: _controller,
           showNoFieldNotice: parcel == null,
           onChooseField: widget.onChooseField,
+          showTitle: wide,
         );
 
         return LayoutBuilder(
@@ -106,7 +107,7 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(child: map),
-                  SizedBox(width: 420, child: panel),
+                  SizedBox(width: 420, child: panel(wide: true)),
                 ],
               );
             }
@@ -114,7 +115,7 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(flex: 4, child: map),
-                Expanded(flex: 5, child: panel),
+                Expanded(flex: 5, child: panel(wide: false)),
               ],
             );
           },

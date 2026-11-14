@@ -18,6 +18,7 @@ class OverlayPanel extends StatelessWidget {
     required this.controller,
     this.showNoFieldNotice = false,
     this.onChooseField,
+    this.showTitle = true,
   });
 
   final OverlayController controller;
@@ -27,6 +28,10 @@ class OverlayPanel extends StatelessWidget {
 
   /// Opens the screen where the field is chosen (button in the notice).
   final VoidCallback? onChooseField;
+
+  /// The screen title on top. Off on a phone: the tab is already named in the
+  /// nav bar, and with large text the title would push the value off-screen.
+  final bool showTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +47,10 @@ class OverlayPanel extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(l10n.overlaysTitle, style: theme.textTheme.titleLarge),
-        const SizedBox(height: 12),
+        if (showTitle) ...[
+          Text(l10n.overlaysTitle, style: theme.textTheme.titleLarge),
+          const SizedBox(height: 12),
+        ],
         Text(l10n.overlaysChooseHeading, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
         OverlayChooserButton(

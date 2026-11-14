@@ -141,6 +141,19 @@ void main() {
     expect(repo.requests, hasLength(1));
   });
 
+  testWidgets('screen title only on a wide screen', (tester) async {
+    addTearDown(tester.view.reset);
+    tester.view.devicePixelRatio = 1;
+
+    tester.view.physicalSize = const Size(360, 640);
+    await pumpScreen(tester);
+    expect(find.text(_pl.overlaysTitle), findsNothing);
+
+    tester.view.physicalSize = const Size(1280, 800);
+    await tester.pump();
+    expect(find.text(_pl.overlaysTitle), findsOneWidget);
+  });
+
   testWidgets('without a field: notice and a button to choose one', (
     tester,
   ) async {
