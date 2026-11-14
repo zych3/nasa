@@ -32,7 +32,7 @@ class MapLayersRepository {
 
   /// The backend rounds the point to 2 decimal places (~1 km), so points that
   /// round the same share one response.
-  static String cacheKey(LatLng point) =>
+  static String _cacheKey(LatLng point) =>
       '${point.latitude.toStringAsFixed(2)},${point.longitude.toStringAsFixed(2)}';
 
   /// Layers for [point]. With [refresh] the cached response is dropped first.
@@ -43,7 +43,7 @@ class MapLayersRepository {
   Future<Map<String, dynamic>> mapLayers(LatLng point, {bool refresh = false}) {
     if (useMock) return demo();
 
-    final key = cacheKey(point);
+    final key = _cacheKey(point);
     if (refresh) _cache.remove(key);
     final cached = _cache[key];
     if (cached != null) return cached;

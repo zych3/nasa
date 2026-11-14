@@ -1,6 +1,7 @@
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../api/api_client.dart';
 import '../models/overlay_layer.dart';
 import 'map_layers_repository.dart';
 import 'map_overlay.dart';
@@ -15,8 +16,12 @@ enum OverlayStatus {
 }
 
 enum OverlayError {
-  /// No connection, timeout or server error: trying again may help.
+  /// No connection or no answer in time: check the internet, try again.
   network,
+
+  /// Our server answered with an error (e.g. 502 when NASA POWER is down):
+  /// the user's internet is fine, trying again later may help.
+  server,
 
   /// The server answered, but not in the agreed shape.
   badData,
@@ -109,10 +114,13 @@ class OverlayController extends ChangeNotifier {
       _parse();
     } catch (e) {
       if (_disposed || generation != _generation) return;
+      debugPrint('Map layers for $place failed: $e');
       _status = OverlayStatus.error;
-      _error = e is FormatException
-          ? OverlayError.badData
-          : OverlayError.network;
+      _error = switch (e) {
+        FormatException() => OverlayError.badData,
+        ApiException() => OverlayError.server,
+        _ => OverlayError.network,
+      };
     }
     _notify();
   }
@@ -122,8 +130,10 @@ class OverlayController extends ChangeNotifier {
       _layer = _selected.parse(_response!);
       _status = OverlayStatus.ready;
       _error = null;
-    } catch (_) {
-      // Parsers throw FormatException; anything else is a broken response too.
+    } catch (e) {
+      // Parsers throw FormatException; anything else is a broken response too
+      // (or a parser bug, hence the log).
+      debugPrint('Overlay "${_selected.id}" could not read the response: $e');
       _layer = null;
       _status = OverlayStatus.error;
       _error = OverlayError.badData;

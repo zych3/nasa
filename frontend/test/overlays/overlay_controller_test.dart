@@ -160,6 +160,15 @@ void main() {
     expect(controller.error, isNull);
   });
 
+  test('server error (e.g. NASA down) is not blamed on the internet', () async {
+    controller.showPlace(_field);
+    repo.fail(_field, ApiException('down', statusCode: 502));
+    await pumpEventQueue();
+
+    expect(controller.status, OverlayStatus.error);
+    expect(controller.error, OverlayError.server);
+  });
+
   test('broken response is a "bad data" error, not a crash', () async {
     controller.showPlace(_field);
     repo.complete(_field, {'location': 'nowhere'});

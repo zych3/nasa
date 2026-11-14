@@ -14,7 +14,7 @@ import '../models/overlay_layer.dart';
 abstract class MapOverlay {
   const MapOverlay();
 
-  /// Unique, stable id (also used in tests and to remember the choice).
+  /// Unique, stable id.
   String get id;
 
   IconData get icon;
