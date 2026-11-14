@@ -105,6 +105,8 @@ Change the contract only after agreeing with both frontend and backend owners.
 
 ## Running locally
 
+Everything at once: `./run.sh` (database, backend, then the frontend on http://localhost:8080; `./run.sh chrome` or `./run.sh <device-id>` for another device; backend output goes to `backend.log`). The steps it runs:
+
 Database and backend (the frontend falls back to saved data when they are not running):
 
 ```fish

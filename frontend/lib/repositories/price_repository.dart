@@ -8,8 +8,12 @@ import '../models/price_history.dart';
 /// Real crop prices (GUS) from `GET /api/crops/{id}/prices`. Screens and
 /// widgets use this, never [ApiClient].
 ///
-/// Calls the backend; if it cannot be reached (or [useMock] is true), uses
-/// the saved real responses in `assets/mock/crop_prices.json`.
+/// Calls the backend; if it cannot be reached, has no prices for the crop
+/// (e.g. GUS has not answered yet), or [useMock] is true, uses the saved real
+/// responses in `assets/mock/crop_prices.json`.
+///
+/// Results are kept in memory, so the crop card and the details sheet share
+/// one request per crop.
 class PriceRepository {
   PriceRepository({ApiClient? apiClient, this.useMock = false})
     : _api = apiClient ?? ApiClient();
@@ -17,16 +21,29 @@ class PriceRepository {
   final ApiClient _api;
   final bool useMock;
 
+  static final Map<String, Future<PriceHistory>> _cache = {};
+
   /// The latest [count] prices for [cropId], oldest first.
   /// Returns an empty history ("no data") when the crop has no prices.
-  Future<PriceHistory> getPrices(String cropId, {int count = 10}) async {
+  Future<PriceHistory> getPrices(String cropId, {int count = 10}) {
+    final key = '$useMock|$cropId|$count';
+    return _cache[key] ??= _load(cropId, count).catchError((Object e) {
+      _cache.remove(key);
+      throw e;
+    });
+  }
+
+  Future<PriceHistory> _load(String cropId, int count) async {
     if (!useMock) {
       try {
         final json = await _api.getJson(
           '/api/crops/${Uri.encodeComponent(cropId)}/prices',
           query: {'count': '$count'},
         );
-        return PriceHistory.fromJson(json as Map<String, dynamic>);
+        final history = PriceHistory.fromJson(json as Map<String, dynamic>);
+        if (history.hasData) return history;
+        // The backend has nothing stored yet (source down or rate-limited):
+        // use the saved copy below, which is "no data" too if the crop has none.
       } on ApiException catch (e) {
         // Unknown crop: there is nothing to show.
         if (e.statusCode == 404) return PriceHistory.noData(cropId);

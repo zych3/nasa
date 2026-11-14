@@ -50,7 +50,7 @@ class CropDetailsSheet extends StatelessWidget {
           const SizedBox(height: 16),
           Text(crop.name, style: theme.textTheme.headlineMedium),
           const SizedBox(height: 4),
-          TrendBadge(price: crop.price),
+          TrendBadge(cropId: crop.id),
           const SizedBox(height: 8),
           Text(crop.summary, style: theme.textTheme.bodyLarge),
 
@@ -74,7 +74,7 @@ class CropDetailsSheet extends StatelessWidget {
           ],
 
           _SectionTitle(icon: Icons.payments_outlined, text: l10n.priceSection),
-          _RealPriceBlock(cropId: crop.id, fallback: crop.price),
+          _RealPriceBlock(cropId: crop.id),
 
           const SizedBox(height: 24),
           SizedBox(
@@ -161,14 +161,13 @@ class _FactTile extends StatelessWidget {
   }
 }
 
-/// Real prices from `GET /api/crops/{id}/prices` (GUS). Shows "No data" when
-/// the crop has no published prices, and the demo [fallback] only when
-/// loading fails, so the sheet never breaks.
+/// Real prices from `GET /api/crops/{id}/prices` (GUS), or the saved copy of
+/// them. Shows "No data" when the crop has no published prices or loading
+/// fails, so the sheet never breaks and never shows made-up prices.
 class _RealPriceBlock extends StatefulWidget {
-  const _RealPriceBlock({required this.cropId, required this.fallback});
+  const _RealPriceBlock({required this.cropId});
 
   final String cropId;
-  final PriceInfo fallback;
 
   @override
   State<_RealPriceBlock> createState() => _RealPriceBlockState();
@@ -191,10 +190,9 @@ class _RealPriceBlockState extends State<_RealPriceBlock> {
           );
         }
         final history = snapshot.data;
-        if (snapshot.hasError || history == null) {
-          return _PriceBlock(price: widget.fallback);
+        if (snapshot.hasError || history == null || !history.hasData) {
+          return const _NoPriceData();
         }
-        if (!history.hasData) return const _NoPriceData();
         return _PriceHistoryView(history: history);
       },
     );
@@ -515,55 +513,6 @@ class _RealFactTile extends StatelessWidget {
           _SourceLine(icon: icon, label: kind, sourceName: name),
         ],
       ),
-    );
-  }
-}
-
-/// Demo price from the trends data; only shown when real prices fail to load.
-class _PriceBlock extends StatelessWidget {
-  const _PriceBlock({required this.price});
-
-  final PriceInfo price;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          l10n.priceNow(
-            price.current.toStringAsFixed(0),
-            price.currency,
-            price.unit,
-          ),
-          style: theme.textTheme.titleLarge,
-        ),
-        const SizedBox(height: 4),
-        TrendBadge(price: price),
-        if (price.history.length >= 2) ...[
-          const SizedBox(height: 12),
-          Text(
-            l10n.priceHistory(price.history.length),
-            style: theme.textTheme.labelLarge,
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 80,
-            width: double.infinity,
-            child: CustomPaint(
-              painter: _SparklinePainter(
-                values: price.history,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-        ],
-        const SizedBox(height: 8),
-        SourceBadge(source: price.source, sourceName: price.sourceName),
-      ],
     );
   }
 }

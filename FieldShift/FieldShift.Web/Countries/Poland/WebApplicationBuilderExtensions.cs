@@ -22,6 +22,11 @@ public static partial class WebApplicationBuilderExtensions
             c.BaseAddress = new Uri(uldkBaseUrl);
             c.Timeout = TimeSpan.FromSeconds(10);
         });
+        builder.Services.AddHttpClient<UugReverseGeocodingService>(c =>
+        {
+            c.BaseAddress = new Uri(uugBaseUrl);
+            c.Timeout = TimeSpan.FromSeconds(10);
+        });
         builder.Services.AddTransient<ICountryProvider, PolandCountryProvider>();
 
         AddCropData(builder);
