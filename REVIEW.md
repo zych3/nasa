@@ -54,3 +54,26 @@ zostaje), odporność parsera serii na 10 rodzajów uszkodzeń, wspólna reguła
 kontrakt `FieldShift/docs/map-layers.md` ↔ parser.
 
 **Wysoki priorytet: brak** (w żadnej z trzech recenzji nie było pozycji „W”).
+
+## Pętla porządkowa (`chore/cleanup-loop`) – przegląd całego frontendu
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 21 | Ś | ✅ P1 | `components/parcel_map.dart` | `SimpleAttributionWidget`: overflow na telefonie przy dużej czcionce, „© ©”, jedyny tekst na sztywno w aplikacji. Wspólne `MapAttribution`, `MapPill`, `SingleWorldCrs`. |
+| 22 | Ś | ✅ P2 | `crop_summary_card.dart`, `crop_details_sheet.dart`, `nearby_plot_list.dart` | Liczby bez formatu języka („+3.5%”, „1.4 km”, ceny bez separatora tysięcy). |
+| 23 | Ś | ✅ P3 | `map_search_bar.dart` | Brak `finally`: wyjątek w wyszukiwaniu zostawiał pole na zawsze wyłączone. |
+| 24 | N | ✅ P4 | `pages/area_map_page.dart` | Nieudane wczytanie działek blokowało ponowną próbę w tym samym miejscu. |
+| 25 | Ś | ✅ P5 | `api/api_client.dart` | Limit czasu na zapytanie; 40 s dla warstw mapy (= #5). |
+| 26 | N | ✅ P6 | `plot_input.dart` | Importy `package:` zamiast względnych. |
+| 27 | **W** | ✅ P7 | `pages/plot_page.dart` + `plot_input.dart` | „Zapisz działkę” czyściło formularz, nic nie zapisując – utrata danych bez komunikatu. |
+| 28 | N | ✅ P8 | repozytoria | Nowy `http.Client` na każdą plakietkę ceny / arkusz; teraz `ApiClient.shared`. |
+| 29 | N | ✅ P10 | `price_repository.dart`, `crop_details_sheet.dart` | Utracony stack trace; zbędne przerysowania wykresu. |
+| 30 | Ś | 📝 | `lib/components`, `lib/pages` ↔ `lib/widgets`, `lib/screens` | AGENTS.md opisuje `widgets/` i `screens/`, kod używa `components/` i `pages/`; nakładki (z zadania) są w `widgets/`/`screens/`. Teraz są oba układy. Przeniesienie to duża zmiana nazw plików (konflikty u zespołu) – decyzja zespołu: przenieść albo poprawić AGENTS.md. |
+| 31 | Ś | 📝 | `price_repository.dart` | Zapasowa (zapisana) kopia cen trafia do pamięci podręcznej na całą sesję: gdy backend wróci, aplikacja do restartu pokazuje ceny z pliku. Nie zmieniałem: bez cache arkusz przy zawieszonej sieci czekałby 15 s zamiast od razu pokazać kopię. Do decyzji. |
+| 32 | N | ⏳ | `crop_repository.dart` | Bez pamięci podręcznej: każdy arkusz szczegółów pobiera cały katalog (~21 kB). Tanie; zostawiam. |
+
+Bez uwag po sprawdzeniu: wszystkie ekrany przy 1,5× na telefonie w PL i EN (test P9), `SelectedPlotStore`
+(błędne zapisane dane są ignorowane), `TrendingCropsPage` (przeładowanie po zmianie języka), `CropMultiSelector`
+(`dispose`), brak tekstów na sztywno (grep z AGENTS.md pusty).
+
+**Wysoki priorytet: brak otwartych** (jedyny „W”, #27, naprawiony).
