@@ -89,6 +89,19 @@ Change the contract only after agreeing with both frontend and backend owners.
 - `MaterialApp` uses `AppLocalizations.delegate` plus `GlobalMaterialLocalizations.delegates` **from `material_ui`**. Do not use the generated `AppLocalizations.localizationsDelegates`: it pulls in the deprecated `package:flutter/material` delegates.
 - Adding a language: add `lib/l10n/app_<code>.arb`. It is then supported, but only pickable with the flag button once it is added to `switchableLocales` in `lib/l10n/language_options.dart` and given a flag in `language_flag_button.dart` (otherwise the button shows the language code).
 
+### Map overlays ("Conditions" tab)
+
+- Code: `lib/overlays/` (one class per overlay, list in `overlay_registry.dart`, data through
+  `MapLayersRepository`), widgets `lib/widgets/overlay_*.dart`, screen `lib/screens/overlays_screen.dart`.
+- All overlays read one `GET /api/map-layers` response per place (cached in memory); switching overlays or months
+  never sends a new request. Contract: `FieldShift/docs/map-layers.md`; saved real response:
+  `assets/mock/map_layers_sample.json` (also the "example data" when the backend is down).
+- New monthly backend layer = subclass of `MonthlyLayerOverlay` (layer id, icon, title, legend words) + one line in
+  `overlayRegistry` + ARB keys (title and an `overlaySteps…` select message). Legend ranges are computed from the
+  backend's thresholds; the Polish legend must equal the backend's labels (a test checks every monthly overlay).
+  Other data shapes: subclass `MapOverlay` with its own `parse` (see `SoilQualityOverlay`).
+- Values are drawn as areas of their real precision (~1 km soil, ~50 km NASA POWER), never as field-level data.
+
 ## Accessibility rules (non-negotiable)
 
 - One question per screen; always a back button and progress indicator.
