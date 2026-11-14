@@ -7,7 +7,10 @@ import 'package:material_ui/material_ui.dart';
 import '../l10n/app_localizations.dart';
 import '../models/overlay_layer.dart';
 import '../models/parcel.dart';
+import 'map_attribution.dart';
+import 'map_pill.dart';
 import 'overlay_level_bars.dart';
+import 'single_world_crs.dart';
 
 /// Map of the "Conditions" screen: the area an overlay value applies to (a
 /// tinted circle with a label "icon + word" in it, never colour alone) and
@@ -80,7 +83,7 @@ class _OverlayMapState extends State<OverlayMap> {
     return FlutterMap(
       mapController: _controller,
       options: MapOptions(
-        crs: const _SingleWorldCrs(),
+        crs: const SingleWorldCrs(),
         initialCenter: widget.center,
         initialZoom: widget.initialZoom,
         initialCameraFit: layer == null ? null : _fit(layer.area),
@@ -131,7 +134,7 @@ class _OverlayMapState extends State<OverlayMap> {
                   height: 56,
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    child: _MapPill(
+                    child: MapPill(
                       color: color,
                       bordered: true,
                       text: current?.label(l10n) ?? l10n.overlaysNoData,
@@ -153,7 +156,7 @@ class _OverlayMapState extends State<OverlayMap> {
                   height: 52,
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    child: _MapPill(
+                    child: MapPill(
                       color: scheme.tertiary,
                       text: l10n.myFieldMarker,
                       leading: (onColor) =>
@@ -164,22 +167,7 @@ class _OverlayMapState extends State<OverlayMap> {
             ],
           ),
         ),
-        // Plain text credit (required by OpenStreetMap). Not flutter_map's
-        // SimpleAttributionWidget: its text is in a Row and overflows on a
-        // phone with large system text.
-        Align(
-          alignment: Alignment.bottomRight,
-          child: ColoredBox(
-            color: scheme.surface.withValues(alpha: 0.85),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              child: Text(
-                l10n.overlaysMapAttribution,
-                style: TextStyle(color: scheme.onSurface),
-              ),
-            ),
-          ),
-        ),
+        const MapAttribution(),
       ],
     );
   }
@@ -191,79 +179,4 @@ LatLng _below(Parcel field) {
       ? field.center.latitude
       : field.ring.map((p) => p.latitude).reduce(math.min);
   return LatLng(south, field.center.longitude);
-}
-
-/// Black or white, whichever reads better on [background] (WCAG contrast).
-Color _readableOn(Color background) {
-  final l = background.computeLuminance();
-  final onBlack = (l + 0.05) / 0.05;
-  final onWhite = 1.05 / (l + 0.05);
-  return onBlack >= onWhite ? Colors.black : Colors.white;
-}
-
-/// Label drawn on the map: icon (or level bars) + word on a coloured pill,
-/// in black or white, whichever reads better on the colour.
-class _MapPill extends StatelessWidget {
-  const _MapPill({
-    required this.color,
-    required this.text,
-    required this.leading,
-    this.bordered = false,
-  });
-
-  final Color color;
-  final String text;
-
-  /// Icon or level bars, drawn in the text colour.
-  final Widget Function(Color onColor) leading;
-
-  /// Outline in the text colour, so a light pill stands out on the map.
-  final bool bordered;
-
-  @override
-  Widget build(BuildContext context) {
-    final onColor = _readableOn(color);
-    return Center(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-          border: bordered ? Border.all(color: onColor, width: 1.5) : null,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              leading(onColor),
-              const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: onColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Web Mercator without sideways world copies: same fix as in
-/// `components/parcel_map.dart` (there it is private). In the browser,
-/// painting a shape once per world copy can throw "Infinite loop going beyond
-/// 30"; we only show Poland, so one world is enough.
-class _SingleWorldCrs extends Epsg3857 {
-  const _SingleWorldCrs();
-
-  @override
-  bool get replicatesWorldLongitude => false;
 }

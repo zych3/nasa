@@ -776,11 +776,11 @@ abstract class AppLocalizations {
   /// **'Here'**
   String get overlaysLegendHere;
 
-  /// No description provided for @overlaysMapAttribution.
+  /// No description provided for @mapAttribution.
   ///
   /// In en, this message translates to:
   /// **'© OpenStreetMap contributors'**
-  String get overlaysMapAttribution;
+  String get mapAttribution;
 
   /// No description provided for @overlaysValueHeadingExample.
   ///

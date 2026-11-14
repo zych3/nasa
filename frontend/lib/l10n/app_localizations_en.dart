@@ -416,7 +416,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overlaysLegendHere => 'Here';
 
   @override
-  String get overlaysMapAttribution => '© OpenStreetMap contributors';
+  String get mapAttribution => '© OpenStreetMap contributors';
 
   @override
   String get overlaysValueHeadingExample => 'In the example place';

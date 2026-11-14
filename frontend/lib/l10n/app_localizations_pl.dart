@@ -420,7 +420,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get overlaysLegendHere => 'Tutaj';
 
   @override
-  String get overlaysMapAttribution => '© Współtwórcy OpenStreetMap';
+  String get mapAttribution => '© Współtwórcy OpenStreetMap';
 
   @override
   String get overlaysValueHeadingExample => 'W przykładowym miejscu';

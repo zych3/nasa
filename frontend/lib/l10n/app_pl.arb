@@ -112,7 +112,7 @@
   "overlaysSource": "Źródło: {source}",
   "overlaysLegendHeading": "Co oznaczają kolory",
   "overlaysLegendHere": "Tutaj",
-  "overlaysMapAttribution": "© Współtwórcy OpenStreetMap",
+  "mapAttribution": "© Współtwórcy OpenStreetMap",
   "overlaysValueHeadingExample": "W przykładowym miejscu",
   "overlayMoistureTitle": "Wilgotność gleby",
   "overlayCoverageNasa": "Jedna wartość dla całej okolicy (ok. 50 km). Na Twoim polu może być inaczej.",
