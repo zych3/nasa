@@ -1,3 +1,4 @@
+using FieldShift.Web.Countries;
 using FieldShift.Web.Data;
 
 namespace FieldShift.Web.Repositories;
@@ -5,67 +6,27 @@ namespace FieldShift.Web.Repositories;
 public interface IPriceHistoryRepository
 {
     /// <summary>
-    /// Daily prices for <paramref name="cropId"/> between <paramref name="from"/> and <paramref name="to"/>
-    /// (both inclusive), oldest first. Null when there is no history for the crop.
+    /// The latest <paramref name="count"/> real prices for <paramref name="cropId"/>, oldest first.
+    /// Prices are empty ("no data") when no source publishes them. Null when the crop is unknown.
     /// </summary>
-    PriceHistory? GetRange(CropId cropId, DateOnly from, DateOnly to);
+    PriceHistory? GetLatest(CropId cropId, int count);
 }
 
-/// <summary>
-/// DEMO price history: a deterministic random walk per crop that ends at the crop's current
-/// catalogue price today. Not real market data — replace with a real source (e.g. GUS / EC AGRI).
-/// </summary>
-public sealed class InMemoryPriceHistoryRepository : IPriceHistoryRepository
+/// <summary>Real prices from the latest snapshot in <see cref="CropDataStore"/> (refreshed from GUS).</summary>
+public sealed class InMemoryPriceHistoryRepository(CropDataStore store) : IPriceHistoryRepository
 {
-    public const int GeneratedDays = 730;
-    private const double MaxDailyChange = 0.012;
-
-    private readonly Dictionary<CropId, PriceHistory> _histories;
-
-    public InMemoryPriceHistoryRepository(ICropRepository crops, TimeProvider time)
+    public PriceHistory? GetLatest(CropId cropId, int count)
     {
-        var today = DateOnly.FromDateTime(time.GetUtcNow().UtcDateTime);
-        _histories = crops.GetAll().ToDictionary(c => c.Id, c => Generate(c, today));
-    }
-
-    public PriceHistory? GetRange(CropId cropId, DateOnly from, DateOnly to)
-    {
-        if (!_histories.TryGetValue(cropId, out var history))
+        if (!CropCatalog.ById.ContainsKey(cropId))
         {
             return null;
         }
 
-        var prices = history.Prices.Where(p => p.Date >= from && p.Date <= to).ToList();
-        return history with { Prices = prices };
-    }
-
-    private static PriceHistory Generate(Crop crop, DateOnly today)
-    {
-        var random = new Random(StableSeed(crop.Id.Value));
-        var prices = new CropPrice[GeneratedDays];
-        var price = (double)crop.PricePerTonne;
-
-        // Walk backwards from today so the newest value equals the catalogue price.
-        for (var i = GeneratedDays - 1; i >= 0; i--)
+        if (!store.Current.Prices.TryGetValue(cropId, out var history))
         {
-            prices[i] = new CropPrice(today.AddDays(i - (GeneratedDays - 1)), Math.Round((decimal)price, 2));
-            price *= 1 + (random.NextDouble() * 2 - 1) * MaxDailyChange;
+            return PriceHistory.NoData(cropId);
         }
 
-        return new PriceHistory(crop.Id, crop.Currency, "t", prices);
-    }
-
-    // string.GetHashCode is randomized per process; this keeps the demo data stable between runs.
-    private static int StableSeed(string value)
-    {
-        unchecked
-        {
-            var hash = 17;
-            foreach (var ch in value)
-            {
-                hash = hash * 31 + ch;
-            }
-            return hash;
-        }
+        return history with { Prices = history.Prices.TakeLast(count).ToList() };
     }
 }

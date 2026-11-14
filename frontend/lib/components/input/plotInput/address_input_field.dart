@@ -1,11 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class AddressInputField extends StatelessWidget {
-  const AddressInputField({
-    super.key,
-    required this.controller,
-    this.onSearch,
-  });
+  const AddressInputField({super.key, required this.controller, this.onSearch});
 
   final TextEditingController controller;
 
@@ -19,6 +17,8 @@ class AddressInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return TextField(
       controller: controller,
       textInputAction: TextInputAction.search,
@@ -26,12 +26,14 @@ class AddressInputField extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: onSearch == null
             ? null
-            : IconButton(icon: const Icon(Icons.search), onPressed: _search),
-        labelText: 'Plot Address',
-        hintText: 'Enter street or location',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+            : IconButton(
+                icon: const Icon(Icons.search),
+                tooltip: l10n.findParcel,
+                onPressed: _search,
+              ),
+        labelText: l10n.plotAddressLabel,
+        hintText: l10n.plotAddressHint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         prefixIcon: const Icon(Icons.location_on),
       ),
     );

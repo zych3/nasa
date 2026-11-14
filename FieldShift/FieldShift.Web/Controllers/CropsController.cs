@@ -9,24 +9,29 @@ namespace FieldShift.Web.Controllers;
 [Route("api/crops")]
 public class CropsController(ICropRepository crops, CropPriceService prices) : ControllerBase
 {
-    /// <summary>Daily price per tonne for the last <paramref name="days"/> days, oldest first.</summary>
+    /// <summary>Crop catalogue: names, Wikipedia photo and links, Polish area and yield, growing traits.</summary>
+    [HttpGet]
+    public ActionResult<IReadOnlyList<Crop>> GetAll() => Ok(crops.GetAll());
+
+    [HttpGet("{id}")]
+    public ActionResult<Crop> GetById(string id) =>
+        crops.GetById(new CropId(id)) is { } crop ? Ok(crop) : NotFound();
+
+    /// <summary>
+    /// The latest <paramref name="count"/> real prices per tonne, oldest first.
+    /// Crops without published prices return <c>status: "no_data"</c> and an empty list.
+    /// </summary>
     [HttpGet("{id}/prices")]
-    public ActionResult<IReadOnlyList<CropPrice>> GetPrices(string id, [FromQuery] int days = 30)
+    public ActionResult<PriceHistory> GetPrices(string id, [FromQuery] int count = CropPriceService.DefaultCount)
     {
-        if (days is < 1 or > CropPriceService.MaxDays)
+        if (count is < 1 or > CropPriceService.MaxCount)
         {
             return Problem(
                 statusCode: StatusCodes.Status400BadRequest,
-                detail: $"'days' must be between 1 and {CropPriceService.MaxDays}.");
+                detail: $"'count' must be between 1 and {CropPriceService.MaxCount}.");
         }
 
-        var cropId = new CropId(id);
-        if (crops.GetById(cropId) is null)
-        {
-            return NotFound();
-        }
-
-        var history = prices.GetHistory(cropId, days);
-        return history is null ? NotFound() : Ok(history.Prices);
+        var history = prices.GetLatest(new CropId(id), count);
+        return history is null ? NotFound() : Ok(history);
     }
 }

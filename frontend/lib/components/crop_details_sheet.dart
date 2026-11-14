@@ -1,7 +1,13 @@
+import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/crop_note_text.dart';
+import '../models/crop.dart';
+import '../models/price_history.dart';
 import '../models/trending_crop.dart';
+import '../repositories/crop_repository.dart';
+import '../repositories/price_repository.dart';
 import 'cached_crop_image.dart';
 import 'crop_summary_card.dart';
 
@@ -56,10 +62,8 @@ class CropDetailsSheet extends StatelessWidget {
             for (final reason in crop.reasons) _Bullet(text: reason),
           ],
 
-          if (crop.cropFacts.isNotEmpty) ...[
-            _SectionTitle(icon: Icons.grass, text: l10n.cropDataSection),
-            for (final fact in crop.cropFacts) _FactTile(fact: fact),
-          ],
+          _SectionTitle(icon: Icons.grass, text: l10n.cropDataSection),
+          _RealCropFacts(cropId: crop.id, fallback: crop.cropFacts),
 
           if (crop.weatherFacts.isNotEmpty) ...[
             _SectionTitle(
@@ -70,7 +74,7 @@ class CropDetailsSheet extends StatelessWidget {
           ],
 
           _SectionTitle(icon: Icons.payments_outlined, text: l10n.priceSection),
-          _PriceBlock(price: crop.price),
+          _RealPriceBlock(cropId: crop.id, fallback: crop.price),
 
           const SizedBox(height: 24),
           SizedBox(
@@ -157,6 +161,365 @@ class _FactTile extends StatelessWidget {
   }
 }
 
+/// Real prices from `GET /api/crops/{id}/prices` (GUS). Shows "No data" when
+/// the crop has no published prices, and the demo [fallback] only when
+/// loading fails, so the sheet never breaks.
+class _RealPriceBlock extends StatefulWidget {
+  const _RealPriceBlock({required this.cropId, required this.fallback});
+
+  final String cropId;
+  final PriceInfo fallback;
+
+  @override
+  State<_RealPriceBlock> createState() => _RealPriceBlockState();
+}
+
+class _RealPriceBlockState extends State<_RealPriceBlock> {
+  late final Future<PriceHistory> _future = PriceRepository().getPrices(
+    widget.cropId,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<PriceHistory>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final history = snapshot.data;
+        if (snapshot.hasError || history == null) {
+          return _PriceBlock(price: widget.fallback);
+        }
+        if (!history.hasData) return const _NoPriceData();
+        return _PriceHistoryView(history: history);
+      },
+    );
+  }
+}
+
+class _NoPriceData extends StatelessWidget {
+  const _NoPriceData();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(Icons.info_outline, size: 28),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.priceNoData, style: theme.textTheme.titleLarge),
+              Text(l10n.priceNoDataDetails, style: theme.textTheme.bodyLarge),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PriceHistoryView extends StatelessWidget {
+  const _PriceHistoryView({required this.history});
+
+  final PriceHistory history;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final yearly = history.frequency == PriceFrequency.yearly;
+    final dateFormat = yearly ? DateFormat.y(locale) : DateFormat.yMMM(locale);
+
+    final points = history.prices;
+    final latest = points.last;
+    final values = [for (final p in points) p.price];
+    final minV = values.reduce((a, b) => a < b ? a : b);
+    final maxV = values.reduce((a, b) => a > b ? a : b);
+    final sourceName = history.shortSourceName;
+    final note = cropNoteText(l10n, history.noteCode);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.priceNow(
+            latest.price.toStringAsFixed(0),
+            history.currency,
+            history.unit,
+          ),
+          style: theme.textTheme.titleLarge,
+        ),
+        Text(
+          l10n.priceLatest(dateFormat.format(latest.date)),
+          style: theme.textTheme.bodyLarge,
+        ),
+        if (points.length >= 2) ...[
+          const SizedBox(height: 12),
+          Text(
+            yearly
+                ? l10n.priceHistoryYearly(points.length)
+                : l10n.priceHistoryMonthly(points.length),
+            style: theme.textTheme.labelLarge,
+          ),
+          const SizedBox(height: 8),
+          Semantics(
+            label: l10n.priceChartLabel(
+              dateFormat.format(points.first.date),
+              dateFormat.format(latest.date),
+              minV.toStringAsFixed(0),
+              maxV.toStringAsFixed(0),
+              history.currency,
+            ),
+            child: SizedBox(
+              height: 80,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: _SparklinePainter(
+                  values: values,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          ExcludeSemantics(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  dateFormat.format(points.first.date),
+                  style: theme.textTheme.bodyMedium,
+                ),
+                Text(
+                  dateFormat.format(latest.date),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (note != null) ...[
+          const SizedBox(height: 8),
+          Text(note, style: theme.textTheme.bodyMedium),
+        ],
+        const SizedBox(height: 8),
+        _SourceLine(
+          icon: Icons.account_balance_outlined,
+          label: l10n.sourceOfficial,
+          sourceName: sourceName,
+        ),
+      ],
+    );
+  }
+}
+
+/// "Official statistics · GUS BDL P2967" etc. Icon plus text, never colour
+/// alone.
+class _SourceLine extends StatelessWidget {
+  const _SourceLine({required this.icon, required this.label, this.sourceName});
+
+  final IconData icon;
+  final String label;
+  final String? sourceName;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final text = sourceName == null ? label : '$label · $sourceName';
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Real facts from `GET /api/crops`: area and yield in Poland (Eurostat) and
+/// growing needs (FAO ECOCROP). Shows the demo [fallback] facts only when the
+/// crop is missing from the catalogue, and "No data" when there is nothing.
+class _RealCropFacts extends StatefulWidget {
+  const _RealCropFacts({required this.cropId, required this.fallback});
+
+  final String cropId;
+  final List<CropFact> fallback;
+
+  @override
+  State<_RealCropFacts> createState() => _RealCropFactsState();
+}
+
+class _RealCropFactsState extends State<_RealCropFacts> {
+  late final Future<Crop?> _future = CropRepository().getCrop(widget.cropId);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+
+    return FutureBuilder<Crop?>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final crop = snapshot.data;
+        if (snapshot.hasError || crop == null) {
+          if (widget.fallback.isEmpty) {
+            return Text(l10n.cropDataMissing, style: theme.textTheme.bodyLarge);
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final fact in widget.fallback) _FactTile(fact: fact),
+            ],
+          );
+        }
+
+        final tiles = _tiles(context, crop);
+        final note = cropNoteText(l10n, crop.productionNoteCode);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (tiles.isEmpty)
+              Text(l10n.cropDataMissing, style: theme.textTheme.bodyLarge),
+            ...tiles,
+            if (note != null) ...[
+              const SizedBox(height: 4),
+              Text(note, style: theme.textTheme.bodyMedium),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  List<Widget> _tiles(BuildContext context, Crop crop) {
+    final l10n = AppLocalizations.of(context);
+    final locale = Localizations.localeOf(context).toString();
+    final whole = NumberFormat.decimalPattern(locale)
+      ..maximumFractionDigits = 0;
+    final decimal = NumberFormat.decimalPattern(locale)
+      ..maximumFractionDigits = 2;
+
+    String? range(NumberRange? r, NumberFormat f) {
+      if (r == null) return null;
+      final parts = [r.min, r.max].whereType<double>().map(f.format).toSet();
+      return parts.isEmpty ? null : parts.join('–');
+    }
+
+    final p = crop.production;
+    final t = crop.traits;
+    final official = p == null
+        ? null
+        : (
+            Icons.account_balance_outlined,
+            l10n.sourceOfficial,
+            p.shortSourceName,
+          );
+    final database = t == null
+        ? null
+        : (Icons.menu_book_outlined, l10n.sourceCropDatabase, t.sourceName);
+
+    final rain = range(t?.optimalRainfallMm, whole);
+    final temperature = range(t?.optimalTemperatureC, whole);
+    final days = range(t?.growingCycleDays, whole);
+    final ph = range(t?.optimalSoilPh, decimal);
+
+    return [
+      if (p?.areaHa != null && p?.areaYear != null)
+        _RealFactTile(
+          label: l10n.factAreaPoland('${p!.areaYear}'),
+          value: l10n.valueHectares(whole.format(p.areaHa)),
+          source: official!,
+        ),
+      if (p?.yieldTonnesPerHa != null && p?.yieldYear != null)
+        _RealFactTile(
+          label: l10n.factYieldPoland('${p!.yieldYear}'),
+          value: l10n.valueTonnesPerHectare(decimal.format(p.yieldTonnesPerHa)),
+          source: official!,
+        ),
+      if (days != null)
+        _RealFactTile(
+          label: l10n.factGrowingTime,
+          value: l10n.valueDays(days),
+          source: database!,
+        ),
+      if (rain != null)
+        _RealFactTile(
+          label: l10n.factRainfall,
+          value: l10n.valueMillimetres(rain),
+          source: database!,
+        ),
+      if (temperature != null)
+        _RealFactTile(
+          label: l10n.factTemperature,
+          value: l10n.valueCelsius(temperature),
+          source: database!,
+        ),
+      if (ph != null)
+        _RealFactTile(label: l10n.factSoilPh, value: ph, source: database!),
+    ];
+  }
+}
+
+class _RealFactTile extends StatelessWidget {
+  const _RealFactTile({
+    required this.label,
+    required this.value,
+    required this.source,
+  });
+
+  final String label;
+  final String value;
+
+  /// Icon, kind of source ("Official statistics") and dataset name.
+  final (IconData, String, String) source;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final (icon, kind, name) = source;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: theme.textTheme.labelLarge),
+          Text(value, style: theme.textTheme.titleMedium),
+          _SourceLine(icon: icon, label: kind, sourceName: name),
+        ],
+      ),
+    );
+  }
+}
+
+/// Demo price from the trends data; only shown when real prices fail to load.
 class _PriceBlock extends StatelessWidget {
   const _PriceBlock({required this.price});
 

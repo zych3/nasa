@@ -302,6 +302,54 @@ abstract class AppLocalizations {
   /// **'Demo data: not real prices yet.'**
   String get demoDataNotice;
 
+  /// No description provided for @priceNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get priceNoData;
+
+  /// No description provided for @priceNoDataDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'No public price list exists for this crop.'**
+  String get priceNoDataDetails;
+
+  /// No description provided for @priceLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest price: {date}'**
+  String priceLatest(String date);
+
+  /// No description provided for @priceHistoryMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly prices, last {count}'**
+  String priceHistoryMonthly(int count);
+
+  /// No description provided for @priceHistoryYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly prices, last {count}'**
+  String priceHistoryYearly(int count);
+
+  /// No description provided for @priceChartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Price chart from {from} to {to}, lowest {min}, highest {max} {currency}'**
+  String priceChartLabel(
+    String from,
+    String to,
+    String min,
+    String max,
+    String currency,
+  );
+
+  /// No description provided for @sourceOfficial.
+  ///
+  /// In en, this message translates to:
+  /// **'Official statistics'**
+  String get sourceOfficial;
+
   /// No description provided for @parcelNumber.
   ///
   /// In en, this message translates to:
@@ -319,6 +367,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not look up the parcel. Check your connection and try again.'**
   String get parcelLookupFailed;
+
+  /// No description provided for @noteOnePriceAllWheat.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all wheat, winter and spring.'**
+  String get noteOnePriceAllWheat;
+
+  /// No description provided for @noteOnePriceAllRye.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all rye.'**
+  String get noteOnePriceAllRye;
+
+  /// No description provided for @noteOnePriceAllBarley.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes one price for all barley, winter and spring.'**
+  String get noteOnePriceAllBarley;
+
+  /// No description provided for @noteGrainMaizePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price of maize grain.'**
+  String get noteGrainMaizePrice;
+
+  /// No description provided for @noteYearlyOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'GUS publishes this price only once a year.'**
+  String get noteYearlyOnly;
+
+  /// No description provided for @noteGrainMaizeOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Area and yield are for grain maize only, not silage maize.'**
+  String get noteGrainMaizeOnly;
+
+  /// No description provided for @noteAllSweetLupins.
+  ///
+  /// In en, this message translates to:
+  /// **'Eurostat gives one figure for all sweet lupins.'**
+  String get noteAllSweetLupins;
+
+  /// No description provided for @noteNoEurostatFigure.
+  ///
+  /// In en, this message translates to:
+  /// **'Eurostat has no separate figures for this crop.'**
+  String get noteNoEurostatFigure;
+
+  /// No description provided for @factAreaPoland.
+  ///
+  /// In en, this message translates to:
+  /// **'Area in Poland ({year})'**
+  String factAreaPoland(String year);
+
+  /// No description provided for @factYieldPoland.
+  ///
+  /// In en, this message translates to:
+  /// **'Average yield in Poland ({year})'**
+  String factYieldPoland(String year);
+
+  /// No description provided for @factGrowingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time from sowing to harvest'**
+  String get factGrowingTime;
+
+  /// No description provided for @factRainfall.
+  ///
+  /// In en, this message translates to:
+  /// **'Best rainfall in the growing season'**
+  String get factRainfall;
+
+  /// No description provided for @factTemperature.
+  ///
+  /// In en, this message translates to:
+  /// **'Best temperature'**
+  String get factTemperature;
+
+  /// No description provided for @factSoilPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Best soil pH'**
+  String get factSoilPh;
+
+  /// No description provided for @valueHectares.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} ha'**
+  String valueHectares(String value);
+
+  /// No description provided for @valueTonnesPerHectare.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} t/ha'**
+  String valueTonnesPerHectare(String value);
+
+  /// No description provided for @valueDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} days'**
+  String valueDays(String range);
+
+  /// No description provided for @valueMillimetres.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} mm'**
+  String valueMillimetres(String range);
+
+  /// No description provided for @valueCelsius.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} °C'**
+  String valueCelsius(String range);
+
+  /// No description provided for @sourceCropDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop database'**
+  String get sourceCropDatabase;
+
+  /// No description provided for @cropDataMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get cropDataMissing;
+
+  /// No description provided for @cropSelectorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops on your plot'**
+  String get cropSelectorLabel;
+
+  /// No description provided for @cropSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search crops'**
+  String get cropSearchHint;
+
+  /// No description provided for @cropSearchHintSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected: {count}. Search crops'**
+  String cropSearchHintSelected(int count);
+
+  /// No description provided for @cropSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No crops found'**
+  String get cropSearchEmpty;
+
+  /// No description provided for @cropListLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not load the crops.'**
+  String get cropListLoadError;
+
+  /// No description provided for @plotAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot address'**
+  String get plotAddressLabel;
+
+  /// No description provided for @plotAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Street or place'**
+  String get plotAddressHint;
+
+  /// No description provided for @findParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Find parcel'**
+  String get findParcel;
+
+  /// No description provided for @submitPlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit plot'**
+  String get submitPlot;
 }
 
 class _AppLocalizationsDelegate

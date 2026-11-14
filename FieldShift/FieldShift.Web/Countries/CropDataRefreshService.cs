@@ -1,0 +1,159 @@
+using System.Text.Json;
+using FieldShift.Web.Countries.Poland;
+using FieldShift.Web.Countries.Prices;
+using FieldShift.Web.Data;
+using FieldShift.Web.Repositories;
+
+namespace FieldShift.Web.Countries;
+
+/// <summary>Everything fetched from external sources, saved to <c>Data/crop-data.json</c>.</summary>
+public sealed record CropDataSnapshot(
+    DateTimeOffset? FetchedAt,
+    Dictionary<string, WikidataInfo> Wikidata,
+    Dictionary<string, CropProduction> Production,
+    Dictionary<CropId, PriceHistory> Prices)
+{
+    public static CropDataSnapshot Empty => new(null, [], [], []);
+}
+
+/// <summary>
+/// Holds the current <see cref="CropDataSnapshot"/>. Starts from the saved file so the app works
+/// offline and when a source is down (AGENTS.md: cache external results, ship pre-fetched data).
+/// </summary>
+public sealed class CropDataStore
+{
+    public const string FileName = "Data/crop-data.json";
+
+    public static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
+
+    private readonly string _path;
+    private volatile CropDataSnapshot _current;
+
+    public CropDataStore(IHostEnvironment env, ILogger<CropDataStore> log)
+        : this(Path.Combine(env.ContentRootPath, FileName), log)
+    {
+    }
+
+    public CropDataStore(string path, ILogger<CropDataStore> log)
+    {
+        _path = path;
+        _current = CropDataSnapshot.Empty;
+        try
+        {
+            if (File.Exists(path))
+            {
+                _current = JsonSerializer.Deserialize<CropDataSnapshot>(File.ReadAllText(path), JsonOptions)
+                           ?? CropDataSnapshot.Empty;
+            }
+        }
+        catch (Exception e) when (e is IOException or JsonException)
+        {
+            log.LogWarning(e, "Could not read saved crop data {Path}; starting empty", path);
+        }
+    }
+
+    public CropDataSnapshot Current => _current;
+
+    public async Task SaveAsync(CropDataSnapshot snapshot, CancellationToken ct)
+    {
+        _current = snapshot;
+        Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+        var temp = _path + ".tmp";
+        await File.WriteAllTextAsync(temp, JsonSerializer.Serialize(snapshot, JsonOptions), ct);
+        File.Move(temp, _path, overwrite: true);
+    }
+}
+
+/// <summary>
+/// Refreshes crop data from GUS (prices), Eurostat (area, yield) and Wikidata (photos, links)
+/// at startup and then once a day. A source that fails keeps its previously saved values.
+/// </summary>
+public sealed class CropDataRefreshService(
+    IServiceScopeFactory scopes,
+    CropDataStore store,
+    TimeProvider time,
+    ILogger<CropDataRefreshService> log) : BackgroundService
+{
+    /// <summary>Price points kept per crop; the API returns the latest 10 by default.</summary>
+    public const int StoredPricePoints = 36;
+
+    public const string EurostatGeo = "PL";
+
+    public static readonly TimeSpan Interval = TimeSpan.FromHours(24);
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        // Skip the startup refresh when the saved data is fresh and complete (GUS allows only 100 requests / 15 min).
+        var saved = store.Current;
+        if (saved.FetchedAt is { } fetched && time.GetUtcNow() - fetched is var age && age < Interval
+            && CoversCatalog(saved))
+        {
+            await Task.Delay(Interval - age, time, ct);
+        }
+
+        while (!ct.IsCancellationRequested)
+        {
+            await RefreshAsync(ct);
+            await Task.Delay(Interval, time, ct);
+        }
+    }
+
+    /// <summary>False when a crop was added to <see cref="CropCatalog"/> (or its ids changed) after the last save.</summary>
+    public static bool CoversCatalog(CropDataSnapshot snapshot) =>
+        CropCatalog.All.All(c =>
+            snapshot.Wikidata.ContainsKey(c.WikidataId)
+            && (c.EurostatCode is null || snapshot.Production.ContainsKey(c.EurostatCode)));
+
+    public async Task RefreshAsync(CancellationToken ct)
+    {
+        using var scope = scopes.CreateScope();
+        var services = scope.ServiceProvider;
+        var old = store.Current;
+        var anyFresh = false;
+
+        async Task<Dictionary<TKey, TValue>> Fetch<TKey, TValue>(
+            string source, Func<Task<IReadOnlyDictionary<TKey, TValue>>> fetch, Dictionary<TKey, TValue> previous)
+            where TKey : notnull
+        {
+            try
+            {
+                var fresh = await fetch();
+                if (fresh.Count == 0)
+                {
+                    log.LogWarning("{Source} returned no data; keeping saved values", source);
+                    return previous;
+                }
+                anyFresh = true;
+                log.LogInformation("{Source}: {Count} entries refreshed", source, fresh.Count);
+                return new Dictionary<TKey, TValue>(fresh);
+            }
+            catch (Exception e) when (e is not OperationCanceledException || !ct.IsCancellationRequested)
+            {
+                log.LogWarning(e, "{Source} refresh failed; keeping saved values", source);
+                return previous;
+            }
+        }
+
+        var wikidata = await Fetch("Wikidata",
+            () => services.GetRequiredService<WikidataCropInfoProvider>()
+                .GetAsync(CropCatalog.All.Select(c => c.WikidataId), ct),
+            old.Wikidata);
+
+        var production = await Fetch("Eurostat",
+            () => services.GetRequiredService<EurostatYieldProvider>()
+                .GetAsync(EurostatGeo, CropCatalog.All.Select(c => c.EurostatCode).OfType<string>(), ct),
+            old.Production);
+
+        var prices = await Fetch("GUS BDL",
+            () => services.GetRequiredService<IPriceProvider>().GetLatestPricesAsync(StoredPricePoints, ct),
+            old.Prices);
+
+        if (!anyFresh)
+        {
+            log.LogWarning("No crop data source answered; serving saved data from {FetchedAt}", old.FetchedAt);
+            return;
+        }
+
+        await store.SaveAsync(new CropDataSnapshot(time.GetUtcNow(), wikidata, production, prices), ct);
+    }
+}

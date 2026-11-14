@@ -1,22 +1,25 @@
+using FieldShift.Web.Countries;
 using FieldShift.Web.Data;
 using FieldShift.Web.Repositories;
 
 namespace FieldShift.Web.Services;
 
-public class CropPriceService(IPriceHistoryRepository history, TimeProvider time)
+public class CropPriceService(IPriceHistoryRepository history)
 {
-    public const int MaxDays = 3650;
+    public const int DefaultCount = 10;
+
+    /// <summary>How many points are kept per crop; requests can ask for up to this many.</summary>
+    public const int MaxCount = CropDataRefreshService.StoredPricePoints;
 
     /// <summary>
-    /// Prices for the last <paramref name="days"/> days, today included, oldest first.
+    /// The latest <paramref name="count"/> prices, oldest first. Empty prices mean "no data".
     /// Null when the crop is unknown.
     /// </summary>
-    public PriceHistory? GetHistory(CropId cropId, int days)
+    public PriceHistory? GetLatest(CropId cropId, int count)
     {
-        ArgumentOutOfRangeException.ThrowIfLessThan(days, 1);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(days, MaxDays);
+        ArgumentOutOfRangeException.ThrowIfLessThan(count, 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(count, MaxCount);
 
-        var today = DateOnly.FromDateTime(time.GetUtcNow().UtcDateTime);
-        return history.GetRange(cropId, today.AddDays(1 - days), today);
+        return history.GetLatest(cropId, count);
     }
 }

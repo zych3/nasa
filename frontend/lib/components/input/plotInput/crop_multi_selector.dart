@@ -1,30 +1,33 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../l10n/app_localizations.dart';
+import '../../../models/crop.dart';
+import '../../../repositories/crop_repository.dart';
+
+/// Searchable multi-select of crops from the catalogue (`GET /api/crops`).
+/// [selectedCrops] holds crop ids (e.g. "wheat"); names are shown in the
+/// current language.
 class CropMultiSelector extends StatefulWidget {
   const CropMultiSelector({
     super.key,
     required this.selectedCrops,
     required this.onCropToggled,
+    this.repository,
   });
 
   final List<String> selectedCrops;
-  final void Function(String crop, bool isSelected) onCropToggled;
+  final void Function(String cropId, bool isSelected) onCropToggled;
+
+  /// Injectable for tests; defaults to the backend with saved fallback.
+  final CropRepository? repository;
 
   @override
   State<CropMultiSelector> createState() => _CropMultiSelectorState();
 }
 
 class _CropMultiSelectorState extends State<CropMultiSelector> {
-  // Hardcoded list — ready to be replaced by an API call later
-  static const List<String> _availableCrops = [
-    'Corn',
-    'Wheat',
-    'Soybeans',
-    'Barley',
-    'Rice',
-    'Potatoes',
-    'Tomatoes',
-  ];
+  late final CropRepository _repository = widget.repository ?? CropRepository();
+  late Future<List<Crop>> _crops = _repository.getCrops();
 
   final _overlay = OverlayPortalController();
   final _link = LayerLink();
@@ -53,16 +56,19 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
     _focus.unfocus();
   }
 
+  void _retry() => setState(() => _crops = _repository.getCrops());
+
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final count = widget.selectedCrops.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Select Crops on Plot:',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+        Text(
+          l10n.cropSelectorLabel,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
         TapRegion(
@@ -72,25 +78,24 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
             builder: (context, constraints) {
               _fieldWidth = constraints.maxWidth;
               return CompositedTransformTarget(
-            link: _link,
-            child: OverlayPortal(
-              controller: _overlay,
-              overlayChildBuilder: (context) => _buildPopup(),
-              child: TextField(
-                controller: _controller,
-                focusNode: _focus,
-                decoration: InputDecoration(
-                  hintText: count == 0
-                      ? 'Search crops...'
-                      : '$count selected — search crops...',
-                  prefixIcon: const Icon(Icons.search),
-                  isDense: true,
-                  border: const OutlineInputBorder(),
+                link: _link,
+                child: OverlayPortal(
+                  controller: _overlay,
+                  overlayChildBuilder: (context) => _buildPopup(context),
+                  child: TextField(
+                    controller: _controller,
+                    focusNode: _focus,
+                    decoration: InputDecoration(
+                      hintText: count == 0
+                          ? l10n.cropSearchHint
+                          : l10n.cropSearchHintSelected(count),
+                      prefixIcon: const Icon(Icons.search),
+                      border: const OutlineInputBorder(),
+                    ),
+                    onTap: _overlay.show,
+                    onChanged: (value) => setState(() => _query = value),
+                  ),
                 ),
-                onTap: _overlay.show,
-                onChanged: (value) => setState(() => _query = value),
-              ),
-            ),
               );
             },
           ),
@@ -99,10 +104,21 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
     );
   }
 
-  Widget _buildPopup() {
+  Widget _buildPopup(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final languageCode = Localizations.localeOf(context).languageCode;
     final q = _query.trim().toLowerCase();
-    final crops =
-        _availableCrops.where((c) => c.toLowerCase().contains(q)).toList();
+
+    Widget message(String text, {VoidCallback? onRetry}) => Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          Expanded(child: Text(text)),
+          if (onRetry != null)
+            TextButton(onPressed: onRetry, child: Text(l10n.tryAgain)),
+        ],
+      ),
+    );
 
     return CompositedTransformFollower(
       link: _link,
@@ -120,26 +136,48 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
               elevation: 4,
               borderRadius: BorderRadius.circular(4),
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 240),
-                child: crops.isEmpty
-                    ? const Padding(
+                constraints: const BoxConstraints(maxHeight: 320),
+                child: FutureBuilder<List<Crop>>(
+                  future: _crops,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Padding(
                         padding: EdgeInsets.all(16),
-                        child: Text('No crops found'),
-                      )
-                    : ListView(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        children: crops.map((crop) {
-                          return CheckboxListTile(
-                            dense: true,
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return message(l10n.cropListLoadError, onRetry: _retry);
+                    }
+
+                    final crops = [
+                      for (final crop in snapshot.data ?? const <Crop>[])
+                        if (crop
+                            .nameFor(languageCode)
+                            .toLowerCase()
+                            .contains(q))
+                          crop,
+                    ];
+                    if (crops.isEmpty) return message(l10n.cropSearchEmpty);
+
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        for (final crop in crops)
+                          CheckboxListTile(
                             controlAffinity: ListTileControlAffinity.leading,
-                            title: Text(crop),
-                            value: widget.selectedCrops.contains(crop),
-                            onChanged: (selected) =>
-                                widget.onCropToggled(crop, selected ?? false),
-                          );
-                        }).toList(),
-                      ),
+                            title: Text(crop.nameFor(languageCode)),
+                            value: widget.selectedCrops.contains(crop.id),
+                            onChanged: (selected) => widget.onCropToggled(
+                              crop.id,
+                              selected ?? false,
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),

@@ -1,0 +1,1729 @@
+{
+  "fetchedAt": "2026-11-14T16:23:39.6361686+00:00",
+  "wikidata": {
+    "Q10998": {
+      "wikidataId": "Q10998",
+      "labelPl": "ziemniak",
+      "labelEn": "potato",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/234%20Solanum%20tuberosum%20L.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Ziemniak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Potato"
+    },
+    "Q11006": {
+      "wikidataId": "Q11006",
+      "labelPl": "soja warzywna",
+      "labelEn": "soybean",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Soybean.USDA.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Soja_warzywna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Soybean"
+    },
+    "Q11575": {
+      "wikidataId": "Q11575",
+      "labelPl": "kukurydza zwyczajna",
+      "labelEn": "maize",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89tale%20de%20grains%20de%20ma%C3%AFs%2001.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Kukurydza_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Maize"
+    },
+    "Q12099": {
+      "wikidataId": "Q12099",
+      "labelPl": "\u017Cyto zwyczajne",
+      "labelEn": "Secale cereale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Ear%20of%20rye.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%BByto_zwyczajne",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rye"
+    },
+    "Q11577": {
+      "wikidataId": "Q11577",
+      "labelPl": "j\u0119czmie\u0144 zwyczajny",
+      "labelEn": "Hordeum vulgare",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Champ%20d%27Orge%20carr%C3%A9e%20%28Hordeum%20vulgare%29.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/J%C4%99czmie%C5%84_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Barley"
+    },
+    "Q25237": {
+      "wikidataId": "Q25237",
+      "labelPl": "groch zwyczajny",
+      "labelEn": "Pisum sativum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/NCI%20peas%20in%20pod.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Groch_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Pea"
+    },
+    "Q12104": {
+      "wikidataId": "Q12104",
+      "labelPl": "owies zwyczajny",
+      "labelEn": "Avena sativa",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Avena%20sativa%20L.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Owies_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Oat"
+    },
+    "Q161098": {
+      "wikidataId": "Q161098",
+      "labelPl": "pszenica zwyczajna",
+      "labelEn": "Triticum aestivum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Tarweaar.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszenica_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Common_wheat"
+    },
+    "Q161372": {
+      "wikidataId": "Q161372",
+      "labelPl": "\u0142ubin bia\u0142y",
+      "labelEn": "Lupinus albus",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Portrait%20fleur%20lupin86.JPG?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%81ubin_bia%C5%82y",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Lupinus_albus"
+    },
+    "Q177932": {
+      "wikidataId": "Q177932",
+      "labelPl": "rzepak",
+      "labelEn": "Brassica napus",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%28MHNT%29%20Brassica%20napus%20-%20Habit.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Rzepak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rapeseed"
+    },
+    "Q380329": {
+      "wikidataId": "Q380329",
+      "labelPl": "Pszen\u017Cyto",
+      "labelEn": "\u00D7Triticale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Triticale.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszen%C5%BCyto",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Triticale"
+    },
+    "Q151964": {
+      "wikidataId": "Q151964",
+      "labelPl": "burak cukrowy",
+      "labelEn": "sugar beet",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/SugarBeet.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Burak_cukrowy",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Sugar_beet"
+    },
+    "Q164148": {
+      "wikidataId": "Q164148",
+      "labelPl": "\u0141ubin w\u0105skolistny",
+      "labelEn": "Lupinus angustifolius",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Dettaglio%20-%20Leguminosae%20Lupinus%20angustifolius%20Lin.%20Erbario%20Frizzi%20Perugia%20n.%202065.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%81ubin_w%C4%85skolistny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Lupinus_angustifolius"
+    },
+    "Q171497": {
+      "wikidataId": "Q171497",
+      "labelPl": "s\u0142onecznik zwyczajny",
+      "labelEn": "common sunflower",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Helianthus%20annuus%20exposed%202004-05-22.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/S%C5%82onecznik_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Common_sunflower"
+    },
+    "Q132734": {
+      "wikidataId": "Q132734",
+      "labelPl": "gryka zwyczajna",
+      "labelEn": "Fagopyrum esculentum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Fagopyrum%20esculentum%201DS-II%203-0312.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Gryka_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Buckwheat"
+    }
+  },
+  "production": {
+    "C1111": {
+      "eurostatCode": "C1111",
+      "areaYear": 2026,
+      "areaHa": 2172560,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 5.24,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1210": {
+      "eurostatCode": "C1210",
+      "areaYear": 2026,
+      "areaHa": 560860,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 3.67,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1310": {
+      "eurostatCode": "C1310",
+      "areaYear": 2026,
+      "areaHa": 467530,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4.7,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1320": {
+      "eurostatCode": "C1320",
+      "areaYear": 2026,
+      "areaHa": 282950,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1410": {
+      "eurostatCode": "C1410",
+      "areaYear": 2026,
+      "areaHa": 525690,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 3.32,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1500": {
+      "eurostatCode": "C1500",
+      "areaYear": 2026,
+      "areaHa": 1194800,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 7.71,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1600": {
+      "eurostatCode": "C1600",
+      "areaYear": 2026,
+      "areaHa": 1109420,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4.46,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "P1100": {
+      "eurostatCode": "P1100",
+      "areaYear": 2026,
+      "areaHa": 33280,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.04,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "P1300": {
+      "eurostatCode": "P1300",
+      "areaYear": 2025,
+      "areaHa": 214390,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 1.92,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "R1000": {
+      "eurostatCode": "R1000",
+      "areaYear": 2026,
+      "areaHa": 184510,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 32.74,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "R2000": {
+      "eurostatCode": "R2000",
+      "areaYear": 2026,
+      "areaHa": 209210,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 71.9,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1111": {
+      "eurostatCode": "I1111",
+      "areaYear": 2026,
+      "areaHa": 995010,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 2.96,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1120": {
+      "eurostatCode": "I1120",
+      "areaYear": 2026,
+      "areaHa": 25340,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.51,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1130": {
+      "eurostatCode": "I1130",
+      "areaYear": 2026,
+      "areaHa": 40410,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.62,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    }
+  },
+  "prices": {
+    "wheat": {
+      "cropId": "wheat",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": "one_price_all_wheat",
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 898.90
+        },
+        {
+          "date": "2023-11-01",
+          "price": 879.40
+        },
+        {
+          "date": "2023-12-01",
+          "price": 867.90
+        },
+        {
+          "date": "2024-01-01",
+          "price": 853.70
+        },
+        {
+          "date": "2024-02-01",
+          "price": 815.00
+        },
+        {
+          "date": "2024-03-01",
+          "price": 768.50
+        },
+        {
+          "date": "2024-04-01",
+          "price": 753.90
+        },
+        {
+          "date": "2024-05-01",
+          "price": 802.00
+        },
+        {
+          "date": "2024-06-01",
+          "price": 903.20
+        },
+        {
+          "date": "2024-07-01",
+          "price": 815.80
+        },
+        {
+          "date": "2024-08-01",
+          "price": 829.00
+        },
+        {
+          "date": "2024-09-01",
+          "price": 848.20
+        },
+        {
+          "date": "2024-10-01",
+          "price": 879.50
+        },
+        {
+          "date": "2024-11-01",
+          "price": 901.30
+        },
+        {
+          "date": "2024-12-01",
+          "price": 912.60
+        },
+        {
+          "date": "2025-01-01",
+          "price": 915.20
+        },
+        {
+          "date": "2025-02-01",
+          "price": 918.70
+        },
+        {
+          "date": "2025-03-01",
+          "price": 902.70
+        },
+        {
+          "date": "2025-04-01",
+          "price": 907.20
+        },
+        {
+          "date": "2025-05-01",
+          "price": 897.60
+        },
+        {
+          "date": "2025-06-01",
+          "price": 889.80
+        },
+        {
+          "date": "2025-07-01",
+          "price": 838.00
+        },
+        {
+          "date": "2025-08-01",
+          "price": 774.90
+        },
+        {
+          "date": "2025-09-01",
+          "price": 749.00
+        },
+        {
+          "date": "2025-10-01",
+          "price": 744.70
+        },
+        {
+          "date": "2025-11-01",
+          "price": 738.80
+        },
+        {
+          "date": "2025-12-01",
+          "price": 737.90
+        },
+        {
+          "date": "2026-01-01",
+          "price": 749.10
+        },
+        {
+          "date": "2026-02-01",
+          "price": 745.80
+        },
+        {
+          "date": "2026-03-01",
+          "price": 757.30
+        },
+        {
+          "date": "2026-04-01",
+          "price": 770.90
+        },
+        {
+          "date": "2026-05-01",
+          "price": 787.00
+        },
+        {
+          "date": "2026-06-01",
+          "price": 809.60
+        },
+        {
+          "date": "2026-07-01",
+          "price": 807.50
+        },
+        {
+          "date": "2026-08-01",
+          "price": 828.40
+        },
+        {
+          "date": "2026-09-01",
+          "price": 898.00
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "rye": {
+      "cropId": "rye",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": "one_price_all_rye",
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 683.00
+        },
+        {
+          "date": "2023-11-01",
+          "price": 637.90
+        },
+        {
+          "date": "2023-12-01",
+          "price": 637.00
+        },
+        {
+          "date": "2024-01-01",
+          "price": 605.70
+        },
+        {
+          "date": "2024-02-01",
+          "price": 591.00
+        },
+        {
+          "date": "2024-03-01",
+          "price": 596.80
+        },
+        {
+          "date": "2024-04-01",
+          "price": 572.00
+        },
+        {
+          "date": "2024-05-01",
+          "price": 564.00
+        },
+        {
+          "date": "2024-06-01",
+          "price": 711.20
+        },
+        {
+          "date": "2024-07-01",
+          "price": 619.70
+        },
+        {
+          "date": "2024-08-01",
+          "price": 583.90
+        },
+        {
+          "date": "2024-09-01",
+          "price": 582.20
+        },
+        {
+          "date": "2024-10-01",
+          "price": 631.50
+        },
+        {
+          "date": "2024-11-01",
+          "price": 632.90
+        },
+        {
+          "date": "2024-12-01",
+          "price": 683.30
+        },
+        {
+          "date": "2025-01-01",
+          "price": 698.20
+        },
+        {
+          "date": "2025-02-01",
+          "price": 716.30
+        },
+        {
+          "date": "2025-03-01",
+          "price": 723.90
+        },
+        {
+          "date": "2025-04-01",
+          "price": 734.20
+        },
+        {
+          "date": "2025-05-01",
+          "price": 732.90
+        },
+        {
+          "date": "2025-06-01",
+          "price": 742.60
+        },
+        {
+          "date": "2025-07-01",
+          "price": 666.40
+        },
+        {
+          "date": "2025-08-01",
+          "price": 626.20
+        },
+        {
+          "date": "2025-09-01",
+          "price": 599.20
+        },
+        {
+          "date": "2025-10-01",
+          "price": 601.50
+        },
+        {
+          "date": "2025-11-01",
+          "price": 614.30
+        },
+        {
+          "date": "2025-12-01",
+          "price": 605.70
+        },
+        {
+          "date": "2026-01-01",
+          "price": 612.70
+        },
+        {
+          "date": "2026-02-01",
+          "price": 608.30
+        },
+        {
+          "date": "2026-03-01",
+          "price": 619.90
+        },
+        {
+          "date": "2026-04-01",
+          "price": 620.30
+        },
+        {
+          "date": "2026-05-01",
+          "price": 636.00
+        },
+        {
+          "date": "2026-06-01",
+          "price": 635.70
+        },
+        {
+          "date": "2026-07-01",
+          "price": 622.30
+        },
+        {
+          "date": "2026-08-01",
+          "price": 618.00
+        },
+        {
+          "date": "2026-09-01",
+          "price": 657.30
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "winter_barley": {
+      "cropId": "winter_barley",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": "one_price_all_barley",
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 820.80
+        },
+        {
+          "date": "2023-11-01",
+          "price": 828.50
+        },
+        {
+          "date": "2023-12-01",
+          "price": 827.00
+        },
+        {
+          "date": "2024-01-01",
+          "price": 780.50
+        },
+        {
+          "date": "2024-02-01",
+          "price": 781.20
+        },
+        {
+          "date": "2024-03-01",
+          "price": 741.40
+        },
+        {
+          "date": "2024-04-01",
+          "price": 712.50
+        },
+        {
+          "date": "2024-05-01",
+          "price": 706.00
+        },
+        {
+          "date": "2024-06-01",
+          "price": 680.50
+        },
+        {
+          "date": "2024-07-01",
+          "price": 731.70
+        },
+        {
+          "date": "2024-08-01",
+          "price": 779.60
+        },
+        {
+          "date": "2024-09-01",
+          "price": 787.20
+        },
+        {
+          "date": "2024-10-01",
+          "price": 794.60
+        },
+        {
+          "date": "2024-11-01",
+          "price": 769.50
+        },
+        {
+          "date": "2024-12-01",
+          "price": 813.30
+        },
+        {
+          "date": "2025-01-01",
+          "price": 834.40
+        },
+        {
+          "date": "2025-02-01",
+          "price": 853.90
+        },
+        {
+          "date": "2025-03-01",
+          "price": 835.80
+        },
+        {
+          "date": "2025-04-01",
+          "price": 822.70
+        },
+        {
+          "date": "2025-05-01",
+          "price": 834.90
+        },
+        {
+          "date": "2025-06-01",
+          "price": 826.10
+        },
+        {
+          "date": "2025-07-01",
+          "price": 720.30
+        },
+        {
+          "date": "2025-08-01",
+          "price": 764.30
+        },
+        {
+          "date": "2025-09-01",
+          "price": 747.30
+        },
+        {
+          "date": "2025-10-01",
+          "price": 744.10
+        },
+        {
+          "date": "2025-11-01",
+          "price": 740.90
+        },
+        {
+          "date": "2025-12-01",
+          "price": 754.50
+        },
+        {
+          "date": "2026-01-01",
+          "price": 752.30
+        },
+        {
+          "date": "2026-02-01",
+          "price": 741.80
+        },
+        {
+          "date": "2026-03-01",
+          "price": 745.00
+        },
+        {
+          "date": "2026-04-01",
+          "price": 770.30
+        },
+        {
+          "date": "2026-05-01",
+          "price": 734.30
+        },
+        {
+          "date": "2026-06-01",
+          "price": 721.80
+        },
+        {
+          "date": "2026-07-01",
+          "price": 670.10
+        },
+        {
+          "date": "2026-08-01",
+          "price": 689.40
+        },
+        {
+          "date": "2026-09-01",
+          "price": 760.70
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "spring_barley": {
+      "cropId": "spring_barley",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": "one_price_all_barley",
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 820.80
+        },
+        {
+          "date": "2023-11-01",
+          "price": 828.50
+        },
+        {
+          "date": "2023-12-01",
+          "price": 827.00
+        },
+        {
+          "date": "2024-01-01",
+          "price": 780.50
+        },
+        {
+          "date": "2024-02-01",
+          "price": 781.20
+        },
+        {
+          "date": "2024-03-01",
+          "price": 741.40
+        },
+        {
+          "date": "2024-04-01",
+          "price": 712.50
+        },
+        {
+          "date": "2024-05-01",
+          "price": 706.00
+        },
+        {
+          "date": "2024-06-01",
+          "price": 680.50
+        },
+        {
+          "date": "2024-07-01",
+          "price": 731.70
+        },
+        {
+          "date": "2024-08-01",
+          "price": 779.60
+        },
+        {
+          "date": "2024-09-01",
+          "price": 787.20
+        },
+        {
+          "date": "2024-10-01",
+          "price": 794.60
+        },
+        {
+          "date": "2024-11-01",
+          "price": 769.50
+        },
+        {
+          "date": "2024-12-01",
+          "price": 813.30
+        },
+        {
+          "date": "2025-01-01",
+          "price": 834.40
+        },
+        {
+          "date": "2025-02-01",
+          "price": 853.90
+        },
+        {
+          "date": "2025-03-01",
+          "price": 835.80
+        },
+        {
+          "date": "2025-04-01",
+          "price": 822.70
+        },
+        {
+          "date": "2025-05-01",
+          "price": 834.90
+        },
+        {
+          "date": "2025-06-01",
+          "price": 826.10
+        },
+        {
+          "date": "2025-07-01",
+          "price": 720.30
+        },
+        {
+          "date": "2025-08-01",
+          "price": 764.30
+        },
+        {
+          "date": "2025-09-01",
+          "price": 747.30
+        },
+        {
+          "date": "2025-10-01",
+          "price": 744.10
+        },
+        {
+          "date": "2025-11-01",
+          "price": 740.90
+        },
+        {
+          "date": "2025-12-01",
+          "price": 754.50
+        },
+        {
+          "date": "2026-01-01",
+          "price": 752.30
+        },
+        {
+          "date": "2026-02-01",
+          "price": 741.80
+        },
+        {
+          "date": "2026-03-01",
+          "price": 745.00
+        },
+        {
+          "date": "2026-04-01",
+          "price": 770.30
+        },
+        {
+          "date": "2026-05-01",
+          "price": 734.30
+        },
+        {
+          "date": "2026-06-01",
+          "price": 721.80
+        },
+        {
+          "date": "2026-07-01",
+          "price": 670.10
+        },
+        {
+          "date": "2026-08-01",
+          "price": 689.40
+        },
+        {
+          "date": "2026-09-01",
+          "price": 760.70
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "triticale": {
+      "cropId": "triticale",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": null,
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 796.30
+        },
+        {
+          "date": "2023-11-01",
+          "price": 732.20
+        },
+        {
+          "date": "2023-12-01",
+          "price": 738.50
+        },
+        {
+          "date": "2024-01-01",
+          "price": 715.30
+        },
+        {
+          "date": "2024-02-01",
+          "price": 704.40
+        },
+        {
+          "date": "2024-03-01",
+          "price": 720.10
+        },
+        {
+          "date": "2024-04-01",
+          "price": 666.80
+        },
+        {
+          "date": "2024-05-01",
+          "price": 671.50
+        },
+        {
+          "date": "2024-06-01",
+          "price": 791.00
+        },
+        {
+          "date": "2024-07-01",
+          "price": 655.30
+        },
+        {
+          "date": "2024-08-01",
+          "price": 723.60
+        },
+        {
+          "date": "2024-09-01",
+          "price": 748.50
+        },
+        {
+          "date": "2024-10-01",
+          "price": 773.70
+        },
+        {
+          "date": "2024-11-01",
+          "price": 768.60
+        },
+        {
+          "date": "2024-12-01",
+          "price": 775.40
+        },
+        {
+          "date": "2025-01-01",
+          "price": 804.30
+        },
+        {
+          "date": "2025-02-01",
+          "price": 831.40
+        },
+        {
+          "date": "2025-03-01",
+          "price": 832.50
+        },
+        {
+          "date": "2025-04-01",
+          "price": 831.00
+        },
+        {
+          "date": "2025-05-01",
+          "price": 835.40
+        },
+        {
+          "date": "2025-06-01",
+          "price": 834.40
+        },
+        {
+          "date": "2025-07-01",
+          "price": 740.80
+        },
+        {
+          "date": "2025-08-01",
+          "price": 706.40
+        },
+        {
+          "date": "2025-09-01",
+          "price": 692.40
+        },
+        {
+          "date": "2025-10-01",
+          "price": 712.80
+        },
+        {
+          "date": "2025-11-01",
+          "price": 673.10
+        },
+        {
+          "date": "2025-12-01",
+          "price": 674.10
+        },
+        {
+          "date": "2026-01-01",
+          "price": 702.40
+        },
+        {
+          "date": "2026-02-01",
+          "price": 703.90
+        },
+        {
+          "date": "2026-03-01",
+          "price": 681.20
+        },
+        {
+          "date": "2026-04-01",
+          "price": 695.40
+        },
+        {
+          "date": "2026-05-01",
+          "price": 709.10
+        },
+        {
+          "date": "2026-06-01",
+          "price": 725.30
+        },
+        {
+          "date": "2026-07-01",
+          "price": 701.90
+        },
+        {
+          "date": "2026-08-01",
+          "price": 702.20
+        },
+        {
+          "date": "2026-09-01",
+          "price": 756.60
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "oats": {
+      "cropId": "oats",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": null,
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 826.30
+        },
+        {
+          "date": "2023-11-01",
+          "price": 956.80
+        },
+        {
+          "date": "2023-12-01",
+          "price": 967.30
+        },
+        {
+          "date": "2024-01-01",
+          "price": 1047.80
+        },
+        {
+          "date": "2024-02-01",
+          "price": 999.50
+        },
+        {
+          "date": "2024-03-01",
+          "price": 961.70
+        },
+        {
+          "date": "2024-04-01",
+          "price": 916.20
+        },
+        {
+          "date": "2024-05-01",
+          "price": 830.80
+        },
+        {
+          "date": "2024-06-01",
+          "price": 905.40
+        },
+        {
+          "date": "2024-07-01",
+          "price": 741.40
+        },
+        {
+          "date": "2024-08-01",
+          "price": 734.90
+        },
+        {
+          "date": "2024-09-01",
+          "price": 785.30
+        },
+        {
+          "date": "2024-10-01",
+          "price": 851.80
+        },
+        {
+          "date": "2024-11-01",
+          "price": 817.40
+        },
+        {
+          "date": "2024-12-01",
+          "price": 830.60
+        },
+        {
+          "date": "2025-01-01",
+          "price": 815.40
+        },
+        {
+          "date": "2025-02-01",
+          "price": 787.20
+        },
+        {
+          "date": "2025-03-01",
+          "price": 811.10
+        },
+        {
+          "date": "2025-04-01",
+          "price": 734.90
+        },
+        {
+          "date": "2025-05-01",
+          "price": 720.00
+        },
+        {
+          "date": "2025-06-01",
+          "price": 725.00
+        },
+        {
+          "date": "2025-07-01",
+          "price": 632.00
+        },
+        {
+          "date": "2025-08-01",
+          "price": 670.70
+        },
+        {
+          "date": "2025-09-01",
+          "price": 589.20
+        },
+        {
+          "date": "2025-10-01",
+          "price": 581.10
+        },
+        {
+          "date": "2025-11-01",
+          "price": 610.70
+        },
+        {
+          "date": "2025-12-01",
+          "price": 643.10
+        },
+        {
+          "date": "2026-01-01",
+          "price": 553.20
+        },
+        {
+          "date": "2026-02-01",
+          "price": 614.70
+        },
+        {
+          "date": "2026-03-01",
+          "price": 593.30
+        },
+        {
+          "date": "2026-04-01",
+          "price": 549.70
+        },
+        {
+          "date": "2026-05-01",
+          "price": 551.30
+        },
+        {
+          "date": "2026-06-01",
+          "price": 557.20
+        },
+        {
+          "date": "2026-07-01",
+          "price": 504.50
+        },
+        {
+          "date": "2026-08-01",
+          "price": 502.00
+        },
+        {
+          "date": "2026-09-01",
+          "price": 565.40
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "maize": {
+      "cropId": "maize",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": "grain_maize_price",
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 545.30
+        },
+        {
+          "date": "2023-11-01",
+          "price": 610.40
+        },
+        {
+          "date": "2023-12-01",
+          "price": 748.20
+        },
+        {
+          "date": "2024-01-01",
+          "price": 778.30
+        },
+        {
+          "date": "2024-02-01",
+          "price": 748.30
+        },
+        {
+          "date": "2024-03-01",
+          "price": 682.80
+        },
+        {
+          "date": "2024-04-01",
+          "price": 688.70
+        },
+        {
+          "date": "2024-05-01",
+          "price": 748.30
+        },
+        {
+          "date": "2024-06-01",
+          "price": 880.10
+        },
+        {
+          "date": "2024-07-01",
+          "price": 887.90
+        },
+        {
+          "date": "2024-08-01",
+          "price": 867.60
+        },
+        {
+          "date": "2024-09-01",
+          "price": 580.40
+        },
+        {
+          "date": "2024-10-01",
+          "price": 612.60
+        },
+        {
+          "date": "2024-11-01",
+          "price": 718.40
+        },
+        {
+          "date": "2024-12-01",
+          "price": 828.50
+        },
+        {
+          "date": "2025-01-01",
+          "price": 838.30
+        },
+        {
+          "date": "2025-02-01",
+          "price": 840.30
+        },
+        {
+          "date": "2025-03-01",
+          "price": 860.10
+        },
+        {
+          "date": "2025-04-01",
+          "price": 874.50
+        },
+        {
+          "date": "2025-05-01",
+          "price": 889.60
+        },
+        {
+          "date": "2025-06-01",
+          "price": 895.60
+        },
+        {
+          "date": "2025-07-01",
+          "price": 891.50
+        },
+        {
+          "date": "2025-08-01",
+          "price": 931.50
+        },
+        {
+          "date": "2025-09-01",
+          "price": 867.90
+        },
+        {
+          "date": "2025-10-01",
+          "price": 538.70
+        },
+        {
+          "date": "2025-11-01",
+          "price": 513.10
+        },
+        {
+          "date": "2025-12-01",
+          "price": 626.70
+        },
+        {
+          "date": "2026-01-01",
+          "price": 738.10
+        },
+        {
+          "date": "2026-02-01",
+          "price": 747.20
+        },
+        {
+          "date": "2026-03-01",
+          "price": 750.10
+        },
+        {
+          "date": "2026-04-01",
+          "price": 793.90
+        },
+        {
+          "date": "2026-05-01",
+          "price": 832.70
+        },
+        {
+          "date": "2026-06-01",
+          "price": 881.60
+        },
+        {
+          "date": "2026-07-01",
+          "price": 893.20
+        },
+        {
+          "date": "2026-08-01",
+          "price": 914.40
+        },
+        {
+          "date": "2026-09-01",
+          "price": 848.80
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "potato": {
+      "cropId": "potato",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Monthly",
+      "sourceName": "GUS BDL P2967: average purchase prices of major agricultural products, monthly",
+      "noteCode": null,
+      "prices": [
+        {
+          "date": "2023-10-01",
+          "price": 662.60
+        },
+        {
+          "date": "2023-11-01",
+          "price": 771.50
+        },
+        {
+          "date": "2023-12-01",
+          "price": 1111.10
+        },
+        {
+          "date": "2024-01-01",
+          "price": 1186.20
+        },
+        {
+          "date": "2024-02-01",
+          "price": 1267.50
+        },
+        {
+          "date": "2024-03-01",
+          "price": 1382.40
+        },
+        {
+          "date": "2024-04-01",
+          "price": 1445.90
+        },
+        {
+          "date": "2024-05-01",
+          "price": 1503.60
+        },
+        {
+          "date": "2024-06-01",
+          "price": 1440.90
+        },
+        {
+          "date": "2024-07-01",
+          "price": 1199.60
+        },
+        {
+          "date": "2024-08-01",
+          "price": 821.40
+        },
+        {
+          "date": "2024-09-01",
+          "price": 589.70
+        },
+        {
+          "date": "2024-10-01",
+          "price": 578.10
+        },
+        {
+          "date": "2024-11-01",
+          "price": 648.60
+        },
+        {
+          "date": "2024-12-01",
+          "price": 1082.50
+        },
+        {
+          "date": "2025-01-01",
+          "price": 1102.30
+        },
+        {
+          "date": "2025-02-01",
+          "price": 1112.30
+        },
+        {
+          "date": "2025-03-01",
+          "price": 1385.80
+        },
+        {
+          "date": "2025-04-01",
+          "price": 1459.50
+        },
+        {
+          "date": "2025-05-01",
+          "price": 1291.10
+        },
+        {
+          "date": "2025-06-01",
+          "price": 1146.90
+        },
+        {
+          "date": "2025-07-01",
+          "price": 1012.90
+        },
+        {
+          "date": "2025-08-01",
+          "price": 667.80
+        },
+        {
+          "date": "2025-09-01",
+          "price": 551.50
+        },
+        {
+          "date": "2025-10-01",
+          "price": 536.10
+        },
+        {
+          "date": "2025-11-01",
+          "price": 496.10
+        },
+        {
+          "date": "2025-12-01",
+          "price": 558.50
+        },
+        {
+          "date": "2026-01-01",
+          "price": 819.60
+        },
+        {
+          "date": "2026-02-01",
+          "price": 893.50
+        },
+        {
+          "date": "2026-03-01",
+          "price": 1051.20
+        },
+        {
+          "date": "2026-04-01",
+          "price": 1202.30
+        },
+        {
+          "date": "2026-05-01",
+          "price": 1169.00
+        },
+        {
+          "date": "2026-06-01",
+          "price": 1208.90
+        },
+        {
+          "date": "2026-07-01",
+          "price": 1031.20
+        },
+        {
+          "date": "2026-08-01",
+          "price": 628.80
+        },
+        {
+          "date": "2026-09-01",
+          "price": 444.10
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "rapeseed": {
+      "cropId": "rapeseed",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Yearly",
+      "sourceName": "GUS BDL P1458: average purchase prices of agricultural products, yearly",
+      "noteCode": "yearly_only",
+      "prices": [
+        {
+          "date": "1999-01-01",
+          "price": 642.80
+        },
+        {
+          "date": "2000-01-01",
+          "price": 806.30
+        },
+        {
+          "date": "2001-01-01",
+          "price": 821.70
+        },
+        {
+          "date": "2002-01-01",
+          "price": 853.50
+        },
+        {
+          "date": "2003-01-01",
+          "price": 1016.60
+        },
+        {
+          "date": "2004-01-01",
+          "price": 864.70
+        },
+        {
+          "date": "2005-01-01",
+          "price": 773.30
+        },
+        {
+          "date": "2006-01-01",
+          "price": 934.40
+        },
+        {
+          "date": "2007-01-01",
+          "price": 956.60
+        },
+        {
+          "date": "2008-01-01",
+          "price": 1267.70
+        },
+        {
+          "date": "2009-01-01",
+          "price": 1082.40
+        },
+        {
+          "date": "2010-01-01",
+          "price": 1277.60
+        },
+        {
+          "date": "2011-01-01",
+          "price": 1839.10
+        },
+        {
+          "date": "2012-01-01",
+          "price": 1981.10
+        },
+        {
+          "date": "2013-01-01",
+          "price": 1473.40
+        },
+        {
+          "date": "2014-01-01",
+          "price": 1319.90
+        },
+        {
+          "date": "2015-01-01",
+          "price": 1505.10
+        },
+        {
+          "date": "2016-01-01",
+          "price": 1616.20
+        },
+        {
+          "date": "2017-01-01",
+          "price": 1576.30
+        },
+        {
+          "date": "2018-01-01",
+          "price": 1553.20
+        },
+        {
+          "date": "2019-01-01",
+          "price": 1558.10
+        },
+        {
+          "date": "2020-01-01",
+          "price": 1639.00
+        },
+        {
+          "date": "2021-01-01",
+          "price": 2303.10
+        },
+        {
+          "date": "2022-01-01",
+          "price": 3143.60
+        },
+        {
+          "date": "2023-01-01",
+          "price": 1969.30
+        },
+        {
+          "date": "2024-01-01",
+          "price": 2016.80
+        },
+        {
+          "date": "2025-01-01",
+          "price": 2080.00
+        }
+      ],
+      "status": "ok",
+      "message": null
+    },
+    "sugar_beet": {
+      "cropId": "sugar_beet",
+      "currency": "PLN",
+      "unit": "t",
+      "frequency": "Yearly",
+      "sourceName": "GUS BDL P1458: average purchase prices of agricultural products, yearly",
+      "noteCode": "yearly_only",
+      "prices": [
+        {
+          "date": "1999-01-01",
+          "price": 99.80
+        },
+        {
+          "date": "2000-01-01",
+          "price": 101.90
+        },
+        {
+          "date": "2001-01-01",
+          "price": 111.20
+        },
+        {
+          "date": "2002-01-01",
+          "price": 112.10
+        },
+        {
+          "date": "2003-01-01",
+          "price": 124.20
+        },
+        {
+          "date": "2004-01-01",
+          "price": 187.00
+        },
+        {
+          "date": "2005-01-01",
+          "price": 175.70
+        },
+        {
+          "date": "2006-01-01",
+          "price": 128.80
+        },
+        {
+          "date": "2007-01-01",
+          "price": 108.30
+        },
+        {
+          "date": "2008-01-01",
+          "price": 103.70
+        },
+        {
+          "date": "2009-01-01",
+          "price": 115.70
+        },
+        {
+          "date": "2010-01-01",
+          "price": 113.10
+        },
+        {
+          "date": "2011-01-01",
+          "price": 144.00
+        },
+        {
+          "date": "2012-01-01",
+          "price": 137.20
+        },
+        {
+          "date": "2013-01-01",
+          "price": 148.70
+        },
+        {
+          "date": "2014-01-01",
+          "price": 125.90
+        },
+        {
+          "date": "2015-01-01",
+          "price": 119.50
+        },
+        {
+          "date": "2016-01-01",
+          "price": 116.60
+        },
+        {
+          "date": "2017-01-01",
+          "price": 95.60
+        },
+        {
+          "date": "2018-01-01",
+          "price": 105.30
+        },
+        {
+          "date": "2019-01-01",
+          "price": 106.70
+        },
+        {
+          "date": "2020-01-01",
+          "price": 101.90
+        },
+        {
+          "date": "2021-01-01",
+          "price": 122.40
+        },
+        {
+          "date": "2022-01-01",
+          "price": 195.00
+        },
+        {
+          "date": "2023-01-01",
+          "price": 189.90
+        },
+        {
+          "date": "2024-01-01",
+          "price": 176.40
+        },
+        {
+          "date": "2025-01-01",
+          "price": 135.70
+        }
+      ],
+      "status": "ok",
+      "message": null
+    }
+  }
+}

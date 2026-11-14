@@ -10,4 +10,9 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- Saved crop data (refreshed at runtime) and the FAO ECOCROP extract. -->
+        <Content Update="Data\*.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>
+    </ItemGroup>
+
 </Project>

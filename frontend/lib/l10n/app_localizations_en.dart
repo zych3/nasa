@@ -122,6 +122,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get demoDataNotice => 'Demo data: not real prices yet.';
 
   @override
+  String get priceNoData => 'No data';
+
+  @override
+  String get priceNoDataDetails => 'No public price list exists for this crop.';
+
+  @override
+  String priceLatest(String date) {
+    return 'Latest price: $date';
+  }
+
+  @override
+  String priceHistoryMonthly(int count) {
+    return 'Monthly prices, last $count';
+  }
+
+  @override
+  String priceHistoryYearly(int count) {
+    return 'Yearly prices, last $count';
+  }
+
+  @override
+  String priceChartLabel(
+    String from,
+    String to,
+    String min,
+    String max,
+    String currency,
+  ) {
+    return 'Price chart from $from to $to, lowest $min, highest $max $currency';
+  }
+
+  @override
+  String get sourceOfficial => 'Official statistics';
+
+  @override
   String parcelNumber(String id) {
     return 'Parcel $id';
   }
@@ -132,4 +167,115 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get parcelLookupFailed =>
       'Could not look up the parcel. Check your connection and try again.';
+
+  @override
+  String get noteOnePriceAllWheat =>
+      'GUS publishes one price for all wheat, winter and spring.';
+
+  @override
+  String get noteOnePriceAllRye => 'GUS publishes one price for all rye.';
+
+  @override
+  String get noteOnePriceAllBarley =>
+      'GUS publishes one price for all barley, winter and spring.';
+
+  @override
+  String get noteGrainMaizePrice => 'Price of maize grain.';
+
+  @override
+  String get noteYearlyOnly => 'GUS publishes this price only once a year.';
+
+  @override
+  String get noteGrainMaizeOnly =>
+      'Area and yield are for grain maize only, not silage maize.';
+
+  @override
+  String get noteAllSweetLupins =>
+      'Eurostat gives one figure for all sweet lupins.';
+
+  @override
+  String get noteNoEurostatFigure =>
+      'Eurostat has no separate figures for this crop.';
+
+  @override
+  String factAreaPoland(String year) {
+    return 'Area in Poland ($year)';
+  }
+
+  @override
+  String factYieldPoland(String year) {
+    return 'Average yield in Poland ($year)';
+  }
+
+  @override
+  String get factGrowingTime => 'Time from sowing to harvest';
+
+  @override
+  String get factRainfall => 'Best rainfall in the growing season';
+
+  @override
+  String get factTemperature => 'Best temperature';
+
+  @override
+  String get factSoilPh => 'Best soil pH';
+
+  @override
+  String valueHectares(String value) {
+    return '$value ha';
+  }
+
+  @override
+  String valueTonnesPerHectare(String value) {
+    return '$value t/ha';
+  }
+
+  @override
+  String valueDays(String range) {
+    return '$range days';
+  }
+
+  @override
+  String valueMillimetres(String range) {
+    return '$range mm';
+  }
+
+  @override
+  String valueCelsius(String range) {
+    return '$range °C';
+  }
+
+  @override
+  String get sourceCropDatabase => 'Crop database';
+
+  @override
+  String get cropDataMissing => 'No data';
+
+  @override
+  String get cropSelectorLabel => 'Crops on your plot';
+
+  @override
+  String get cropSearchHint => 'Search crops';
+
+  @override
+  String cropSearchHintSelected(int count) {
+    return 'Selected: $count. Search crops';
+  }
+
+  @override
+  String get cropSearchEmpty => 'No crops found';
+
+  @override
+  String get cropListLoadError => 'We could not load the crops.';
+
+  @override
+  String get plotAddressLabel => 'Plot address';
+
+  @override
+  String get plotAddressHint => 'Street or place';
+
+  @override
+  String get findParcel => 'Find parcel';
+
+  @override
+  String get submitPlot => 'Submit plot';
 }
