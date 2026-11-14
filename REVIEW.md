@@ -94,3 +94,14 @@ danych”, bez cofania), nowe miejsce resetuje miesiąc, semantyka listy nakład
 sztywno, wszystkie legendy EN bez polskich słów (test), PL = backend (test).
 
 **Wysoki priorytet: brak.**
+
+## Recenzja #5 (`feat/read-aloud`)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 38 | N | ⏳ | `read_aloud_button.dart` | Wyścig ikon: gdy przycisk na innej zakładce (`IndexedStack` nie usuwa ekranów) zacznie czytać, zanim przyjdzie sygnał „anulowano” od poprzedniego czytania, ikona nowego przycisku może wrócić do „czytaj”, choć czyta. Dźwięk jest poprawny. Dziś jest tylko jeden przycisk w aplikacji – problem pojawi się, gdy dojdą kolejne ekrany. Naprawa: numerować wypowiedzi w `TtsSpeaker` i ignorować stare zdarzenia. |
+| 39 | N | ⏳ | `read_aloud_button.dart` | Tempo mowy domyślne. Dla starszych osób wolniejsze może być lepsze, ale skala tempa różni się między Androidem (0,5 = normalnie) i przeglądarką (1,0 = normalnie) – nie zgadywałem. Do sprawdzenia z użytkownikami. |
+| 40 | Ś | 📝 | `pubspec.yaml` | Nowa zależność `flutter_tts` – decyzja zespołu (AGENTS.md jej wymaga). Gałąź osobna, żeby można było nie scalać. |
+
+Sprawdzone bez uwag: silnik mowy tworzony dopiero przy pierwszym użyciu (testy i ekrany bez czytania go nie
+uruchamiają), zatrzymanie po wyjściu z ekranu, błąd silnika → komunikat i powrót przycisku, brak tekstów na sztywno.
