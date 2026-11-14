@@ -11,6 +11,7 @@ public static partial class WebApplicationBuilderExtensions
     {
         var geocodeBaseUrl = Required(builder, "Poland:GeocodeBaseUrl");
         var uldkBaseUrl = Required(builder, "Poland:UldkBaseUrl");
+        var uugBaseUrl = Required(builder, "Poland:UugBaseUrl");
         builder.Services.AddHttpClient<GugikGeocodingService>(c =>
         {
             c.BaseAddress = new Uri(geocodeBaseUrl);

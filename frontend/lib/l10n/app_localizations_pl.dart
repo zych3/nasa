@@ -123,6 +123,107 @@ class AppLocalizationsPl extends AppLocalizations {
       'Dane demonstracyjne: to jeszcze nie są prawdziwe ceny.';
 
   @override
+  String parcelNumber(String id) {
+    return 'Działka $id';
+  }
+
+  @override
+  String get parcelNotFound => 'Nie znaleziono działki pod tym adresem.';
+
+  @override
+  String get parcelLookupFailed =>
+      'Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get plotAddressLabel => 'Adres działki';
+
+  @override
+  String get plotAddressHint => 'Wpisz ulicę lub miejscowość';
+
+  @override
+  String get selectCropsLabel => 'Uprawy na działce:';
+
+  @override
+  String get searchCropsHint => 'Szukaj upraw...';
+
+  @override
+  String searchCropsSelectedHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Wybrano $count — szukaj upraw...',
+      many: 'Wybrano $count — szukaj upraw...',
+      few: 'Wybrano $count — szukaj upraw...',
+      one: 'Wybrano 1 — szukaj upraw...',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noCropsFound => 'Nie znaleziono upraw';
+
+  @override
+  String get submitPlot => 'Zapisz działkę';
+
+  @override
+  String get locationDialogTitle => 'Gdzie jesteś?';
+
+  @override
+  String get locationDialogBody =>
+      'Czy możemy użyć Twojej lokalizacji? Pokażemy mapę wokół Ciebie. Nie zapisujemy jej.';
+
+  @override
+  String get locationAllow => 'Użyj mojej lokalizacji';
+
+  @override
+  String get locationDeny => 'Nie teraz';
+
+  @override
+  String get locationMyPosition => 'Pokaż moją lokalizację';
+
+  @override
+  String get locationServiceOff =>
+      'Lokalizacja jest wyłączona w tym urządzeniu. Włącz ją i spróbuj ponownie.';
+
+  @override
+  String get locationPermissionDenied =>
+      'Nie widzimy Twojej lokalizacji. Nadal możesz przesuwać mapę ręcznie.';
+
+  @override
+  String get locationFailed =>
+      'Nie udało się znaleźć Twojej lokalizacji. Możesz przesunąć mapę do swojego pola ręcznie.';
+
+  @override
+  String get nearbyParcelsSection => 'Działki w pobliżu';
+
+  @override
+  String get parcelHere => 'Działka, na której jesteś';
+
+  @override
+  String distanceFromYou(String distance) {
+    return '$distance od Ciebie';
+  }
+
+  @override
+  String get myFieldMarker => 'Moje pole';
+
+  @override
+  String get youAreHere => 'Tu jesteś';
+
+  @override
+  String get zoomInForParcels => 'Przybliż mapę, aby zobaczyć działki';
+
+  @override
+  String get tapToChooseParcel => 'Dotknij działki, aby wybrać swoje pole';
+
+  @override
+  String get tapToChooseThis => 'Dotknij, aby wybrać to pole';
+
+  @override
+  String get parcelsLoadFailed =>
+      'Nie udało się wczytać działek. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
   String get priceNoData => 'Brak danych';
 
   @override
@@ -157,18 +258,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get sourceOfficial => 'Statystyka publiczna';
-
-  @override
-  String parcelNumber(String id) {
-    return 'Działka $id';
-  }
-
-  @override
-  String get parcelNotFound => 'Nie znaleziono działki pod tym adresem.';
-
-  @override
-  String get parcelLookupFailed =>
-      'Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.';
 
   @override
   String get noteOnePriceAllWheat =>
@@ -253,31 +342,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get cropDataMissing => 'Brak danych';
 
   @override
-  String get cropSelectorLabel => 'Uprawy na Twojej działce';
-
-  @override
-  String get cropSearchHint => 'Szukaj upraw';
-
-  @override
-  String cropSearchHintSelected(int count) {
-    return 'Wybrano: $count. Szukaj upraw';
-  }
-
-  @override
-  String get cropSearchEmpty => 'Nie znaleziono upraw';
-
-  @override
   String get cropListLoadError => 'Nie udało się wczytać upraw.';
 
   @override
-  String get plotAddressLabel => 'Adres działki';
-
-  @override
-  String get plotAddressHint => 'Ulica lub miejscowość';
-
-  @override
   String get findParcel => 'Znajdź działkę';
-
-  @override
-  String get submitPlot => 'Zatwierdź działkę';
 }

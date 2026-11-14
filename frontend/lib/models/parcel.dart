@@ -1,13 +1,33 @@
 import 'package:latlong2/latlong.dart';
 
 class Parcel {
-  const Parcel({required this.id, required this.center, required this.ring});
+  const Parcel({
+    required this.id,
+    required this.center,
+    required this.ring,
+    this.address,
+    this.distanceMeters,
+  });
 
   final String id;
   final LatLng center;
 
   /// Outer boundary of the parcel (closed ring).
   final List<LatLng> ring;
+
+  /// Human-readable address (typed by the user or from the nearest address point).
+  final String? address;
+
+  /// Distance from the point the parcel was searched around (nearby lookup only).
+  final double? distanceMeters;
+
+  Parcel withAddress(String? address) => Parcel(
+    id: id,
+    center: center,
+    ring: ring,
+    address: address,
+    distanceMeters: distanceMeters,
+  );
 
   factory Parcel.fromJson(Map<String, dynamic> json) => Parcel(
     id: json['parcelId'] as String,
@@ -16,7 +36,18 @@ class Parcel {
       (json['longitude'] as num).toDouble(),
     ),
     ring: parseEwkt(json['geometryWkt'] as String),
+    address: json['address'] as String?,
+    distanceMeters: (json['distanceMeters'] as num?)?.toDouble(),
   );
+
+  Map<String, dynamic> toJson() => {
+    'parcelId': id,
+    'latitude': center.latitude,
+    'longitude': center.longitude,
+    'geometryWkt': toEwkt(ring),
+    'address': ?address,
+    'distanceMeters': ?distanceMeters,
+  };
 }
 
 /// Parses `SRID=4326;POLYGON((lon lat,lon lat,...))` into the outer ring.
@@ -34,6 +65,10 @@ List<LatLng> parseEwkt(String ewkt) {
       _toLatLng(pair.trim().split(RegExp(r'\s+'))),
   ];
 }
+
+/// Inverse of [parseEwkt].
+String toEwkt(List<LatLng> ring) =>
+    'SRID=4326;POLYGON((${ring.map((p) => '${p.longitude} ${p.latitude}').join(',')}))';
 
 LatLng _toLatLng(List<String> xy) {
   if (xy.length < 2) throw FormatException('Bad coordinate: $xy');

@@ -3,6 +3,17 @@ import 'package:material_ui/material_ui.dart';
 
 import '../models/parcel.dart';
 
+/// Default Web Mercator, but without sideways world copies. flutter_map paints
+/// and hit-tests polygons once per world copy until one is off-screen; in the
+/// browser that check can fail and throw "Infinite loop going beyond 30".
+/// A single parcel never needs world copies, so turn them off.
+class _SingleWorldCrs extends Epsg3857 {
+  const _SingleWorldCrs();
+
+  @override
+  bool get replicatesWorldLongitude => false;
+}
+
 /// Map with the parcel outline highlighted; the camera fits the parcel.
 class ParcelMap extends StatefulWidget {
   const ParcelMap({super.key, required this.parcel, this.caption});
@@ -77,7 +88,7 @@ class _ParcelMapState extends State<ParcelMap> {
   Widget _buildMap(Color color) {
     return FlutterMap(
       mapController: _controller,
-      options: MapOptions(initialCameraFit: _fit()),
+      options: MapOptions(crs: const _SingleWorldCrs(), initialCameraFit: _fit()),
       children: [
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',

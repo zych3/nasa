@@ -67,7 +67,7 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.cropSelectorLabel,
+          l10n.selectCropsLabel,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
@@ -87,8 +87,8 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
                     focusNode: _focus,
                     decoration: InputDecoration(
                       hintText: count == 0
-                          ? l10n.cropSearchHint
-                          : l10n.cropSearchHintSelected(count),
+                          ? l10n.searchCropsHint
+                          : l10n.searchCropsSelectedHint(count),
                       prefixIcon: const Icon(Icons.search),
                       border: const OutlineInputBorder(),
                     ),
@@ -158,7 +158,7 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
                             .contains(q))
                           crop,
                     ];
-                    if (crops.isEmpty) return message(l10n.cropSearchEmpty);
+                    if (crops.isEmpty) return message(l10n.noCropsFound);
 
                     return ListView(
                       padding: EdgeInsets.zero,
