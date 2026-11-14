@@ -74,8 +74,9 @@ class _PlotPageState extends State<PlotPage> {
         SizedBox(
           height: 280,
           child: parcel != null
-              ? ParcelMap(
-                  parcel: parcel,
+              ? _FieldMap(
+                  field: parcel,
+                  nearby: nearby,
                   caption: [
                     ?parcel.address,
                     l10n.parcelNumber(parcel.id),
@@ -150,6 +151,53 @@ class _PlotPageState extends State<PlotPage> {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// The same map as the "Map" screen, but view-only (no tap handler, so the
+/// parcels cannot be chosen here), fitted around the field, with its address
+/// on top.
+class _FieldMap extends StatelessWidget {
+  const _FieldMap({
+    required this.field,
+    required this.nearby,
+    required this.caption,
+  });
+
+  final Parcel field;
+  final List<Parcel> nearby;
+  final String caption;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ParcelMap(myField: field, parcels: nearby, fitMyField: true),
+          ),
+          Positioned(
+            top: 8,
+            left: 8,
+            right: 8,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Text(caption),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
