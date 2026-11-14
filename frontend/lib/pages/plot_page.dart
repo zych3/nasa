@@ -1,16 +1,53 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../components/input/plotInput/plot_input.dart';
+import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/parcel.dart';
+import '../repositories/parcel_repository.dart';
 
 /// "Moje pole" – plot data page. Layout only; values are placeholders.
-class PlotPage extends StatelessWidget {
+class PlotPage extends StatefulWidget {
   const PlotPage({super.key});
+
+  @override
+  State<PlotPage> createState() => _PlotPageState();
+}
+
+class _PlotPageState extends State<PlotPage> {
+  final _parcels = ParcelRepository();
+  Parcel? _parcel;
+  String? _address; // as typed by the user, for the parcel found
+  bool _loading = false;
+
+  Future<void> _findParcel(String address) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _loading = true);
+    try {
+      final parcel = await _parcels.searchByAddress(address);
+      if (!mounted) return;
+      if (parcel != null) {
+        setState(() {
+          _parcel = parcel;
+          _address = address;
+        });
+      } else {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final parcel = _parcel;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -20,27 +57,35 @@ class PlotPage extends StatelessWidget {
           child: ListTile(
             leading: const Icon(Icons.agriculture, size: 40),
             title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
-            subtitle: Text(l10n.plotSummary('—', '—')),
+            subtitle: Text(l10n.plotSummary('—', _address ?? '—')),
           ),
         ),
         const SizedBox(height: 16),
 
-        // Map preview placeholder
-        Container(
-          height: 180,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          alignment: Alignment.center,
-          child: const Icon(Icons.map_outlined, size: 48),
+        // Map: highlighted parcel once found, placeholder before that
+        SizedBox(
+          height: 280,
+          child: parcel != null
+              ? ParcelMap(
+                  parcel: parcel,
+                  caption: '${_address ?? ''}\n${l10n.parcelNumber(parcel.id)}',
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.map_outlined, size: 48),
+                ),
         ),
+        if (_loading) const LinearProgressIndicator(),
         const SizedBox(height: 24),
 
         // Plot input form (left as-is)
         Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
-        PlotInput(onSubmitPlot: (_) {}),
+        PlotInput(onSubmitPlot: (_) {}, onFindParcel: _findParcel),
         const SizedBox(height: 24),
 
         // Info cards

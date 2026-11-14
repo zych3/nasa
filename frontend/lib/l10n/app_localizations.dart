@@ -301,6 +301,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Demo data: not real prices yet.'**
   String get demoDataNotice;
+
+  /// No description provided for @parcelNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel {id}'**
+  String parcelNumber(String id);
+
+  /// No description provided for @parcelNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not find a parcel at this address.'**
+  String get parcelNotFound;
+
+  /// No description provided for @parcelLookupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not look up the parcel. Check your connection and try again.'**
+  String get parcelLookupFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -33,5 +33,8 @@
   "sourceSatellite": "Zmierzone przez satelitę",
   "sourceEstimated": "Szacunek",
   "sourceUserAnswer": "Z Twojej odpowiedzi",
-  "demoDataNotice": "Dane demonstracyjne: to jeszcze nie są prawdziwe ceny."
+  "demoDataNotice": "Dane demonstracyjne: to jeszcze nie są prawdziwe ceny.",
+  "parcelNumber": "Działka {id}",
+  "parcelNotFound": "Nie znaleziono działki pod tym adresem.",
+  "parcelLookupFailed": "Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie."
 }

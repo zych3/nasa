@@ -121,4 +121,16 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get demoDataNotice =>
       'Dane demonstracyjne: to jeszcze nie są prawdziwe ceny.';
+
+  @override
+  String parcelNumber(String id) {
+    return 'Działka $id';
+  }
+
+  @override
+  String get parcelNotFound => 'Nie znaleziono działki pod tym adresem.';
+
+  @override
+  String get parcelLookupFailed =>
+      'Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.';
 }

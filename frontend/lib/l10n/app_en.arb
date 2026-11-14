@@ -73,5 +73,15 @@
   "sourceSatellite": "Measured by satellite",
   "sourceEstimated": "Estimated",
   "sourceUserAnswer": "From your answer",
-  "demoDataNotice": "Demo data: not real prices yet."
+  "demoDataNotice": "Demo data: not real prices yet.",
+  "parcelNumber": "Parcel {id}",
+  "@parcelNumber": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "parcelNotFound": "We could not find a parcel at this address.",
+  "parcelLookupFailed": "Could not look up the parcel. Check your connection and try again."
 }

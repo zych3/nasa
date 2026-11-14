@@ -120,4 +120,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get demoDataNotice => 'Demo data: not real prices yet.';
+
+  @override
+  String parcelNumber(String id) {
+    return 'Parcel $id';
+  }
+
+  @override
+  String get parcelNotFound => 'We could not find a parcel at this address.';
+
+  @override
+  String get parcelLookupFailed =>
+      'Could not look up the parcel. Check your connection and try again.';
 }

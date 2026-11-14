@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 /// Backend base URL.
-/// - desktop / web: http://localhost:5000
-/// - Android emulator: http://10.0.2.2:5000
-/// - real phone: `http://<computer LAN IP>:5000`
-const String apiBaseUrl = 'http://localhost:5000';
+/// - desktop / web: http://localhost:5066
+/// - Android emulator: http://10.0.2.2:5066
+/// - real phone: `http://<computer LAN IP>:5066`
+const String apiBaseUrl = 'http://localhost:5066';
 
 class ApiException implements Exception {
-  ApiException(this.message);
+  ApiException(this.message, {this.statusCode});
   final String message;
+  final int? statusCode;
 
   @override
   String toString() => 'ApiException: $message';
@@ -41,7 +42,10 @@ class ApiClient {
         .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200) {
-      throw ApiException('GET $path failed with ${response.statusCode}');
+      throw ApiException(
+        'GET $path failed with ${response.statusCode}',
+        statusCode: response.statusCode,
+      );
     }
     return jsonDecode(utf8.decode(response.bodyBytes));
   }

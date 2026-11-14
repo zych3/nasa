@@ -6,7 +6,6 @@ import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
 import 'pages/plot_page.dart';
 import 'pages/trending_crops_page.dart';
-
 void main() {
   runApp(const FieldShiftApp());
 }
