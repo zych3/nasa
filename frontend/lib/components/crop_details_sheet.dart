@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:material_ui/material_ui.dart';
 
@@ -557,7 +558,8 @@ class _SparklinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SparklinePainter old) =>
-      old.values != values || old.color != color;
+      // The list is new on every build; compare the prices, not the list.
+      !listEquals(old.values, values) || old.color != color;
 }
 
 /// "Measured by satellite · NASA POWER" etc.
