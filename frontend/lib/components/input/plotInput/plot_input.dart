@@ -13,7 +13,7 @@ class PlotInput extends StatefulWidget {
   /// Called when the user searches for the parcel at the typed address.
   final void Function(String address)? onFindParcel;
 
-  @override 
+  @override
   State<PlotInput> createState() => _PlotInputState();
 }
 
@@ -21,7 +21,7 @@ class _PlotInputState extends State<PlotInput> {
   final TextEditingController _addressController = TextEditingController();
   final List<String> _selectedCrops = [];
 
-  @override 
+  @override
   void dispose() {
     _addressController.dispose();
     super.dispose();
@@ -30,7 +30,9 @@ class _PlotInputState extends State<PlotInput> {
   void _handleSubmit() {
     final address = _addressController.text.trim();
     if (address.isNotEmpty && _selectedCrops.isNotEmpty) {
-      widget.onSubmitPlot(PlotData(address: address, crops: List.from(_selectedCrops)));
+      widget.onSubmitPlot(
+        PlotData(address: address, crops: List.from(_selectedCrops)),
+      );
 
       _addressController.clear();
       setState(() {
@@ -41,6 +43,8 @@ class _PlotInputState extends State<PlotInput> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -68,7 +72,7 @@ class _PlotInputState extends State<PlotInput> {
           ElevatedButton.icon(
             onPressed: _handleSubmit,
             icon: const Icon(Icons.send),
-            label: Text(AppLocalizations.of(context).submitPlot),
+            label: Text(l10n.submitPlot),
           ),
         ],
       ),

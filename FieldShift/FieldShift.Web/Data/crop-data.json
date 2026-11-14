@@ -1,0 +1,239 @@
+{
+  "fetchedAt": "2026-11-14T16:23:39.6361686+00:00",
+  "wikidata": {
+    "Q10998": {
+      "wikidataId": "Q10998",
+      "labelPl": "ziemniak",
+      "labelEn": "potato",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/234%20Solanum%20tuberosum%20L.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Ziemniak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Potato"
+    },
+    "Q11006": {
+      "wikidataId": "Q11006",
+      "labelPl": "soja warzywna",
+      "labelEn": "soybean",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Soybean.USDA.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Soja_warzywna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Soybean"
+    },
+    "Q11575": {
+      "wikidataId": "Q11575",
+      "labelPl": "kukurydza zwyczajna",
+      "labelEn": "maize",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89tale%20de%20grains%20de%20ma%C3%AFs%2001.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Kukurydza_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Maize"
+    },
+    "Q12099": {
+      "wikidataId": "Q12099",
+      "labelPl": "\u017Cyto zwyczajne",
+      "labelEn": "Secale cereale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Ear%20of%20rye.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%BByto_zwyczajne",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rye"
+    },
+    "Q11577": {
+      "wikidataId": "Q11577",
+      "labelPl": "j\u0119czmie\u0144 zwyczajny",
+      "labelEn": "Hordeum vulgare",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Champ%20d%27Orge%20carr%C3%A9e%20%28Hordeum%20vulgare%29.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/J%C4%99czmie%C5%84_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Barley"
+    },
+    "Q25237": {
+      "wikidataId": "Q25237",
+      "labelPl": "groch zwyczajny",
+      "labelEn": "Pisum sativum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/NCI%20peas%20in%20pod.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Groch_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Pea"
+    },
+    "Q12104": {
+      "wikidataId": "Q12104",
+      "labelPl": "owies zwyczajny",
+      "labelEn": "Avena sativa",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Avena%20sativa%20L.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Owies_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Oat"
+    },
+    "Q161098": {
+      "wikidataId": "Q161098",
+      "labelPl": "pszenica zwyczajna",
+      "labelEn": "Triticum aestivum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Tarweaar.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszenica_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Common_wheat"
+    },
+    "Q161372": {
+      "wikidataId": "Q161372",
+      "labelPl": "\u0142ubin bia\u0142y",
+      "labelEn": "Lupinus albus",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Portrait%20fleur%20lupin86.JPG?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%81ubin_bia%C5%82y",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Lupinus_albus"
+    },
+    "Q177932": {
+      "wikidataId": "Q177932",
+      "labelPl": "rzepak",
+      "labelEn": "Brassica napus",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%28MHNT%29%20Brassica%20napus%20-%20Habit.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Rzepak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rapeseed"
+    },
+    "Q380329": {
+      "wikidataId": "Q380329",
+      "labelPl": "Pszen\u017Cyto",
+      "labelEn": "\u00D7Triticale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Triticale.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszen%C5%BCyto",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Triticale"
+    },
+    "Q151964": {
+      "wikidataId": "Q151964",
+      "labelPl": "burak cukrowy",
+      "labelEn": "sugar beet",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/SugarBeet.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Burak_cukrowy",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Sugar_beet"
+    },
+    "Q164148": {
+      "wikidataId": "Q164148",
+      "labelPl": "\u0141ubin w\u0105skolistny",
+      "labelEn": "Lupinus angustifolius",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Dettaglio%20-%20Leguminosae%20Lupinus%20angustifolius%20Lin.%20Erbario%20Frizzi%20Perugia%20n.%202065.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%81ubin_w%C4%85skolistny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Lupinus_angustifolius"
+    },
+    "Q171497": {
+      "wikidataId": "Q171497",
+      "labelPl": "s\u0142onecznik zwyczajny",
+      "labelEn": "common sunflower",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Helianthus%20annuus%20exposed%202004-05-22.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/S%C5%82onecznik_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Common_sunflower"
+    },
+    "Q132734": {
+      "wikidataId": "Q132734",
+      "labelPl": "gryka zwyczajna",
+      "labelEn": "Fagopyrum esculentum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Fagopyrum%20esculentum%201DS-II%203-0312.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Gryka_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Buckwheat"
+    }
+  },
+  "production": {
+    "C1111": {
+      "eurostatCode": "C1111",
+      "areaYear": 2026,
+      "areaHa": 2172560,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 5.24,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1210": {
+      "eurostatCode": "C1210",
+      "areaYear": 2026,
+      "areaHa": 560860,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 3.67,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1310": {
+      "eurostatCode": "C1310",
+      "areaYear": 2026,
+      "areaHa": 467530,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4.7,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1320": {
+      "eurostatCode": "C1320",
+      "areaYear": 2026,
+      "areaHa": 282950,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1410": {
+      "eurostatCode": "C1410",
+      "areaYear": 2026,
+      "areaHa": 525690,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 3.32,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1500": {
+      "eurostatCode": "C1500",
+      "areaYear": 2026,
+      "areaHa": 1194800,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 7.71,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "C1600": {
+      "eurostatCode": "C1600",
+      "areaYear": 2026,
+      "areaHa": 1109420,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 4.46,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "P1100": {
+      "eurostatCode": "P1100",
+      "areaYear": 2026,
+      "areaHa": 33280,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.04,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "P1300": {
+      "eurostatCode": "P1300",
+      "areaYear": 2025,
+      "areaHa": 214390,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 1.92,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "R1000": {
+      "eurostatCode": "R1000",
+      "areaYear": 2026,
+      "areaHa": 184510,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 32.74,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "R2000": {
+      "eurostatCode": "R2000",
+      "areaYear": 2026,
+      "areaHa": 209210,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 71.9,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1111": {
+      "eurostatCode": "I1111",
+      "areaYear": 2026,
+      "areaHa": 995010,
+      "yieldYear": 2026,
+      "yieldTonnesPerHa": 2.96,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1120": {
+      "eurostatCode": "I1120",
+      "areaYear": 2026,
+      "areaHa": 25340,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.51,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    },
+    "I1130": {
+      "eurostatCode": "I1130",
+      "areaYear": 2026,
+      "areaHa": 40410,
+      "yieldYear": 2025,
+      "yieldTonnesPerHa": 2.62,
+      "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
+    }
+  }
+}

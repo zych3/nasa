@@ -166,27 +166,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get submitPlot => 'Zapisz działkę';
 
   @override
-  String get cropCorn => 'Kukurydza';
-
-  @override
-  String get cropWheat => 'Pszenica';
-
-  @override
-  String get cropSoybeans => 'Soja';
-
-  @override
-  String get cropBarley => 'Jęczmień';
-
-  @override
-  String get cropRice => 'Ryż';
-
-  @override
-  String get cropPotatoes => 'Ziemniaki';
-
-  @override
-  String get cropTomatoes => 'Pomidory';
-
-  @override
   String get locationDialogTitle => 'Gdzie jesteś?';
 
   @override
@@ -243,4 +222,128 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get parcelsLoadFailed =>
       'Nie udało się wczytać działek. Sprawdź połączenie i spróbuj ponownie.';
+
+  @override
+  String get priceNoData => 'Brak danych';
+
+  @override
+  String get priceNoDataDetails =>
+      'Dla tej uprawy nie ma publicznych notowań cen.';
+
+  @override
+  String priceLatest(String date) {
+    return 'Ostatnia cena: $date';
+  }
+
+  @override
+  String priceHistoryMonthly(int count) {
+    return 'Ceny miesięczne, ostatnie $count';
+  }
+
+  @override
+  String priceHistoryYearly(int count) {
+    return 'Ceny roczne, ostatnie $count';
+  }
+
+  @override
+  String priceChartLabel(
+    String from,
+    String to,
+    String min,
+    String max,
+    String currency,
+  ) {
+    return 'Wykres cen od $from do $to, najniższa $min, najwyższa $max $currency';
+  }
+
+  @override
+  String get sourceOfficial => 'Statystyka publiczna';
+
+  @override
+  String get noteOnePriceAllWheat =>
+      'GUS podaje jedną cenę dla całej pszenicy, ozimej i jarej.';
+
+  @override
+  String get noteOnePriceAllRye => 'GUS podaje jedną cenę dla całego żyta.';
+
+  @override
+  String get noteOnePriceAllBarley =>
+      'GUS podaje jedną cenę dla całego jęczmienia, ozimego i jarego.';
+
+  @override
+  String get noteGrainMaizePrice => 'Cena ziarna kukurydzy.';
+
+  @override
+  String get noteYearlyOnly => 'GUS podaje tę cenę tylko raz w roku.';
+
+  @override
+  String get noteGrainMaizeOnly =>
+      'Powierzchnia i plon dotyczą tylko kukurydzy na ziarno, bez kukurydzy na kiszonkę.';
+
+  @override
+  String get noteAllSweetLupins =>
+      'Eurostat podaje jedną liczbę dla wszystkich łubinów słodkich.';
+
+  @override
+  String get noteNoEurostatFigure =>
+      'Eurostat nie podaje osobnych danych dla tej uprawy.';
+
+  @override
+  String factAreaPoland(String year) {
+    return 'Powierzchnia w Polsce ($year)';
+  }
+
+  @override
+  String factYieldPoland(String year) {
+    return 'Średni plon w Polsce ($year)';
+  }
+
+  @override
+  String get factGrowingTime => 'Czas od siewu do zbioru';
+
+  @override
+  String get factRainfall => 'Najlepsze opady w sezonie wegetacyjnym';
+
+  @override
+  String get factTemperature => 'Najlepsza temperatura';
+
+  @override
+  String get factSoilPh => 'Najlepsze pH gleby';
+
+  @override
+  String valueHectares(String value) {
+    return '$value ha';
+  }
+
+  @override
+  String valueTonnesPerHectare(String value) {
+    return '$value t/ha';
+  }
+
+  @override
+  String valueDays(String range) {
+    return '$range dni';
+  }
+
+  @override
+  String valueMillimetres(String range) {
+    return '$range mm';
+  }
+
+  @override
+  String valueCelsius(String range) {
+    return '$range °C';
+  }
+
+  @override
+  String get sourceCropDatabase => 'Baza danych upraw';
+
+  @override
+  String get cropDataMissing => 'Brak danych';
+
+  @override
+  String get cropListLoadError => 'Nie udało się wczytać upraw.';
+
+  @override
+  String get findParcel => 'Znajdź działkę';
 }
