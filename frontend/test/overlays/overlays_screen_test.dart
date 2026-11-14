@@ -104,6 +104,24 @@ void main() {
     expect(find.text(_pl.overlaysLegendHere), findsOneWidget);
   });
 
+  testWidgets('switching to soil moisture needs no new request', (
+    tester,
+  ) async {
+    await pumpScreen(tester);
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    await tester.pump();
+
+    await tester.tap(find.text(_pl.overlayMoistureTitle));
+    await tester.pump();
+
+    // Backend label on the map and in the value card, month, NASA source.
+    expect(find.text('umiarkowanie sucho (0,35–0,45)'), findsNWidgets(2));
+    expect(find.text(_pl.overlaysMonth('grudzień 2025')), findsOneWidget);
+    expect(find.text(_pl.overlaysSource('NASA POWER (GWETROOT)')), findsOne);
+    expect(find.text(_pl.sourceEstimated), findsNothing);
+    expect(repo.requests, hasLength(1));
+  });
+
   testWidgets('without a field: notice and a button to choose one', (
     tester,
   ) async {

@@ -420,4 +420,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysValueHeadingExample => 'In the example place';
+
+  @override
+  String get overlayMoistureTitle => 'Soil moisture';
+
+  @override
+  String get overlayCoverageNasa =>
+      'One value for the whole area of about 50 km. It can be different on your field.';
+
+  @override
+  String overlaysMonth(String month) {
+    return 'Month: $month';
+  }
 }

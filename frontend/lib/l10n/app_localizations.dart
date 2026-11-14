@@ -787,6 +787,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'In the example place'**
   String get overlaysValueHeadingExample;
+
+  /// No description provided for @overlayMoistureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture'**
+  String get overlayMoistureTitle;
+
+  /// No description provided for @overlayCoverageNasa.
+  ///
+  /// In en, this message translates to:
+  /// **'One value for the whole area of about 50 km. It can be different on your field.'**
+  String get overlayCoverageNasa;
+
+  /// No description provided for @overlaysMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Month: {month}'**
+  String overlaysMonth(String month);
 }
 
 class _AppLocalizationsDelegate

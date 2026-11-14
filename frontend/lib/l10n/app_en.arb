@@ -270,5 +270,15 @@
   "overlaysLegendHeading": "What the colours mean",
   "overlaysLegendHere": "Here",
   "overlaysMapAttribution": "© OpenStreetMap contributors",
-  "overlaysValueHeadingExample": "In the example place"
+  "overlaysValueHeadingExample": "In the example place",
+  "overlayMoistureTitle": "Soil moisture",
+  "overlayCoverageNasa": "One value for the whole area of about 50 km. It can be different on your field.",
+  "overlaysMonth": "Month: {month}",
+  "@overlaysMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  }
 }
