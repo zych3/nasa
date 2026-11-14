@@ -172,6 +172,9 @@ class _AreaMapPageState extends State<AreaMapPage> {
       if (aroundUser) widget.store.setNearby(found);
       return found;
     } catch (_) {
+      // Forget the failed place, so moving the map a little tries again
+      // (otherwise nothing reloads until the map moves more than 100 m).
+      if (_lastLoadedCenter == center) _lastLoadedCenter = null;
       if (mounted) _tell(AppLocalizations.of(context).parcelsLoadFailed);
       return const [];
     } finally {
