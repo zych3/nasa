@@ -115,28 +115,19 @@ public class CropDataParsingTests
     }
 
     [Fact]
-    public async Task Store_RoundTripsSnapshotAndRepositoryReportsNoData()
+    public async Task Store_RoundTripsSnapshot()
     {
         var path = Path.Combine(Path.GetTempPath(), $"crop-data-{Guid.NewGuid():N}.json");
         try
         {
-            var wheat = new CropId("wheat");
-            var history = new PriceHistory(wheat, "PLN", "t", PriceFrequency.Monthly, "GUS", null,
-                [new(new DateOnly(2026, 8, 1), 828.4m), new(new DateOnly(2026, 9, 1), 898m)]);
+            var production = new CropProduction("C1111", 2026, 2172560, 2026, 5.24, EurostatYieldProvider.SourceName);
             var store = new CropDataStore(path, NullLogger<CropDataStore>.Instance);
-            await store.SaveAsync(CropDataSnapshot.Empty with { Prices = new() { [wheat] = history } }, default);
+            await store.SaveAsync(CropDataSnapshot.Empty with { Production = new() { ["C1111"] = production } }, default);
 
-            var reloaded = new InMemoryPriceHistoryRepository(new CropDataStore(path, NullLogger<CropDataStore>.Instance));
+            var reloaded = new CropDataStore(path, NullLogger<CropDataStore>.Instance);
 
-            var latest = reloaded.GetLatest(wheat, 1)!;
-            Assert.Equal("ok", latest.Status);
-            Assert.Equal([new CropPrice(new DateOnly(2026, 9, 1), 898m)], latest.Prices);
-
-            var soy = reloaded.GetLatest(new CropId("soybean"), 10)!;
-            Assert.Equal(("no_data", "No data"), (soy.Status, soy.Message));
-            Assert.Empty(soy.Prices);
-
-            Assert.Null(reloaded.GetLatest(new CropId("not_a_crop"), 10));
+            Assert.Equal(production, reloaded.Current.Production["C1111"]);
+            Assert.Empty(reloaded.Current.Wikidata);
         }
         finally
         {

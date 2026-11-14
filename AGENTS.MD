@@ -22,6 +22,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 
 - **Frontend:** Flutter (Dart), in `frontend/`. Targets: web, Android (Linux desktop only for local dev).
 - **Backend:** .NET. Owns data fetching, caching, scoring and the API contract.
+- **Database:** PostgreSQL (`db/Dockerfile`), used as the crop price cache through EF Core (`PricesDbContext`). Price endpoints answer from the database; the source API (GUS) is only called when the stored prices are stale (`Prices:StaleAfterHours`, default 24). If GUS is down, the stored prices are served. The schema is the EF migrations in `FieldShift/FieldShift.Web/Migrations`; the backend applies them itself. Change the schema only by editing the entities and running `dotnet ef migrations add <Name>`, never by hand in SQL.
 - **Decider:** start as plain rule-based scoring behind an interface (`IDecider`). An ONNX model is optional and only if time and data allow.
 - The frontend never talks to NASA or other data sources directly; it only calls our backend.
 
@@ -43,7 +44,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Map colouring (best crop per parcel) | `POST /api/parcels/suitability` |
 | Ranked rotation plans for one parcel | `POST /api/recommendations` |
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
-| Latest real prices of one crop (default 10, max 36; `status: "no_data"` when none) | `GET /api/crops/{id}/prices?count=10` |
+| Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |
 
 Keep this table and the example JSON in `frontend/assets/mock/` in sync with the backend.
@@ -102,6 +103,19 @@ Change the contract only after agreeing with both frontend and backend owners.
 - Cache external results and ship pre-fetched demo data so the demo never depends on a live API.
 
 ## Running locally
+
+Database and backend (the frontend falls back to saved data when they are not running):
+
+```fish
+docker build -t fieldshift-db db
+docker run -d --name fieldshift-db -e POSTGRES_PASSWORD=fieldshift -p 5432:5432 -v fieldshift-db-data:/var/lib/postgresql/data fieldshift-db
+cd FieldShift/FieldShift.Web
+dotnet run --launch-profile http   # http://localhost:5066, creates the tables on first start
+```
+
+The connection string is `ConnectionStrings:Prices` in `appsettings.json`; override it with the `ConnectionStrings__Prices` environment variable. Database tests are skipped unless `FIELDSHIFT_TEST_DB` holds a connection string.
+
+Frontend:
 
 ```fish
 cd frontend

@@ -11,6 +11,7 @@ namespace FieldShift.Web.Countries.Poland;
 /// </summary>
 public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
 {
+    public const string GusSourceId = "gus_bdl";
     public const string PolandUnitId = "000000000000";
     public const string MonthlySubjectId = "P2967";
     public const string MonthlySourceName = "GUS BDL P2967: average purchase prices of major agricultural products, monthly";
@@ -18,7 +19,10 @@ public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
     private const int VariablesPerRequest = 50;
     private const int PageSize = 100;
 
-    /// <summary>Product name as GUS writes it (e.g. "... - pszenica za 1 dt") → crops priced by it.</summary>
+    public string SourceId => GusSourceId;
+
+    public string Country => "PL";
+
     /// <summary>Note codes; the frontend translates them (lib/l10n/crop_note_text.dart).</summary>
     public const string OnePriceAllWheat = "one_price_all_wheat";
     public const string OnePriceAllRye = "one_price_all_rye";
@@ -26,6 +30,7 @@ public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
     public const string GrainMaizePrice = "grain_maize_price";
     public const string YearlyOnly = "yearly_only";
 
+    /// <summary>Product name as GUS writes it (e.g. "... - pszenica za 1 dt") → crops priced by it.</summary>
     private static readonly Dictionary<string, (CropId Id, string? NoteCode)[]> MonthlyProducts = new()
     {
         ["pszenica"] = [(new("wheat"), OnePriceAllWheat)],
@@ -53,7 +58,7 @@ public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
     /// <summary>One GUS variable = one product in one calendar month (all years).</summary>
     public sealed record MonthlyVariable(int VariableId, string Product, int Month);
 
-    public async Task<IReadOnlyDictionary<CropId, PriceHistory>> GetLatestPricesAsync(int count, CancellationToken ct)
+    public async Task<IReadOnlyDictionary<CropId, PriceHistory>> GetPricesAsync(CancellationToken ct)
     {
         var monthly = new List<MonthlyVariable>();
         for (var page = 0; ; page++)
@@ -84,7 +89,7 @@ public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
             var points = monthly
                 .Where(v => v.Product == product && values.ContainsKey(v.VariableId))
                 .SelectMany(v => values[v.VariableId].Select(p => (Date: new DateOnly(p.Year, v.Month, 1), p.Value)));
-            var prices = LatestPerTonne(points, count);
+            var prices = LatestPerTonne(points, int.MaxValue);
             foreach (var (id, note) in crops)
             {
                 result[id] = new PriceHistory(id, "PLN", "t", PriceFrequency.Monthly, MonthlySourceName, note, prices);
@@ -96,7 +101,7 @@ public sealed class GusBdlPriceProvider(HttpClient http) : IPriceProvider
             var points = values.GetValueOrDefault(variableId, [])
                 .Select(p => (Date: new DateOnly(p.Year, 1, 1), p.Value));
             result[id] = new PriceHistory(id, "PLN", "t", PriceFrequency.Yearly, YearlySourceName, note,
-                LatestPerTonne(points, count));
+                LatestPerTonne(points, int.MaxValue));
         }
 
         return result;

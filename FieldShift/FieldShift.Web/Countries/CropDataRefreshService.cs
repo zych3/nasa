@@ -1,19 +1,21 @@
 using System.Text.Json;
 using FieldShift.Web.Countries.Poland;
-using FieldShift.Web.Countries.Prices;
 using FieldShift.Web.Data;
 using FieldShift.Web.Repositories;
+using FieldShift.Web.Services;
 
 namespace FieldShift.Web.Countries;
 
-/// <summary>Everything fetched from external sources, saved to <c>Data/crop-data.json</c>.</summary>
+/// <summary>
+/// Crop facts fetched from Wikidata and Eurostat, saved to <c>Data/crop-data.json</c>.
+/// Prices are not here: they live in PostgreSQL (<see cref="IPriceHistoryRepository"/>).
+/// </summary>
 public sealed record CropDataSnapshot(
     DateTimeOffset? FetchedAt,
     Dictionary<string, WikidataInfo> Wikidata,
-    Dictionary<string, CropProduction> Production,
-    Dictionary<CropId, PriceHistory> Prices)
+    Dictionary<string, CropProduction> Production)
 {
-    public static CropDataSnapshot Empty => new(null, [], [], []);
+    public static CropDataSnapshot Empty => new(null, [], []);
 }
 
 /// <summary>
@@ -65,25 +67,26 @@ public sealed class CropDataStore
 }
 
 /// <summary>
-/// Refreshes crop data from GUS (prices), Eurostat (area, yield) and Wikidata (photos, links)
-/// at startup and then once a day. A source that fails keeps its previously saved values.
+/// Refreshes crop data from Eurostat (area, yield) and Wikidata (photos, links) at startup and then
+/// once a day; a source that fails keeps its previously saved values. Also keeps the prices in the
+/// database fresh, so requests rarely have to wait for GUS.
 /// </summary>
 public sealed class CropDataRefreshService(
     IServiceScopeFactory scopes,
     CropDataStore store,
+    PricesSchema schema,
     TimeProvider time,
     ILogger<CropDataRefreshService> log) : BackgroundService
 {
-    /// <summary>Price points kept per crop; the API returns the latest 10 by default.</summary>
-    public const int StoredPricePoints = 36;
-
     public const string EurostatGeo = "PL";
 
     public static readonly TimeSpan Interval = TimeSpan.FromHours(24);
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        // Skip the startup refresh when the saved data is fresh and complete (GUS allows only 100 requests / 15 min).
+        await SyncPricesAsync(ct);
+
+        // Skip the startup refresh when the saved data is fresh and complete.
         var saved = store.Current;
         if (saved.FetchedAt is { } fetched && time.GetUtcNow() - fetched is var age && age < Interval
             && CoversCatalog(saved))
@@ -144,16 +147,33 @@ public sealed class CropDataRefreshService(
                 .GetAsync(EurostatGeo, CropCatalog.All.Select(c => c.EurostatCode).OfType<string>(), ct),
             old.Production);
 
-        var prices = await Fetch("GUS BDL",
-            () => services.GetRequiredService<IPriceProvider>().GetLatestPricesAsync(StoredPricePoints, ct),
-            old.Prices);
-
-        if (!anyFresh)
+        if (anyFresh)
+        {
+            await store.SaveAsync(new CropDataSnapshot(time.GetUtcNow(), wikidata, production), ct);
+        }
+        else
         {
             log.LogWarning("No crop data source answered; serving saved data from {FetchedAt}", old.FetchedAt);
-            return;
         }
 
-        await store.SaveAsync(new CropDataSnapshot(time.GetUtcNow(), wikidata, production, prices), ct);
+        await SyncPricesAsync(ct);
+    }
+
+    /// <summary>
+    /// Applies pending EF migrations, then refreshes the prices in the database when they are stale.
+    /// Never throws for a database outage.
+    /// </summary>
+    private async Task SyncPricesAsync(CancellationToken ct)
+    {
+        try
+        {
+            await schema.EnsureAppliedAsync(ct);
+            using var scope = scopes.CreateScope();
+            await scope.ServiceProvider.GetRequiredService<CropPriceService>().EnsureFreshAsync(ct);
+        }
+        catch (Exception e) when (PricesDbContext.IsDatabaseFailure(e))
+        {
+            log.LogWarning(e, "Price database is not available; prices were not refreshed");
+        }
     }
 }
