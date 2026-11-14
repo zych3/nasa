@@ -1,0 +1,69 @@
+import 'package:hopito_field_shift/components/input/plotInput/address_input_field.dart';
+import 'package:hopito_field_shift/components/input/plotInput/crop_multi_selector.dart';
+import 'package:hopito_field_shift/components/input/plotInput/plot_data.dart';
+import 'package:material_ui/material_ui.dart';
+
+class PlotInput extends StatefulWidget {
+  const PlotInput({super.key, required this.onSubmitPlot});
+
+  final void Function(PlotData) onSubmitPlot;
+
+  @override 
+  State<PlotInput> createState() => _PlotInputState();
+}
+
+class _PlotInputState extends State<PlotInput> {
+  final TextEditingController _addressController = TextEditingController();
+  final List<String> _selectedCrops = [];
+
+  @override 
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  void _handleSubmit() {
+    final address = _addressController.text.trim();
+    if (address.isNotEmpty && _selectedCrops.isNotEmpty) {
+      widget.onSubmitPlot(PlotData(address: address, crops: List.from(_selectedCrops)));
+
+      _addressController.clear();
+      setState(() {
+        _selectedCrops.clear();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AddressInputField(controller: _addressController),
+          const SizedBox(height: 20),
+          CropMultiSelector(
+            selectedCrops: _selectedCrops,
+            onCropToggled: (crop, isSelected) {
+              setState(() {
+                if (isSelected) {
+                  _selectedCrops.add(crop);
+                } else {
+                  _selectedCrops.remove(crop);
+                }
+              });
+            },
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: _handleSubmit,
+            icon: const Icon(Icons.send),
+            label: const Text('Submit Plot'),
+          ),
+        ],
+      ),
+    );
+  }
+}
