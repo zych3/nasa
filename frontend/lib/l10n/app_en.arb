@@ -1,0 +1,77 @@
+{
+  "@@locale": "en",
+  "appTitle": "Field Shift",
+  "navMap": "My area",
+  "navPlot": "My field",
+  "navTrends": "Popular crops",
+  "changeLanguage": "Change language",
+  "plotName": "My plot",
+  "plotSummary": "{area} ha  •  location: {location}",
+  "@plotSummary": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      },
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "plotDataSection": "Plot details",
+  "infoSection": "Information",
+  "soil": "Soil",
+  "crop": "Crop",
+  "moisture": "Moisture",
+  "temperature": "Temperature",
+  "trendsTitle": "Popular crops near you",
+  "trendsIntro": "Crops that do well in your area right now. Tap a crop to learn more.",
+  "trendsLoadError": "We could not load the crops. Check your internet and try again.",
+  "trendsEmpty": "No crop suggestions yet.",
+  "tryAgain": "Try again",
+  "close": "Close",
+  "moreDetails": "More details",
+  "priceChange": "{percent}% price in {months} months",
+  "@priceChange": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      },
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "trendUp": "Price going up",
+  "trendDown": "Price going down",
+  "trendFlat": "Price steady",
+  "whyGrowSection": "Why grow it",
+  "cropDataSection": "About the crop",
+  "weatherSection": "Weather in your area",
+  "priceSection": "Price",
+  "priceNow": "{price} {currency} per {unit}",
+  "@priceNow": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      },
+      "currency": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "priceHistory": "Price over the last {months} months",
+  "@priceHistory": {
+    "placeholders": {
+      "months": {
+        "type": "int"
+      }
+    }
+  },
+  "sourceSatellite": "Measured by satellite",
+  "sourceEstimated": "Estimated",
+  "sourceUserAnswer": "From your answer",
+  "demoDataNotice": "Demo data: not real prices yet."
+}

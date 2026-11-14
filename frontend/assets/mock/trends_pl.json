@@ -1,0 +1,361 @@
+{
+  "_comment": "DEMO DATA - not real prices or forecasts. Shape of GET /api/trends.",
+  "crops": [
+    {
+      "id": "wheat",
+      "name": "Pszenica ozima",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Vehn%C3%A4pelto_6.jpg/330px-Vehn%C3%A4pelto_6.jpg",
+      "summary": "Stały popyt i dobre dopasowanie do Twojej gleby.",
+      "reasons": [
+        "Dobrze rośnie na glebie gliniastej, takiej jak Twoja.",
+        "Siew jesienny chroni glebę przed erozją zimą.",
+        "Skupy w Twojej okolicy płacą regularnie."
+      ],
+      "cropFacts": [
+        {
+          "label": "Siew",
+          "value": "wrz – paź",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zbiór",
+          "value": "lip – sie",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zapotrzebowanie na wodę",
+          "value": "Średnia",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Typowy plon",
+          "value": "6–8 t/ha",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        }
+      ],
+      "weatherFacts": [
+        {
+          "label": "Opady",
+          "value": "Wiosną spodziewana wystarczająca ilość deszczu",
+          "source": "satellite",
+          "sourceName": "NASA IMERG"
+        },
+        {
+          "label": "Mróz",
+          "value": "Małe ryzyko silnych mrozów",
+          "source": "satellite",
+          "sourceName": "NASA POWER"
+        }
+      ],
+      "price": {
+        "current": 1020,
+        "currency": "PLN",
+        "unit": "t",
+        "changePercent": 8.4,
+        "periodMonths": 12,
+        "history": [
+          940,
+          950,
+          948,
+          960,
+          975,
+          970,
+          985,
+          990,
+          1000,
+          1005,
+          1012,
+          1020
+        ],
+        "source": "estimated",
+        "sourceName": "Demo data"
+      }
+    },
+    {
+      "id": "rapeseed",
+      "name": "Rzepak",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Brassica_napus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-169.jpg/330px-Brassica_napus_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-169.jpg",
+      "summary": "Cena rośnie najszybciej w tym roku.",
+      "reasons": [
+        "Dobra uprawa po pszenicy w płodozmianie.",
+        "Głębokie korzenie spulchniają ubitą glebę.",
+        "Wysoka cena nasion oleistych w tym momencie."
+      ],
+      "cropFacts": [
+        {
+          "label": "Siew",
+          "value": "sie",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zbiór",
+          "value": "lip",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zapotrzebowanie na wodę",
+          "value": "Średnia",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Typowy plon",
+          "value": "3–4 t/ha",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        }
+      ],
+      "weatherFacts": [
+        {
+          "label": "Opady",
+          "value": "Opady jesienią w normie",
+          "source": "satellite",
+          "sourceName": "NASA IMERG"
+        },
+        {
+          "label": "Susza",
+          "value": "Pewne ryzyko suszy w maju",
+          "source": "estimated",
+          "sourceName": "NASA SMAP"
+        }
+      ],
+      "price": {
+        "current": 2150,
+        "currency": "PLN",
+        "unit": "t",
+        "changePercent": 14.2,
+        "periodMonths": 12,
+        "history": [
+          1880,
+          1900,
+          1920,
+          1950,
+          1990,
+          2010,
+          2030,
+          2060,
+          2080,
+          2100,
+          2130,
+          2150
+        ],
+        "source": "estimated",
+        "sourceName": "Demo data"
+      }
+    },
+    {
+      "id": "maize",
+      "name": "Kukurydza",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg/330px-Zea_mays_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-283.jpg",
+      "summary": "Cieplejsze lata coraz bardziej sprzyjają kukurydzy.",
+      "reasons": [
+        "Lubi cieplejsze lata, które mamy teraz.",
+        "Można sprzedać jako ziarno lub kiszonkę."
+      ],
+      "cropFacts": [
+        {
+          "label": "Siew",
+          "value": "kwi – maj",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zbiór",
+          "value": "wrz – paź",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zapotrzebowanie na wodę",
+          "value": "Wysoka",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Typowy plon",
+          "value": "8–10 t/ha",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        }
+      ],
+      "weatherFacts": [
+        {
+          "label": "Upał",
+          "value": "Więcej upalnych dni niż 10 lat temu",
+          "source": "satellite",
+          "sourceName": "NASA POWER"
+        },
+        {
+          "label": "Susza",
+          "value": "Ryzyko suszy w lipcu",
+          "source": "estimated",
+          "sourceName": "NASA SMAP"
+        }
+      ],
+      "price": {
+        "current": 880,
+        "currency": "PLN",
+        "unit": "t",
+        "changePercent": 3.1,
+        "periodMonths": 12,
+        "history": [
+          853,
+          860,
+          858,
+          862,
+          870,
+          866,
+          872,
+          875,
+          870,
+          876,
+          879,
+          880
+        ],
+        "source": "estimated",
+        "sourceName": "Demo data"
+      }
+    },
+    {
+      "id": "buckwheat",
+      "name": "Gryka",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Japanese_Buckwheat_Flower.JPG/330px-Japanese_Buckwheat_Flower.JPG",
+      "summary": "Tania w uprawie i dobra na słabsze gleby.",
+      "reasons": [
+        "Potrzebuje mało nawozu.",
+        "Kwiaty karmią pszczoły i inne owady zapylające.",
+        "Krótki sezon: pasuje po wczesnym zbiorze."
+      ],
+      "cropFacts": [
+        {
+          "label": "Siew",
+          "value": "maj – cze",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zbiór",
+          "value": "sie – wrz",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zapotrzebowanie na wodę",
+          "value": "Niska",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Typowy plon",
+          "value": "1,5–2,5 t/ha",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        }
+      ],
+      "weatherFacts": [
+        {
+          "label": "Mróz",
+          "value": "Ryzyko późnych przymrozków jest małe",
+          "source": "satellite",
+          "sourceName": "NASA POWER"
+        }
+      ],
+      "price": {
+        "current": 1650,
+        "currency": "PLN",
+        "unit": "t",
+        "changePercent": -2.4,
+        "periodMonths": 12,
+        "history": [
+          1690,
+          1700,
+          1685,
+          1680,
+          1675,
+          1670,
+          1668,
+          1660,
+          1662,
+          1655,
+          1652,
+          1650
+        ],
+        "source": "estimated",
+        "sourceName": "Demo data"
+      }
+    },
+    {
+      "id": "soybean",
+      "name": "Soja",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Soybean.USDA.jpg/330px-Soybean.USDA.jpg",
+      "summary": "Dodaje azot do gleby dla kolejnej uprawy.",
+      "reasons": [
+        "Za darmo oddaje azot do gleby.",
+        "Przerywa cykl szkodników po zbożach."
+      ],
+      "cropFacts": [
+        {
+          "label": "Siew",
+          "value": "maj",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zbiór",
+          "value": "wrz",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Zapotrzebowanie na wodę",
+          "value": "Średnia",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        },
+        {
+          "label": "Typowy plon",
+          "value": "2,5–3,5 t/ha",
+          "source": "estimated",
+          "sourceName": "FAO ECOCROP"
+        }
+      ],
+      "weatherFacts": [
+        {
+          "label": "Upał",
+          "value": "Ciepło latem jest teraz wystarczające",
+          "source": "satellite",
+          "sourceName": "NASA POWER"
+        }
+      ],
+      "price": {
+        "current": 1780,
+        "currency": "PLN",
+        "unit": "t",
+        "changePercent": 0.6,
+        "periodMonths": 12,
+        "history": [
+          1769,
+          1772,
+          1770,
+          1775,
+          1778,
+          1771,
+          1774,
+          1776,
+          1779,
+          1777,
+          1781,
+          1780
+        ],
+        "source": "estimated",
+        "sourceName": "Demo data"
+      }
+    }
+  ]
+}
