@@ -60,7 +60,7 @@ class SoilQualityOverlay extends MapOverlay {
   };
 
   @override
-  OverlayLayer parse(Map<String, dynamic> json) {
+  OverlayLayer parse(Map<String, dynamic> json, {int? month}) {
     final center = readLocation(json);
     final soil = readStatic(json)['soil'];
     if (soil != null && soil is! Map<String, dynamic>) {

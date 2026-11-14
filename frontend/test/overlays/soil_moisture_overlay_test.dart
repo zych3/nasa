@@ -45,8 +45,8 @@ void main() {
     expect(layer.isEstimate, isFalse);
     expect(layer.area.center, const LatLng(52.2, 21.48));
     expect(layer.area.radiusMeters, MonthlyLayerOverlay.radiusMeters);
-    expect(layer.period!(pl), pl.overlaysMonth('grudzień 2025'));
-    expect(layer.period!(en), en.overlaysMonth('December 2025'));
+    expect(layer.month, DateTime(2025, 12));
+    expect(layer.monthIndex, 119);
   });
 
   test('legend in the user\'s language; Polish = the backend\'s labels', () {
@@ -157,7 +157,24 @@ void main() {
     final layer = _overlay.parse(json);
 
     expect(layer.currentIndex, 3);
-    expect(layer.period!(pl), pl.overlaysMonth('listopad 2025'));
+    expect(layer.month, DateTime(2025, 11));
+    expect(layer.monthIndex, 118);
+  });
+
+  test('a chosen month is shown, also without a value', () {
+    final json = loadSample();
+    // 2025-07 has a value; 2025-06 is emptied.
+    final values = _moisture(json)['values'] as List;
+    values[113] = null;
+
+    final july = _overlay.parse(json, month: 114);
+    expect(july.month, DateTime(2025, 7));
+    expect(july.monthIndex, 114);
+    expect(july.currentIndex, isNotNull);
+
+    final june = _overlay.parse(json, month: 113);
+    expect(june.month, DateTime(2025, 6));
+    expect(june.currentIndex, isNull, reason: 'no fallback for a chosen month');
   });
 
   test('no value in any month is "no data"', () {
@@ -169,7 +186,8 @@ void main() {
 
     expect(layer.currentIndex, isNull);
     expect(layer.legend, hasLength(4));
-    expect(layer.period, isNull);
+    expect(layer.month, isNull);
+    expect(layer.monthIndex, isNull);
   });
 
   test('layer not sent by the backend is "no data"', () {

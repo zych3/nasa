@@ -823,6 +823,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{step, select, s0{dry} s1{rather dry} s2{moist} other{very moist}}'**
   String overlayStepsSoilMoisture(String step);
+
+  /// No description provided for @overlaysEarlierMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier month'**
+  String get overlaysEarlierMonth;
+
+  /// No description provided for @overlaysLaterMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Later month'**
+  String get overlaysLaterMonth;
 }
 
 class _AppLocalizationsDelegate

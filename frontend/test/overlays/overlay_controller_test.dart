@@ -6,6 +6,7 @@ import 'package:hopito_field_shift/models/overlay_layer.dart';
 import 'package:hopito_field_shift/overlays/map_layers_repository.dart';
 import 'package:hopito_field_shift/overlays/map_overlay.dart';
 import 'package:hopito_field_shift/overlays/overlay_controller.dart';
+import 'package:hopito_field_shift/overlays/soil_moisture_overlay.dart';
 import 'package:hopito_field_shift/overlays/soil_quality_overlay.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -27,7 +28,7 @@ class _PointOverlay extends MapOverlay {
   String title(_) => 'Point';
 
   @override
-  OverlayLayer parse(Map<String, dynamic> json) {
+  OverlayLayer parse(Map<String, dynamic> json, {int? month}) {
     final location = json['location'] as Map<String, dynamic>;
     return OverlayLayer(
       area: OverlayArea(
@@ -191,6 +192,43 @@ void main() {
     controller.showPlace(_other);
     expect(controller.isDemo, isFalse);
     expect(controller.status, OverlayStatus.loading);
+  });
+
+  test('stepping through months; the month stays for other overlays', () async {
+    final c = OverlayController(
+      repository: repo,
+      overlays: const [SoilQualityOverlay(), SoilMoistureOverlay()],
+    );
+    addTearDown(c.dispose);
+    c.showPlace(_field);
+    repo.complete(_field, loadSample());
+    await pumpEventQueue();
+
+    // Soil has no months.
+    expect(c.canShowEarlierMonth, isFalse);
+    c.stepMonth(-1);
+    expect(c.layer!.monthIndex, isNull);
+
+    c.select(c.overlays[1]);
+    expect(c.monthCount, 120);
+    expect(c.layer!.monthIndex, 119);
+    expect(c.canShowLaterMonth, isFalse);
+    c.stepMonth(1); // past the end: ignored
+    expect(c.layer!.monthIndex, 119);
+
+    c.stepMonth(-1);
+    expect(c.layer!.month, DateTime(2025, 11));
+    expect(c.canShowLaterMonth, isTrue);
+
+    c.select(c.overlays[0]);
+    c.select(c.overlays[1]);
+    expect(c.layer!.monthIndex, 118, reason: 'kept while switching');
+
+    // A new place starts again at the latest month.
+    c.showPlace(_other);
+    repo.complete(_other, _sampleAt(_other));
+    await pumpEventQueue();
+    expect(c.layer!.monthIndex, 119);
   });
 
   test('answer after dispose does not notify or throw', () async {

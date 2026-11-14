@@ -116,7 +116,13 @@ void main() {
 
     // Backend label on the map and in the value card, month, NASA source.
     expect(find.text('umiarkowanie sucho (0,35–0,45)'), findsNWidgets(2));
-    expect(find.text(_pl.overlaysMonth('grudzień 2025')), findsOneWidget);
+    expect(find.text('grudzień 2025'), findsOneWidget);
+    expect(find.bySemanticsLabel(_pl.overlaysMonth('grudzień 2025')), findsOne);
+
+    // One month back: the value and the month change, still no request.
+    await tester.tap(find.byTooltip(_pl.overlaysEarlierMonth));
+    await tester.pump();
+    expect(find.text('listopad 2025'), findsOneWidget);
     expect(find.text(_pl.overlaysSource('NASA POWER (GWETROOT)')), findsOne);
     expect(find.text(_pl.sourceEstimated), findsNothing);
     expect(repo.requests, hasLength(1));
@@ -237,6 +243,39 @@ void main() {
           handle.dispose();
         });
       }
+    }
+
+    for (final locale in AppLocalizations.supportedLocales) {
+      testWidgets('monthly overlay with month buttons, phone 1.5×, $locale', (
+        tester,
+      ) async {
+        final l10n = lookupAppLocalizations(locale);
+        final handle = tester.ensureSemantics();
+        tester.view.physicalSize = const Size(360, 640);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.reset);
+
+        await pumpScreen(tester, textScale: 1.5, locale: locale);
+        repo.complete(OverlaysScreen.examplePlace, loadSample());
+        await tester.pump();
+        await tester.ensureVisible(find.text(l10n.overlayMoistureTitle));
+        await tester.pump();
+        await tester.tap(find.text(l10n.overlayMoistureTitle));
+        await tester.pump();
+        await tester.scrollUntilVisible(
+          find.byTooltip(l10n.overlaysEarlierMonth),
+          100,
+        );
+        await checkGuidelines(tester, 'month buttons');
+        await tester.tap(find.byTooltip(l10n.overlaysEarlierMonth));
+        await tester.pump();
+        await tester.scrollUntilVisible(
+          find.text(l10n.overlaysLegendHere),
+          100,
+        );
+        await checkGuidelines(tester, 'legend');
+        handle.dispose();
+      });
     }
 
     testWidgets('the chosen overlay is announced as selected', (tester) async {

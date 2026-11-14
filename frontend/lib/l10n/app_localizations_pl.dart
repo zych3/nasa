@@ -463,4 +463,10 @@ class AppLocalizationsPl extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get overlaysEarlierMonth => 'Poprzedni miesiąc';
+
+  @override
+  String get overlaysLaterMonth => 'Następny miesiąc';
 }

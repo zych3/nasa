@@ -459,4 +459,10 @@ class AppLocalizationsEn extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get overlaysEarlierMonth => 'Earlier month';
+
+  @override
+  String get overlaysLaterMonth => 'Later month';
 }

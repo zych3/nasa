@@ -307,5 +307,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "overlaysEarlierMonth": "Earlier month",
+  "overlaysLaterMonth": "Later month"
 }

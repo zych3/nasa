@@ -22,11 +22,17 @@ abstract class MapOverlay {
   /// Short name for the overlay chooser, e.g. "Soil".
   String title(AppLocalizations l10n);
 
+  /// Has one value per month (the user can step through months).
+  bool get isMonthly => false;
+
   /// Reads this overlay from the decoded `GET /api/map-layers` response.
   ///
   /// Pure (no I/O, no context) so it can be unit-tested. Throws
   /// [FormatException] when the response is broken (e.g. no valid location);
   /// returns a layer with `currentIndex == null` when the response is valid
   /// but has no value for this overlay.
-  OverlayLayer parse(Map<String, dynamic> json);
+  ///
+  /// [month] is an index into the response's `dates`; `null` = the overlay's
+  /// default month. Overlays that do not change over time ignore it.
+  OverlayLayer parse(Map<String, dynamic> json, {int? month});
 }

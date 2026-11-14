@@ -50,6 +50,7 @@ class OverlayController extends ChangeNotifier {
   OverlayError? _error;
   Map<String, dynamic>? _response;
   OverlayLayer? _layer;
+  int? _month;
   bool _isDemo = false;
   int _generation = 0;
   bool _disposed = false;
@@ -68,6 +69,31 @@ class OverlayController extends ChangeNotifier {
 
   /// The shown data is the saved demo response, not data for [place].
   bool get isDemo => _isDemo;
+
+  /// Number of months in the loaded response (0 before it is loaded).
+  int get monthCount {
+    final dates = _response?['dates'];
+    return dates is List ? dates.length : 0;
+  }
+
+  /// An earlier / a later month can be shown (monthly overlays only).
+  bool get canShowEarlierMonth => (_layer?.monthIndex ?? 0) > 0;
+  bool get canShowLaterMonth {
+    final index = _layer?.monthIndex;
+    return index != null && index < monthCount - 1;
+  }
+
+  /// Steps the shown month by [delta] (−1 = earlier). The month stays chosen
+  /// when switching to another monthly overlay, so they can be compared.
+  void stepMonth(int delta) {
+    final index = _layer?.monthIndex;
+    if (index == null || _response == null) return;
+    final next = index + delta;
+    if (next < 0 || next >= monthCount) return;
+    _month = next;
+    _parse();
+    _notify();
+  }
 
   void select(MapOverlay overlay) {
     if (overlay.id == _selected.id) return;
@@ -101,6 +127,7 @@ class OverlayController extends ChangeNotifier {
     _error = null;
     _response = null;
     _layer = null;
+    _month = null;
     _isDemo = false;
     _notify();
 
@@ -127,7 +154,7 @@ class OverlayController extends ChangeNotifier {
 
   void _parse() {
     try {
-      _layer = _selected.parse(_response!);
+      _layer = _selected.parse(_response!, month: _month);
       _status = OverlayStatus.ready;
       _error = null;
     } catch (e) {

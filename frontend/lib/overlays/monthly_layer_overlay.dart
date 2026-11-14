@@ -7,9 +7,9 @@ import 'map_layers_json.dart';
 import 'map_overlay.dart';
 
 /// Base for overlays drawn from one monthly series of `GET /api/map-layers`
-/// (`layers[]`: temperature, precipitation, soilMoisture, ...). Shows the
-/// latest month (`defaultIndex`, or the newest earlier month with data) on
-/// the backend's own colour scale.
+/// (`layers[]`: temperature, precipitation, soilMoisture, ...), on the
+/// backend's own colour scale. Shows the chosen month, by default the latest
+/// one (`defaultIndex`, or the newest earlier month with data).
 ///
 /// A new monthly overlay is a subclass with [layerId], `id`, `icon` and
 /// `title` (see `SoilMoistureOverlay`) plus one line in `overlayRegistry`.
@@ -29,6 +29,9 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
   @override
   String get id => layerId;
 
+  @override
+  bool get isMonthly => true;
+
   /// Plain word for step [step] (0 = lowest) of the backend's scale in the
   /// user's language, e.g. "dry"; `null` shows the backend's own label, which
   /// is Polish only. The range in brackets is always computed from the
@@ -40,7 +43,7 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
   int get stepWordCount => 0;
 
   @override
-  OverlayLayer parse(Map<String, dynamic> json) {
+  OverlayLayer parse(Map<String, dynamic> json, {int? month}) {
     final area = OverlayArea(
       center: readLocation(json),
       radiusMeters: radiusMeters,
@@ -72,17 +75,22 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
         index >= dates.length) {
       throw FormatException('map-layers: bad series for "$layerId"');
     }
-    // The latest month with a value: NASA POWER can miss the newest months
-    // (the backend then sends null); the month is shown next to the value.
-    var shown = index;
-    while (shown > 0 && values[shown] == null) {
-      shown--;
+    var shown = month?.clamp(0, dates.length - 1) ?? index;
+    if (month == null) {
+      // The latest month with a value: NASA POWER can miss the newest months
+      // (the backend then sends null); the month is shown next to the value.
+      while (shown > 0 && values[shown] == null) {
+        shown--;
+      }
     }
     final value = values[shown];
     if (value != null && value is! num) {
       throw FormatException('map-layers: bad value $value in "$layerId"');
     }
-    final month = _readMonth(dates[shown]);
+    final date = _readMonth(dates[shown]);
+    // Default month and no month has a value: no month at all (not "January
+    // 2016"). A month the user chose is always shown, also without data.
+    final hasMonth = month != null || value != null;
     final source = layer['source'];
 
     return OverlayLayer(
@@ -98,12 +106,8 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
       source: source is String && source.isNotEmpty ? source : null,
       isEstimate: layer['isEstimate'] == true,
       coverage: _coverage,
-      // No month at all when no month has a value (not "January 2016").
-      period: value == null
-          ? null
-          : (l10n) => l10n.overlaysMonth(
-              DateFormat.yMMMM(l10n.localeName).format(month),
-            ),
+      month: hasMonth ? date : null,
+      monthIndex: hasMonth ? shown : null,
     );
   }
 

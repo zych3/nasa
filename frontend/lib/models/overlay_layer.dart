@@ -77,7 +77,8 @@ class OverlayLayer {
     required this.source,
     required this.isEstimate,
     required this.coverage,
-    this.period,
+    this.month,
+    this.monthIndex,
   }) : assert(
          currentIndex == null ||
              (currentIndex >= 0 && currentIndex < legend.length),
@@ -101,9 +102,12 @@ class OverlayLayer {
   /// How precise the value is in space, e.g. "One value for about 50 km".
   final L10nText coverage;
 
-  /// When the value is from, e.g. "December 2025"; `null` for values that do
-  /// not change over time.
-  final L10nText? period;
+  /// Month the value is for (first day); `null` for values that do not change
+  /// over time, like soil, or when no month has a value.
+  final DateTime? month;
+
+  /// Index of [month] in the response's `dates`, for stepping through months.
+  final int? monthIndex;
 
   OverlayLegendItem? get current =>
       currentIndex == null ? null : legend[currentIndex!];

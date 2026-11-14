@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
@@ -150,6 +151,12 @@ class OverlayPanel extends StatelessWidget {
           _ValueCard(
             layer: layer,
             examplePlace: showNoFieldNotice || controller.isDemo,
+            onEarlierMonth: controller.canShowEarlierMonth
+                ? () => controller.stepMonth(-1)
+                : null,
+            onLaterMonth: controller.canShowLaterMonth
+                ? () => controller.stepMonth(1)
+                : null,
           ),
         ];
     }
@@ -236,12 +243,21 @@ class _OverlayChoice extends StatelessWidget {
 /// The value at the place: level + word, when, source, estimate and how
 /// precise it is in space.
 class _ValueCard extends StatelessWidget {
-  const _ValueCard({required this.layer, required this.examplePlace});
+  const _ValueCard({
+    required this.layer,
+    required this.examplePlace,
+    this.onEarlierMonth,
+    this.onLaterMonth,
+  });
 
   final OverlayLayer layer;
 
   /// The value is not for the user's field (no field chosen, or demo data).
   final bool examplePlace;
+
+  /// Show the month before / after; `null` = there is none.
+  final VoidCallback? onEarlierMonth;
+  final VoidCallback? onLaterMonth;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +265,7 @@ class _ValueCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     final current = layer.current;
-    final period = layer.period;
+    final month = layer.month;
     final source = layer.source;
 
     return Card(
@@ -265,6 +281,14 @@ class _ValueCard extends StatelessWidget {
                   : l10n.overlaysValueHeading,
               style: theme.textTheme.titleMedium,
             ),
+            if (month != null) ...[
+              const SizedBox(height: 8),
+              _MonthStepper(
+                month: month,
+                onEarlier: onEarlierMonth,
+                onLater: onLaterMonth,
+              ),
+            ],
             const SizedBox(height: 8),
             Semantics(
               liveRegion: true,
@@ -291,10 +315,6 @@ class _ValueCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (period != null) ...[
-              const SizedBox(height: 4),
-              Text(period(l10n), style: const TextStyle(fontSize: 18)),
-            ],
             if (layer.isEstimate) ...[
               const SizedBox(height: 12),
               _IconText(
@@ -314,6 +334,52 @@ class _ValueCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "◀ December 2025 ▶": the month of the value, with big buttons to step
+/// through the months the backend sent.
+class _MonthStepper extends StatelessWidget {
+  const _MonthStepper({required this.month, this.onEarlier, this.onLater});
+
+  final DateTime month;
+  final VoidCallback? onEarlier;
+  final VoidCallback? onLater;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final name = DateFormat.yMMMM(l10n.localeName).format(month);
+    final style = IconButton.styleFrom(minimumSize: const Size(56, 56));
+
+    return Row(
+      children: [
+        IconButton.filledTonal(
+          style: style,
+          tooltip: l10n.overlaysEarlierMonth,
+          onPressed: onEarlier,
+          icon: const Icon(Icons.chevron_left, size: 32),
+        ),
+        Expanded(
+          child: Semantics(
+            label: l10n.overlaysMonth(name),
+            excludeSemantics: true,
+            liveRegion: true,
+            child: Text(
+              name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        IconButton.filledTonal(
+          style: style,
+          tooltip: l10n.overlaysLaterMonth,
+          onPressed: onLater,
+          icon: const Icon(Icons.chevron_right, size: 32),
+        ),
+      ],
     );
   }
 }

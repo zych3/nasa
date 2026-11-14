@@ -20,7 +20,8 @@ void main() {
     expect(layer.current!.label(pl), pl.soilClassLight);
     expect(layer.source, 'ISRIC SoilGrids v2.0 (0–30 cm)');
     expect(layer.isEstimate, isTrue);
-    expect(layer.period, isNull);
+    expect(layer.month, isNull, reason: 'soil does not change by month');
+    expect(overlay.isMonthly, isFalse);
   });
 
   test('every backend soil class has its own level', () {
