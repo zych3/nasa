@@ -8,6 +8,7 @@ import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'pages/trending_crops_page.dart';
 import 'repositories/selected_plot_store.dart';
+import 'screens/overlays_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -95,6 +96,15 @@ class _MyScaffoldState extends State<MyScaffold> {
             child: PlotPage(store: widget.plotStore),
           ),
           _TabWithFlag(flag: flag, child: const TrendingCropsPage()),
+          _TabWithFlag(
+            flag: flag,
+            child: OverlaysScreen(
+              store: widget.plotStore,
+              // Loads data (5–10 s from NASA) only once the tab is opened.
+              active: _selectedIndex == 3,
+              onChooseField: () => setState(() => _selectedIndex = 0),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: AppNavBar(
