@@ -131,13 +131,18 @@ class _OverlayMapState extends State<OverlayMap> {
                   height: 56,
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    child: _ValueLabel(
+                    child: _MapPill(
                       color: color,
-                      level: layer.currentIndex == null
-                          ? null
-                          : layer.currentIndex! + 1,
-                      count: layer.legend.length,
+                      bordered: true,
                       text: current?.label(l10n) ?? l10n.overlaysNoData,
+                      leading: (onColor) => current == null
+                          ? Icon(Icons.help_outline, size: 18, color: onColor)
+                          : OverlayLevelBars(
+                              level: layer.currentIndex! + 1,
+                              count: layer.legend.length,
+                              color: onColor,
+                              height: 18,
+                            ),
                     ),
                   ),
                 ),
@@ -148,9 +153,11 @@ class _OverlayMapState extends State<OverlayMap> {
                   height: 52,
                   alignment: Alignment.bottomCenter,
                   child: IgnorePointer(
-                    child: _FieldLabel(
-                      text: l10n.myFieldMarker,
+                    child: _MapPill(
                       color: scheme.tertiary,
+                      text: l10n.myFieldMarker,
+                      leading: (onColor) =>
+                          Icon(Icons.flag, size: 18, color: onColor),
                     ),
                   ),
                 ),
@@ -194,91 +201,42 @@ Color _readableOn(Color background) {
   return onBlack >= onWhite ? Colors.black : Colors.white;
 }
 
-/// Pill in the colour of the value with its level bars and word.
-class _ValueLabel extends StatelessWidget {
-  const _ValueLabel({
+/// Label drawn on the map: icon (or level bars) + word on a coloured pill,
+/// in black or white, whichever reads better on the colour.
+class _MapPill extends StatelessWidget {
+  const _MapPill({
     required this.color,
-    required this.level,
-    required this.count,
     required this.text,
+    required this.leading,
+    this.bordered = false,
   });
 
   final Color color;
-
-  /// 1-based level; `null` = no data.
-  final int? level;
-  final int count;
   final String text;
+
+  /// Icon or level bars, drawn in the text colour.
+  final Widget Function(Color onColor) leading;
+
+  /// Outline in the text colour, so a light pill stands out on the map.
+  final bool bordered;
 
   @override
   Widget build(BuildContext context) {
     final onColor = _readableOn(color);
-    final level = this.level;
     return Center(
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: onColor, width: 1.5),
+          border: bordered ? Border.all(color: onColor, width: 1.5) : null,
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (level != null)
-                OverlayLevelBars(
-                  level: level,
-                  count: count,
-                  color: onColor,
-                  height: 18,
-                )
-              else
-                Icon(Icons.help_outline, size: 18, color: onColor),
+              leading(onColor),
               const SizedBox(width: 8),
-              Flexible(
-                child: Text(
-                  text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: onColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// "My field" pill, like the one on the other maps.
-class _FieldLabel extends StatelessWidget {
-  const _FieldLabel({required this.text, required this.color});
-
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final onColor = _readableOn(color);
-    return Center(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.flag, size: 18, color: onColor),
-              const SizedBox(width: 6),
               Flexible(
                 child: Text(
                   text,

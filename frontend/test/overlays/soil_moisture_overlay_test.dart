@@ -69,11 +69,27 @@ void main() {
     }
   });
 
-  test('no value for the month (null) is "no data"', () {
-    final layer = _overlay.parse(_withValue(null));
+  test('latest month without a value: the newest month with one', () {
+    final json = _withValue(null);
+    final values = _moisture(json)['values'] as List;
+    values[(json['defaultIndex'] as int) - 1] = 0.6; // 2025-11
+
+    final layer = _overlay.parse(json);
+
+    expect(layer.currentIndex, 3);
+    expect(layer.period!(pl), pl.overlaysMonth('listopad 2025'));
+  });
+
+  test('no value in any month is "no data"', () {
+    final json = loadSample();
+    final values = _moisture(json)['values'] as List;
+    values.fillRange(0, values.length, null);
+
+    final layer = _overlay.parse(json);
+
     expect(layer.currentIndex, isNull);
     expect(layer.legend, hasLength(4));
-    expect(layer.period, isNotNull);
+    expect(layer.period, isNull);
   });
 
   test('layer not sent by the backend is "no data"', () {

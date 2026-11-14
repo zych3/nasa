@@ -38,3 +38,19 @@ Sprawdzone bez uwag: `dispose` (kontroler, `MapController`, słuchacz store), wy
 w nowych plikach (grep z AGENTS.md znajduje tylko starą linię w `parcel_map.dart`).
 
 **Wysoki priorytet: brak.**
+
+## Recenzja #3 (po iteracjach 7–8: dostępność, druga nakładka; przegląd całego diffu względem `main`)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 16 | Ś | ✅ | `monthly_layer_overlay.dart` | Backend ostrzega, że NASA POWER może nie mieć najnowszych miesięcy (`null`). Wtedy nakładka pokazywała „Brak danych”, choć wcześniejszy miesiąc ma wartość. Teraz: najnowszy miesiąc z wartością (miesiąc jest podpisany). Gdy brak wartości w ogóle – „Brak danych” bez mylącego „styczeń 2016”. Testy. |
+| 17 | N | ✅ | `overlay_map.dart` | `_ValueLabel` i `_FieldLabel` różniły się ikoną i obramowaniem – połączone w `_MapPill`. |
+| 18 | Ś | 📝 | backend / `monthly_layer_overlay.dart` | Etykiety legend z backendu tylko po polsku – w wersji EN legenda wilgotności jest po polsku. Opis i propozycja w PROGRESS.md („Do decyzji”). |
+| 19 | N | ⏳ | `map_layers_repository.dart` | `useMock` nie jest używany przez aplikację (dane demo idą przez `demo()` na żądanie użytkownika). Zostawiony dla zgodności z innymi repozytoriami (AGENTS.md) i przetestowany. |
+| 20 | N | ⏳ | `overlay_controller.dart` | Getter `place` używany tylko w testach. Tani, zostawiam. |
+
+Sprawdzone bez uwag: przełączanie nakładek po błędzie „złe dane” jednej z nich (druga może się wczytać, bo odpowiedź
+zostaje), odporność parsera serii na 10 rodzajów uszkodzeń, wspólna reguła progów z backendem (granice w testach),
+kontrakt `FieldShift/docs/map-layers.md` ↔ parser.
+
+**Wysoki priorytet: brak** (w żadnej z trzech recenzji nie było pozycji „W”).
