@@ -3,6 +3,8 @@ import 'package:hopito_field_shift/components/input/plotInput/crop_multi_selecto
 import 'package:hopito_field_shift/components/input/plotInput/plot_data.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class PlotInput extends StatefulWidget {
   const PlotInput({super.key, required this.onSubmitPlot, this.onFindParcel});
 
@@ -66,7 +68,7 @@ class _PlotInputState extends State<PlotInput> {
           ElevatedButton.icon(
             onPressed: _handleSubmit,
             icon: const Icon(Icons.send),
-            label: const Text('Submit Plot'),
+            label: Text(AppLocalizations.of(context).submitPlot),
           ),
         ],
       ),

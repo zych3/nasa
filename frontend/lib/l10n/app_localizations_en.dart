@@ -132,4 +132,54 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get parcelLookupFailed =>
       'Could not look up the parcel. Check your connection and try again.';
+
+  @override
+  String get plotAddressLabel => 'Plot address';
+
+  @override
+  String get plotAddressHint => 'Enter a street or place';
+
+  @override
+  String get selectCropsLabel => 'Crops on this plot:';
+
+  @override
+  String get searchCropsHint => 'Search crops...';
+
+  @override
+  String searchCropsSelectedHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected — search crops...',
+      one: '1 selected — search crops...',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noCropsFound => 'No crops found';
+
+  @override
+  String get submitPlot => 'Save plot';
+
+  @override
+  String get cropCorn => 'Corn';
+
+  @override
+  String get cropWheat => 'Wheat';
+
+  @override
+  String get cropSoybeans => 'Soybeans';
+
+  @override
+  String get cropBarley => 'Barley';
+
+  @override
+  String get cropRice => 'Rice';
+
+  @override
+  String get cropPotatoes => 'Potatoes';
+
+  @override
+  String get cropTomatoes => 'Tomatoes';
 }

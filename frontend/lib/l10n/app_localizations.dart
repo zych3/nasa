@@ -319,6 +319,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not look up the parcel. Check your connection and try again.'**
   String get parcelLookupFailed;
+
+  /// No description provided for @plotAddressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plot address'**
+  String get plotAddressLabel;
+
+  /// No description provided for @plotAddressHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a street or place'**
+  String get plotAddressHint;
+
+  /// No description provided for @selectCropsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops on this plot:'**
+  String get selectCropsLabel;
+
+  /// No description provided for @searchCropsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search crops...'**
+  String get searchCropsHint;
+
+  /// No description provided for @searchCropsSelectedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 selected — search crops...} other{{count} selected — search crops...}}'**
+  String searchCropsSelectedHint(int count);
+
+  /// No description provided for @noCropsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No crops found'**
+  String get noCropsFound;
+
+  /// No description provided for @submitPlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Save plot'**
+  String get submitPlot;
+
+  /// No description provided for @cropCorn.
+  ///
+  /// In en, this message translates to:
+  /// **'Corn'**
+  String get cropCorn;
+
+  /// No description provided for @cropWheat.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheat'**
+  String get cropWheat;
+
+  /// No description provided for @cropSoybeans.
+  ///
+  /// In en, this message translates to:
+  /// **'Soybeans'**
+  String get cropSoybeans;
+
+  /// No description provided for @cropBarley.
+  ///
+  /// In en, this message translates to:
+  /// **'Barley'**
+  String get cropBarley;
+
+  /// No description provided for @cropRice.
+  ///
+  /// In en, this message translates to:
+  /// **'Rice'**
+  String get cropRice;
+
+  /// No description provided for @cropPotatoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Potatoes'**
+  String get cropPotatoes;
+
+  /// No description provided for @cropTomatoes.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomatoes'**
+  String get cropTomatoes;
 }
 
 class _AppLocalizationsDelegate

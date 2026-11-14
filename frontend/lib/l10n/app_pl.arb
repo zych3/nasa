@@ -36,5 +36,19 @@
   "demoDataNotice": "Dane demonstracyjne: to jeszcze nie są prawdziwe ceny.",
   "parcelNumber": "Działka {id}",
   "parcelNotFound": "Nie znaleziono działki pod tym adresem.",
-  "parcelLookupFailed": "Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie."
+  "parcelLookupFailed": "Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.",
+  "plotAddressLabel": "Adres działki",
+  "plotAddressHint": "Wpisz ulicę lub miejscowość",
+  "selectCropsLabel": "Uprawy na działce:",
+  "searchCropsHint": "Szukaj upraw...",
+  "searchCropsSelectedHint": "{count, plural, =1{Wybrano 1 — szukaj upraw...} few{Wybrano {count} — szukaj upraw...} many{Wybrano {count} — szukaj upraw...} other{Wybrano {count} — szukaj upraw...}}",
+  "noCropsFound": "Nie znaleziono upraw",
+  "submitPlot": "Zapisz działkę",
+  "cropCorn": "Kukurydza",
+  "cropWheat": "Pszenica",
+  "cropSoybeans": "Soja",
+  "cropBarley": "Jęczmień",
+  "cropRice": "Ryż",
+  "cropPotatoes": "Ziemniaki",
+  "cropTomatoes": "Pomidory"
 }

@@ -83,5 +83,26 @@
     }
   },
   "parcelNotFound": "We could not find a parcel at this address.",
-  "parcelLookupFailed": "Could not look up the parcel. Check your connection and try again."
+  "parcelLookupFailed": "Could not look up the parcel. Check your connection and try again.",
+  "plotAddressLabel": "Plot address",
+  "plotAddressHint": "Enter a street or place",
+  "selectCropsLabel": "Crops on this plot:",
+  "searchCropsHint": "Search crops...",
+  "searchCropsSelectedHint": "{count, plural, =1{1 selected — search crops...} other{{count} selected — search crops...}}",
+  "@searchCropsSelectedHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noCropsFound": "No crops found",
+  "submitPlot": "Save plot",
+  "cropCorn": "Corn",
+  "cropWheat": "Wheat",
+  "cropSoybeans": "Soybeans",
+  "cropBarley": "Barley",
+  "cropRice": "Rice",
+  "cropPotatoes": "Potatoes",
+  "cropTomatoes": "Tomatoes"
 }

@@ -12,20 +12,33 @@ public interface IPriceHistoryRepository
 }
 
 /// <summary>
-/// DEMO price history: a deterministic random walk per crop that ends at the crop's current
-/// catalogue price today. Not real market data — replace with a real source (e.g. GUS / EC AGRI).
+/// DEMO price history: a deterministic random walk per crop that ends at the crop's demo
+/// price today. Not real market data — replace with a real source (e.g. GUS / EC AGRI).
 /// </summary>
 public sealed class InMemoryPriceHistoryRepository : IPriceHistoryRepository
 {
     public const int GeneratedDays = 730;
     private const double MaxDailyChange = 0.012;
+    private const string Currency = "PLN";
+
+    /// <summary>Demo price per tonne today. Crops missing here have no price history.</summary>
+    private static readonly Dictionary<string, decimal> DemoPricePerTonne = new()
+    {
+        ["wheat"] = 1020m,
+        ["rapeseed"] = 2150m,
+        ["maize"] = 880m,
+        ["buckwheat"] = 1650m,
+        ["soybean"] = 1780m,
+    };
 
     private readonly Dictionary<CropId, PriceHistory> _histories;
 
     public InMemoryPriceHistoryRepository(ICropRepository crops, TimeProvider time)
     {
         var today = DateOnly.FromDateTime(time.GetUtcNow().UtcDateTime);
-        _histories = crops.GetAll().ToDictionary(c => c.Id, c => Generate(c, today));
+        _histories = crops.GetAll()
+            .Where(c => DemoPricePerTonne.ContainsKey(c.Id.Value))
+            .ToDictionary(c => c.Id, c => Generate(c.Id, DemoPricePerTonne[c.Id.Value], today));
     }
 
     public PriceHistory? GetRange(CropId cropId, DateOnly from, DateOnly to)
@@ -39,20 +52,21 @@ public sealed class InMemoryPriceHistoryRepository : IPriceHistoryRepository
         return history with { Prices = prices };
     }
 
-    private static PriceHistory Generate(Crop crop, DateOnly today)
+    private static PriceHistory Generate(CropId cropId, decimal todayPrice, DateOnly today)
     {
-        var random = new Random(StableSeed(crop.Id.Value));
+        var random = new Random(StableSeed(cropId.Value));
         var prices = new CropPrice[GeneratedDays];
-        var price = (double)crop.PricePerTonne;
+        var price = (double)todayPrice;
 
-        // Walk backwards from today so the newest value equals the catalogue price.
+        // Walk backwards from today so the newest value equals the demo price.
         for (var i = GeneratedDays - 1; i >= 0; i--)
         {
-            prices[i] = new CropPrice(today.AddDays(i - (GeneratedDays - 1)), Math.Round((decimal)price, 2));
+            prices[i] = new CropPrice(
+                today.AddDays(i - (GeneratedDays - 1)), Math.Round((decimal)price, 2), Currency);
             price *= 1 + (random.NextDouble() * 2 - 1) * MaxDailyChange;
         }
 
-        return new PriceHistory(crop.Id, crop.Currency, "t", prices);
+        return new PriceHistory(cropId, Currency, "t", prices);
     }
 
     // string.GetHashCode is randomized per process; this keeps the demo data stable between runs.
