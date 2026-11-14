@@ -38,10 +38,16 @@ class _MapSearchBarState extends State<MapSearchBar> {
     final address = _text.text.trim();
     if (address.isEmpty || _busy) return;
     setState(() => _busy = true);
-    final found = await widget.onSearch(address);
-    if (!mounted) return;
-    setState(() => _busy = false);
-    if (found) _close();
+    var found = false;
+    try {
+      found = await widget.onSearch(address);
+    } catch (_) {
+      // The caller tells the user what went wrong; here the field must just
+      // become usable again instead of staying disabled forever.
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (found && mounted) _close();
   }
 
   @override
