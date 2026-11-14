@@ -1,0 +1,37 @@
+{
+  "calendar": { "soilPrepDays": 10, "catchCropMinGrowthDays": 45, "catchCropLatestEndDoy": 300 },
+  "winter": { "snowProtectionDepthCm": 5 },
+  "survival": {
+    "aggregator": "min",
+    "cvarFraction": 0.2,
+    "waterStressToScore": [[0, 1], [0.3, 0.7], [0.6, 0.2], [1, 0]],
+    "heatDaysFallbackWindowFraction": [0.45, 0.70]
+  },
+  "transforms": [
+    { "from": "acidificationCaO", "to": "ph", "factor": "-1/plot.phBufferCaOPerUnit", "resetFrom": true }
+  ],
+  "objectives": {
+    "humusPerYearToScore": [[-400, 0], [0, 0.6], [200, 1]],
+    "pathogenPressureToScore": [[0, 1], [0.5, 0.4], [1, 0]],
+    "compactionToScore": [[-0.5, 1], [0, 0.7], [0.5, 0]],
+    "rootDepthClassM": 0.5,
+    "rootDepthClassesForFullScore": 3
+  },
+  "constraints": {
+    "groupShares": [ { "selector": "tag:cereal", "maxShare": 0.67 } ]
+  },
+  "search": {
+    "maxTransitionYears": 1,
+    "bridgeCropsPerStart": 3,
+    "unrollCycles": 4,
+    "topKPerStrategy": 200,
+    "alternativesPerStrategy": 3,
+    "minAlternativeJaccardDistance": 0.3,
+    "localSearchPasses": 2
+  },
+  "pedotransfer": { "method": "saxtonRawls2006" },
+  "phBuffer": { "baseCaOPerUnit": 1000, "perClayPct": 80, "perSocGkg": 40 },
+  "soil": { "defaultBulkDensityGcm3": 1.4, "topsoilDepthM": 0.3 },
+  "explain": { "maxCauses": 3 },
+  "report": { "minPredecessorAgreement": 0.6 }
+}

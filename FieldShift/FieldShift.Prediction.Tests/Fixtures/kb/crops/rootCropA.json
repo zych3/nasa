@@ -1,0 +1,23 @@
+{
+  "id": "rootCropA", "namePl": "Roślina okopowa A", "family": "FamilyRoot", "tags": ["root", "springCrop"], "type": "spring",
+  "sowWindow": [95, 120], "harvestWindow": [260, 300],
+  "management": { "nRateKgHa": 120, "residue": "remove" },
+  "suitability": {
+    "sandPct": { "absMin": 20, "optMin": 40, "optMax": 80, "absMax": 90 },
+    "clayPct": { "absMin": 0, "optMin": 5, "optMax": 25, "absMax": 35 },
+    "heatDaysAbove30AtFlowering": { "optMax": 4, "absMax": 12 },
+    "seasonWaterNeedMm": [450, 650]
+  },
+  "water": { "kc": [0.5, 1.15, 0.75], "stageLengthsDays": [25, 40, 60, 40], "rootDepthM": 0.8, "depletionFraction": 0.35 },
+  "responses": [
+    { "var": "ph", "curve": [[4.5, 0], [5.5, 1], [7.0, 1], [8.0, 0.2]], "target": "yield", "source": "S1" },
+    { "var": "nematode:n1", "curve": [[0, 1], [0.5, 0.6], [1, 0.2]], "target": "yield", "source": "S1" },
+    { "var": "compaction", "curve": [[-1, 1], [0, 0.9], [1, 0.4]], "target": "yield", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "humusC", "op": "add", "amount": -400, "source": "S1" },
+    { "var": "compaction", "op": "add", "amount": 0.2, "source": "S1" },
+    { "var": "nematode:n1", "op": "load", "amount": 0.5, "source": "S1" }
+  ],
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}
