@@ -91,7 +91,7 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
         final map = OverlayMap(
           center: _place,
           layer: _controller.layer,
-          fieldRing: parcel?.ring,
+          field: parcel,
         );
         final panel = OverlayPanel(
           controller: _controller,

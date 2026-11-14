@@ -18,3 +18,23 @@ Status: ✅ naprawione, ⏳ otwarte, 📝 do decyzji człowieka.
 Sprawdzone bez uwag: wyścigi (numer ładowania, testy: stara odpowiedź i stary błąd ignorowane, przełączenie w trakcie
 ładowania), `dispose` (brak powiadomień po zamknięciu, test), błędy nie zostają w cache (test), brak martwego kodu,
 brak HTTP poza `ApiClient`.
+
+## Recenzja #2 (po iteracjach 4–5: ekran, mapa, panel, nawigacja)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 8 | Ś | ✅ | `overlay_map.dart` | Etykieta „Moje pole” liczyła środek z ramki obrysu, choć `Parcel` ma już `center` (z backendu). Mapa dostaje teraz całe `Parcel`. |
+| 9 | Ś | ✅ | `overlay_panel.dart` | Po „Pokaż przykładowe dane” nie było drogi powrotu do prawdziwych danych (przycisk „Spróbuj ponownie” był tylko w stanie błędu). Dodany także przy danych przykładowych + test. (Znalezione już w iteracji 4.) |
+| 10 | Ś | ✅ | `overlay_panel.dart` | `Semantics(excludeSemantics: true)` na przycisku nakładki usuwało akcję „tap” dla czytnika ekranu. Teraz `MergeSemantics` – „Gleba, przycisk, wybrane”, z akcją; test. (Iteracja 4.) |
+| 11 | Ś | ✅ | `overlay_map.dart` | `SimpleAttributionWidget` z flutter_map przepełniał się (Row) na wąskim ekranie i pokazywał „© ©”. Zastąpiony własnym, zawijanym podpisem z ARB. Ten sam problem jest w `components/parcel_map.dart` (poza zakresem) – patrz pętla porządkowa. |
+| 12 | Ś | ⏳ | `overlay_map.dart` ↔ `components/parcel_map.dart` | Duplikacja: `_SingleWorldCrs` i pigułka z ikoną (`_FieldLabel` ≈ `_MapLabel`). Oba prywatne w `parcel_map.dart`, którego nie wolno było ruszać. Do wyciągnięcia do wspólnego pliku w pętli porządkowej. |
+| 13 | Ś | 📝 | cały ekran | AGENTS.md: „każdy ekran ma przycisk czytania na głos (`flutter_tts`)”. Zależności nie ma w projekcie, a ZAKRES pozwalał dodać tylko flutter_map/latlong2/http. Żaden inny ekran też go nie ma. |
+| 14 | N | ⏳ | `overlays_screen.dart` | `ListenableBuilder` słucha całego `SelectedPlotStore`, więc ekran przebudowuje się także przy `setNearby` z zakładki Mapa (choć jest niewidoczny). Tanie; zostawiam. |
+| 15 | N | ⏳ | `overlay_map.dart` | Etykiety na mapie są czytane przez czytnik ekranu podwójnie (te same słowa są w panelu). Niegroźne. |
+
+Sprawdzone bez uwag: `dispose` (kontroler, `MapController`, słuchacz store), wyścig „zmiana pola w trakcie ładowania”
+(kontroler + test ekranu), ładowanie dopiero po otwarciu zakładki (test), kontrast tekstu na kolorowej etykiecie
+(czarny/biały wg WCAG, min. 4,58:1 dla każdego koloru), stany ładowania/błędu z `liveRegion`, brak tekstów na sztywno
+w nowych plikach (grep z AGENTS.md znajduje tylko starą linię w `parcel_map.dart`).
+
+**Wysoki priorytet: brak.**

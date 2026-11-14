@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/overlay_layer.dart';
+import '../models/parcel.dart';
 import 'overlay_level_bars.dart';
 
 /// Map of the "Conditions" screen: the area an overlay value applies to (a
@@ -17,7 +18,7 @@ class OverlayMap extends StatefulWidget {
     super.key,
     required this.center,
     this.layer,
-    this.fieldRing,
+    this.field,
     this.initialZoom = 13,
   });
 
@@ -28,8 +29,8 @@ class OverlayMap extends StatefulWidget {
   /// What to draw; `null` while loading or after an error.
   final OverlayLayer? layer;
 
-  /// Outline of the user's field, if one is chosen.
-  final List<LatLng>? fieldRing;
+  /// The user's field (outline + "My field" label), if one is chosen.
+  final Parcel? field;
 
   @override
   State<OverlayMap> createState() => _OverlayMapState();
@@ -70,7 +71,7 @@ class _OverlayMapState extends State<OverlayMap> {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final layer = widget.layer;
-    final ring = widget.fieldRing;
+    final field = widget.field;
     final current = layer?.current;
     final color = current?.color ?? _noDataColor;
 
@@ -100,11 +101,11 @@ class _OverlayMapState extends State<OverlayMap> {
               ),
             ],
           ),
-        if (ring != null && ring.length >= 3)
+        if (field != null && field.ring.length >= 3)
           PolygonLayer(
             polygons: [
               Polygon(
-                points: ring,
+                points: field.ring,
                 borderColor: scheme.tertiary,
                 borderStrokeWidth: 4,
               ),
@@ -136,9 +137,9 @@ class _OverlayMapState extends State<OverlayMap> {
                     ),
                   ),
                 ),
-              if (ring != null && ring.isNotEmpty)
+              if (field != null)
                 Marker(
-                  point: _centerOf(ring),
+                  point: field.center,
                   width: 180,
                   height: 52,
                   alignment: Alignment.bottomCenter,
@@ -171,9 +172,6 @@ class _OverlayMapState extends State<OverlayMap> {
       ],
     );
   }
-
-  static LatLng _centerOf(List<LatLng> ring) =>
-      LatLngBounds.fromPoints(ring).center;
 }
 
 /// Black or white, whichever reads better on [background] (WCAG contrast).
