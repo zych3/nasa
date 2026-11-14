@@ -49,6 +49,86 @@ void main() {
     expect(layer.period!(en), en.overlaysMonth('December 2025'));
   });
 
+  test('legend in the user\'s language; Polish = the backend\'s labels', () {
+    final json = loadSample();
+    final layer = _overlay.parse(json);
+    final backend = [
+      for (final stop in ((_moisture(json)['legend'] as Map)['stops'] as List))
+        stop['label'] as String,
+    ];
+
+    expect([for (final item in layer.legend) item.label(pl)], backend);
+    expect(
+      [for (final item in layer.legend) item.label(en)],
+      [
+        'dry (< 0.35)',
+        'rather dry (0.35–0.45)',
+        'moist (0.45–0.55)',
+        'very moist (≥ 0.55)',
+      ],
+    );
+  });
+
+  test('a scale with a different number of steps keeps backend labels', () {
+    final json = loadSample();
+    final stops = (_moisture(json)['legend'] as Map)['stops'] as List
+      ..removeAt(1);
+
+    final layer = _overlay.parse(json);
+
+    expect(layer.legend.first.label(en), stops.first['label']);
+  });
+
+  test('ranges match the backend for every layer it sends', () {
+    // The backend writes the range in brackets: "sucho (20–40 mm)". Ours,
+    // computed from the thresholds, must say the same in Polish.
+    final json = loadSample();
+    var checked = 0;
+    for (final layer in (json['layers'] as List).cast<Map<String, dynamic>>()) {
+      final stops = ((layer['legend'] as Map)['stops'] as List)
+          .cast<Map<String, dynamic>>();
+      final maxes = [for (final s in stops) s['max'] as num?];
+      for (var i = 0; i < stops.length; i++) {
+        final match = RegExp(r'\(([^)]*)\)$')
+            .firstMatch(stops[i]['label'] as String);
+        if (match == null) continue; // e.g. "1 dzień z ulewą"
+        expect(
+          MonthlyLayerOverlay.rangeText(
+            pl,
+            maxes,
+            i,
+            unit: layer['unit'] as String,
+            decimals: layer['decimals'] as int,
+          ),
+          match.group(1),
+          reason: '${layer['id']} step $i',
+        );
+        checked++;
+      }
+    }
+    expect(checked, greaterThan(30));
+  });
+
+  test('day ranges in English', () {
+    const maxes = <num?>[1, 4, 10, null];
+    String range(int i) =>
+        MonthlyLayerOverlay.rangeText(en, maxes, i, unit: 'dni', decimals: 0);
+    expect(
+      [for (var i = 0; i < 4; i++) range(i)],
+      ['0 days', '1–3 days', '4–9 days', '≥ 10 days'],
+    );
+    expect(
+      MonthlyLayerOverlay.rangeText(
+        en,
+        const [1, 2, 3, null],
+        1,
+        unit: 'dni',
+        decimals: 0,
+      ),
+      '1 day',
+    );
+  });
+
   test('value → step: same boundaries as the backend', () {
     // Stops: < 0.35, < 0.45, < 0.55, rest.
     final cases = <(num, int)>[

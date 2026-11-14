@@ -12,4 +12,11 @@ class SoilMoistureOverlay extends MonthlyLayerOverlay {
 
   @override
   String title(AppLocalizations l10n) => l10n.overlayMoistureTitle;
+
+  @override
+  int get stepWordCount => 4;
+
+  @override
+  String stepWord(AppLocalizations l10n, int step) =>
+      l10n.overlayStepsSoilMoisture('s$step');
 }

@@ -805,6 +805,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Month: {month}'**
   String overlaysMonth(String month);
+
+  /// No description provided for @overlayLegendStep.
+  ///
+  /// In en, this message translates to:
+  /// **'{word} ({range})'**
+  String overlayLegendStep(String word, String range);
+
+  /// No description provided for @overlayDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String overlayDaysCount(int count);
+
+  /// No description provided for @overlayStepsSoilMoisture.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{dry} s1{rather dry} s2{moist} other{very moist}}'**
+  String overlayStepsSoilMoisture(String step);
 }
 
 class _AppLocalizationsDelegate

@@ -280,5 +280,32 @@
         "type": "String"
       }
     }
+  },
+  "overlayLegendStep": "{word} ({range})",
+  "@overlayLegendStep": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayDaysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@overlayDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayStepsSoilMoisture": "{step, select, s0{dry} s1{rather dry} s2{moist} other{very moist}}",
+  "@overlayStepsSoilMoisture": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
   }
 }

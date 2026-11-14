@@ -116,5 +116,8 @@
   "overlaysValueHeadingExample": "W przykładowym miejscu",
   "overlayMoistureTitle": "Wilgotność gleby",
   "overlayCoverageNasa": "Jedna wartość dla całej okolicy (ok. 50 km). Na Twoim polu może być inaczej.",
-  "overlaysMonth": "Miesiąc: {month}"
+  "overlaysMonth": "Miesiąc: {month}",
+  "overlayLegendStep": "{word} ({range})",
+  "overlayDaysCount": "{count, plural, =1{1 dzień} other{{count} dni}}",
+  "overlayStepsSoilMoisture": "{step, select, s0{sucho} s1{umiarkowanie sucho} s2{wilgotno} other{bardzo wilgotno}}"
 }

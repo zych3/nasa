@@ -436,4 +436,31 @@ class AppLocalizationsPl extends AppLocalizations {
   String overlaysMonth(String month) {
     return 'Miesiąc: $month';
   }
+
+  @override
+  String overlayLegendStep(String word, String range) {
+    return '$word ($range)';
+  }
+
+  @override
+  String overlayDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStepsSoilMoisture(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'sucho',
+      's1': 'umiarkowanie sucho',
+      's2': 'wilgotno',
+      'other': 'bardzo wilgotno',
+    });
+    return '$_temp0';
+  }
 }
