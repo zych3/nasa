@@ -20,6 +20,11 @@ class MapLayersRepository {
   /// Places kept in memory (each response is ~16 kB of JSON).
   static const maxCachedPlaces = 20;
 
+  /// The first request for a place takes 5–10 s (the backend asks NASA POWER
+  /// and SoilGrids), more when NASA is slow. Giving up earlier would also
+  /// cancel the backend's work, so "Try again" would start from zero.
+  static const timeout = Duration(seconds: 40);
+
   final ApiClient _api;
 
   /// Always answer with the demo data instead of calling the backend.
@@ -72,6 +77,7 @@ class MapLayersRepository {
         'lat': point.latitude.toStringAsFixed(5),
         'lon': point.longitude.toStringAsFixed(5),
       },
+      timeout: timeout,
     ),
   );
 

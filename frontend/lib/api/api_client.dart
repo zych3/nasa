@@ -29,10 +29,16 @@ class ApiClient {
   final http.Client _http;
   final String baseUrl;
 
+  /// Default limit for one request.
+  static const defaultTimeout = Duration(seconds: 15);
+
+  /// GET [path] and decode the JSON body. Throws [ApiException] for a status
+  /// other than 200 and `TimeoutException` after [timeout].
   Future<dynamic> getJson(
     String path, {
     Map<String, String>? query,
     String? languageCode,
+    Duration timeout = defaultTimeout,
   }) async {
     final uri = Uri.parse('$baseUrl$path').replace(queryParameters: query);
     final response = await _http
@@ -43,7 +49,7 @@ class ApiClient {
             'Accept-Language': ?languageCode,
           },
         )
-        .timeout(const Duration(seconds: 15));
+        .timeout(timeout);
 
     if (response.statusCode != 200) {
       throw ApiException(
