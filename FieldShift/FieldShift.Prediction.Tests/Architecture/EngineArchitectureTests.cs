@@ -4,11 +4,6 @@ using FieldShift.Prediction.Tests.Support;
 
 namespace FieldShift.Prediction.Tests.Architecture;
 
-/// <summary>
-/// Principle 1: the engine knows no crop. Every agronomic fact comes from the knowledge base and every tunable
-/// number from the settings. These tests read the engine's source and fail on any string literal that names a crop,
-/// family, tag, state variable or pathogen of the fixture knowledge base.
-/// </summary>
 public partial class EngineArchitectureTests
 {
     private static string EngineDirectory([CallerFilePath] string here = "") =>
@@ -45,7 +40,7 @@ public partial class EngineArchitectureTests
         var names = kb.Crops.Keys.Select(k => k.Value)
             .Concat(kb.Crops.Values.Select(c => c.Family))
             .Concat(kb.Crops.Values.SelectMany(c => c.Tags))
-            .Concat(kb.StateVariables.All.Select(v => v.Id.Value).Where(id => id.Contains(':')))   // pathogen:p1 and the like
+            .Concat(kb.StateVariables.All.Select(v => v.Id.Value).Where(id => id.Contains(':')))
             .Distinct()
             .ToList();
 

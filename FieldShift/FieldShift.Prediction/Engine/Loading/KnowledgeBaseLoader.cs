@@ -11,11 +11,6 @@ public sealed record KnowledgeBaseLoadResult(
     public bool Succeeded => KnowledgeBase is not null && Settings is not null && Report.IsValid;
 }
 
-/// <summary>
-/// Reads a knowledge-base directory: stateVars.json, crops/*.json (one crop or an array per file; a top-level
-/// crops.json is also read), strategies.json, engineSettings.json and the optional actions.json / interactions.json.
-/// Problems are collected in the report instead of thrown.
-/// </summary>
 public static class KnowledgeBaseLoader
 {
     private static readonly JsonDocumentOptions DocumentOptions =
@@ -88,7 +83,6 @@ public static class KnowledgeBaseLoader
         return crops;
     }
 
-    /// <summary>Strategy weights naming an unknown objective are reported and dropped before deserialising.</summary>
     private static List<Strategy>? ReadStrategies(string path, ValidationReport report)
     {
         if (!File.Exists(path))

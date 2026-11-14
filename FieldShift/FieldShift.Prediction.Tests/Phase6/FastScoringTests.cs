@@ -7,7 +7,6 @@ using static FieldShift.Prediction.Tests.Support.Sim;
 
 namespace FieldShift.Prediction.Tests.Phase6;
 
-/// <summary>The search uses a lean scorer; it must agree with the full, explained one everywhere.</summary>
 public class FastScoringTests
 {
     private static readonly string[] Mains = ["cerealA", "cerealB", "legumeA", "rootCropA", "oilseedA"];
@@ -69,15 +68,12 @@ public class FastScoringTests
     [Fact]
     public void ThePrecomputedWorstYearsAgreeWithSortingEveryYear()
     {
-        // The simulator takes the worst years from pre-sorted static scores. Cross-check against the textbook way
-        // for a state with a non-trivial multiplier and an override delta.
         var env = Env(climate: GeneratedKb.Climate());
         var steps = Run(env, env.InitialState(), "oilseedA", "oilseedA", "cerealA", "cerealA").Steps;
 
         foreach (var step in steps)
         {
             var table = env.Survival![step.Evaluation.Crop];
-            // Re-derive from per-year values (the explained path builds them one by one).
             var detail = PlanEvaluator.Evaluate(new RotationPlan { FirstHarvestYear = 2026, Cycle = [Season("cerealA")] }, env.InitialState(), env);
             Assert.NotNull(detail);
             Assert.Equal(table.SortedScores.Length, table.Years.Count);
@@ -91,7 +87,7 @@ public class FastScoringTests
         var env = Env(climate: GeneratedKb.Climate());
         var start = env.InitialState();
 
-        var step = Step(env, Run(env, start, "oilseedA").State, Season("oilseedA"), 1);   // p3 multiplier < 1
+        var step = Step(env, Run(env, start, "oilseedA").State, Season("oilseedA"), 1);
 
         Assert.Equal(step.Detail.YearSurvival.Average(), step.Evaluation.SurvivalMean, 12);
         var worst = Engine.Survival.SurvivalAggregator.Cvar(step.Detail.YearSurvival.ToList(), Settings.Survival.CvarFraction);

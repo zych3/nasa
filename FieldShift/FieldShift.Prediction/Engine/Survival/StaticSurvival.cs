@@ -2,10 +2,6 @@ using FieldShift.Prediction.Domain;
 
 namespace FieldShift.Prediction.Engine.Survival;
 
-/// <summary>
-/// The factors behind one crop-year score. A null factor does not apply to the crop (or has no data) and is left
-/// out of the combination.
-/// </summary>
 public sealed record SurvivalFactors(
     double? Texture, double? Heat, double? Winterkill, double? Water, double WaterStress, int HeatDays)
 {
@@ -30,7 +26,6 @@ public sealed record SurvivalFactors(
 
 public sealed record YearSurvival(int HarvestYear, double Score, SurvivalFactors Factors);
 
-/// <summary>Static survival of one crop on one plot: one score per evaluable climate year.</summary>
 public sealed record CropStaticSurvival(
     CropId Crop,
     IReadOnlyList<YearSurvival> Years,
@@ -38,17 +33,14 @@ public sealed record CropStaticSurvival(
     double Cvar,
     IReadOnlyList<Reason> Reasons)
 {
-    /// <summary>The yearly scores, lowest first. Lets the simulator find the worst years without sorting each time.</summary>
     public double[] SortedScores { get; } = Years.Select(y => y.Score).Order().ToArray();
 
-    /// <summary>Mean water stress index over the climate years (0 when there are none).</summary>
     public double MeanWaterStress { get; } = Years.Count == 0 ? 0.0 : Years.Average(y => y.Factors.WaterStress);
 
     public double? ScoreIn(int harvestYear) =>
         Years.FirstOrDefault(y => y.HarvestYear == harvestYear)?.Score;
 }
 
-/// <summary><c>StaticSurvival[crop][year]</c>, computed once per plot and cached for the search.</summary>
 public sealed class StaticSurvivalTable
 {
     private readonly IReadOnlyDictionary<CropId, CropStaticSurvival> _byCrop;

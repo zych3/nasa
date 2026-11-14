@@ -53,7 +53,6 @@ public class SampleTests(ITestOutputHelper output)
     [Fact]
     public void SampleFileMatchesTheGenerator()
     {
-        // Keeps the committed file honest: it must be what the generator produces (no hand edits to the weather).
         var committed = LoadSample();
         var generated = SampleGenerator.Build();
         Assert.Equal(generated.Climate.Years.Count, committed.Climate.Years.Count);
@@ -64,8 +63,6 @@ public class SampleTests(ITestOutputHelper output)
     [Fact]
     public void RecommendsOnTheSampleWithTheFixtureKnowledgeBase()
     {
-        // The fixture crops are synthetic and tuned for mild, constant weather. On this sandy plot with real-looking
-        // weather none of them passes screening, and the engine must say so instead of failing or inventing a plan.
         var result = RecommendationService.Recommend(LoadSample(), Fixture.Kb, Fixture.Settings);
 
         Assert.Equal(Fixture.Kb.Crops.Count, result.Screening.Count);

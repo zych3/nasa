@@ -13,7 +13,6 @@ public sealed record SearchOptions
     /// </summary>
     public bool BoundPruning { get; init; } = true;
 
-    /// <summary>-1 = all cores. Results do not depend on it.</summary>
     public int MaxDegreeOfParallelism { get; init; } = -1;
 }
 
@@ -22,15 +21,6 @@ public sealed record SearchOutcome(
     IReadOnlyDictionary<StrategyId, IReadOnlyList<PlanCandidate>> TopK,
     SearchStats Stats);
 
-/// <summary>
-/// Depth-first search over <c>history + transition + cycle</c>. The simulated state is carried down the recursion,
-/// so a shared prefix is never simulated twice. When a cycle is complete it is repeated
-/// <c>unrollCycles - 1</c> more times so the wrap-around is simulated with the state the cycle itself leaves, and
-/// the plan is scored on the last repetition.
-///
-/// Deterministic: the first-level branches run in parallel, each with its own archive and top-K lists, and are
-/// merged in a fixed order. No branch ever looks at another branch's results.
-/// </summary>
 public sealed class RotationSearch
 {
     private const double Epsilon = 1e-9;
@@ -141,8 +131,6 @@ public sealed class RotationSearch
                 var total = t + l;
                 if (t == 1)
                 {
-                    // One bridge season: only for cycle starts that cannot follow the history, and only with the
-                    // safest few crops that make the start legal.
                     for (var start = 0; start < n; start++)
                         foreach (var bridge in BridgesFor(start))
                         {
@@ -194,8 +182,6 @@ public sealed class RotationSearch
             .ThenBy(b => b)
             .Take(settings.Search.BridgeCropsPerStart);
     }
-
-    // ---------------------------------------------------------------------------------------------------------
 
     private sealed class LocalResult(ParetoArchive archive, TopKList[] topK, SearchStats stats)
     {
@@ -345,7 +331,7 @@ public sealed class RotationSearch
                 if (_l < strategy.MinCycleYears || _l > strategy.MaxCycleYears) continue;
 
                 var threshold = _topK[k].Threshold;
-                if (threshold is null) return false;                      // list not full yet
+                if (threshold is null) return false;
 
                 var w = _s._weights[k][_s._survivalAxis];
                 var bound = w * survivalCeiling + (1 - w);
@@ -354,7 +340,6 @@ public sealed class RotationSearch
             return true;
         }
 
-        /// <summary>Would <paramref name="crop"/> be allowed in the place of the last transition season?</summary>
         private bool EntersOneSeasonEarlier(Crop crop, int year)
         {
             var lastTransition = _seq[^1];
@@ -381,7 +366,6 @@ public sealed class RotationSearch
                 if (match[g]) _groupCount[g] += delta;
         }
 
-        /// <summary>The cycle is complete: repeat it, check the wrap-around, score the last repetition.</summary>
         private void Close(SimState state)
         {
             _leaves++;
@@ -493,14 +477,12 @@ public sealed class RotationSearch
     }
 }
 
-/// <summary>The best K candidates of one strategy, best first; ties go to the smaller plan key.</summary>
 public sealed class TopKList(int capacity)
 {
     private readonly List<(double Score, PlanCandidate Candidate)> _entries = [];
 
     public IReadOnlyList<(double Score, PlanCandidate Candidate)> Entries => _entries;
 
-    /// <summary>The K-th best score once the list is full; null before that.</summary>
     public double? Threshold => _entries.Count >= capacity ? _entries[^1].Score : null;
 
     public void Insert(double score, PlanCandidate candidate)

@@ -2,7 +2,6 @@ using FieldShift.Prediction.Domain;
 
 namespace FieldShift.Prediction.Engine.Validation;
 
-/// <summary>A parsed <see cref="Effect.When"/> condition. Parsing once keeps the simulator's inner loop free of string work.</summary>
 public enum ConditionKind
 {
     Always,
@@ -13,10 +12,6 @@ public enum ConditionKind
     Irrigation
 }
 
-/// <summary>
-/// Evaluates <see cref="Effect.When"/> conditions. Supported: residue.&lt;incorporate|remove|mulch&gt;,
-/// farmer.hasLivestockOrManure, farmer.hasIrrigation. Also knows the supported <see cref="Effect.ScaleBy"/> keys.
-/// </summary>
 public static class ConditionEvaluator
 {
     public const string ResidueNamespace = "residue.";
@@ -34,8 +29,6 @@ public static class ConditionEvaluator
 
     public static bool IsSupportedScaleBy(string key) => key == ScaleByNRate;
 
-    /// <summary>Null (no condition) means <see cref="ConditionKind.Always"/>.</summary>
-    /// <exception cref="ArgumentException">The condition is not supported.</exception>
     public static ConditionKind Parse(string? condition)
     {
         if (condition is null) return ConditionKind.Always;

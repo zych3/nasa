@@ -54,7 +54,6 @@ public class HistorySeederTests
         var env = Env();
         var seeded = Seed(env, Past(2024, "cerealA"), Past(2025, "cerealB"));
 
-        // p1: cerealA (-2) loads 0.5, which decays to 0.2; cerealB (-1) then loads 0.2. A tie goes to the earlier season.
         var causes = seeded.State.Ledger.Top(new StateVarId("pathogen:p1"), 3);
 
         Assert.Equal([new Cause(-2, new CropId("cerealA")), new Cause(-1, new CropId("cerealB"))], causes);
@@ -93,7 +92,7 @@ public class HistorySeederTests
         var newestLast = Seed(env, Past(2024, "cerealA"), Past(2025, "legumeA"));
         var unsorted = Seed(env, Past(2025, "legumeA"), Past(2024, "cerealA"));
 
-        Assert.Equal(40, V(newestLast.State.Soil, "residualN"));       // legume last: N available
+        Assert.Equal(40, V(newestLast.State.Soil, "residualN"));
         Assert.Equal(40, V(unsorted.State.Soil, "residualN"));
         Assert.Equal(new CropId("legumeA"), unsorted.State.PreviousMainCrop);
     }
@@ -107,7 +106,7 @@ public class HistorySeederTests
 
         var w = Assert.Single(seeded.Warnings, x => x.Code == "history.unknownCrop");
         Assert.Equal(new CropId("ghost"), w.Crop);
-        Assert.Equal(40, V(seeded.State.Soil, "residualN"));              // the legume season still counted
+        Assert.Equal(40, V(seeded.State.Soil, "residualN"));
         Assert.Equal(new CropId("legumeA"), seeded.State.PreviousMainCrop);
     }
 
@@ -145,7 +144,7 @@ public class HistorySeederTests
     }
 
     [Theory]
-    [InlineData(null, true)]                          // rootCropA's default is remove
+    [InlineData(null, true)]
     [InlineData(ResidueHandling.Remove, true)]
     [InlineData(ResidueHandling.Incorporate, false)]
     public void NullResidueMeansTheCropDefault(ResidueHandling? recorded, bool conditionHolds)

@@ -6,10 +6,8 @@ namespace FieldShift.Prediction.Engine.Planning;
 /// <param name="Index">0-based index of the season in the unrolled plan (history seasons are negative).</param>
 public sealed record SimulatedSeason(int Index, int HarvestYear, bool IsTransition, PlanSeason Plan, StepResult Step);
 
-/// <summary>A plan simulated through its transition and several repetitions of its cycle.</summary>
 public sealed record SimulatedPlan(RotationPlan Plan, IReadOnlyList<SimulatedSeason> Seasons, int LastCycleStart)
 {
-    /// <summary>The last repetition of the cycle: the steady state that objectives are scored on.</summary>
     public IEnumerable<SimulatedSeason> CycleSeasons => Seasons.Skip(LastCycleStart);
 }
 

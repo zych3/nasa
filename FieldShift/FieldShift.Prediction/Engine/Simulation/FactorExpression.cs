@@ -2,10 +2,6 @@ using System.Globalization;
 
 namespace FieldShift.Prediction.Engine.Simulation;
 
-/// <summary>
-/// Tiny arithmetic expression for settings such as the transform factor "-1/plot.phBufferCaOPerUnit".
-/// Supports numbers, identifiers (letters, digits, '.', '_'), + - * /, unary minus and parentheses.
-/// </summary>
 public sealed class FactorExpression
 {
     private readonly Func<IReadOnlyDictionary<string, double>, double> _evaluate;
@@ -16,10 +12,8 @@ public sealed class FactorExpression
         Identifiers = identifiers;
     }
 
-    /// <summary>Distinct identifiers the expression reads, in order of first use.</summary>
     public IReadOnlyList<string> Identifiers { get; }
 
-    /// <exception cref="FormatException">The text is not a valid expression.</exception>
     public static FactorExpression Parse(string text)
     {
         var parser = new Parser(text);
@@ -27,7 +21,6 @@ public sealed class FactorExpression
         return new FactorExpression(root, parser.Identifiers);
     }
 
-    /// <exception cref="InvalidOperationException">The result is not a finite number (for example a division by zero).</exception>
     public double Evaluate(IReadOnlyDictionary<string, double> variables)
     {
         var value = _evaluate(variables);

@@ -15,11 +15,8 @@ public sealed record RecommendationResult(
     IReadOnlyList<CropScreeningResult> Screening,
     IReadOnlyList<Reason> Warnings);
 
-/// <summary>The engine's front door: plot + knowledge base + settings in, explained rotation plans out.</summary>
 public static class RecommendationService
 {
-    /// <param name="strategies">Which strategies to answer; null means all of them in the knowledge base.</param>
-    /// <param name="timeProvider">Only used to stamp the result; pass a fixed one to get byte-identical output.</param>
     public static RecommendationResult Recommend(
         Plot plot, CropKnowledgeBase kb, EngineSettings settings,
         IReadOnlyList<StrategyId>? strategies = null,
@@ -34,7 +31,6 @@ public static class RecommendationService
         var chosen = ResolveStrategies(kb, strategies);
         var warnings = new List<Reason>();
 
-        // Plot features, climate and screening: which crops are worth searching with at all.
         var built = FeatureBuilder.Build(plot, settings);
         warnings.AddRange(built.Reasons.Where(r => r.Code.EndsWith(".outOfRange", StringComparison.Ordinal)));
 
@@ -42,7 +38,6 @@ public static class RecommendationService
         var screening = CropScreener.Screen(kb, built.Features, climate, plot.Farmer, settings, chosen);
         warnings.AddRange(screening.Warnings);
 
-        // The soil the plans start from.
         var provisional = new SimEnvironment(kb, built.Features, settings, plot.Farmer, screening.Survival);
         var seeded = HistorySeeder.Seed(plot, provisional);
         warnings.AddRange(seeded.Warnings);
@@ -92,7 +87,6 @@ public static class RecommendationService
             double Score(PlanEvaluation e) => StrategySelector.WeightedScore(weights,
                 Objectives.ObjectiveScorer.Scored.Select(o => e.Scores[o]).ToArray());
 
-            // A weighted strategy lists its plans by score; a knee strategy keeps its balance-based order.
             if (strategy.Mode == SelectionMode.WeightedSum)
                 evaluations = evaluations.OrderByDescending(Score)
                     .ThenBy(e => PlanCandidate.BuildKey(e.Plan), StringComparer.Ordinal).ToList();

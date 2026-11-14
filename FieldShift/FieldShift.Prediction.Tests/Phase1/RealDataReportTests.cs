@@ -4,13 +4,11 @@ using Xunit.Abstractions;
 
 namespace FieldShift.Prediction.Tests.Phase1;
 
-/// <summary>Informational: runs the validator over the real Data/ files and prints every finding.</summary>
 public class RealDataReportTests(ITestOutputHelper output)
 {
     [Fact]
     public void RealDataLoadsAndReportIsPrinted()
     {
-        // Real data has no strategies.json yet, so borrow the fixture's strategies and settings.
         var dir = Fixture.CopyToTemp();
         try
         {

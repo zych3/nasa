@@ -12,10 +12,8 @@ public static class SaxtonRawls2006
     public const double MaxValidClayPct = 60;
     public const double MaxValidOrganicMatterPct = 8;
 
-    /// <summary>Soil organic matter (%) from soil organic carbon (g/kg): OM = SOC · 1.724 / 10.</summary>
     public static double OrganicMatterPct(double socGkg) => socGkg * 0.1724;
 
-    /// <returns>Volumetric water content (m³/m³) at 33 kPa (field capacity) and 1500 kPa (wilting point).</returns>
     public static (double FieldCapacity, double WiltingPoint) Retention(
         double sandPct, double clayPct, double organicMatterPct)
     {
@@ -32,7 +30,6 @@ public static class SaxtonRawls2006
         return (field, wilting);
     }
 
-    /// <summary>Plant-available water capacity in mm per metre of soil (field capacity minus wilting point).</summary>
     public static double AwcMmPerM(double sandPct, double clayPct, double organicMatterPct)
     {
         var (field, wilting) = Retention(sandPct, clayPct, organicMatterPct);

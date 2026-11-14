@@ -5,11 +5,6 @@ namespace FieldShift.Prediction.Engine.Simulation;
 
 public sealed record SeededHistory(SimState State, IReadOnlyList<Reason> Warnings);
 
-/// <summary>
-/// Builds the soil state a plan starts from: the plot's initial state, advanced through the recorded history
-/// (oldest first) with the same step the plans use, but without scoring survival.
-/// History seasons get negative season indices (−1 is the season just before the plan).
-/// </summary>
 public static class HistorySeeder
 {
     public static SeededHistory Seed(Plot plot, SimEnvironment env)

@@ -3,16 +3,13 @@ using FieldShift.Prediction.Engine.Survival;
 
 namespace FieldShift.Prediction.Engine.Simulation;
 
-/// <param name="Value">The factor evaluated for this plot. Plot features never change, so it is computed once.</param>
 public sealed record CompiledTransform(
     StateVarId From, StateVarId To, FactorExpression Factor, bool ResetFrom, double Value, int FromSlot, int ToSlot);
 
-/// <summary>Everything a simulation needs that does not change between seasons. Built once per plot.</summary>
 public sealed class SimEnvironment
 {
     private readonly IReadOnlyDictionary<string, double> _featureVariables;
 
-    /// <param name="survival">Needed to evaluate seasons; history seeding works without it.</param>
     public SimEnvironment(
         CropKnowledgeBase kb, PlotFeatures features, EngineSettings settings, FarmerInputs farmer,
         StaticSurvivalTable? survival = null)
@@ -54,16 +51,13 @@ public sealed class SimEnvironment
     public StaticSurvivalTable? Survival { get; }
     public IReadOnlyList<CompiledTransform> Transforms { get; }
 
-    // Precomputed once: simulating a season must not re-sort the variable list.
     public IReadOnlyList<StateVariable> OrderedVariables { get; }
     public IReadOnlyList<StateVariable> EventVariables { get; }
     public IReadOnlyList<StateVariable> PoolVariables { get; }
     public IReadOnlyList<StateVariable> PressureVariables { get; }
 
-    /// <summary>Default value of every variable, by slot (registry order).</summary>
     public double[] DefaultBySlot { get; }
 
-    // Slots of the variables the objectives read.
     public int HumusSlot { get; }
     public int ResidualNSlot { get; }
     public int SoilCoverSlot { get; }
@@ -76,11 +70,9 @@ public sealed class SimEnvironment
     private readonly System.Collections.Concurrent.ConcurrentDictionary<CropId, CompiledCrop> _crops = new();
     private readonly System.Collections.Concurrent.ConcurrentDictionary<ActionId, CompiledAction> _actions = new();
 
-    /// <summary>The crop prepared for simulation (built on first use; safe to call from several threads).</summary>
     public CompiledCrop GetCompiled(CropId id) =>
         _crops.GetOrAdd(id, key => CompiledCrop.Compile(Kb.GetCrop(key), Kb));
 
-    /// <summary>The action prepared for simulation, or null if the knowledge base has no such action.</summary>
     public CompiledAction? GetCompiledAction(ActionId id) =>
         Kb.Actions.TryGetValue(id, out var action)
             ? _actions.GetOrAdd(id, _ => CompiledCrop.CompileAction(action, Kb.StateVariables))
@@ -99,7 +91,6 @@ public sealed class SimEnvironment
         PreviousMainCrop: null);
 }
 
-/// <summary>The soil, who caused its current values, and the last main crop (for crop-to-crop overrides).</summary>
 public sealed record SimState(SoilState Soil, ContributionLedger Ledger, CropId? PreviousMainCrop);
 
 public sealed record SeasonContext
@@ -109,7 +100,6 @@ public sealed record SeasonContext
     public required PlanSeason Season { get; init; }
     public required SimEnvironment Env { get; init; }
 
-    /// <summary>False while seeding from history: the crop is not scored, only its effects are applied.</summary>
     public bool EvaluateSurvival { get; init; } = true;
 
     /// <summary>
@@ -118,14 +108,11 @@ public sealed record SeasonContext
     /// </summary>
     public bool CollectReasons { get; init; } = true;
 
-    /// <summary>Scales loads and additive effects (history seasons with uncertain records).</summary>
     public double Certainty { get; init; } = 1.0;
 
-    /// <summary>Actual N rate of the main crop; null means its default. Effects with scaleBy "management.nRate" follow it.</summary>
     public double? NRateKgHa { get; init; }
 }
 
-/// <summary>Scores of one season that <see cref="SeasonEvaluation"/> has no room for.</summary>
 public sealed record SeasonDetail(
     bool Evaluated, double Penalty, double MeanWaterStress, IReadOnlyList<double> YearSurvival)
 {

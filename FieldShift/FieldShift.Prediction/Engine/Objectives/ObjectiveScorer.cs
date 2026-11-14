@@ -5,9 +5,6 @@ using FieldShift.Prediction.Engine.Simulation;
 
 namespace FieldShift.Prediction.Engine.Objectives;
 
-/// <param name="Scores">Normalised 0..1 scores, higher is better. An objective that cannot be scored is absent.</param>
-/// <param name="Raw">The number each score was derived from (for example humus change in kg C/ha/year).</param>
-/// <param name="WorstSeasonCvar">Lowest survival CVaR over every simulated season, transition included (for constraints).</param>
 public sealed record ObjectiveResult(
     ObjectiveScores Scores,
     IReadOnlyDictionary<Objective, double> Raw,
@@ -30,11 +27,6 @@ public static class ObjectiveScorer
     public static ObjectiveResult Score(SimulatedPlan plan, SimEnvironment env) =>
         ScoreSeasons(plan.Seasons, plan.LastCycleStart, env, explain: true);
 
-    /// <summary>
-    /// The same scores as <see cref="ScoreSeasons"/>, computed with plain loops and no text: for the search, which
-    /// scores hundreds of thousands of plans. Writes the seven scores into <paramref name="vector"/> in
-    /// <see cref="Scored"/> order and returns the worst survival CVaR over all seasons. A test pins it to the full scorer.
-    /// </summary>
     public static double ScoreFast(
         IReadOnlyList<SimulatedSeason> seasons, int lastCycleStart, SimEnvironment env, double[] vector)
     {
@@ -87,13 +79,13 @@ public static class ObjectiveScorer
         var compaction = seasons[^1].Step.Evaluation.StateAfter[env.CompactionSlot];
         var diversity = Math.Min(1.0, (double)System.Numerics.BitOperations.PopCount(depthClasses) / settings.RootDepthClassesForFullScore);
 
-        vector[0] = Clamp01(yielded / n - penalty / n);                                        // Survival
-        vector[1] = Clamp01(settings.HumusPerYearToScore.Evaluate(humusChange));              // Humus
-        vector[2] = Clamp01(settings.PathogenPressureToScore.Evaluate(meanPressure));         // Pathogen
-        vector[3] = Clamp01(nitrogen / n);                                                     // Nitrogen
-        vector[4] = Clamp01(cover / n);                                                        // Cover
-        vector[5] = Clamp01((settings.CompactionToScore.Evaluate(compaction) + diversity) / 2.0);   // Structure
-        vector[6] = Clamp01(1.0 - stress / n);                                                 // Water
+        vector[0] = Clamp01(yielded / n - penalty / n);
+        vector[1] = Clamp01(settings.HumusPerYearToScore.Evaluate(humusChange));
+        vector[2] = Clamp01(settings.PathogenPressureToScore.Evaluate(meanPressure));
+        vector[3] = Clamp01(nitrogen / n);
+        vector[4] = Clamp01(cover / n);
+        vector[5] = Clamp01((settings.CompactionToScore.Evaluate(compaction) + diversity) / 2.0);
+        vector[6] = Clamp01(1.0 - stress / n);
 
         var worst = double.MaxValue;
         for (var i = 0; i < seasons.Count; i++)
@@ -104,9 +96,6 @@ public static class ObjectiveScorer
     private static ulong DepthClassBit(Crop crop, double classWidth) =>
         crop.Water is null ? 0UL : 1UL << Math.Min(63, (int)Math.Floor(crop.Water.RootDepthM / classWidth + 1e-9));
 
-    /// <param name="seasons">All simulated seasons of the unrolled plan, in order.</param>
-    /// <param name="lastCycleStart">Index in <paramref name="seasons"/> where the last cycle repetition starts.</param>
-    /// <param name="explain">False in the search: skips the reasons and their text. Scores are identical.</param>
     public static ObjectiveResult ScoreSeasons(
         IReadOnlyList<SimulatedSeason> seasons, int lastCycleStart, SimEnvironment env, bool explain)
     {
@@ -125,21 +114,18 @@ public static class ObjectiveScorer
         var raw = new Dictionary<Objective, double>();
         var notes = new Dictionary<Objective, string>();
 
-        // Survival: how likely the crops are to come through, times how well they yield, minus penalties.
         var yieldedSurvival = cycle.Average(s => s.Step.Evaluation.SurvivalCvar20 * s.Step.Evaluation.YieldFactor);
         var penalty = cycle.Average(s => s.Step.Detail.Penalty);
         raw[Objective.Survival] = yieldedSurvival - penalty;
         scores[Objective.Survival] = Clamp01(yieldedSurvival - penalty);
         if (explain) notes[Objective.Survival] = Fmt.Inv($"survival x yield {yieldedSurvival:F2}, penalties {penalty:F2}");
 
-        // Humus: mean annual change of the humus stock over the cycle.
         var humusChange = (cycle[^1].Step.Evaluation.StateAfter[StateVarId.HumusC]
                            - cycle[0].Step.Evaluation.StateBefore[StateVarId.HumusC]) / n;
         raw[Objective.Humus] = humusChange;
         scores[Objective.Humus] = Clamp01(settings.HumusPerYearToScore.Evaluate(humusChange));
         if (explain) notes[Objective.Humus] = Fmt.Inv($"humus changes by {humusChange:F0} kg C/ha per year");
 
-        // Pathogen: pressure on the variables each crop responds to, weighted by response weight.
         var pressures = new List<double>();
         for (var i = 0; i < n; i++)
         {
@@ -157,7 +143,6 @@ public static class ObjectiveScorer
         scores[Objective.Pathogen] = Clamp01(settings.PathogenPressureToScore.Evaluate(meanPressure));
         if (explain) notes[Objective.Pathogen] = Fmt.Inv($"mean pressure on what the crops react to is {meanPressure:F2}");
 
-        // Nitrogen: how much of the crop's nitrogen need the previous crops left behind.
         var nitrogen = Enumerable.Range(0, n).Average(i =>
         {
             var rate = crops[i].Management.NRateKgHa;
@@ -168,13 +153,11 @@ public static class ObjectiveScorer
         scores[Objective.Nitrogen] = Clamp01(nitrogen);
         if (explain) notes[Objective.Nitrogen] = Fmt.Inv($"on average {nitrogen:P0} of the nitrogen need is covered by the previous crops");
 
-        // Cover: winter soil cover after each season's effects.
         var cover = cycle.Average(s => s.Step.Evaluation.StateAfter[StateVarId.SoilCoverWinter]);
         raw[Objective.Cover] = cover;
         scores[Objective.Cover] = Clamp01(cover);
         if (explain) notes[Objective.Cover] = Fmt.Inv($"average winter cover {cover:F2}");
 
-        // Structure: final compaction, averaged with how many different rooting depths the cycle uses.
         var compaction = cycle[^1].Step.Evaluation.StateAfter[StateVarId.Compaction];
         var depthClasses = RootDepthClasses(cycle, crops, env);
         var diversity = Math.Min(1.0, (double)depthClasses / settings.RootDepthClassesForFullScore);
@@ -182,7 +165,6 @@ public static class ObjectiveScorer
         scores[Objective.Structure] = Clamp01((settings.CompactionToScore.Evaluate(compaction) + diversity) / 2.0);
         if (explain) notes[Objective.Structure] = Fmt.Inv($"final compaction {compaction:F2}, {depthClasses} rooting depth class(es)");
 
-        // Water: how little the crops suffer from drought, on average over seasons and climate years.
         var stress = cycle.Average(s => s.Step.Detail.MeanWaterStress);
         raw[Objective.Water] = stress;
         scores[Objective.Water] = Clamp01(1.0 - stress);
@@ -209,7 +191,6 @@ public static class ObjectiveScorer
         return new ObjectiveResult(new ObjectiveScores(scores), raw, worstCvar, reasons);
     }
 
-    /// <summary>Distinct root-depth classes among the cycle's main and catch crops.</summary>
     private static int RootDepthClasses(
         IReadOnlyList<SimulatedSeason> cycle, IReadOnlyList<Crop> mainCrops, SimEnvironment env)
     {

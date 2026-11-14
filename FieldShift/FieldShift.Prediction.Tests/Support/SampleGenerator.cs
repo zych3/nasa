@@ -15,7 +15,6 @@ public static class SampleGenerator
         "SYNTHETIC weather: generated from approximate monthly normals for central Poland with a fixed random seed. " +
         "Not measured data. Replace with NASA POWER daily data.";
 
-    // Approximate monthly means for central Poland (January first). Rounded round numbers, not station data.
     private static readonly double[] MonthlyTempC = [-1.5, -0.5, 3.0, 9.0, 14.5, 18.0, 20.0, 19.5, 14.5, 9.0, 4.0, 0.0];
     private static readonly double[] MonthlyPrecipMm = [30, 28, 33, 35, 55, 68, 80, 65, 50, 40, 38, 35];
 
@@ -41,7 +40,6 @@ public static class SampleGenerator
 
     private static ClimateYear Year(int year, Random rng)
     {
-        // One wet/dry and one warm/cold factor per year, so some years are droughts and some are hot.
         var wetness = Math.Exp(0.25 * Gaussian(rng));
         var warmth = 0.9 * Gaussian(rng);
         var days = new List<DailyWeather>();
@@ -49,9 +47,9 @@ public static class SampleGenerator
 
         for (var date = new DateOnly(year, 1, 1); date.Year == year; date = date.AddDays(1))
         {
-            anomaly = 0.7 * anomaly + 2.2 * Gaussian(rng);       // day-to-day weather persists a little
+            anomaly = 0.7 * anomaly + 2.2 * Gaussian(rng);
             var mean = Seasonal(MonthlyTempC, date) + warmth + anomaly;
-            var range = 4.0 + 1.5 * rng.NextDouble();             // half the daily temperature range
+            var range = 4.0 + 1.5 * rng.NextDouble();
 
             var wetDayChance = 0.33;
             var monthlyMean = Seasonal(MonthlyPrecipMm, date);
@@ -64,7 +62,6 @@ public static class SampleGenerator
         return new ClimateYear(year, days);
     }
 
-    /// <summary>Smooth annual cycle through the monthly values (each value belongs to mid-month).</summary>
     private static double Seasonal(double[] monthly, DateOnly date)
     {
         var position = date.Month - 1 + (date.Day - 0.5) / DateTime.DaysInMonth(date.Year, date.Month) - 0.5;

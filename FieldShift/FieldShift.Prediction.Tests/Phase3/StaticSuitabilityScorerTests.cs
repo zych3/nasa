@@ -25,8 +25,6 @@ public class StaticSuitabilityScorerTests
     private static EngineSettings Geometric() =>
         Settings with { Survival = Settings.Survival with { Aggregator = FactorAggregation.GeometricMean } };
 
-    // --- texture -------------------------------------------------------------------------------------------
-
     [Fact]
     public void TextureIsTheMinimumOfSandAndClayScores()
     {
@@ -62,8 +60,6 @@ public class StaticSuitabilityScorerTests
         Assert.Null(s.Years[0].Factors.Texture);
     }
 
-    // --- heat ----------------------------------------------------------------------------------------------
-
     [Fact]
     public void HeatCountsHotDaysInsideTheFloweringWindowOnly()
     {
@@ -74,7 +70,6 @@ public class StaticSuitabilityScorerTests
         var year = Score("cerealB", climate).Years[1];
 
         Assert.Equal(4, year.Factors.HeatDays);
-        // heat range optMax 2, absMax 8: (8 - 4) / (8 - 2)
         Assert.Equal(4.0 / 6.0, year.Factors.Heat!.Value, 9);
     }
 
@@ -100,8 +95,6 @@ public class StaticSuitabilityScorerTests
         Assert.All(Score("catchA", climate).Years, y => Assert.Null(y.Factors.Heat));
     }
 
-    // --- winterkill ----------------------------------------------------------------------------------------
-
     private static ClimateData WithColdDay(DateOnly day, double tMin, double? snow, int years = 5) =>
         Weather.Years(2005, years, y => Weather.Custom(y, d =>
             new DailyWeather(d, d == day ? tMin : 2, d == day ? tMin + 5 : 12, 3, 1, snow)));
@@ -109,7 +102,6 @@ public class StaticSuitabilityScorerTests
     [Fact]
     public void BitterColdWithoutSnowKillsAWinterCrop()
     {
-        // cerealA tolerates -20 without snow. Season 2008 runs from October 2007 to March 2008.
         var s = Score("cerealA", WithColdDay(new DateOnly(2008, 1, 15), -25, 0));
 
         Assert.Equal(0.0, s.ScoreIn(2008));
@@ -119,7 +111,6 @@ public class StaticSuitabilityScorerTests
     [Fact]
     public void SnowCoverProtectsDownToTheWithSnowLimit()
     {
-        // -25 °C with 10 cm snow: limit with snow is -28.
         var s = Score("cerealA", WithColdDay(new DateOnly(2008, 1, 15), -25, 10));
 
         Assert.Equal(1.0, s.Years.Single(y => y.HarvestYear == 2008).Factors.Winterkill);
@@ -136,7 +127,6 @@ public class StaticSuitabilityScorerTests
     [Fact]
     public void ThinSnowBelowTheProtectiveDepthDoesNotProtect()
     {
-        // 3 cm < 5 cm threshold: the unprotected limit (-20) applies.
         var s = Score("cerealA", WithColdDay(new DateOnly(2008, 1, 15), -22, 3));
 
         Assert.Equal(0.0, s.Years.Single(y => y.HarvestYear == 2008).Factors.Winterkill);
@@ -153,7 +143,6 @@ public class StaticSuitabilityScorerTests
     [Fact]
     public void FrostBeforeSowingIsIgnored()
     {
-        // cerealA is sown on day 275 (early October); a hard frost in September 2007 does not count.
         var s = Score("cerealA", WithColdDay(new DateOnly(2007, 9, 5), -25, 0));
 
         Assert.Equal(1.0, s.Years.Single(y => y.HarvestYear == 2008).Factors.Winterkill);
@@ -186,8 +175,6 @@ public class StaticSuitabilityScorerTests
         Assert.Equal(25, Score("cerealB", Mild()).Years.Count);
     }
 
-    // --- water and combination -----------------------------------------------------------------------------
-
     [Fact]
     public void IrrigationGivesFullWaterScore()
     {
@@ -217,7 +204,7 @@ public class StaticSuitabilityScorerTests
         var year = Score("cerealB", climate).Years[0];
 
         Assert.Equal(year.Factors.Applicable.Min(), year.Score, 12);
-        Assert.Equal(0.0, year.Score);   // 36 degrees all year: the heat factor is zero
+        Assert.Equal(0.0, year.Score);
     }
 
     [Fact]
@@ -242,7 +229,6 @@ public class StaticSuitabilityScorerTests
     [Fact]
     public void MeanAndCvarSummariseTheYears()
     {
-        // Three years: 2003 is a heat year (score 0), the others are fine.
         var climate = Weather.Years(2001, 4, y => Weather.Custom(y, d =>
             new DailyWeather(d, 10, y == 2003 ? 36 : 20, 3, 1, 0)));
 
@@ -262,12 +248,12 @@ public class SurvivalAggregatorTests
     {
         var values = Enumerable.Range(1, 10).Select(i => i / 10.0).ToList();
 
-        Assert.Equal(0.15, SurvivalAggregator.Cvar(values, 0.2), 12);      // worst 2: 0.1, 0.2
+        Assert.Equal(0.15, SurvivalAggregator.Cvar(values, 0.2), 12);
     }
 
     [Theory]
     [InlineData(25, 5)]
-    [InlineData(24, 5)]   // ceil(4.8)
+    [InlineData(24, 5)]
     [InlineData(4, 1)]
     [InlineData(1, 1)]
     public void CvarTakesCeilingOfFractionTimesCount(int n, int worstCount)

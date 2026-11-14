@@ -7,7 +7,6 @@ using FieldShift.Prediction.Engine.Survival;
 
 namespace FieldShift.Prediction.Tests.Support;
 
-/// <summary>Builds simulation environments on constant, mild weather and runs single steps.</summary>
 public static class Sim
 {
     public static ClimateData Mild() =>
@@ -53,7 +52,6 @@ public static class Sim
             EvaluateSurvival = evaluate
         });
 
-    /// <summary>Runs the main crops in order from <paramref name="start"/>, season indices 0, 1, 2...</summary>
     public static (SimState State, List<StepResult> Steps) Run(SimEnvironment env, SimState start, params string[] crops)
     {
         var state = start;

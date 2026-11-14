@@ -5,7 +5,6 @@ using FieldShift.Prediction.Engine.Simulation;
 
 namespace FieldShift.Prediction.Tests.Support;
 
-/// <summary>Runs the raw search on the fixture, with a restricted crop list, strategies and settings.</summary>
 public static class Searching
 {
     public static Strategy Strat(string id, SelectionMode mode = SelectionMode.WeightedSum, double floor = 0.3,
@@ -45,7 +44,6 @@ public static class Searching
     public static EngineSettings WithSearch(Func<SearchSettings, SearchSettings> change) =>
         Fixture.Settings with { Search = change(Fixture.Settings.Search) };
 
-    /// <summary>Crop ids of the unrolled plan, as years: (crop, year).</summary>
     public static List<(string Crop, int Year)> Unrolled(PlanCandidate c, int cycles) =>
         c.Plan.Unroll(cycles).Select(u => (u.Season.MainCrop.Value, u.HarvestYear)).ToList();
 }

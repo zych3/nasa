@@ -2,15 +2,10 @@ using FieldShift.Prediction.Domain;
 
 namespace FieldShift.Prediction.Engine.Search;
 
-/// <summary>Picks a strategy's best plan and some different alternatives from the search results.</summary>
 public static class StrategySelector
 {
     private const double Epsilon = 1e-9;
 
-    /// <summary>
-    /// The strategy's weights over the objectives that were scored, rescaled to sum to 1. Weights on objectives
-    /// that are absent (GrossMargin) are dropped.
-    /// </summary>
     public static double[] Weights(Strategy strategy, IReadOnlyList<Objective> axes)
     {
         var w = axes.Select(a => strategy.Weights.TryGetValue(a, out var x) ? x : 0.0).ToArray();
@@ -27,7 +22,6 @@ public static class StrategySelector
         return sum;
     }
 
-    /// <summary>A plan fits a strategy when its cycle length is allowed and no season's survival is below the floor.</summary>
     public static bool IsEligible(Strategy strategy, PlanCandidate c) =>
         IsEligible(strategy, c.CycleLength, c.WorstSeasonCvar);
 
@@ -88,7 +82,6 @@ public static class StrategySelector
             .ToList();
     }
 
-    /// <summary>The first ranked plan, then the next ones whose crop set is different enough from every plan chosen so far.</summary>
     public static IReadOnlyList<PlanCandidate> PickBestAndAlternatives(
         IReadOnlyList<PlanCandidate> ranked, SearchSettings search)
     {
@@ -107,7 +100,6 @@ public static class StrategySelector
         return chosen;
     }
 
-    /// <summary>1 minus the share of crops two plans have in common: 0 for the same crops, 1 for none shared.</summary>
     public static double JaccardDistance(PlanCandidate a, PlanCandidate b)
     {
         var shared = a.Crops.Intersect(b.Crops).Count();

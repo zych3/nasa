@@ -3,7 +3,6 @@ using FieldShift.Prediction.Engine.Objectives;
 
 namespace FieldShift.Prediction.Engine.Search;
 
-/// <summary>A scored plan kept by the search. Light: no per-season states or reasons.</summary>
 public sealed class PlanCandidate
 {
     private ObjectiveScores? _scores;
@@ -11,10 +10,8 @@ public sealed class PlanCandidate
 
     public required RotationPlan Plan { get; init; }
 
-    /// <summary>Scores in <see cref="ObjectiveScorer.Scored"/> order, for fast dominance checks.</summary>
     public required double[] Vector { get; init; }
 
-    /// <summary>The same scores by objective. Built on first use: the search itself only needs <see cref="Vector"/>.</summary>
     public ObjectiveScores Scores
     {
         get => _scores ??= new ObjectiveScores(
@@ -22,13 +19,10 @@ public sealed class PlanCandidate
         init => _scores = value;
     }
 
-    /// <summary>Lowest survival CVaR over every simulated season, transition and wrap-around included.</summary>
     public required double WorstSeasonCvar { get; init; }
 
-    /// <summary>Stable text identity, e.g. "oilseedA/cerealA|legumeA|cerealB". Orders ties deterministically.</summary>
     public required string Key { get; init; }
 
-    /// <summary>Distinct main crops of transition and cycle, sorted. For the alternative-plan distance. Built on first use.</summary>
     public IReadOnlyList<string> Crops
     {
         get => _crops ??= Plan.Transition.Concat(Plan.Cycle).Select(s => s.MainCrop.Value)

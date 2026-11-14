@@ -3,7 +3,6 @@ using FieldShift.Prediction.Domain;
 
 namespace FieldShift.Prediction.Engine.Simulation;
 
-/// <summary>A change to a state variable and the season and crop that caused it.</summary>
 public sealed record Contribution(int SeasonIndex, CropId Crop, double Delta);
 
 /// <summary>
@@ -32,7 +31,6 @@ public sealed class ContributionLedger
         return new ContributionLedger(_entries.SetItem(variable, list.Add(contribution)));
     }
 
-    /// <summary>Multiplies every contribution to the variable (pressures decay, so do their causes).</summary>
     public ContributionLedger Scale(StateVarId variable, double factor)
     {
         if (!_entries.TryGetValue(variable, out var list)) return this;
@@ -43,10 +41,6 @@ public sealed class ContributionLedger
     public ContributionLedger Clear(StateVarId variable) =>
         _entries.ContainsKey(variable) ? new ContributionLedger(_entries.Remove(variable)) : this;
 
-    /// <summary>
-    /// The seasons that moved the variable most, largest absolute net contribution first. Contributions of the
-    /// same season and crop are summed; ties go to the earlier season.
-    /// </summary>
     public IReadOnlyList<Cause> Top(StateVarId variable, int count) =>
         For(variable)
             .GroupBy(c => (c.SeasonIndex, c.Crop))

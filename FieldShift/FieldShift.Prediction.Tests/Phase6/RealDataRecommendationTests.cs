@@ -7,7 +7,6 @@ using Xunit.Abstractions;
 
 namespace FieldShift.Prediction.Tests.Phase6;
 
-/// <summary>The real crops.json and stateVars.json (15 crops), with the fixture's strategies, on the sample sandy plot.</summary>
 public class RealDataRecommendationTests(ITestOutputHelper output)
 {
     internal static (CropKnowledgeBase Kb, EngineSettings Settings) LoadReal()

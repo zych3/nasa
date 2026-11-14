@@ -62,7 +62,6 @@ public class CropScreenerTests
     [Fact]
     public void DryClimateScreensOutHighKcCropsWithAWaterReason()
     {
-        // A thirsty crop (Kc 1.3) and a frugal one (Kc 0.1), same everything else, on a drought climate.
         var kb = WithKc(WithKc(Kb, "cerealB", 1.3), "legumeA", 0.1);
 
         var outcome = Screen(Dry(), kb: kb);
@@ -91,7 +90,6 @@ public class CropScreenerTests
     [Fact]
     public void CandidateThresholdIsTheLowestFloorAmongTheRequestedStrategies()
     {
-        // Floors in the fixture: 0.3 (soilHealth), 0.5 (survival), 0.4 (balanced).
         var kb = WithKc(Kb, "cerealB", 1.3);
         var plot = PlotWithHistory() with { Climate = Dry() };
         var features = FeatureBuilder.Build(plot, Settings).Features;
@@ -121,7 +119,7 @@ public class CropScreenerTests
     public void ResultExposesTheFactorBreakdownAndWorstYears()
     {
         var climate = Weather.Years(2000, 25, y => Weather.Custom(y, d =>
-            new DailyWeather(d, 10, y < 2010 ? 36 : 20, 3, 1, 0)));   // ten heat years: heat mean 0.6 < texture 0.83
+            new DailyWeather(d, 10, y < 2010 ? 36 : 20, 3, 1, 0)));
 
         var result = Screen(climate)[new CropId("cerealB")];
 
@@ -135,7 +133,7 @@ public class CropScreenerTests
     [Fact]
     public void WarningsCarryDataGaps()
     {
-        var noSnow = Weather.Years(2000, 25, y => Weather.Constant(y, 5, 15, 3));   // no snow, no ET0
+        var noSnow = Weather.Years(2000, 25, y => Weather.Constant(y, 5, 15, 3));
 
         var outcome = Screen(noSnow);
 
@@ -152,7 +150,7 @@ public class CropScreenerTests
         var table = outcome.Survival;
         Assert.Equal(Kb.Crops.Count, table.All.Count());
         Assert.NotNull(table[new CropId("cerealB")].ScoreIn(2010));
-        Assert.Null(table[new CropId("cerealA")].ScoreIn(2000));    // winter crop: first year has no sowing weather
+        Assert.Null(table[new CropId("cerealA")].ScoreIn(2000));
     }
 
     [Fact]

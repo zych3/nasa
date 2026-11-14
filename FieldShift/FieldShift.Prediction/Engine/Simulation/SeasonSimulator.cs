@@ -17,7 +17,6 @@ namespace FieldShift.Prediction.Engine.Simulation;
 /// </summary>
 public static class SeasonSimulator
 {
-    /// <summary>A response whose curve value is below this is explained with a reason.</summary>
     public const double ReasonThreshold = 0.999;
 
     private const double Negligible = 1e-12;
@@ -29,15 +28,12 @@ public static class SeasonSimulator
         var crop = main.Crop;
         var reasons = ctx.CollectReasons ? new List<Reason>() : null;
 
-        // 1. Evaluate against the inherited state.
         var scores = ctx.EvaluateSurvival ? Evaluate(state, ctx, main, reasons) : Scores.Skipped;
 
         var ws = new Workspace(state, ctx);
 
-        // 2. Reset events, consume pools.
         ws.ResetEventsAndPools();
 
-        // 3. Effects: main crop, catch crop, actions.
         var residue = ctx.Season.Residue ?? crop.Management.Residue;
         ws.ApplyEffects(main.Effects, crop, residue, isMain: true, multiplier: 1.0);
 
@@ -51,7 +47,6 @@ public static class SeasonSimulator
         for (var i = 0; i < actions.Count; i++)
             ws.ApplyAction(actions[i], main, residue);
 
-        // 4. End of season.
         ws.EndOfSeason();
 
         var next = new SimState(ws.BuildSoil(), ws.Ledger, crop.Id);
@@ -75,9 +70,6 @@ public static class SeasonSimulator
 
         return new StepResult(next, evaluation, detail, reasons ?? []);
     }
-
-    // ---------------------------------------------------------------------------------------------------------
-    // Step 1
 
     private sealed record Scores(
         double SurvivalMean, double SurvivalCvar, double YieldFactor, double Penalty,
@@ -135,7 +127,6 @@ public static class SeasonSimulator
                 });
         }
 
-        // Residual crop-to-crop corrections, added to the target they name.
         double survivalDelta = 0, yieldDelta = 0, penaltyDelta = 0;
         if (state.PreviousMainCrop is { } prevId && main.OverridesAfter.TryGetValue(prevId, out var overrides))
         {
@@ -162,9 +153,6 @@ public static class SeasonSimulator
             }
         }
 
-        // Every year's survival is clamp(static * multiplier + delta). That is non-decreasing in the static score, so
-        // the worst years are simply the years with the lowest static scores, which are pre-sorted. No sorting,
-        // no allocation: this runs for every season of every plan the search looks at.
         var stats = table[crop.Id];
         var sorted = stats.SortedScores;
         double mean = 0, cvar = 0;
@@ -195,15 +183,11 @@ public static class SeasonSimulator
             perYear);
     }
 
-    // ---------------------------------------------------------------------------------------------------------
-    // Steps 2-4
-
     private sealed class Workspace
     {
         private readonly SeasonContext _ctx;
         private readonly SimEnvironment _env;
 
-        // Values live in arrays in the registry's order; effects carry the slot they write to.
         private readonly double[] _work;
         private readonly double[] _loads;
         private readonly StateVariableRegistry _registry;
@@ -230,7 +214,6 @@ public static class SeasonSimulator
 
         public ContributionLedger Ledger { get; private set; }
 
-        /// <summary>Null when reasons are not being collected.</summary>
         public List<Reason>? Reasons { get; }
 
         public SoilState BuildSoil() => SoilState.FromOwnedValues(_registry, _work);
@@ -322,7 +305,6 @@ public static class SeasonSimulator
 
         public void EndOfSeason()
         {
-            // Pressures decay, then take this season's loads.
             foreach (var slot in _env.PressureSlots)
             {
                 var v = _registry.Ordered[slot];
@@ -350,7 +332,6 @@ public static class SeasonSimulator
                     });
             }
 
-            // Cross-variable updates, e.g. acidification -> pH through the soil buffer.
             foreach (var t in _env.Transforms)
             {
                 var (to, from) = (t.ToSlot, t.FromSlot);

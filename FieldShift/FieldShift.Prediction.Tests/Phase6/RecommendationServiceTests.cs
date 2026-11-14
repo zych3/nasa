@@ -29,8 +29,6 @@ public class RecommendationServiceTests
 
     private static string Serialize(RecommendationResult r) => JsonSerializer.Serialize(r, DomainJson.Options);
 
-    // --- the basics -------------------------------------------------------------------------------------------------
-
     [Fact]
     public void ReturnsOneRecommendationPerStrategyWithExplainedPlans()
     {
@@ -103,8 +101,6 @@ public class RecommendationServiceTests
         }
     }
 
-    // --- golden scenarios from the spec --------------------------------------------------------------------------------
-
     [Fact]
     public void LegumeInTheLastHistorySeasonRaisesResidualNForTheFirstPlanSeason()
     {
@@ -139,7 +135,6 @@ public class RecommendationServiceTests
     [Fact]
     public void SurvivalStrategyNeverUsesACropBelowItsFloor()
     {
-        // survival's floor is 0.5; cerealA (0.40) and oilseedA (0.375) cannot meet it on this plot.
         var best = For(Recommend(), "survival").Best;
 
         Assert.DoesNotContain(best.Plan.Cycle, s => s.MainCrop.Value is "cerealA" or "oilseedA");
@@ -177,8 +172,6 @@ public class RecommendationServiceTests
         Assert.All(result.Recommendations.SelectMany(r => new[] { r.Best }.Concat(r.Alternatives)),
             e => Assert.DoesNotContain(e.Plan.Cycle, s => s.MainCrop.Value == "cerealB"));
     }
-
-    // --- determinism ----------------------------------------------------------------------------------------------------
 
     [Fact]
     public void TwoRunsGiveIdenticalSerializedResults()
@@ -223,8 +216,6 @@ public class RecommendationServiceTests
         }
     }
 
-    // --- failure modes --------------------------------------------------------------------------------------------------
-
     [Fact]
     public void NoCandidatesGivesAWarningNotACrash()
     {
@@ -240,8 +231,6 @@ public class RecommendationServiceTests
     [Fact]
     public void AStrategyWithNoFeasiblePlanGetsAWarningWhileOthersStillAnswer()
     {
-        // "impossible" needs every season at survival 1.0. Only legumeA and rootCropA reach that on this plot, so
-        // narrow their sand tolerance until they score 0.9 (sand 77.5 against optMax 75, absMax 100).
         var impossible = Searching.Strat("impossible", floor: 1.0, minL: 3, maxL: 3);
         var narrow = new ToleranceRange { AbsMin = 0, OptMin = 0, OptMax = 75, AbsMax = 100 };
         var kb = WithStrategies(Kb, [.. Kb.Strategies.Values, impossible]);
@@ -283,7 +272,7 @@ public class RecommendationServiceTests
         var result = Recommend();
 
         Assert.Contains(result.Warnings, w => w.Code == "history.none");
-        Assert.Equal(2025, result.Recommendations[0].Best.Plan.FirstHarvestYear);       // mild climate runs 2000-2024
+        Assert.Equal(2025, result.Recommendations[0].Best.Plan.FirstHarvestYear);
     }
 
     [Fact]

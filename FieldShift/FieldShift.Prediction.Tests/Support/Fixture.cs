@@ -4,7 +4,6 @@ using FieldShift.Prediction.Engine.Loading;
 
 namespace FieldShift.Prediction.Tests.Support;
 
-/// <summary>Loads and mutates the synthetic knowledge base in Fixtures/kb.</summary>
 public static class Fixture
 {
     public static string KbDirectory => Path.Combine(AppContext.BaseDirectory, "Fixtures", "kb");
@@ -18,7 +17,6 @@ public static class Fixture
 
     public static CropId Id(string id) => new(id);
 
-    /// <summary>Copy of the fixture directory in a fresh temp folder, for tests that edit raw files.</summary>
     public static string CopyToTemp()
     {
         var target = Path.Combine(Path.GetTempPath(), "fieldshift-kb-" + Guid.NewGuid().ToString("N"));

@@ -19,7 +19,7 @@ public class FactorExpressionTests
     [Theory]
     [InlineData("2+3*4", 14)]
     [InlineData("(2+3)*4", 20)]
-    [InlineData("10/4/5", 0.5)]           // left-associative
+    [InlineData("10/4/5", 0.5)]
     [InlineData("10-4-3", 3)]
     [InlineData("-2*-3", 6)]
     [InlineData("--2", 2)]
@@ -82,8 +82,8 @@ public class ContributionLedgerTests
     {
         var ledger = ContributionLedger.Empty
             .Add(Var, new Contribution(0, A, 0.1))
-            .Add(Var, new Contribution(0, A, 0.1))      // season 0 / a nets 0.2
-            .Add(Var, new Contribution(1, B, -0.5))     // season 1 / b nets -0.5 (larger magnitude)
+            .Add(Var, new Contribution(0, A, 0.1))
+            .Add(Var, new Contribution(1, B, -0.5))
             .Add(Var, new Contribution(2, A, 0.05));
 
         Assert.Equal([new Cause(1, B), new Cause(0, A)], ledger.Top(Var, 2));
@@ -112,7 +112,7 @@ public class ContributionLedgerTests
 
         var scaled = ledger.Scale(Var, 1e-4);
 
-        Assert.Equal(1e-4, scaled.For(Var).Single().Delta, 12);       // the 1e-13 entry vanished
+        Assert.Equal(1e-4, scaled.For(Var).Single().Delta, 12);
     }
 
     [Fact]

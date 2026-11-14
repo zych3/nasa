@@ -94,7 +94,7 @@ public class WaterBalanceTests
         var expected = 1 - actual / demand;
 
         Assert.Equal(expected, Stress(FlatCrop(), awc: 100, et0: 5, precip: 0), 9);
-        Assert.InRange(expected, 0.4, 0.7);   // sanity: a moderate drought, neither none nor total
+        Assert.InRange(expected, 0.4, 0.7);
     }
 
     [Fact]
@@ -110,7 +110,6 @@ public class WaterBalanceTests
             return WaterBalance.Evaluate(crop, Features(10), new FarmerInputs(), season, climate).StressIndex;
         }
 
-        // Both droughts are 10 days long and the soil (TAW 10 mm) empties on day 2, so only the weight differs.
         var mid = Run(season.StageStart(GrowthStage.Mid), season.StageEnds[2]);
         var late = Run(season.StageStart(GrowthStage.Late), season.StageEnds[3]);
 
@@ -133,11 +132,10 @@ public class WaterBalanceTests
     [Fact]
     public void WithoutWaterProfileFallsBackToSeasonalRainfall()
     {
-        var crop = Kb.GetCrop(new CropId("cerealB")) with { Water = null };   // need [350, 500] mm
+        var crop = Kb.GetCrop(new CropId("cerealB")) with { Water = null };
         var season = SeasonCalendar.Build(crop, Year, Settings);
         var days = season.End.DayNumber - season.Sow.DayNumber + 1;
 
-        // Constant 1 mm/day: season rain = days mm, well below 350.
         var result = WaterBalance.Evaluate(crop, Features(100), new FarmerInputs(), season, Climate(3, 1));
 
         Assert.Equal(WaterMethod.PrecipitationFallback, result.Method);
@@ -187,8 +185,6 @@ public class WaterBalanceTests
     [Fact]
     public void KcRampsLinearlyAcrossDevelopmentAndLateStages()
     {
-        // Compare a crop whose Kc ramps with one that sits at the ramp's start value: ramping demand is larger,
-        // so with limited water the ramping crop is the more stressed one.
         var ramp = FlatCrop() with { Water = FlatCrop().Water! with { Kc = [0.2, 1.4, 1.0] } };
         var flatLow = FlatCrop() with { Water = FlatCrop().Water! with { Kc = [0.2, 0.2, 0.2] } };
 

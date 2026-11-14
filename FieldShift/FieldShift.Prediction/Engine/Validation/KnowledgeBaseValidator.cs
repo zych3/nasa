@@ -3,13 +3,10 @@ using FieldShift.Prediction.Engine.Simulation;
 
 namespace FieldShift.Prediction.Engine.Validation;
 
-/// <summary>Checks a knowledge base (and optionally settings or a plot against it). Reports every problem.</summary>
 public static class KnowledgeBaseValidator
 {
-    /// <summary>Kc values per crop: initial, mid, end (FAO-56 single coefficient).</summary>
     public const int KcCount = 3;
 
-    /// <summary>Stage lengths per crop: initial, development, mid, late (FAO-56 table 11).</summary>
     public const int StageCount = 4;
 
     public static ValidationReport Validate(CropKnowledgeBase kb, EngineSettings? settings = null)
@@ -29,7 +26,6 @@ public static class KnowledgeBaseValidator
         return r;
     }
 
-    /// <summary>Checks that every crop and action a plot refers to exists in the knowledge base.</summary>
     public static ValidationReport ValidatePlot(Plot plot, CropKnowledgeBase kb)
     {
         var r = new ValidationReport();
@@ -126,7 +122,6 @@ public static class KnowledgeBaseValidator
                 r.Error("predecessorRating.unknownCrop", Fmt.Inv($"Unknown crop '{id}'."), where);
         }
 
-        // Warnings and statistics.
         if (crop.Responses.All(x => x.Var != StateVarId.Ph))
             r.Warning("crop.noPhResponse", "Crop has no pH response.", where);
         if (!crop.Effects.Any(e => e.Op == EffectOp.Load))

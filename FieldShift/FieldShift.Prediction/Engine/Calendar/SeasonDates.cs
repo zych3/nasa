@@ -1,6 +1,5 @@
 namespace FieldShift.Prediction.Engine.Calendar;
 
-/// <summary>FAO-56 growth stages.</summary>
 public enum GrowthStage
 {
     Initial,

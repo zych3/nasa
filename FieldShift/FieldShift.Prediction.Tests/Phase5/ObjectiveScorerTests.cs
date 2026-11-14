@@ -44,13 +44,12 @@ public class ObjectiveScorerTests
         var r = Score("cerealB");
 
         Assert.Equal(40, r.Raw[Objective.Humus], 9);
-        Assert.Equal(0.6 + 0.4 * (40.0 / 200.0), S(r, Objective.Humus), 9);          // curve (0, 0.6) -> (200, 1)
+        Assert.Equal(0.6 + 0.4 * (40.0 / 200.0), S(r, Objective.Humus), 9);
     }
 
     [Fact]
     public void HumusChangeIsAveragedPerYearForALongerCycle()
     {
-        // cerealA +50, legumeA +80 per cycle -> +65 per year
         var r = Score("cerealA", "legumeA");
 
         Assert.Equal(65, r.Raw[Objective.Humus], 9);
@@ -62,7 +61,7 @@ public class ObjectiveScorerTests
         var r = Score("cerealB");
 
         Assert.Equal(0.2, r.Raw[Objective.Pathogen], 9);
-        Assert.Equal(1 - 0.6 * (0.2 / 0.5), S(r, Objective.Pathogen), 9);              // curve (0, 1) -> (0.5, 0.4)
+        Assert.Equal(1 - 0.6 * (0.2 / 0.5), S(r, Objective.Pathogen), 9);
     }
 
     [Fact]
@@ -86,7 +85,6 @@ public class ObjectiveScorerTests
     [Fact]
     public void PathogenIgnoresNonPressureResponsesAndSeasonsWithNone()
     {
-        // Only the pH response (a stock) is left: nothing to be threatened by, so the score is perfect.
         var kb = WithCrop(Kb, "cerealB", c => c with { Responses = c.Responses.Where(x => x.Var == StateVarId.Ph).ToList() });
 
         var r = Score(Env(kb), ["cerealB"]);
@@ -98,7 +96,6 @@ public class ObjectiveScorerTests
     [Fact]
     public void NitrogenIsTheShareOfTheNeedCoveredByPredecessors()
     {
-        // legumeA needs no nitrogen (1.0); cerealA follows it with 40 kg N of its 150 kg need.
         var r = Score("legumeA", "cerealA");
 
         Assert.Equal((1.0 + 40.0 / 150.0) / 2, S(r, Objective.Nitrogen), 9);
@@ -118,7 +115,6 @@ public class ObjectiveScorerTests
     [Fact]
     public void CoverAveragesTheWinterCoverAfterEachSeason()
     {
-        // cerealA leaves 0.8, legumeA nothing (events reset every season)
         Assert.Equal(0.4, S(Score("cerealA", "legumeA"), Objective.Cover), 9);
     }
 
@@ -146,7 +142,6 @@ public class ObjectiveScorerTests
     [Fact]
     public void RootDepthDiversityIsCappedAtOne()
     {
-        // 1.2 m (class 2), 0.9 m (class 1), plus a shallow catch crop at 0.3 m (class 0): 3 classes -> full score
         var kb = WithCrop(Kb, "catchA", c => c with { Water = c.Water! with { RootDepthM = 0.3 } });
         var env = Env(kb);
         var plan = new RotationPlan
@@ -171,7 +166,6 @@ public class ObjectiveScorerTests
         var a = ObjectiveScorer.Score(PlanSimulator.Simulate(without, env.InitialState(), env), env);
         var b = ObjectiveScorer.Score(PlanSimulator.Simulate(with, env.InitialState(), env), env);
 
-        // catchA roots at 0.6 m (class 1), cerealB at 1.0 m (class 2): two classes instead of one
         Assert.Equal((0.7 + 1.0 / 3.0) / 2, S(a, Objective.Structure), 9);
         Assert.Equal((0.7 + 2.0 / 3.0) / 2, S(b, Objective.Structure), 9);
     }
@@ -243,7 +237,6 @@ public class ObjectiveScorerTests
     [Fact]
     public void TransitionSeasonsDoNotChangeTheCycleScores()
     {
-        // oilseedA is a poor crop on this plot (survival 0.375), but it is only the transition here.
         var plain = Score(Env(), ["cerealB"]);
         var withTransition = Score(Env(), ["cerealB"], ["oilseedA"]);
 
@@ -258,7 +251,7 @@ public class ObjectiveScorerTests
         var withTransition = Score(Env(), ["cerealB"], ["oilseedA"]);
 
         Assert.Equal(StaticCerealB, plain.WorstSeasonCvar, 9);
-        Assert.Equal(0.375, withTransition.WorstSeasonCvar, 9);        // oilseedA's static survival
+        Assert.Equal(0.375, withTransition.WorstSeasonCvar, 9);
     }
 
     [Fact]
@@ -281,8 +274,6 @@ public class ObjectiveScorerTests
         var mono = Score("cerealB");
         var rotated = Score("legumeA", "cerealA");
 
-        // The legume-cereal rotation covers more nitrogen, adds more humus and cover than cereal monoculture.
-        // (Not pathogen: cerealB is a weak host of p1, so its monoculture is not a disease problem.)
         Assert.True(S(rotated, Objective.Nitrogen) > S(mono, Objective.Nitrogen));
         Assert.True(S(rotated, Objective.Humus) > S(mono, Objective.Humus));
         Assert.True(S(rotated, Objective.Cover) > S(mono, Objective.Cover));
@@ -380,7 +371,7 @@ public class PlanSimulatorTests
         var evaluation = PlanEvaluator.Evaluate(plan, env.InitialState(), env);
 
         Assert.Equal(4, evaluation.Seasons.Count);
-        Assert.True(evaluation.IsFeasible);          // constraints arrive with the search (phase 6)
+        Assert.True(evaluation.IsFeasible);
         Assert.Contains(evaluation.Reasons, r => r.Kind == ReasonKind.StateEffect);
         Assert.Contains(evaluation.Reasons, r => r.Code == "objective.survival");
         Assert.Equal(7, evaluation.Scores.Values.Count);

@@ -42,7 +42,6 @@ public class OptimizerTests
     [Fact]
     public void AddsCatchCropsWhereTheyFitAndHelp()
     {
-        // After cerealB (harvest 235) and legumeA (245) a catch crop fits before spring crops; after rootCropA (300) it does not.
         var original = Plan("cerealB", "legumeA", "rootCropA");
 
         var result = Optimize(original, SoilHealth);
@@ -55,18 +54,16 @@ public class OptimizerTests
     [Fact]
     public void NeverPlacesACatchCropBeforeAWinterCrop()
     {
-        // cerealB is followed by cerealA (winter): no catch crop after cerealB.
         var result = Optimize(Plan("cerealB", "cerealA", "legumeA"), SoilHealth);
 
         Assert.Null(result.Plan.Cycle[0].CatchCrop);
-        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[1].CatchCrop);       // cerealA -> legumeA (spring)
-        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[2].CatchCrop);       // legumeA -> cerealB, wrap-around (spring)
+        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[1].CatchCrop);
+        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[2].CatchCrop);
     }
 
     [Fact]
     public void AStrategyThatDoesNotCareLeavesThePlanAlone()
     {
-        // Catch crops add cover and humus only; a survival-only strategy gains nothing, and only strict gains are accepted.
         var survivalOnly = Strat("survival", minL: 3, maxL: 5, weights: [(Objective.Survival, 1.0)]);
         var original = Plan("cerealB", "legumeA", "rootCropA");
 
@@ -88,8 +85,6 @@ public class OptimizerTests
     [Fact]
     public void TransitionSeasonsGetNoCatchCropBecauseObjectivesIgnoreThem()
     {
-        // Objectives are scored on the last cycle only, so a catch crop in a transition season cannot raise the score
-        // (it would only change the starting state). The optimizer accepts strict gains only, so it leaves it out.
         var plan = new RotationPlan
         {
             FirstHarvestYear = 2026,
@@ -100,10 +95,8 @@ public class OptimizerTests
         var result = Optimize(plan, SoilHealth);
 
         Assert.Null(result.Plan.Transition[0].CatchCrop);
-        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[0].CatchCrop);          // the cycle itself still gets them
+        Assert.Equal(new CropId("catchA"), result.Plan.Cycle[0].CatchCrop);
     }
-
-    // --- actions ------------------------------------------------------------------------------------------------------
 
     private static CropKnowledgeBase WithManure(string? requirement) => WithExtraAction(Kb, new ManagementActionDefinition
     {
@@ -151,19 +144,14 @@ public class OptimizerTests
     [Fact]
     public void UselessActionsAreLeftOut()
     {
-        // The fixture's lime moves pH by +0.2, but every fixture crop already sits on its optimum: no gain, so no change.
         var result = Optimize(Plan("cerealB", "legumeA", "rootCropA"), NitrogenFirst, catchCrops: false);
 
         Assert.All(result.Plan.Cycle, s => Assert.Empty(s.Actions));
     }
 
-    // --- constraints ------------------------------------------------------------------------------------------------
-
     [Fact]
     public void RefusesAChangeThatWouldBreakTheSurvivalFloor()
     {
-        // A tempting catch crop (lots of cover and humus) that also loads the oilseed pathogen heavily: oilseedA's
-        // survival in the second cycle repetition would drop below the floor of 0.2, so the change must be rejected.
         var kb = WithCrop(Kb, "catchA", c => c with
         {
             Effects = [.. c.Effects, Eff("pathogen:p3", EffectOp.Load, 0.9), Eff("humusC", EffectOp.Add, 500)]

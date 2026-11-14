@@ -4,7 +4,6 @@ using FieldShift.Prediction.Engine.Features;
 
 namespace FieldShift.Prediction.Engine.Survival;
 
-/// <summary>Why a crop is in or out of the search.</summary>
 public sealed record CropScreeningResult
 {
     public required CropId Crop { get; init; }
@@ -13,16 +12,12 @@ public sealed record CropScreeningResult
     public required double SurvivalMean { get; init; }
     public required double SurvivalCvar { get; init; }
 
-    /// <summary>The lowest survival floor among the requested strategies.</summary>
     public required double Floor { get; init; }
 
-    /// <summary>Per-year factor breakdown.</summary>
     public required IReadOnlyList<YearSurvival> Years { get; init; }
 
-    /// <summary>The worst years (the ones CVaR averages), worst first.</summary>
     public required IReadOnlyList<int> WorstYears { get; init; }
 
-    /// <summary>Name of the factor with the lowest mean, or null when no factor limits survival.</summary>
     public string? LimitingFactor { get; init; }
 
     public required IReadOnlyList<Reason> Reasons { get; init; }
@@ -38,13 +33,8 @@ public sealed record ScreeningOutcome(
     public CropScreeningResult this[CropId crop] => Results.Single(r => r.Crop == crop);
 }
 
-/// <summary>
-/// A crop is a candidate if its static CVaR reaches the lowest survival floor among the requested strategies and the
-/// farmer has not excluded it. Catch crops are screened the same way, without the flowering heat factor.
-/// </summary>
 public static class CropScreener
 {
-    /// <summary>A factor mean at or above this is treated as "not limiting" in explanations.</summary>
     private const double NotLimiting = 0.999;
 
     public static ScreeningOutcome Screen(

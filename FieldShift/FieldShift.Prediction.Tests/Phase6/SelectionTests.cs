@@ -12,7 +12,6 @@ internal static class Cands
 {
     public static readonly IReadOnlyList<Objective> Axes = ObjectiveScorer.Scored;
 
-    /// <summary>A candidate with the given scores (in <see cref="ObjectiveScorer.Scored"/> order).</summary>
     public static PlanCandidate Make(string key, double[] vector, double worst = 1.0, string[]? crops = null, int length = 3)
     {
         crops ??= ["a", "b", "c"];
@@ -31,7 +30,6 @@ internal static class Cands
         };
     }
 
-    /// <summary>Vector with survival and humus set, everything else at <paramref name="rest"/>.</summary>
     public static double[] V(double survival, double humus, double rest = 0.5)
     {
         var v = Enumerable.Repeat(rest, Axes.Count).ToArray();
@@ -49,7 +47,6 @@ public class ParetoArchiveTests
         var random = new Random(123);
         for (var n = 0; n < 2000; n++)
         {
-            // coarse values so ties are common
             double[] Vec() => Cands.Axes.Select(_ => random.Next(0, 4) / 3.0).ToArray();
             var (a, b) = (Vec(), Vec());
             var sa = new ObjectiveScores(Cands.Axes.Select((o, i) => (o, v: a[i])).ToDictionary(x => x.o, x => x.v));
@@ -74,7 +71,7 @@ public class ParetoArchiveTests
     {
         var archive = new ParetoArchive();
         archive.TryAdd(Cands.Make("a", Cands.V(0.5, 0.5)));
-        archive.TryAdd(Cands.Make("b", Cands.V(0.4, 0.6)));       // trade-off with a: both stay
+        archive.TryAdd(Cands.Make("b", Cands.V(0.4, 0.6)));
 
         Assert.True(archive.TryAdd(Cands.Make("c", Cands.V(0.9, 0.9))));
 
@@ -179,7 +176,6 @@ public class StrategySelectorTests
     [Fact]
     public void WeightsAreRenormalisedOverTheScoredObjectives()
     {
-        // GrossMargin cannot be scored, so its weight is dropped and the others rescaled to sum to 1.
         var w = StrategySelector.Weights(Strategy(weights: [(Objective.Survival, 1), (Objective.Humus, 1), (Objective.GrossMargin, 2)]), Cands.Axes);
 
         Assert.Equal(0.5, w[0], 12);
@@ -194,9 +190,9 @@ public class StrategySelectorTests
 
     [Theory]
     [InlineData(3, 1.0, true)]
-    [InlineData(2, 1.0, false)]      // shorter than the strategy allows
-    [InlineData(6, 1.0, false)]      // longer
-    [InlineData(4, 0.29, false)]     // a season below the survival floor
+    [InlineData(2, 1.0, false)]
+    [InlineData(6, 1.0, false)]
+    [InlineData(4, 0.29, false)]
     [InlineData(4, 0.3, true)]
     public void EligibilityFollowsCycleLengthAndSurvivalFloor(int length, double worst, bool eligible) =>
         Assert.Equal(eligible, StrategySelector.IsEligible(Strategy(), Cands.Make("k", Cands.V(0.5, 0.5), worst, length: length)));
@@ -214,7 +210,7 @@ public class StrategySelectorTests
 
         var ranked = StrategySelector.Rank(Strategy(), front, topK, Cands.Axes);
 
-        Assert.Equal(["high", "mid", "low"], ranked.Select(c => c.Key));       // no duplicate, no "risky"
+        Assert.Equal(["high", "mid", "low"], ranked.Select(c => c.Key));
     }
 
     [Fact]
@@ -228,7 +224,6 @@ public class StrategySelectorTests
     [Fact]
     public void KneePicksTheMostBalancedPlanOfTheFront()
     {
-        // Extremes (1,0) and (0,1) against a compromise (0.6,0.6): after min-max normalisation the compromise is closest to (1,1).
         var front = new[]
         {
             Cands.Make("survivalOnly", Cands.V(1.0, 0.0)),
@@ -239,7 +234,7 @@ public class StrategySelectorTests
         var ranked = StrategySelector.Rank(Strategy(SelectionMode.Knee, floor: 0.0), front, [], Cands.Axes);
 
         Assert.Equal("balanced", ranked[0].Key);
-        Assert.Equal(["humusOnly", "survivalOnly"], ranked.Skip(1).Select(c => c.Key));      // equal distance: key order
+        Assert.Equal(["humusOnly", "survivalOnly"], ranked.Skip(1).Select(c => c.Key));
     }
 
     [Fact]
@@ -278,7 +273,7 @@ public class StrategySelectorTests
         var xyz = Cands.Make("3", Cands.V(0, 0), crops: ["x", "y", "z"]);
 
         Assert.Equal(0, StrategySelector.JaccardDistance(abc, abc), 12);
-        Assert.Equal(0.5, StrategySelector.JaccardDistance(abc, abd), 12);      // 2 shared of 4
+        Assert.Equal(0.5, StrategySelector.JaccardDistance(abc, abd), 12);
         Assert.Equal(1, StrategySelector.JaccardDistance(abc, xyz), 12);
     }
 
@@ -288,10 +283,10 @@ public class StrategySelectorTests
         var ranked = new[]
         {
             Cands.Make("best", Cands.V(0.9, 0.9), crops: ["a", "b", "c"]),
-            Cands.Make("sameCrops", Cands.V(0.85, 0.85), crops: ["a", "b", "c"]),       // distance 0: skipped
-            Cands.Make("close", Cands.V(0.8, 0.8), crops: ["a", "b", "d"]),             // distance 0.5: kept
-            Cands.Make("closeToClose", Cands.V(0.7, 0.7), crops: ["a", "b", "d"]),      // same as "close": skipped
-            Cands.Make("far", Cands.V(0.6, 0.6), crops: ["x", "y", "z"])                // kept
+            Cands.Make("sameCrops", Cands.V(0.85, 0.85), crops: ["a", "b", "c"]),
+            Cands.Make("close", Cands.V(0.8, 0.8), crops: ["a", "b", "d"]),
+            Cands.Make("closeToClose", Cands.V(0.7, 0.7), crops: ["a", "b", "d"]),
+            Cands.Make("far", Cands.V(0.6, 0.6), crops: ["x", "y", "z"])
         };
         var settings = WithSearch(s => s with { AlternativesPerStrategy = 3, MinAlternativeJaccardDistance = 0.3 });
 
@@ -312,7 +307,7 @@ public class StrategySelectorTests
         };
         var settings = WithSearch(s => s with { AlternativesPerStrategy = 2 });
 
-        Assert.Equal(3, StrategySelector.PickBestAndAlternatives(ranked, settings.Search).Count);       // best + 2
+        Assert.Equal(3, StrategySelector.PickBestAndAlternatives(ranked, settings.Search).Count);
     }
 
     [Fact]
@@ -341,7 +336,7 @@ public class CatchCropFeasibilityTests
         Assert.Equal(feasible, CatchCropFeasibility.IsFeasible(C(previous), C("catchA"), C(next), Settings));
 
     [Theory]
-    [InlineData("cerealA")]      // winter crop next: its sowing competes with the catch crop
+    [InlineData("cerealA")]
     [InlineData("oilseedA")]
     public void TheNextMainCropMustBeASpringCrop(string next) =>
         Assert.False(CatchCropFeasibility.IsFeasible(C("cerealB"), C("catchA"), C(next), Settings));

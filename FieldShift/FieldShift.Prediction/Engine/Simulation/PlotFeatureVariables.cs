@@ -2,7 +2,6 @@ using FieldShift.Prediction.Domain;
 
 namespace FieldShift.Prediction.Engine.Simulation;
 
-/// <summary>The plot features that settings expressions may read, and the state variables that may default to "fromPlot".</summary>
 public static class PlotFeatureVariables
 {
     private static readonly IReadOnlyDictionary<string, Func<PlotFeatures, double>> Readers =

@@ -3,7 +3,6 @@ using FieldShift.Prediction.Engine.Features;
 
 namespace FieldShift.Prediction.Engine.Search;
 
-/// <summary>One season of the real or planned sequence: the crop and the year it is harvested.</summary>
 public readonly record struct SeqEntry(Crop Crop, int Year);
 
 public enum ViolationKind
@@ -36,7 +35,6 @@ public readonly record struct ConstraintViolation(
 /// </summary>
 public static class ConstraintChecker
 {
-    /// <summary>Checks the last entry of <paramref name="seq"/> against everything before it.</summary>
     public static ConstraintViolation? CheckAppend(
         IReadOnlyList<SeqEntry> seq, EngineSettings settings, IReadOnlySet<CropId> excluded)
     {
@@ -82,7 +80,6 @@ public static class ConstraintChecker
         return null;
     }
 
-    /// <summary>The recorded history as a sequence for the checks, oldest first; seasons with unknown crops are left out.</summary>
     public static IReadOnlyList<SeqEntry> HistoryEntries(Plot plot, CropKnowledgeBase kb) =>
         plot.History
             .Select((h, order) => (h, order))
@@ -91,10 +88,8 @@ public static class ConstraintChecker
             .Select(x => new SeqEntry(kb.GetCrop(x.h.Crop), x.h.HarvestYear))
             .ToList();
 
-    /// <summary>Largest number of cycle seasons a group may occupy: floor(maxShare · L).</summary>
     public static int GroupLimit(double maxShare, int cycleLength) => (int)Math.Floor(maxShare * cycleLength + 1e-9);
 
-    /// <summary>Re-checks a whole plan from scratch: sequence rules over the unrolled plan, then group shares on the cycle.</summary>
     public static IReadOnlyList<Reason> Verify(
         RotationPlan plan, IReadOnlyList<SeqEntry> history, CropKnowledgeBase kb, EngineSettings settings,
         IReadOnlySet<CropId> excluded)
@@ -156,5 +151,4 @@ public static class ConstraintChecker
     /// <summary>A survival-floor violation for a season whose CVaR is below the floor (floor passed in thousandths).</summary>
     public static ConstraintViolation SurvivalViolation(CropId crop, int year, double cvar, double floor) =>
         new(ViolationKind.SurvivalFloor, crop, year, Other: (int)Math.Round(floor * 1000), Value: cvar);
-
 }

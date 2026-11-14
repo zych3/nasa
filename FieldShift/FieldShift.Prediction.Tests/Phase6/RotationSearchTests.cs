@@ -15,8 +15,6 @@ public class RotationSearchTests
 
     private static EngineSettings NoTransition() => WithSearch(s => s with { MaxTransitionYears = 0 });
 
-    // --- hard rules hold for every plan the search keeps ----------------------------------------------------------
-
     [Fact]
     public void NoPlanBreaksAHardRule()
     {
@@ -36,11 +34,11 @@ public class RotationSearchTests
         var outcome = Run(["oilseedA", "cerealB", "legumeA", "rootCropA"], [Strat("s", floor: 0.1, minL: 4, maxL: 4)], plot: plot);
 
         var plans = All(outcome).ToList();
-        Assert.Contains(plans, c => c.Crops.Contains("oilseedA"));              // not vacuous
+        Assert.Contains(plans, c => c.Crops.Contains("oilseedA"));
 
         foreach (var c in plans)
         {
-            var years = new List<int> { 2025 };                                 // the recorded oilseed season
+            var years = new List<int> { 2025 };
             years.AddRange(Unrolled(c, Settings.Search.UnrollCycles).Where(u => u.Crop == "oilseedA").Select(u => u.Year));
             for (var i = 1; i < years.Count; i++)
                 Assert.True(years[i] - years[i - 1] >= 4, $"{c.Key}: oilseed in {years[i - 1]} and {years[i]}");
@@ -72,21 +70,18 @@ public class RotationSearchTests
             var cereals = c.Plan.Cycle.Count(s => s.MainCrop.Value is "cerealA" or "cerealB");
             Assert.True(cereals <= ConstraintChecker.GroupLimit(0.67, c.CycleLength), $"{c.Key}: {cereals} cereals");
         }
-        // The limit is reached, not just respected: a 3-year cycle with two cereals exists.
         Assert.Contains(plans, c => c.CycleLength == 3 && c.Plan.Cycle.Count(s => s.MainCrop.Value is "cerealA" or "cerealB") == 2);
     }
 
     [Fact]
     public void WinterCropsOnlyFollowCropsHarvestedInTime()
     {
-        // History ends with rootCropA (harvest up to day 300): cerealA cannot be sown straight after it.
         var plot = PlotWithHistory(new HistoricSeason { HarvestYear = 2025, Crop = new CropId("rootCropA") });
 
         var outcome = Run(["cerealA", "cerealB", "legumeA"], [Strat("s", minL: 3, maxL: 3)], plot: plot);
 
         var plans = All(outcome).ToList();
         Assert.DoesNotContain(plans, c => c.Plan.Transition.Count == 0 && c.Plan.Cycle[0].MainCrop.Value == "cerealA");
-        // ...but a transition season can bridge the gap
         Assert.Contains(plans, c => c.Plan.Transition.Count == 1 && c.Plan.Cycle[0].MainCrop.Value == "cerealA");
     }
 
@@ -99,12 +94,9 @@ public class RotationSearchTests
         Assert.All(All(outcome), c => Assert.DoesNotContain("legumeA", c.Crops));
     }
 
-    // --- survival floor -------------------------------------------------------------------------------------------
-
     [Fact]
     public void SurvivalFloorKeepsRiskyCropsOut()
     {
-        // Static survival on this plot: cerealA 0.40, oilseedA 0.375. With a floor of 0.5 neither can ever be sown.
         var outcome = Run(strategies: [Strat("strict", floor: 0.5, minL: 3, maxL: 4)]);
 
         Assert.NotEmpty(All(outcome));
@@ -125,10 +117,8 @@ public class RotationSearchTests
         var outcome = Run(strategies: [lenient, strict]);
 
         Assert.All(outcome.TopK[strict.Id], c => Assert.True(c.WorstSeasonCvar >= 0.5 - 1e-9));
-        Assert.Contains(outcome.TopK[lenient.Id], c => c.WorstSeasonCvar < 0.5);       // plans with cerealA/oilseedA exist for it
+        Assert.Contains(outcome.TopK[lenient.Id], c => c.WorstSeasonCvar < 0.5);
     }
-
-    // --- length ranges ----------------------------------------------------------------------------------------------
 
     [Fact]
     public void EachStrategyOnlyGetsItsOwnCycleLengths()
@@ -141,8 +131,6 @@ public class RotationSearchTests
         Assert.All(outcome.TopK[short3.Id], c => Assert.Equal(3, c.CycleLength));
         Assert.All(outcome.TopK[long5.Id], c => Assert.Equal(5, c.CycleLength));
     }
-
-    // --- canonical rotations -----------------------------------------------------------------------------------------
 
     [Fact]
     public void WithoutHistoryRotationsOfACycleAreOnePlan()
@@ -168,7 +156,6 @@ public class RotationSearchTests
     [Fact]
     public void WithHistoryEveryRotationIsADifferentPlan()
     {
-        // The same 26 sequences, none merged: the history makes the starting point matter.
         var plot = PlotWithHistory(new HistoricSeason { HarvestYear = 2025, Crop = new CropId("cerealB") });
 
         var outcome = Run(["cerealB", "legumeA", "rootCropA"], [Strat("s")], settings: NoTransition(), plot: plot,
@@ -181,8 +168,6 @@ public class RotationSearchTests
     [Fact]
     public void WithoutHistoryThereIsNothingToBridgeSoNoTransitionIsPlanned()
     {
-        // A transition season is a bridge into the cycle. With no history the cycle can start at once,
-        // so a plan with a transition would only be the same plan a year later.
         var outcome = Run(["cerealB", "legumeA"], [Strat("s", minL: 2, maxL: 2)], options: new SearchOptions { BoundPruning = false });
 
         Assert.NotEmpty(All(outcome));
@@ -192,8 +177,6 @@ public class RotationSearchTests
     [Fact]
     public void OnlyTheSafestFewBridgeCropsAreTriedForEachBlockedStart()
     {
-        // After rootCropA only cerealA is blocked. Three legal bridges exist (cerealB, legumeA, ...): with one allowed,
-        // exactly the safest one (highest static survival: legumeA 1.0 before cerealB 0.83) is used.
         var plot = PlotWithHistory(new HistoricSeason { HarvestYear = 2025, Crop = new CropId("rootCropA") });
         var settings = WithSearch(s => s with { BridgeCropsPerStart = 1 });
 
@@ -220,7 +203,6 @@ public class RotationSearchTests
     [Fact]
     public void ATransitionIsOnlyUsedForCyclesThatCannotStartDirectlyAfterTheHistory()
     {
-        // After rootCropA (harvest by day 300) only cerealA (a winter crop, sown by day 290) is blocked.
         var plot = PlotWithHistory(new HistoricSeason { HarvestYear = 2025, Crop = new CropId("rootCropA") });
 
         var outcome = Run(["cerealA", "cerealB", "legumeA"], [Strat("s", minL: 3, maxL: 3)], plot: plot,
@@ -234,7 +216,6 @@ public class RotationSearchTests
     [Fact]
     public void TheBridgeIsTheShortestOneThatWorks()
     {
-        // With up to two transition seasons allowed, one is already enough here, so no two-season bridge appears.
         var plot = PlotWithHistory(new HistoricSeason { HarvestYear = 2025, Crop = new CropId("rootCropA") });
         var settings = WithSearch(s => s with { MaxTransitionYears = 2 });
 
@@ -244,8 +225,6 @@ public class RotationSearchTests
         Assert.Contains(All(outcome), c => c.Plan.Transition.Count == 1);
         Assert.DoesNotContain(All(outcome), c => c.Plan.Transition.Count == 2);
     }
-
-    // --- determinism and parallelism ----------------------------------------------------------------------------------
 
     private static object Fingerprint(SearchOutcome o) => (
         o.Front.Select(c => (c.Key, string.Join(",", c.Vector.Select(v => v.ToString("R"))))).ToList(),
@@ -311,12 +290,9 @@ public class RotationSearchTests
         Assert.Throws<ArgumentException>(() => new RotationSearch(env, env.InitialState(), [], 2026, Kb.MainCrops, []));
     }
 
-    // --- branch and bound --------------------------------------------------------------------------------------------------
-
     [Fact]
     public void BoundPruningNeverChangesTheBestPlans()
     {
-        // Small top-K so the lists fill up quickly and the bound has something to beat.
         var settings = WithSearch(s => s with { TopKPerStrategy = 3 });
         var heavySurvival = Strat("survival", floor: 0.3, minL: 3, maxL: 5,
             weights: [(Objective.Survival, 0.9), (Objective.Humus, 0.1)]);

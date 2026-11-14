@@ -6,7 +6,6 @@ using static FieldShift.Prediction.Tests.Support.Sim;
 
 namespace FieldShift.Prediction.Tests.Phase4;
 
-/// <summary>Step 1: evaluation of the main crop against the inherited state.</summary>
 public class SeasonSimulatorEvaluationTests
 {
     [Fact]
@@ -31,7 +30,7 @@ public class SeasonSimulatorEvaluationTests
 
         var first = Run(env, env.InitialState(), "oilseedA", "oilseedA").Steps;
 
-        Assert.Equal(staticMean, first[0].Evaluation.SurvivalMean, 9);      // no p3 yet
+        Assert.Equal(staticMean, first[0].Evaluation.SurvivalMean, 9);
         // p3 = 0.6 after one oilseed season; curve (0,1) (0.3,0.6) (1,0.1) -> 0.6 - 0.5 * 0.3/0.7
         var multiplier = 0.6 - 0.5 * (0.3 / 0.7);
         Assert.Equal(staticMean * multiplier, first[1].Evaluation.SurvivalMean, 9);
@@ -118,7 +117,7 @@ public class SeasonSimulatorEvaluationTests
         Assert.Equal(0.7 - 1, p1.Delta, 9);
         Assert.Equal(ReasonKind.StateResponse, p1.Kind);
         Assert.Equal(1, p1.SeasonIndex);
-        Assert.DoesNotContain(step.Reasons, r => r.Code == "response.ph");   // pH curve is 1.0: nothing to explain
+        Assert.DoesNotContain(step.Reasons, r => r.Code == "response.ph");
         Assert.Contains(step.Reasons, r => r.Code == "response.residualN");
     }
 
@@ -136,7 +135,6 @@ public class SeasonSimulatorEvaluationTests
     [Fact]
     public void TheLargestContributionComesFirstInCausedBy()
     {
-        // p1: cerealA (season 0, load 0.5, decays twice), legumeA, cerealB (season 2, load 0.2).
         var env = Env();
 
         var (state, _) = Run(env, env.InitialState(), "cerealA", "legumeA", "cerealB");
@@ -205,7 +203,6 @@ public class SeasonSimulatorEvaluationTests
     }
 }
 
-/// <summary>Steps 2-4: resets, effects, decay and transforms.</summary>
 public class SeasonSimulatorStateTests
 {
     private static SimEnvironment EnvWith(Func<CropKnowledgeBase, CropKnowledgeBase> change, FarmerInputs? farmer = null) =>
@@ -214,9 +211,7 @@ public class SeasonSimulatorStateTests
     private static CropKnowledgeBase AddCerealAEffects(CropKnowledgeBase kb, params Effect[] extra) =>
         WithCrop(kb, "cerealA", c => c with { Effects = [.. c.Effects, .. extra] });
 
-    private static readonly double H0 = 15.3 * 1.4 * 0.3 * 10_000;   // humus C from SOC 15.3 g/kg
-
-    // --- step 2 --------------------------------------------------------------------------------------------
+    private static readonly double H0 = 15.3 * 1.4 * 0.3 * 10_000;
 
     [Fact]
     public void EventsResetBetweenSeasons()
@@ -227,7 +222,7 @@ public class SeasonSimulatorStateTests
 
         Assert.Equal(0.8, V(steps[0].Next.Soil, "soilCoverWinter"), 9);
         Assert.Equal(0.8, V(steps[1].Evaluation.StateBefore, "soilCoverWinter"), 9);
-        Assert.Equal(0, V(steps[1].Next.Soil, "soilCoverWinter"), 9);       // legumeA does not cover the soil
+        Assert.Equal(0, V(steps[1].Next.Soil, "soilCoverWinter"), 9);
     }
 
     [Fact]
@@ -238,7 +233,7 @@ public class SeasonSimulatorStateTests
         var steps = Run(env, env.InitialState(), "legumeA", "cerealB").Steps;
 
         Assert.Equal(40, V(steps[1].Evaluation.StateBefore, "residualN"));
-        Assert.Equal(0, V(steps[1].Next.Soil, "residualN"));       // reset, then cerealB's -10 clamps at 0
+        Assert.Equal(0, V(steps[1].Next.Soil, "residualN"));
     }
 
     [Fact]
@@ -251,8 +246,6 @@ public class SeasonSimulatorStateTests
         Assert.Equal(H0 + 50 + 40, V(state.Soil, "humusC"), 6);
         Assert.True(V(state.Soil, "pathogen:p1") > 0);
     }
-
-    // --- step 3 --------------------------------------------------------------------------------------------
 
     [Fact]
     public void EffectsApplyInTheOrderMainCatchAction()
@@ -297,7 +290,6 @@ public class SeasonSimulatorStateTests
     [Fact]
     public void ScaleByNRateFollowsTheActualRate()
     {
-        // cerealA's default rate is 150 kg/ha; at 75 the scaled effect is halved.
         var env = EnvWith(kb => AddCerealAEffects(kb, Eff("humusC", EffectOp.Add, 100, scaleBy: "management.nRate")));
 
         var normal = Step(env, env.InitialState(), Season("cerealA"));
@@ -321,7 +313,7 @@ public class SeasonSimulatorStateTests
     [Theory]
     [InlineData(ResidueHandling.Remove, true)]
     [InlineData(ResidueHandling.Mulch, false)]
-    [InlineData(null, false)]            // cerealA's default is incorporate
+    [InlineData(null, false)]
     public void ResidueConditionFollowsThePlan(ResidueHandling? residue, bool applies)
     {
         var env = EnvWith(kb => AddCerealAEffects(kb, Eff("humusC", EffectOp.Add, 100, when: "residue.remove")));
@@ -369,7 +361,6 @@ public class SeasonSimulatorStateTests
 
         var step = Step(env, afterCerealA, Season("cerealB"), 1);
 
-        // p1: 0.5 * decay 0.4 + load 0.2
         Assert.Equal(0.5 * 0.4 + 0.2, V(step.Next.Soil, "pathogen:p1"), 9);
     }
 
@@ -383,8 +374,6 @@ public class SeasonSimulatorStateTests
 
         Assert.Equal(1, V(step.Next.Soil, "pathogen:p1"));
     }
-
-    // --- step 4 --------------------------------------------------------------------------------------------
 
     [Fact]
     public void PressureDecaysWithoutAHostAndExplainsIt()
@@ -421,7 +410,7 @@ public class SeasonSimulatorStateTests
         var step = Step(env, env.InitialState(), Season("cerealA", null, null, new PlannedAction(new ActionId("lime"))));
 
         Assert.Equal(5.75 - 0.1, V(step.Next.Soil, "ph"), 9);
-        Assert.Equal(0, V(step.Next.Soil, "acidificationCaO"));                 // resetFrom
+        Assert.Equal(0, V(step.Next.Soil, "acidificationCaO"));
         var t = Assert.Single(step.Reasons, r => r.Code == "transform.ph");
         Assert.Equal(-0.1, t.Delta, 9);
     }
@@ -435,7 +424,7 @@ public class SeasonSimulatorStateTests
         var step = Step(env, env.InitialState(), Season("cerealA", null, null, new PlannedAction(new ActionId("lime"))), 4);
 
         Assert.Equal([new Cause(4, new CropId("cerealA"))], step.Next.Ledger.Top(StateVarId.Ph, 3));
-        Assert.Empty(step.Next.Ledger.Top(StateVarId.AcidificationCaO, 3));    // source ledger reset with the variable
+        Assert.Empty(step.Next.Ledger.Top(StateVarId.AcidificationCaO, 3));
     }
 
     [Fact]
@@ -449,8 +438,6 @@ public class SeasonSimulatorStateTests
         Assert.Equal(5.75 + 500.0 / 2332.0, V(step.Next.Soil, "ph"), 9);
         Assert.Equal(1, V(step.Next.Soil, "recentLiming"));
     }
-
-    // --- actions ---------------------------------------------------------------------------------------------
 
     [Fact]
     public void ActionAmountScalesItsAdditiveEffects()
@@ -488,8 +475,6 @@ public class SeasonSimulatorStateTests
         Assert.Contains(step.Reasons, r => r.Code == "action.unknown");
         Assert.Equal(H0 + 50, V(step.Next.Soil, "humusC"), 6);
     }
-
-    // --- certainty and determinism ---------------------------------------------------------------------------
 
     [Fact]
     public void CertaintyScalesAdditiveEffectsAndLoads()

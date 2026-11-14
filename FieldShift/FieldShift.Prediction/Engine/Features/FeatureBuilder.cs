@@ -4,10 +4,8 @@ namespace FieldShift.Prediction.Engine.Features;
 
 public sealed record FeatureBuildResult(PlotFeatures Features, IReadOnlyList<Reason> Reasons);
 
-/// <summary>Derives the static <see cref="PlotFeatures"/> from soil data, farmer input and settings.</summary>
 public static class FeatureBuilder
 {
-    /// <summary>Season index used by reasons that belong to the plot, not to a plan season.</summary>
     public const int PlotLevel = -1;
 
     public static FeatureBuildResult Build(Plot plot, EngineSettings settings)

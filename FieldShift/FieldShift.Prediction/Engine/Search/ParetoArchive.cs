@@ -12,7 +12,6 @@ public sealed class ParetoArchive
     public IReadOnlyList<PlanCandidate> Members => _members;
     public int Count => _members.Count;
 
-    /// <summary>True if no member dominates these scores, so a candidate with them would be kept.</summary>
     public bool Accepts(double[] vector)
     {
         foreach (var member in _members)
@@ -23,7 +22,6 @@ public sealed class ParetoArchive
         return true;
     }
 
-    /// <returns>True if the candidate entered the archive (it was not dominated).</returns>
     public bool TryAdd(PlanCandidate candidate)
     {
         foreach (var member in _members)
@@ -37,7 +35,6 @@ public sealed class ParetoArchive
         return true;
     }
 
-    /// <summary>True when <paramref name="a"/> is at least as good everywhere and strictly better somewhere.</summary>
     public static bool Dominates(double[] a, double[] b)
     {
         var strictlyBetter = false;

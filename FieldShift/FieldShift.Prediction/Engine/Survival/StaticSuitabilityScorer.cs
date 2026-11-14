@@ -6,13 +6,8 @@ using FieldShift.Prediction.Engine.Water;
 
 namespace FieldShift.Prediction.Engine.Survival;
 
-/// <summary>
-/// Static survival of a crop for each climate year: texture, heat at flowering, winterkill and water stress,
-/// combined with the configured aggregator. Independent of what was grown before (that is the simulator's job).
-/// </summary>
 public static class StaticSuitabilityScorer
 {
-    /// <summary>The "30" in <see cref="Suitability.HeatDaysAbove30AtFlowering"/>.</summary>
     public const double HeatThresholdC = 30.0;
 
     public static CropStaticSurvival Score(
@@ -68,7 +63,6 @@ public static class StaticSuitabilityScorer
             SurvivalAggregator.Mean(scores), SurvivalAggregator.Cvar(scores, settings.Survival.CvarFraction), reasons);
     }
 
-    /// <summary>Sand and clay scores combined with the configured aggregator; null if the crop has neither range.</summary>
     private static double? TextureFactor(Crop crop, PlotFeatures f, EngineSettings settings)
     {
         var parts = new List<double>();
@@ -77,7 +71,6 @@ public static class StaticSuitabilityScorer
         return parts.Count == 0 ? null : SurvivalAggregator.Combine(parts, settings.Survival.Aggregator);
     }
 
-    /// <summary>Hot days (Tmax above 30 °C) in the flowering window. Catch crops are not scored on it.</summary>
     private static (double? Factor, int Days) HeatFactor(Crop crop, SeasonDates season, ClimateIndex climate)
     {
         if (crop.Type == CropType.Catch || crop.Suitability.HeatDaysAbove30AtFlowering is not { } range)
@@ -87,11 +80,6 @@ public static class StaticSuitabilityScorer
         return (range.Score(days), days);
     }
 
-    /// <summary>
-    /// 0 if any day from sowing to the end of March is colder than the crop tolerates, else 1. Snow at or above
-    /// the protective depth switches to the crop's with-snow limit. Missing snow data counts as no snow.
-    /// For a perennial sown in the harvest year, only 1 January to 31 March of that year is checked.
-    /// </summary>
     private static (double? Factor, bool SnowMissing) Winterkill(
         Crop crop, SeasonDates season, ClimateIndex climate, EngineSettings settings)
     {

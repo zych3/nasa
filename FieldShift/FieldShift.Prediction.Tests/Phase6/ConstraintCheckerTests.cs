@@ -17,12 +17,9 @@ public class ConstraintCheckerTests
     private static ConstraintViolation? Check(List<SeqEntry> seq, IReadOnlySet<CropId>? excluded = null) =>
         ConstraintChecker.CheckAppend(seq, Settings, excluded ?? NoExclusions);
 
-    // --- timing -----------------------------------------------------------------------------------------------
-
     [Fact]
     public void WinterCropCannotFollowALateHarvest()
     {
-        // rootCropA is harvested up to day 300; +10 days of soil preparation is day 310, but cerealA is sown by day 290.
         var v = Check(Seq(("rootCropA", 2026), ("cerealA", 2027)));
 
         Assert.Equal(ViolationKind.Timing, v!.Value.Kind);
@@ -34,7 +31,7 @@ public class ConstraintCheckerTests
     [InlineData("cerealB", "cerealA", true)]      // harvest 235 + 10 = 245 <= 290
     [InlineData("legumeA", "cerealA", true)]      // 245 + 10 = 255 <= 290
     [InlineData("cerealA", "cerealA", true)]      // 230 + 10 = 240 <= 290
-    [InlineData("legumeA", "oilseedA", false)]    // 255 > 250: oilseed is sown earlier than cereals
+    [InlineData("legumeA", "oilseedA", false)]
     [InlineData("cerealB", "oilseedA", true)]     // 245 <= 250
     public void WinterTimingFollowsTheHarvestAndSowingWindows(string previous, string next, bool allowed)
     {
@@ -53,7 +50,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void AGapYearRemovesTheTimingProblem()
     {
-        // Nothing was grown in 2027, so the soil had a whole year.
         Assert.Null(Check(Seq(("rootCropA", 2026), ("cerealA", 2028))));
     }
 
@@ -61,16 +57,13 @@ public class ConstraintCheckerTests
     public void ThefirstCropAfterNoHistoryHasNothingToConflictWith() =>
         Assert.Null(Check(Seq(("cerealA", 2026))));
 
-    // --- minimum return ---------------------------------------------------------------------------------------
-
     [Theory]
-    [InlineData(2027, false)]    // gap 1
-    [InlineData(2029, false)]    // gap 3: "within 4 years"
-    [InlineData(2030, true)]     // gap 4
+    [InlineData(2027, false)]
+    [InlineData(2029, false)]
+    [InlineData(2030, true)]
     [InlineData(2035, true)]
     public void OilseedNeedsFourYearsBetweenCrops(int secondYear, bool allowed)
     {
-        // Years in between are not listed: only the distance between the two oilseed crops matters.
         var violation = Check(Seq(("oilseedA", 2026), ("oilseedA", secondYear)));
 
         Assert.Equal(allowed, violation is null);
@@ -81,7 +74,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void ReturnIntervalCountsTheRecordedHistory()
     {
-        // oilseedA was harvested in 2025: it may not come back before 2029.
         Assert.Equal(ViolationKind.MinReturnYears, Check(Seq(("oilseedA", 2025), ("cerealB", 2026), ("cerealB", 2027), ("oilseedA", 2028)))!.Value.Kind);
         Assert.Null(Check(Seq(("oilseedA", 2025), ("cerealB", 2026), ("cerealB", 2027), ("cerealB", 2028), ("oilseedA", 2029))));
     }
@@ -89,7 +81,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void OnlyTheNearestEarlierOccurrenceBinds()
     {
-        // oilseedA in 2020 and 2026 is fine; a third in 2028 is too close to 2026, not to 2020.
         var seq = Seq(("oilseedA", 2020), ("oilseedA", 2026), ("oilseedA", 2028));
 
         Assert.Equal(2, Check(seq)!.Value.Value);
@@ -98,7 +89,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void ADifferentCropHasItsOwnInterval()
     {
-        // cerealB has no minimum return, so repeating it immediately is allowed.
         Assert.Null(Check(Seq(("cerealB", 2026), ("cerealB", 2027))));
     }
 
@@ -111,8 +101,6 @@ public class ConstraintCheckerTests
         Assert.Equal(ViolationKind.MinReturnYears, ConstraintChecker.CheckAppend(seq, Settings, NoExclusions)!.Value.Kind);
         Assert.Null(ConstraintChecker.CheckAppend([new(crop, 2026), new(C("legumeA"), 2027), new(crop, 2028)], Settings, NoExclusions));
     }
-
-    // --- consecutive years and perennial stands ---------------------------------------------------------------
 
     [Fact]
     public void MaxConsecutiveYearsLimitsARun()
@@ -149,7 +137,6 @@ public class ConstraintCheckerTests
     {
         var p = Perennial();
 
-        // 2026-2028 is a single stand: no return interval between its own years.
         Assert.Null(ConstraintChecker.CheckAppend([new(p, 2026), new(p, 2027)], Settings, NoExclusions));
         Assert.Null(ConstraintChecker.CheckAppend([new(p, 2026), new(p, 2027), new(p, 2028)], Settings, NoExclusions));
     }
@@ -170,7 +157,6 @@ public class ConstraintCheckerTests
         var p = Perennial();
         var other = new SeqEntry(C("cerealB"), 2029);
 
-        // stand 2026-2028, one other crop, then a new stand in 2030: gap 2 < 3
         var tooSoon = ConstraintChecker.CheckAppend([new(p, 2026), new(p, 2027), new(p, 2028), other, new(p, 2030)], Settings, NoExclusions);
         var fine = ConstraintChecker.CheckAppend([new(p, 2026), new(p, 2027), new(p, 2028), other, new(C("cerealB"), 2030), new(p, 2031)], Settings, NoExclusions);
 
@@ -183,13 +169,10 @@ public class ConstraintCheckerTests
     {
         var p = C("cerealA") with { Type = CropType.Perennial };
 
-        // A winter-sown stand continuing in the same field is not re-sown.
         var seq = new List<SeqEntry> { new(C("rootCropA"), 2026), new(p, 2027), new(p, 2028) };
 
         Assert.NotEqual(ViolationKind.Timing, ConstraintChecker.CheckAppend(seq, Settings, NoExclusions)?.Kind);
     }
-
-    // --- exclusions ---------------------------------------------------------------------------------------------
 
     [Fact]
     public void FarmerExclusionsAreHardRules()
@@ -200,8 +183,6 @@ public class ConstraintCheckerTests
         Assert.Null(Check(Seq(("cerealB", 2026)), excluded));
     }
 
-    // --- group shares --------------------------------------------------------------------------------------------
-
     [Theory]
     [InlineData(0.67, 3, 2)]
     [InlineData(0.67, 5, 3)]
@@ -210,8 +191,6 @@ public class ConstraintCheckerTests
     [InlineData(2.0 / 3.0, 3, 2)]       // exact third: floating point must not round it down to 1
     public void GroupLimitIsTheFlooredShare(double share, int length, int expected) =>
         Assert.Equal(expected, ConstraintChecker.GroupLimit(share, length));
-
-    // --- verifying whole plans ----------------------------------------------------------------------------------
 
     private static RotationPlan Plan(params string[] cycle) => new()
     {
@@ -225,8 +204,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void VerifyFindsAWrapAroundReturnViolation()
     {
-        // oilseedA at years 1 and 4 of a 3-year cycle: gap 3 < 4, seen only when the cycle repeats.
-        // (cerealB, harvested by day 235, leaves time to sow oilseedA again, so timing is not the problem.)
         var reasons = Verify(Plan("oilseedA", "legumeA", "cerealB"));
 
         var r = Assert.Single(reasons, x => x.Code == "hardRule.minReturnYears");
@@ -238,7 +215,6 @@ public class ConstraintCheckerTests
     [Fact]
     public void VerifyAcceptsALegalCycle()
     {
-        // wrap-around: cerealB (harvest 235) -> oilseedA is fine, and oilseedA returns after exactly 4 years
         Assert.Empty(Verify(Plan("oilseedA", "legumeA", "rootCropA", "cerealB")));
     }
 

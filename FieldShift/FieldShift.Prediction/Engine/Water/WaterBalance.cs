@@ -7,30 +7,19 @@ namespace FieldShift.Prediction.Engine.Water;
 
 public enum WaterMethod
 {
-    /// <summary>The farmer irrigates: stress is 0 by definition.</summary>
     Irrigated,
 
-    /// <summary>Daily FAO-56 single-coefficient bucket.</summary>
     DailyBucket,
 
-    /// <summary>Seasonal precipitation compared with the crop's seasonal water need.</summary>
     PrecipitationFallback,
 
-    /// <summary>Neither a water profile nor a seasonal need is known; stress is reported as 0.</summary>
     NoData
 }
 
-/// <param name="StressIndex">0 = no water stress, 1 = the crop got none of its water demand.</param>
 public sealed record WaterBalanceResult(double StressIndex, WaterMethod Method, IReadOnlyList<Reason> Reasons);
 
-/// <summary>
-/// Daily FAO-56 single-coefficient water balance (Allen et al. 1998, ch. 8) for one crop and one climate year.
-/// Simplifications, all deliberate: total precipitation counts as effective rain, excess above field capacity
-/// drains away, no capillary rise, no runoff, and the root zone is full at the start of the active season.
-/// </summary>
 public static class WaterBalance
 {
-    /// <summary>Weight of mid-stage days (flowering, grain fill) in the stress index.</summary>
     private const double MidStageWeight = 2.0;
 
     public static WaterBalanceResult Evaluate(
@@ -88,7 +77,6 @@ public static class WaterBalance
         return demand <= 0 ? 0 : Math.Clamp(1.0 - actual / demand, 0.0, 1.0);
     }
 
-    /// <summary>Kc by stage: constant in initial and mid, linear in development and late (FAO-56 eq. 66).</summary>
     private static double Kc(WaterProfile water, SeasonDates season, DateOnly date, GrowthStage stage)
     {
         var (ini, mid, end) = (water.Kc[0], water.Kc[1], water.Kc[2]);

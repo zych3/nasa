@@ -16,7 +16,6 @@ public class UnitTest1
     [Fact]
     public void RealCropsJsonDeserializes()
     {
-        // Data/*.json is copied to the output directory by FieldShift.Prediction.csproj.
         var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Data", "crops.json"));
         var crops = JsonSerializer.Deserialize<List<Crop>>(json, DomainJson.Options);
         Assert.NotNull(crops);

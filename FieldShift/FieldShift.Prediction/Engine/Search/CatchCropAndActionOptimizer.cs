@@ -5,14 +5,8 @@ using FieldShift.Prediction.Engine.Validation;
 
 namespace FieldShift.Prediction.Engine.Search;
 
-/// <summary>Where a catch crop fits between two main crops.</summary>
 public static class CatchCropFeasibility
 {
-    /// <summary>
-    /// A catch crop can follow <paramref name="previous"/> when the next main crop is a spring crop and
-    /// <c>previous harvest + soil preparation + minimum growth days</c> fits before
-    /// <c>min(latest end day, last sowing day of the catch crop + its growing period)</c>.
-    /// </summary>
     public static bool IsFeasible(Crop previous, Crop catchCrop, Crop next, EngineSettings settings)
     {
         if (catchCrop.Type != CropType.Catch || next.Type != CropType.Spring)
@@ -24,7 +18,6 @@ public static class CatchCropFeasibility
         return needed <= limit;
     }
 
-    /// <summary>Sum of the stage lengths; without them, the days from the last sowing day to the last harvest day.</summary>
     public static int GrowingPeriodDays(Crop crop) =>
         crop.Water is { StageLengthsDays.Count: 4 } w
             ? w.StageLengthsDays.Sum()
@@ -33,12 +26,6 @@ public static class CatchCropFeasibility
 
 public sealed record OptimizedPlan(RotationPlan Plan, double Score, int AcceptedChanges);
 
-/// <summary>
-/// Second pass for the best plans only: adds catch crops between seasons and management actions, by hill climbing.
-/// In each pass, for each season, the single best improving change is applied; then the whole plan is simulated
-/// again. A change is accepted only if it raises the strategy's weighted score and keeps every season's survival
-/// above the strategy's floor.
-/// </summary>
 public sealed class CatchCropAndActionOptimizer
 {
     private const double MinimumGain = 1e-9;
@@ -118,7 +105,6 @@ public sealed class CatchCropAndActionOptimizer
         return (StrategySelector.WeightedScore(_weights, vector), floorOk);
     }
 
-    /// <summary>All single changes at one position: another catch crop (or none), and adding or removing an action.</summary>
     private IEnumerable<RotationPlan> Options(RotationPlan plan, int position)
     {
         var season = SeasonAt(plan, position);
@@ -148,7 +134,6 @@ public sealed class CatchCropAndActionOptimizer
     private static PlanSeason SeasonAt(RotationPlan plan, int position) =>
         position < plan.Transition.Count ? plan.Transition[position] : plan.Cycle[position - plan.Transition.Count];
 
-    /// <summary>The main crop that follows; the last season of the cycle is followed by the first (wrap-around).</summary>
     private static CropId NextMainCrop(RotationPlan plan, int position)
     {
         var next = position + 1;

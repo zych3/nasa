@@ -6,14 +6,11 @@ public enum IssueSeverity
     Warning
 }
 
-/// <param name="Code">Stable machine code, e.g. "effect.unknownVar".</param>
-/// <param name="Where">Human-readable location, e.g. "crop 'cerealA' effect[2]".</param>
 public sealed record ValidationIssue(IssueSeverity Severity, string Code, string Message, string? Where = null)
 {
     public override string ToString() => Fmt.Inv($"{Severity} {Code}{(Where is null ? "" : $" ({Where})")}: {Message}");
 }
 
-/// <summary>Collects every problem found, not only the first.</summary>
 public sealed class ValidationReport
 {
     private readonly List<ValidationIssue> _issues = [];

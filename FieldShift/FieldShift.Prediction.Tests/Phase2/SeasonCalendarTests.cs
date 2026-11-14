@@ -17,8 +17,8 @@ public class SeasonCalendarTests
 
         Assert.True(season.SownPreviousYear);
         Assert.Equal(2019, season.Sow.Year);
-        Assert.Equal(275, season.Sow.DayOfYear);        // midpoint of [260, 290]
-        Assert.Equal(new DateOnly(2020, 1, 1).AddDays(217 - 1), season.End); // midpoint of [205, 230]
+        Assert.Equal(275, season.Sow.DayOfYear);
+        Assert.Equal(new DateOnly(2020, 1, 1).AddDays(217 - 1), season.End);
     }
 
     [Fact]
@@ -35,7 +35,6 @@ public class SeasonCalendarTests
     [Fact]
     public void SpringStagesStartAtSowingAndFollowTheLengths()
     {
-        // cerealB stages: 20, 35, 55, 25 days
         var s = SeasonCalendar.Build(Crop("cerealB"), 2020, Settings);
 
         Assert.True(s.HasStages);
