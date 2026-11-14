@@ -106,6 +106,11 @@ Change the contract only after agreeing with both frontend and backend owners.
 
 ## Running locally
 
+Everything in Docker (no local .NET/Flutter needed): `docker compose up --build`: frontend on http://localhost:8080,
+backend on http://localhost:5066, database on 5432. Change host ports with `DB_PORT`, `BACKEND_PORT`, `FRONTEND_PORT`
+(e.g. `DB_PORT=5433` if the `run.sh` database container is running). The frontend image bakes in the backend URL
+(`--dart-define=API_BASE_URL`), so rebuild it after changing `BACKEND_PORT`.
+
 Everything at once: `./run.sh` (database, backend, then the frontend on http://localhost:8080; `./run.sh chrome` or `./run.sh <device-id>` for another device; backend output goes to `backend.log`). The steps it runs:
 
 Database and backend (the frontend falls back to saved data when they are not running):

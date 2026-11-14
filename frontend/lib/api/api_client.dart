@@ -6,7 +6,11 @@ import 'package:http/http.dart' as http;
 /// - desktop / web: http://localhost:5066
 /// - Android emulator: http://10.0.2.2:5066
 /// - real phone: `http://<computer LAN IP>:5066`
-const String apiBaseUrl = 'http://localhost:5066';
+/// Override at build time with `--dart-define=API_BASE_URL=...` (used by the Docker image).
+const String apiBaseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'http://localhost:5066',
+);
 
 class ApiException implements Exception {
   ApiException(this.message, {this.statusCode});
