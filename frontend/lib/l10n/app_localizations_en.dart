@@ -358,4 +358,63 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get overlayCoverageSoil =>
       'One value for an area of about 1 km. The soil can differ within your field.';
+
+  @override
+  String get navConditions => 'Conditions';
+
+  @override
+  String get overlaysTitle => 'Conditions at your field';
+
+  @override
+  String get overlaysChooseHeading => 'What to show on the map';
+
+  @override
+  String get overlaysNoField =>
+      'No field is chosen yet. We show an example place.';
+
+  @override
+  String get overlaysChooseField => 'Choose my field on the map';
+
+  @override
+  String get overlaysLoading =>
+      'Getting the data… The first time it can take up to 10 seconds.';
+
+  @override
+  String get overlaysErrorNetwork =>
+      'We could not get the data. Check your internet and try again.';
+
+  @override
+  String get overlaysErrorServer =>
+      'The data service is not working right now. Try again in a few minutes.';
+
+  @override
+  String get overlaysErrorBadData =>
+      'The data we got is incomplete. Try again later.';
+
+  @override
+  String get overlaysShowDemo => 'Show example data';
+
+  @override
+  String get overlaysDemoNotice =>
+      'Example data for another place, not for your field.';
+
+  @override
+  String get overlaysValueHeading => 'In this place';
+
+  @override
+  String get overlaysNoData => 'No data for this place';
+
+  @override
+  String overlaysSource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String get overlaysLegendHeading => 'What the colours mean';
+
+  @override
+  String get overlaysLegendHere => 'Here';
+
+  @override
+  String get overlaysMapAttribution => '© OpenStreetMap contributors';
 }

@@ -95,5 +95,22 @@
   "soilClassLight": "Lekka (piaszczysta)",
   "soilClassMedium": "Średnia",
   "soilClassHeavy": "Ciężka (gliniasta)",
-  "overlayCoverageSoil": "Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna."
+  "overlayCoverageSoil": "Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna.",
+  "navConditions": "Warunki",
+  "overlaysTitle": "Warunki na Twoim polu",
+  "overlaysChooseHeading": "Co pokazać na mapie",
+  "overlaysNoField": "Pole nie jest jeszcze wybrane. Pokazujemy przykładowe miejsce.",
+  "overlaysChooseField": "Wybierz pole na mapie",
+  "overlaysLoading": "Pobieramy dane… Za pierwszym razem może to potrwać do 10 sekund.",
+  "overlaysErrorNetwork": "Nie udało się pobrać danych. Sprawdź internet i spróbuj ponownie.",
+  "overlaysErrorServer": "Serwis z danymi chwilowo nie działa. Spróbuj ponownie za kilka minut.",
+  "overlaysErrorBadData": "Otrzymane dane są niepełne. Spróbuj ponownie później.",
+  "overlaysShowDemo": "Pokaż przykładowe dane",
+  "overlaysDemoNotice": "Przykładowe dane dla innego miejsca, nie dla Twojego pola.",
+  "overlaysValueHeading": "W tym miejscu",
+  "overlaysNoData": "Brak danych dla tego miejsca",
+  "overlaysSource": "Źródło: {source}",
+  "overlaysLegendHeading": "Co oznaczają kolory",
+  "overlaysLegendHere": "Tutaj",
+  "overlaysMapAttribution": "© Współtwórcy OpenStreetMap"
 }

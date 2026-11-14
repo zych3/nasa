@@ -679,6 +679,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'One value for an area of about 1 km. The soil can differ within your field.'**
   String get overlayCoverageSoil;
+
+  /// No description provided for @navConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions'**
+  String get navConditions;
+
+  /// No description provided for @overlaysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conditions at your field'**
+  String get overlaysTitle;
+
+  /// No description provided for @overlaysChooseHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'What to show on the map'**
+  String get overlaysChooseHeading;
+
+  /// No description provided for @overlaysNoField.
+  ///
+  /// In en, this message translates to:
+  /// **'No field is chosen yet. We show an example place.'**
+  String get overlaysNoField;
+
+  /// No description provided for @overlaysChooseField.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose my field on the map'**
+  String get overlaysChooseField;
+
+  /// No description provided for @overlaysLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting the data… The first time it can take up to 10 seconds.'**
+  String get overlaysLoading;
+
+  /// No description provided for @overlaysErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not get the data. Check your internet and try again.'**
+  String get overlaysErrorNetwork;
+
+  /// No description provided for @overlaysErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The data service is not working right now. Try again in a few minutes.'**
+  String get overlaysErrorServer;
+
+  /// No description provided for @overlaysErrorBadData.
+  ///
+  /// In en, this message translates to:
+  /// **'The data we got is incomplete. Try again later.'**
+  String get overlaysErrorBadData;
+
+  /// No description provided for @overlaysShowDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'Show example data'**
+  String get overlaysShowDemo;
+
+  /// No description provided for @overlaysDemoNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Example data for another place, not for your field.'**
+  String get overlaysDemoNotice;
+
+  /// No description provided for @overlaysValueHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'In this place'**
+  String get overlaysValueHeading;
+
+  /// No description provided for @overlaysNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data for this place'**
+  String get overlaysNoData;
+
+  /// No description provided for @overlaysSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {source}'**
+  String overlaysSource(String source);
+
+  /// No description provided for @overlaysLegendHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'What the colours mean'**
+  String get overlaysLegendHeading;
+
+  /// No description provided for @overlaysLegendHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Here'**
+  String get overlaysLegendHere;
+
+  /// No description provided for @overlaysMapAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get overlaysMapAttribution;
 }
 
 class _AppLocalizationsDelegate

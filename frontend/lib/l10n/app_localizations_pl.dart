@@ -362,4 +362,63 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get overlayCoverageSoil =>
       'Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna.';
+
+  @override
+  String get navConditions => 'Warunki';
+
+  @override
+  String get overlaysTitle => 'Warunki na Twoim polu';
+
+  @override
+  String get overlaysChooseHeading => 'Co pokazać na mapie';
+
+  @override
+  String get overlaysNoField =>
+      'Pole nie jest jeszcze wybrane. Pokazujemy przykładowe miejsce.';
+
+  @override
+  String get overlaysChooseField => 'Wybierz pole na mapie';
+
+  @override
+  String get overlaysLoading =>
+      'Pobieramy dane… Za pierwszym razem może to potrwać do 10 sekund.';
+
+  @override
+  String get overlaysErrorNetwork =>
+      'Nie udało się pobrać danych. Sprawdź internet i spróbuj ponownie.';
+
+  @override
+  String get overlaysErrorServer =>
+      'Serwis z danymi chwilowo nie działa. Spróbuj ponownie za kilka minut.';
+
+  @override
+  String get overlaysErrorBadData =>
+      'Otrzymane dane są niepełne. Spróbuj ponownie później.';
+
+  @override
+  String get overlaysShowDemo => 'Pokaż przykładowe dane';
+
+  @override
+  String get overlaysDemoNotice =>
+      'Przykładowe dane dla innego miejsca, nie dla Twojego pola.';
+
+  @override
+  String get overlaysValueHeading => 'W tym miejscu';
+
+  @override
+  String get overlaysNoData => 'Brak danych dla tego miejsca';
+
+  @override
+  String overlaysSource(String source) {
+    return 'Źródło: $source';
+  }
+
+  @override
+  String get overlaysLegendHeading => 'Co oznaczają kolory';
+
+  @override
+  String get overlaysLegendHere => 'Tutaj';
+
+  @override
+  String get overlaysMapAttribution => '© Współtwórcy OpenStreetMap';
 }
