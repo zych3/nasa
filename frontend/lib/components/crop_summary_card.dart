@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart' show NumberFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
@@ -131,6 +132,15 @@ class PriceTrend {
   }
 }
 
+/// "+3,5" / "-1,2" / "0,0" with one decimal, in the format of [locale].
+String formatPercentChange(double percent, String locale) {
+  final format = NumberFormat.decimalPattern(locale)
+    ..minimumFractionDigits = 1
+    ..maximumFractionDigits = 1;
+  final text = format.format(percent);
+  return percent > 0 && text != format.format(0) ? '+$text' : text;
+}
+
 class _TrendRow extends StatelessWidget {
   const _TrendRow({required this.trend});
 
@@ -159,8 +169,10 @@ class _TrendRow extends StatelessWidget {
       ),
     };
 
-    final sign = trend.changePercent > 0 ? '+' : '';
-    final percent = '$sign${trend.changePercent.toStringAsFixed(1)}';
+    final percent = formatPercentChange(
+      trend.changePercent,
+      Localizations.localeOf(context).toString(),
+    );
 
     return Semantics(
       label: label,
