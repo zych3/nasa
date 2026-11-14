@@ -342,4 +342,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findParcel => 'Find parcel';
+
+  @override
+  String get overlaySoilTitle => 'Soil';
+
+  @override
+  String get soilClassLight => 'Light (sandy)';
+
+  @override
+  String get soilClassMedium => 'Medium';
+
+  @override
+  String get soilClassHeavy => 'Heavy (clay)';
+
+  @override
+  String get overlayCoverageSoil =>
+      'One value for an area of about 1 km. The soil can differ within your field.';
 }

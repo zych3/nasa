@@ -90,5 +90,10 @@
   "sourceCropDatabase": "Baza danych upraw",
   "cropDataMissing": "Brak danych",
   "cropListLoadError": "Nie udało się wczytać upraw.",
-  "findParcel": "Znajdź działkę"
+  "findParcel": "Znajdź działkę",
+  "overlaySoilTitle": "Gleba",
+  "soilClassLight": "Lekka (piaszczysta)",
+  "soilClassMedium": "Średnia",
+  "soilClassHeavy": "Ciężka (gliniasta)",
+  "overlayCoverageSoil": "Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna."
 }

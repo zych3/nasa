@@ -346,4 +346,20 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get findParcel => 'Znajdź działkę';
+
+  @override
+  String get overlaySoilTitle => 'Gleba';
+
+  @override
+  String get soilClassLight => 'Lekka (piaszczysta)';
+
+  @override
+  String get soilClassMedium => 'Średnia';
+
+  @override
+  String get soilClassHeavy => 'Ciężka (gliniasta)';
+
+  @override
+  String get overlayCoverageSoil =>
+      'Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna.';
 }

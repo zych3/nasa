@@ -649,6 +649,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find parcel'**
   String get findParcel;
+
+  /// No description provided for @overlaySoilTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil'**
+  String get overlaySoilTitle;
+
+  /// No description provided for @soilClassLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light (sandy)'**
+  String get soilClassLight;
+
+  /// No description provided for @soilClassMedium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get soilClassMedium;
+
+  /// No description provided for @soilClassHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy (clay)'**
+  String get soilClassHeavy;
+
+  /// No description provided for @overlayCoverageSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'One value for an area of about 1 km. The soil can differ within your field.'**
+  String get overlayCoverageSoil;
 }
 
 class _AppLocalizationsDelegate
