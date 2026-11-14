@@ -77,3 +77,20 @@ Bez uwag po sprawdzeniu: wszystkie ekrany przy 1,5× na telefonie w PL i EN (tes
 (`dispose`), brak tekstów na sztywno (grep z AGENTS.md pusty).
 
 **Wysoki priorytet: brak otwartych** (jedyny „W”, #27, naprawiony).
+
+## Recenzja #4 (runda 3: legendy EN, miesiące, lista nakładek, 5 nowych nakładek)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 33 | Ś | ✅ | `overlay_panel.dart` | (ze zrzutów) Na telefonie przy 1,5× tytuł panelu spychał wartość pod ekran – tytuł tylko na szerokim ekranie. |
+| 34 | N | ⏳ | `overlay_controller.dart` | Po cofnięciu o kilka miesięcy nie ma skrótu „wróć do ostatniego miesiąca” (trzeba klikać ▶). Nowe miejsce i „Spróbuj ponownie” wracają do ostatniego. Mała rzecz; do rozważenia z użytkownikami. |
+| 35 | N | ⏳ | `overlays/*_overlay.dart` | 6 klas nakładek miesięcznych różni się tylko id, ikoną i tekstami – świadomie (zadanie: „nowa nakładka = jedna klasa + jedna linia”). Gdyby było ich > 10, lepsza byłaby jedna klasa z parametrami. |
+| 36 | Ś | 📝 | backend | Backend wysyła `stats.trendPerDecade`. Nie pokazuję: trend z 10 lat danych jest bardzo niepewny (np. opady −95 mm/dekadę), a odpowiedź nie mówi, czy roczna wartość to suma czy średnia (`YearlyAggregation` jest tylko w backendzie). Jeśli ma być – backend powinien dodać jednostkę trendu i jego niepewność. |
+| 37 | N | ⏳ | `monthly_layer_overlay.dart` | Etykieta legendy liczy zakres (`NumberFormat`) przy każdym budowaniu. Koszt pomijalny (4 pozycje). |
+
+Sprawdzone bez uwag: przełączanie nakładek przy wybranym miesiącu (miesiąc zostaje, gleba go ignoruje), granice
+miesięcy (przyciski wyłączone na końcach, kontroler ignoruje krok poza zakres), wybrany miesiąc bez danych („Brak
+danych”, bez cofania), nowe miejsce resetuje miesiąc, semantyka listy nakładek i przycisków miesiąca, brak tekstów na
+sztywno, wszystkie legendy EN bez polskich słów (test), PL = backend (test).
+
+**Wysoki priorytet: brak.**
