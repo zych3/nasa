@@ -355,5 +355,8 @@
         "type": "String"
       }
     }
-  }
+  },
+  "readAloud": "Read aloud",
+  "readAloudStop": "Stop reading",
+  "readAloudUnavailable": "Reading aloud does not work on this device."
 }

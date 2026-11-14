@@ -6,6 +6,7 @@ import '../models/overlay_layer.dart';
 import '../overlays/overlay_controller.dart';
 import 'overlay_chooser.dart';
 import 'overlay_level_bars.dart';
+import 'read_aloud_button.dart';
 
 /// Side / bottom panel of the "Conditions" screen: choose an overlay, read
 /// its value for the place (word + level + source + how precise it is) and
@@ -150,6 +151,7 @@ class OverlayPanel extends StatelessWidget {
           ],
           _ValueCard(
             layer: layer,
+            overlayTitle: controller.selected.title(l10n),
             examplePlace: showNoFieldNotice || controller.isDemo,
             onEarlierMonth: controller.canShowEarlierMonth
                 ? () => controller.stepMonth(-1)
@@ -168,12 +170,16 @@ class OverlayPanel extends StatelessWidget {
 class _ValueCard extends StatelessWidget {
   const _ValueCard({
     required this.layer,
+    required this.overlayTitle,
     required this.examplePlace,
     this.onEarlierMonth,
     this.onLaterMonth,
   });
 
   final OverlayLayer layer;
+
+  /// Name of the shown overlay (read aloud first).
+  final String overlayTitle;
 
   /// The value is not for the user's field (no field chosen, or demo data).
   final bool examplePlace;
@@ -190,6 +196,21 @@ class _ValueCard extends StatelessWidget {
     final current = layer.current;
     final month = layer.month;
     final source = layer.source;
+    final heading = examplePlace
+        ? l10n.overlaysValueHeadingExample
+        : l10n.overlaysValueHeading;
+
+    // Everything the card shows, in the order it shows it.
+    String readAloudText() => sentencesForReading([
+      overlayTitle,
+      heading,
+      if (month != null)
+        l10n.overlaysMonth(DateFormat.yMMMM(l10n.localeName).format(month)),
+      current?.label(l10n) ?? l10n.overlaysNoData,
+      if (layer.isEstimate) l10n.sourceEstimated,
+      if (source != null) l10n.overlaysSource(source),
+      layer.coverage(l10n),
+    ]);
 
     return Card(
       margin: EdgeInsets.zero,
@@ -198,11 +219,14 @@ class _ValueCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              examplePlace
-                  ? l10n.overlaysValueHeadingExample
-                  : l10n.overlaysValueHeading,
-              style: theme.textTheme.titleMedium,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(heading, style: theme.textTheme.titleMedium),
+                ),
+                const SizedBox(width: 8),
+                ReadAloudButton(text: readAloudText),
+              ],
             ),
             if (month != null) ...[
               const SizedBox(height: 8),

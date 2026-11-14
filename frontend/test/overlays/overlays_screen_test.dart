@@ -4,10 +4,12 @@ import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/repositories/selected_plot_store.dart';
 import 'package:hopito_field_shift/screens/overlays_screen.dart';
+import 'package:hopito_field_shift/widgets/read_aloud_button.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../fake_speaker.dart';
 import 'fake_map_layers_repository.dart';
 import 'sample.dart';
 
@@ -139,6 +141,32 @@ void main() {
     expect(find.text(_pl.overlaysSource('NASA POWER (GWETROOT)')), findsOne);
     expect(find.text(_pl.sourceEstimated), findsNothing);
     expect(repo.requests, hasLength(1));
+  });
+
+  testWidgets('reads the value card aloud', (tester) async {
+    final speaker = FakeSpeaker();
+    await tester.pumpWidget(
+      SpeakerScope(
+        speaker: speaker,
+        child: _app(OverlaysScreen(store: store, repository: repo)),
+      ),
+    );
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    await tester.pump();
+
+    await tester.tap(find.byTooltip(_pl.readAloud));
+    final (text, language) = speaker.spoken.single;
+    expect(language, 'pl-PL');
+    for (final part in [
+      _pl.overlaySoilTitle,
+      _pl.overlaysValueHeadingExample,
+      _pl.soilClassLight,
+      _pl.sourceEstimated,
+      _pl.overlaysSource('ISRIC SoilGrids v2.0 (0–30 cm)'),
+      _pl.overlayCoverageSoil,
+    ]) {
+      expect(text, contains(part));
+    }
   });
 
   testWidgets('screen title only on a wide screen', (tester) async {

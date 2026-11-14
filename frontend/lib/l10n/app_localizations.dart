@@ -901,6 +901,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{step, select, s0{low} s1{moderate} s2{high} other{very high}}'**
   String overlayStepsRisk(String step);
+
+  /// No description provided for @readAloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Read aloud'**
+  String get readAloud;
+
+  /// No description provided for @readAloudStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reading'**
+  String get readAloudStop;
+
+  /// No description provided for @readAloudUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading aloud does not work on this device.'**
+  String get readAloudUnavailable;
 }
 
 class _AppLocalizationsDelegate

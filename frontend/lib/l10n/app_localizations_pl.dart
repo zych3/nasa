@@ -542,4 +542,14 @@ class AppLocalizationsPl extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get readAloud => 'Przeczytaj na głos';
+
+  @override
+  String get readAloudStop => 'Zatrzymaj czytanie';
+
+  @override
+  String get readAloudUnavailable =>
+      'Czytanie na głos nie działa na tym urządzeniu.';
 }

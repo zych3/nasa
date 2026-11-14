@@ -538,4 +538,14 @@ class AppLocalizationsEn extends AppLocalizations {
     });
     return '$_temp0';
   }
+
+  @override
+  String get readAloud => 'Read aloud';
+
+  @override
+  String get readAloudStop => 'Stop reading';
+
+  @override
+  String get readAloudUnavailable =>
+      'Reading aloud does not work on this device.';
 }
