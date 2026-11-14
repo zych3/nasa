@@ -19,6 +19,11 @@ builder.Services.AddOpenApi();
 builder.AddPoland();
 builder.AddFieldProfile();
 
+builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
+    .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
+    .AllowAnyHeader()
+    .AllowAnyMethod()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +33,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 

@@ -1,5 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class CropMultiSelector extends StatefulWidget {
   const CropMultiSelector({
     super.key,
@@ -25,6 +27,19 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
     'Potatoes',
     'Tomatoes',
   ];
+
+  /// Display name for a crop id; unknown ids are shown as-is.
+  static String _cropLabel(AppLocalizations l10n, String crop) =>
+      switch (crop) {
+        'Corn' => l10n.cropCorn,
+        'Wheat' => l10n.cropWheat,
+        'Soybeans' => l10n.cropSoybeans,
+        'Barley' => l10n.cropBarley,
+        'Rice' => l10n.cropRice,
+        'Potatoes' => l10n.cropPotatoes,
+        'Tomatoes' => l10n.cropTomatoes,
+        _ => crop,
+      };
 
   final _overlay = OverlayPortalController();
   final _link = LayerLink();
@@ -55,14 +70,15 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final count = widget.selectedCrops.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Select Crops on Plot:',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
+        Text(
+          l10n.selectCropsLabel,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),
         ),
         const SizedBox(height: 8),
         TapRegion(
@@ -81,8 +97,8 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
                 focusNode: _focus,
                 decoration: InputDecoration(
                   hintText: count == 0
-                      ? 'Search crops...'
-                      : '$count selected — search crops...',
+                      ? l10n.searchCropsHint
+                      : l10n.searchCropsSelectedHint(count),
                   prefixIcon: const Icon(Icons.search),
                   isDense: true,
                   border: const OutlineInputBorder(),
@@ -100,9 +116,11 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
   }
 
   Widget _buildPopup() {
+    final l10n = AppLocalizations.of(context);
     final q = _query.trim().toLowerCase();
-    final crops =
-        _availableCrops.where((c) => c.toLowerCase().contains(q)).toList();
+    final crops = _availableCrops
+        .where((c) => _cropLabel(l10n, c).toLowerCase().contains(q))
+        .toList();
 
     return CompositedTransformFollower(
       link: _link,
@@ -122,9 +140,9 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 240),
                 child: crops.isEmpty
-                    ? const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('No crops found'),
+                    ? Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(l10n.noCropsFound),
                       )
                     : ListView(
                         padding: EdgeInsets.zero,
@@ -133,7 +151,7 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
                           return CheckboxListTile(
                             dense: true,
                             controlAffinity: ListTileControlAffinity.leading,
-                            title: Text(crop),
+                            title: Text(_cropLabel(l10n, crop)),
                             value: widget.selectedCrops.contains(crop),
                             onChanged: (selected) =>
                                 widget.onCropToggled(crop, selected ?? false),

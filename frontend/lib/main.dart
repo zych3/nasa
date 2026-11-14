@@ -4,15 +4,22 @@ import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
+import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'pages/trending_crops_page.dart';
+import 'repositories/selected_plot_store.dart';
 
-void main() {
-  runApp(const FieldShiftApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final plotStore = SelectedPlotStore();
+  await plotStore.load();
+  runApp(FieldShiftApp(plotStore: plotStore));
 }
 
 class FieldShiftApp extends StatefulWidget {
-  const FieldShiftApp({super.key});
+  const FieldShiftApp({super.key, required this.plotStore});
+
+  final SelectedPlotStore plotStore;
 
   @override
   State<FieldShiftApp> createState() => _FieldShiftAppState();
@@ -36,6 +43,7 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
       ],
       home: SafeArea(
         child: MyScaffold(
+          plotStore: widget.plotStore,
           locale: _locale,
           onLocaleChanged: (locale) => setState(() => _locale = locale),
         ),
@@ -47,10 +55,12 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
 class MyScaffold extends StatefulWidget {
   const MyScaffold({
     super.key,
+    required this.plotStore,
     required this.locale,
     required this.onLocaleChanged,
   });
 
+  final SelectedPlotStore plotStore;
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
 
@@ -63,9 +73,6 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final pageTitles = [l10n.navMap, l10n.navPlot, l10n.navTrends];
-
     return Scaffold(
       body: Column(
         children: [
@@ -77,11 +84,19 @@ class _MyScaffoldState extends State<MyScaffold> {
             ),
           ),
           Expanded(
-            child: switch (_selectedIndex) {
-              1 => const PlotPage(),
-              2 => const TrendingCropsPage(),
-              _ => Center(child: Text(pageTitles[_selectedIndex])),
-            },
+            // IndexedStack keeps each tab alive, so the map keeps its
+            // position and does not ask for the location again.
+            child: IndexedStack(
+              index: _selectedIndex,
+              children: [
+                AreaMapPage(
+                  store: widget.plotStore,
+                  onParcelChosen: () => setState(() => _selectedIndex = 1),
+                ),
+                PlotPage(store: widget.plotStore),
+                const TrendingCropsPage(),
+              ],
+            ),
           ),
         ],
       ),

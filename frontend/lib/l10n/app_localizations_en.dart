@@ -120,4 +120,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get demoDataNotice => 'Demo data: not real prices yet.';
+
+  @override
+  String parcelNumber(String id) {
+    return 'Parcel $id';
+  }
+
+  @override
+  String get parcelNotFound => 'We could not find a parcel at this address.';
+
+  @override
+  String get parcelLookupFailed =>
+      'Could not look up the parcel. Check your connection and try again.';
+
+  @override
+  String get plotAddressLabel => 'Plot address';
+
+  @override
+  String get plotAddressHint => 'Enter a street or place';
+
+  @override
+  String get selectCropsLabel => 'Crops on this plot:';
+
+  @override
+  String get searchCropsHint => 'Search crops...';
+
+  @override
+  String searchCropsSelectedHint(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count selected — search crops...',
+      one: '1 selected — search crops...',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get noCropsFound => 'No crops found';
+
+  @override
+  String get submitPlot => 'Save plot';
+
+  @override
+  String get cropCorn => 'Corn';
+
+  @override
+  String get cropWheat => 'Wheat';
+
+  @override
+  String get cropSoybeans => 'Soybeans';
+
+  @override
+  String get cropBarley => 'Barley';
+
+  @override
+  String get cropRice => 'Rice';
+
+  @override
+  String get cropPotatoes => 'Potatoes';
+
+  @override
+  String get cropTomatoes => 'Tomatoes';
+
+  @override
+  String get locationDialogTitle => 'Where are you?';
+
+  @override
+  String get locationDialogBody =>
+      'Can we use your location? We will show the map around you. We do not save it.';
+
+  @override
+  String get locationAllow => 'Use my location';
+
+  @override
+  String get locationDeny => 'Not now';
+
+  @override
+  String get locationMyPosition => 'Show my location';
+
+  @override
+  String get locationServiceOff =>
+      'Location is turned off on this device. Turn it on and try again.';
+
+  @override
+  String get locationPermissionDenied =>
+      'We cannot see your location. You can still move the map by hand.';
+
+  @override
+  String get locationFailed =>
+      'Could not find your location. You can move the map to your field by hand.';
+
+  @override
+  String get nearbyParcelsSection => 'Parcels near you';
+
+  @override
+  String get parcelHere => 'Parcel where you are';
+
+  @override
+  String distanceFromYou(String distance) {
+    return '$distance from you';
+  }
+
+  @override
+  String get myFieldMarker => 'My field';
+
+  @override
+  String get youAreHere => 'You are here';
+
+  @override
+  String get zoomInForParcels => 'Zoom in to see parcels';
+
+  @override
+  String get tapToChooseParcel => 'Tap a parcel to choose your field';
+
+  @override
+  String get tapToChooseThis => 'Tap to choose this field';
+
+  @override
+  String get parcelsLoadFailed =>
+      'Could not load parcels here. Check your connection and try again.';
 }

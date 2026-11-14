@@ -3,10 +3,15 @@ import 'package:hopito_field_shift/components/input/plotInput/crop_multi_selecto
 import 'package:hopito_field_shift/components/input/plotInput/plot_data.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../l10n/app_localizations.dart';
+
 class PlotInput extends StatefulWidget {
-  const PlotInput({super.key, required this.onSubmitPlot});
+  const PlotInput({super.key, required this.onSubmitPlot, this.onFindParcel});
 
   final void Function(PlotData) onSubmitPlot;
+
+  /// Called when the user searches for the parcel at the typed address.
+  final void Function(String address)? onFindParcel;
 
   @override 
   State<PlotInput> createState() => _PlotInputState();
@@ -42,7 +47,10 @@ class _PlotInputState extends State<PlotInput> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AddressInputField(controller: _addressController),
+          AddressInputField(
+            controller: _addressController,
+            onSearch: widget.onFindParcel,
+          ),
           const SizedBox(height: 20),
           CropMultiSelector(
             selectedCrops: _selectedCrops,
@@ -60,7 +68,7 @@ class _PlotInputState extends State<PlotInput> {
           ElevatedButton.icon(
             onPressed: _handleSubmit,
             icon: const Icon(Icons.send),
-            label: const Text('Submit Plot'),
+            label: Text(AppLocalizations.of(context).submitPlot),
           ),
         ],
       ),

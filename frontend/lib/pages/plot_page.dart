@@ -1,16 +1,61 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../components/input/plotInput/plot_input.dart';
+import '../components/nearby_plot_list.dart';
+import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/parcel.dart';
+import '../repositories/parcel_repository.dart';
+import '../repositories/selected_plot_store.dart';
 
-/// "Moje pole" – plot data page. Layout only; values are placeholders.
-class PlotPage extends StatelessWidget {
-  const PlotPage({super.key});
+/// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
+/// user pick another one from the parcels nearby or by typing an address.
+class PlotPage extends StatefulWidget {
+  const PlotPage({super.key, required this.store});
+
+  final SelectedPlotStore store;
+
+  @override
+  State<PlotPage> createState() => _PlotPageState();
+}
+
+class _PlotPageState extends State<PlotPage> {
+  final _parcels = ParcelRepository();
+  bool _loading = false;
+
+  Future<void> _findParcel(String address) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _loading = true);
+    try {
+      final parcel = await _parcels.searchByAddress(address);
+      if (!mounted) return;
+      if (parcel != null) {
+        await widget.store.select(parcel.withAddress(address));
+      } else {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: widget.store,
+      builder: (context, _) => _buildPage(context),
+    );
+  }
+
+  Widget _buildPage(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final Parcel? parcel = widget.store.parcel;
+    final nearby = widget.store.nearby;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -20,27 +65,50 @@ class PlotPage extends StatelessWidget {
           child: ListTile(
             leading: const Icon(Icons.agriculture, size: 40),
             title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
-            subtitle: Text(l10n.plotSummary('—', '—')),
+            subtitle: Text(l10n.plotSummary('—', parcel?.address ?? '—')),
           ),
         ),
         const SizedBox(height: 16),
 
-        // Map preview placeholder
-        Container(
-          height: 180,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          alignment: Alignment.center,
-          child: const Icon(Icons.map_outlined, size: 48),
+        // Map: highlighted parcel once found, placeholder before that
+        SizedBox(
+          height: 280,
+          child: parcel != null
+              ? ParcelMap(
+                  parcel: parcel,
+                  caption: [
+                    ?parcel.address,
+                    l10n.parcelNumber(parcel.id),
+                  ].join('\n'),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.map_outlined, size: 48),
+                ),
         ),
+        if (_loading) const LinearProgressIndicator(),
         const SizedBox(height: 24),
+
+        // Parcels near the user's location (from the map)
+        if (nearby.isNotEmpty) ...[
+          Text(l10n.nearbyParcelsSection, style: theme.textTheme.titleMedium),
+          const SizedBox(height: 8),
+          NearbyPlotList(
+            parcels: nearby,
+            selectedId: parcel?.id,
+            onSelected: widget.store.select,
+          ),
+          const SizedBox(height: 24),
+        ],
 
         // Plot input form (left as-is)
         Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
         const SizedBox(height: 8),
-        PlotInput(onSubmitPlot: (_) {}),
+        PlotInput(onSubmitPlot: (_) {}, onFindParcel: _findParcel),
         const SizedBox(height: 24),
 
         // Info cards

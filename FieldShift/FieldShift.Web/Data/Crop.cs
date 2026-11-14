@@ -16,12 +16,9 @@ public readonly record struct YieldRange(double Min, double Max);
 public sealed record Crop(
     CropId Id,
     string ImageUrl,
-    decimal PricePerTonne,
-    string Currency,
     MonthRange Sowing,
     MonthRange Harvest,
     WaterNeed WaterNeed,
     YieldRange TypicalYield,
-    string TraitsSourceName)
-{
-}
+    string TraitsSourceName
+){ }
