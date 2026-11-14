@@ -1,0 +1,142 @@
+import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../models/overlay_layer.dart';
+import 'map_layers_repository.dart';
+import 'map_overlay.dart';
+import 'overlay_registry.dart';
+
+enum OverlayStatus {
+  /// No place yet.
+  idle,
+  loading,
+  ready,
+  error,
+}
+
+enum OverlayError {
+  /// No connection, timeout or server error: trying again may help.
+  network,
+
+  /// The server answered, but not in the agreed shape.
+  badData,
+}
+
+/// State of the "Conditions" screen: which overlay is chosen, for which place,
+/// and what it shows.
+///
+/// Races are handled here: every load gets a number and only the newest one
+/// may change the state, so a slow answer for an old place never replaces a
+/// newer one. The response is parsed for the overlay chosen at the moment it
+/// arrives, so switching overlays while loading is safe.
+class OverlayController extends ChangeNotifier {
+  OverlayController({required this._repository, List<MapOverlay>? overlays})
+    : overlays = List.unmodifiable(overlays ?? overlayRegistry),
+      _selected = (overlays ?? overlayRegistry).first;
+
+  final MapLayersRepository _repository;
+
+  /// Overlays to choose from, in chooser order.
+  final List<MapOverlay> overlays;
+
+  MapOverlay _selected;
+  LatLng? _place;
+  OverlayStatus _status = OverlayStatus.idle;
+  OverlayError? _error;
+  Map<String, dynamic>? _response;
+  OverlayLayer? _layer;
+  bool _isDemo = false;
+  int _generation = 0;
+  bool _disposed = false;
+
+  MapOverlay get selected => _selected;
+
+  /// Place the data was asked for (e.g. the centre of the user's field).
+  LatLng? get place => _place;
+  OverlayStatus get status => _status;
+
+  /// Set when [status] is [OverlayStatus.error].
+  OverlayError? get error => _error;
+
+  /// What the chosen overlay shows; set when [status] is ready.
+  OverlayLayer? get layer => _layer;
+
+  /// The shown data is the saved demo response, not data for [place].
+  bool get isDemo => _isDemo;
+
+  void select(MapOverlay overlay) {
+    if (overlay.id == _selected.id) return;
+    _selected = overlay;
+    // While loading, the answer is parsed for this overlay when it arrives.
+    if (_response != null) _parse();
+    _notify();
+  }
+
+  /// Shows the overlays for [place]. Does nothing for the current place (also
+  /// after an error or demo data: that is up to [retry]), so it is safe to
+  /// call on every rebuild.
+  void showPlace(LatLng place) {
+    if (place == _place) return;
+    _place = place;
+    _load();
+  }
+
+  /// Asks the backend again for the current place (also after demo data).
+  Future<void> retry() => _load(refresh: true);
+
+  /// Shows the saved demo data (a fixed sample place), e.g. when the backend
+  /// cannot be reached.
+  Future<void> showDemo() => _load(demo: true);
+
+  Future<void> _load({bool demo = false, bool refresh = false}) async {
+    final place = _place;
+    if (place == null && !demo) return;
+    final generation = ++_generation;
+    _status = OverlayStatus.loading;
+    _error = null;
+    _response = null;
+    _layer = null;
+    _isDemo = false;
+    _notify();
+
+    try {
+      final json = demo
+          ? await _repository.demo()
+          : await _repository.mapLayers(place!, refresh: refresh);
+      if (_disposed || generation != _generation) return;
+      _response = json;
+      _isDemo = demo;
+      _parse();
+    } catch (e) {
+      if (_disposed || generation != _generation) return;
+      _status = OverlayStatus.error;
+      _error = e is FormatException
+          ? OverlayError.badData
+          : OverlayError.network;
+    }
+    _notify();
+  }
+
+  void _parse() {
+    try {
+      _layer = _selected.parse(_response!);
+      _status = OverlayStatus.ready;
+      _error = null;
+    } catch (_) {
+      // Parsers throw FormatException; anything else is a broken response too.
+      _layer = null;
+      _status = OverlayStatus.error;
+      _error = OverlayError.badData;
+    }
+  }
+
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+}
