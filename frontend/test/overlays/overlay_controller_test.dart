@@ -284,6 +284,20 @@ void main() {
       expect(c.layer!.ordered, isTrue);
     });
 
+    test('the chosen field is asked for by its parcel id', () async {
+      repo.parcelAnswer = loadParcelSample();
+      c.showPlace(_field, parcelId: '141205_2.0008.60');
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+
+      expect(repo.parcelIdRequests, ['141205_2.0008.60']);
+      expect(c.layer!.tileLayer, 'soil-map');
+
+      // Same place, another field: asked again.
+      c.showPlace(_field, parcelId: '141205_2.0008.61');
+      expect(repo.parcelIdRequests.last, '141205_2.0008.61');
+    });
+
     test('no parcel there: SoilGrids soil as before', () async {
       c.showPlace(_field);
       repo.complete(_field, loadSample());

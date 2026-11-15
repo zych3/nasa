@@ -16,7 +16,8 @@ Responses: **200** `ParcelDetailsResponse`; **400** bad coordinates or id; **404
 section says `"unavailable"`.
 
 Speed: the first call for a parcel takes ~2–10 s (SoilGrids is the slowest); later calls answer from the
-PostgreSQL cache in under a second (only the parcel lookup is live).
+PostgreSQL cache in a fraction of a second (the parcel lookup is cached too). The app asks for its chosen
+field by id (`/api/parcels/{id}/details`), so the right parcel is used even where its centre lies outside it.
 
 ## Response
 
@@ -77,7 +78,7 @@ interface TerrainInfo {             // Poland: GUGiK terrain model, 1 m grid
 
 | Section | Service | Cached for |
 |---|---|---|
-| parcel lookup | ULDK `uldk.gugik.gov.pl` (not cached) | – |
+| parcel lookup (by point to ~1 m, or by id) | ULDK `uldk.gugik.gov.pl`, through `ParcelLookupCache` | 30 days |
 | `landRegistry` | Krajowa Integracja Ewidencji Gruntów (WMS GetFeatureInfo), passes the request to the county | 30 days |
 | `soilMap` | Mapa glebowo-rolnicza WMS, layer `KONTURY_GLEBOWE` (Geoportal "Rolnictwo" module) | 180 days |
 | `terrain` | `services.gugik.gov.pl/nmt` `GetHByPointList` | 365 days |

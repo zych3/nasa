@@ -59,6 +59,7 @@ class OverlayController extends ChangeNotifier {
 
   MapOverlay _selected;
   LatLng? _place;
+  String? _parcelId;
   OverlayStatus _status = OverlayStatus.idle;
   OverlayError? _error;
   Map<String, dynamic>? _response;
@@ -179,9 +180,14 @@ class OverlayController extends ChangeNotifier {
   /// Shows the overlays for [place]. Does nothing for the current place (also
   /// after an error or demo data: that is up to [retry]), so it is safe to
   /// call on every rebuild.
-  void showPlace(LatLng place) {
-    if (place == _place) return;
+  ///
+  /// [parcelId] is the register id of the user's field when there is one:
+  /// the parcel details are then asked for that parcel, not for whatever
+  /// parcel lies at [place].
+  void showPlace(LatLng place, {String? parcelId}) {
+    if (place == _place && parcelId == _parcelId) return;
     _place = place;
+    _parcelId = parcelId;
     _load();
   }
 
@@ -258,7 +264,11 @@ class OverlayController extends ChangeNotifier {
     try {
       details = demo
           ? await _repository.demoParcelDetails()
-          : await _repository.parcelDetails(place!, refresh: refresh);
+          : await _repository.parcelDetails(
+              place!,
+              parcelId: _parcelId,
+              refresh: refresh,
+            );
     } catch (e) {
       debugPrint('Parcel details for $place failed: $e');
     }
