@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../components/map_button.dart';
 import '../l10n/app_localizations.dart';
 import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
@@ -298,7 +299,8 @@ class _OverlayMapState extends State<OverlayMap> {
           Positioned(
             top: 8,
             left: 8,
-            right: 8,
+            // Room for the language button floating in the screen's corner.
+            right: MapButton.reservedEnd,
             height: 52,
             child: IgnorePointer(
               child: MediaQuery.withClampedTextScaling(

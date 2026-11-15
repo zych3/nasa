@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../components/map_button.dart';
 import '../components/map_search_bar.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
@@ -310,10 +311,10 @@ class _AreaMapPageState extends State<AreaMapPage> {
                       Expanded(child: MapSearchBar(onSearch: _searchAddress)),
                       if (widget.topBarAction case final action?) ...[
                         const SizedBox(width: 8),
-                        _MapButton(child: action),
+                        MapButton(child: action),
                       ],
                       const SizedBox(width: 8),
-                      _MapButton(
+                      MapButton(
                         child: IconButton(
                           tooltip: l10n.locationMyPosition,
                           onPressed: _locating ? null : _locate,
@@ -366,25 +367,6 @@ class _AreaMapPageState extends State<AreaMapPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// Round raised background, so a control stays readable on top of the map.
-/// The child gets a tight 48 × 48 box.
-class _MapButton extends StatelessWidget {
-  const _MapButton({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      elevation: 2,
-      color: Theme.of(context).colorScheme.surface,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox.square(dimension: 48, child: child),
     );
   }
 }
