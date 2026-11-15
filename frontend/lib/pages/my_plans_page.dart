@@ -1,23 +1,22 @@
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../api/api_client.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/rotation_text.dart';
-import '../models/saved_plan.dart';
+import '../models/local_plan.dart';
 import '../repositories/auth_store.dart';
-import '../repositories/saved_plans_repository.dart';
-import '../widgets/read_aloud_button.dart';
+import '../repositories/local_plans_store.dart';
 import 'saved_plan_page.dart';
 
-/// "My plans": the rotation plans the signed-in user saved. Tap one to open
-/// it again, or delete it.
+/// "My plans": the rotation plans saved on this phone (and, when signed in,
+/// copied to the account). Tap one to open it again, or delete it.
 class MyPlansPage extends StatefulWidget {
-  const MyPlansPage({super.key, required this.authStore, this.repository});
+  const MyPlansPage({super.key, this.authStore, this.plans});
 
-  final AuthStore authStore;
+  /// Only used to say where the plans are kept.
+  final AuthStore? authStore;
 
-  final SavedPlansRepository? repository;
+  final LocalPlansStore? plans;
 
   /// Opens the page on top of the app.
   static Future<void> open(BuildContext context, AuthStore store) =>
@@ -30,62 +29,29 @@ class MyPlansPage extends StatefulWidget {
 }
 
 class _MyPlansPageState extends State<MyPlansPage> {
-  late final SavedPlansRepository _repo =
-      widget.repository ?? SavedPlansRepository();
-
-  List<SavedPlan> _items = const [];
-  bool _loading = true;
-  bool _failed = false;
-  bool _expired = false;
+  late final LocalPlansStore _store = widget.plans ?? LocalPlansStore.shared;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _store.addListener(_changed);
   }
 
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _failed = false;
-      _expired = false;
-    });
-    final token = widget.authStore.token;
-    if (token == null) {
-      setState(() {
-        _loading = false;
-        _expired = true;
-      });
-      return;
-    }
-    try {
-      final items = await _repo.list(token);
-      if (!mounted) return;
-      setState(() {
-        _items = items;
-        _loading = false;
-      });
-    } on ApiException catch (e) {
-      if (e.statusCode == 401) await widget.authStore.signOut();
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _expired = e.statusCode == 401;
-        _failed = e.statusCode != 401;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _failed = true;
-      });
-    }
+  @override
+  void dispose() {
+    _store.removeListener(_changed);
+    super.dispose();
   }
 
-  Future<void> _delete(SavedPlan item) async {
+  void _changed() {
+    if (mounted) setState(() {});
+  }
+
+  List<LocalPlan> get _items => _store.items;
+
+  Future<void> _delete(LocalPlan item) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final token = widget.authStore.token;
 
     final sure = await showDialog<bool>(
       context: context,
@@ -113,55 +79,28 @@ class _MyPlansPageState extends State<MyPlansPage> {
         ],
       ),
     );
-    if (sure != true || token == null) return;
-
-    void say(String text) => messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(text)));
+    if (sure != true) return;
 
     try {
-      await _repo.delete(token, item.id);
-      if (!mounted) return;
-      setState(() => _items = [..._items.where((p) => p.id != item.id)]);
-      say(l10n.myPlansDeleted);
-    } on ApiException catch (e) {
-      // Already gone (404) is the result the user wanted.
-      if (e.statusCode == 404 && mounted) {
-        setState(() => _items = [..._items.where((p) => p.id != item.id)]);
-        say(l10n.myPlansDeleted);
-      } else {
-        say(l10n.myPlansDeleteFailed);
-      }
+      await _store.remove(item);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.myPlansDeleted)));
     } catch (_) {
-      say(l10n.myPlansDeleteFailed);
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l10n.myPlansDeleteFailed)));
     }
   }
 
-  String _route(SavedPlan item, String language) =>
+  String _route(LocalPlan item, String language) =>
       item.plan.seasons.map((s) => s.crop.nameFor(language)).join(' → ');
 
-  String _info(AppLocalizations l10n, String locale, SavedPlan item) =>
+  String _info(AppLocalizations l10n, String locale, LocalPlan item) =>
       l10n.myPlansItemInfo(
         goalLabel(l10n, item.goal) ?? '',
         DateFormat.yMMMd(locale).format(item.createdAt.toLocal()),
       );
-
-  String _readAloud(AppLocalizations l10n) {
-    final language = Localizations.localeOf(context).languageCode;
-    final locale = Localizations.localeOf(context).toString();
-    if (_loading) return l10n.myPlansTitle;
-    if (_expired) return l10n.reportSaveSessionExpired;
-    if (_failed) return l10n.myPlansLoadError;
-    if (_items.isEmpty) return l10n.myPlansEmpty;
-
-    return sentencesForReading([
-      l10n.myPlansTitle,
-      for (final item in _items) ...[
-        _info(l10n, locale, item),
-        item.plan.seasons.map((s) => s.crop.nameFor(language)).join(', '),
-      ],
-    ]);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,10 +115,6 @@ class _MyPlansPageState extends State<MyPlansPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(l10n.myPlansTitle),
-        actions: [
-          ReadAloudButton(text: () => _readAloud(l10n)),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SafeArea(child: _body(context, l10n)),
     );
@@ -190,37 +125,18 @@ class _MyPlansPageState extends State<MyPlansPage> {
     final language = Localizations.localeOf(context).languageCode;
     final locale = Localizations.localeOf(context).toString();
 
-    Widget message(String text, {bool retry = false}) => Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(fontSize: 20),
-            ),
-            if (retry) ...[
-              const SizedBox(height: 24),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(200, 56),
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: _load,
-                child: Text(l10n.tryAgain),
-              ),
-            ],
-          ],
+    if (_items.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(
+            l10n.myPlansEmpty,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(fontSize: 20),
+          ),
         ),
-      ),
-    );
-
-    if (_loading) return const Center(child: CircularProgressIndicator());
-    if (_expired) return message(l10n.reportSaveSessionExpired);
-    if (_failed) return message(l10n.myPlansLoadError, retry: true);
-    if (_items.isEmpty) return message(l10n.myPlansEmpty);
+      );
+    }
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -248,7 +164,7 @@ class _MyPlansPageState extends State<MyPlansPage> {
             ),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => SavedPlanPage(saved: item),
+                builder: (_) => SavedPlanPage(saved: item.toSavedPlan()),
               ),
             ),
           ),

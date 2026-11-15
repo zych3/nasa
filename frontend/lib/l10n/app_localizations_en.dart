@@ -171,15 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not find your location. You can move the map to your field by hand.';
 
   @override
-  String get nearbyParcelsSection => 'Parcels near you';
-
-  @override
   String get parcelHere => 'Parcel where you are';
-
-  @override
-  String distanceFromYou(String distance) {
-    return '$distance from you';
-  }
 
   @override
   String get myFieldMarker => 'My field';
@@ -520,16 +512,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get readAloud => 'Read aloud';
-
-  @override
-  String get readAloudStop => 'Stop reading';
-
-  @override
-  String get readAloudUnavailable =>
-      'Reading aloud does not work on this device.';
-
-  @override
   String get overlaysHeatmapLoading => 'Loading the map of the area…';
 
   @override
@@ -692,6 +674,181 @@ class AppLocalizationsEn extends AppLocalizations {
       'No crop on our list suits this field with these answers. Try changing your answers.';
 
   @override
+  String get climateSectionTitle => 'How the climate in your area is changing';
+
+  @override
+  String get climateLoading => 'Checking many years of climate data…';
+
+  @override
+  String climateNoClearTrends(String from, String to) {
+    return 'The data for $from–$to show no clear changes for this area.';
+  }
+
+  @override
+  String get climateNotForecast =>
+      'This describes past years. It is not a forecast.';
+
+  @override
+  String climateFact(
+    String early,
+    String earlyFrom,
+    String earlyTo,
+    String recent,
+    String recentFrom,
+    String recentTo,
+  ) {
+    return 'On average $early in $earlyFrom–$earlyTo, and $recent in $recentFrom–$recentTo.';
+  }
+
+  @override
+  String climateValueDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String climateValueHeatUnits(String value) {
+    return '$value heat units';
+  }
+
+  @override
+  String climateValueCelsius(String value) {
+    return '$value °C';
+  }
+
+  @override
+  String climateValueMillimetres(String value) {
+    return '$value mm';
+  }
+
+  @override
+  String get climateAdviceTitle => 'What you could consider in the long run:';
+
+  @override
+  String climateSource(String source, String from, String to) {
+    return 'Source: $source, years $from–$to. Estimated data.';
+  }
+
+  @override
+  String climateNoteRegional(String km) {
+    return 'These numbers describe an area about $km km wide, not this one field.';
+  }
+
+  @override
+  String get climateNoteAirFrost =>
+      'Frost is counted from the air temperature 2 m above the ground. Close to the ground, frost comes more often.';
+
+  @override
+  String get climateNoteEvaporation =>
+      'The rain itself has not clearly changed. The balance changed because of evaporation, which we estimate from temperature.';
+
+  @override
+  String get climateFrostFreeUp => 'Longer season without frost';
+
+  @override
+  String get climateFrostFreeDown => 'Shorter season without frost';
+
+  @override
+  String get climateLastSpringFrostDown =>
+      'The last spring frost comes earlier';
+
+  @override
+  String get climateLastSpringFrostUp => 'The last spring frost comes later';
+
+  @override
+  String get climateFirstAutumnFrostUp => 'The first autumn frost comes later';
+
+  @override
+  String get climateFirstAutumnFrostDown =>
+      'The first autumn frost comes earlier';
+
+  @override
+  String get climateHotDaysUp => 'More hot days (30 °C and more)';
+
+  @override
+  String get climateHotDaysDown => 'Fewer hot days (30 °C and more)';
+
+  @override
+  String get climateMaxTemperatureUp => 'The hottest day of the year is hotter';
+
+  @override
+  String get climateMaxTemperatureDown =>
+      'The hottest day of the year is cooler';
+
+  @override
+  String get climateGrowingWarmthUp => 'More warmth for plants to grow';
+
+  @override
+  String get climateGrowingWarmthDown => 'Less warmth for plants to grow';
+
+  @override
+  String get climateDrySpellUp =>
+      'Longer spells without rain (April to September)';
+
+  @override
+  String get climateDrySpellDown =>
+      'Shorter spells without rain (April to September)';
+
+  @override
+  String get climateSeasonRainUp =>
+      'More rain in the growing season (April to September)';
+
+  @override
+  String get climateSeasonRainDown =>
+      'Less rain in the growing season (April to September)';
+
+  @override
+  String get climateWaterBalanceUp =>
+      'Better water balance: rain minus evaporation (April to September)';
+
+  @override
+  String get climateWaterBalanceDown =>
+      'Worse water balance: rain minus evaporation (April to September)';
+
+  @override
+  String get climateHeavyRainUp => 'More days with heavy rain (over 20 mm)';
+
+  @override
+  String get climateHeavyRainDown => 'Fewer days with heavy rain (over 20 mm)';
+
+  @override
+  String get climateAdviceHeatTolerantVarieties =>
+      'Consider varieties that flower earlier or cope better with heat, and sowing on time, so the crop flowers before the hottest weeks. Where possible, winter crops instead of spring crops.';
+
+  @override
+  String get climateAdviceKeepSoilCovered =>
+      'Consider keeping the soil covered (catch crops, straw), ploughing less often and building up humus. Such soil loses less water.';
+
+  @override
+  String get climateAdviceDroughtCropsOnLightSoil =>
+      'Your soil is light and holds little water. Consider crops that root deeply and cope better with drought, such as rye or lupin, and check whether watering would pay off.';
+
+  @override
+  String get climateAdviceUseLongerSeason =>
+      'A longer season lets you consider varieties that ripen later, or a catch crop after harvest.';
+
+  @override
+  String get climateAdviceDoNotSowEarlier =>
+      'Mind this: the last spring frosts do not clearly come earlier. Crops that frost can kill, such as maize, are better not sown earlier than before.';
+
+  @override
+  String get climateAdviceCheckWarmSeasonCrops =>
+      'Crops that need warmth, such as grain maize or soybean, have a better chance to ripen. It is worth trying them on a small part of the field before you change your plan.';
+
+  @override
+  String get climateAdviceProtectFromErosion =>
+      'Consider not leaving the soil bare: catch crops and crop residues protect it from being washed away.';
+
+  @override
+  String get climateAdviceWorkAcrossSlope =>
+      'Your field has a clear slope. Consider working across the slope and keeping the soil covered all year.';
+
+  @override
   String get reportMainTitle => 'Best plan for you';
 
   @override
@@ -725,11 +882,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String readPair(String label, String value) {
-    return '$label: $value';
-  }
-
-  @override
   String planSow(String period) {
     return 'Sow: $period';
   }
@@ -738,6 +890,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String planHarvestTime(String period) {
     return 'Harvest time: $period';
   }
+
+  @override
+  String calendarAddFor(String event) {
+    return 'Add to calendar: $event';
+  }
+
+  @override
+  String calendarSowTitle(String crop) {
+    return 'Sow: $crop';
+  }
+
+  @override
+  String calendarHarvestTitle(String crop) {
+    return 'Harvest: $crop';
+  }
+
+  @override
+  String calendarCoverTitle(String crop) {
+    return 'Sow cover crop: $crop';
+  }
+
+  @override
+  String get calendarNote =>
+      'From your Field Shift rotation plan. The dates are approximate: do it within this window.';
+
+  @override
+  String get calendarFailed => 'Could not open the calendar on this device.';
 
   @override
   String planPeriodOneMonth(String month, String year) {
@@ -818,7 +997,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reportPlanSaved => 'Plan saved';
 
   @override
-  String get reportSaveDone => 'The plan is saved in your profile.';
+  String get reportSaveDone => 'The plan is saved on this phone.';
+
+  @override
+  String get reportSaveDoneAccount =>
+      'The plan is saved on this phone and in your account.';
+
+  @override
+  String get reportDone => 'Done';
 
   @override
   String get reportSaveFailed => 'Could not save the plan. Please try again.';
@@ -1042,10 +1228,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authTagline => 'Plan your crops with NASA satellite data.';
-
-  @override
-  String get authReadAloudHelp =>
-      'Sign in or create an account. The app also works without an account.';
 
   @override
   String get authLoginTab => 'Sign in';
@@ -2031,7 +2213,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myPlansDeleteTitle => 'Delete this plan?';
 
   @override
-  String get myPlansDeleteBody => 'It will be removed from your profile.';
+  String get myPlansDeleteBody =>
+      'It will be removed from this phone and from your account.';
 
   @override
   String get myPlansDeleted => 'Plan deleted.';
@@ -2039,6 +2222,87 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get myPlansDeleteFailed =>
       'Could not delete the plan. Please try again.';
+
+  @override
+  String get myParcelsTitle => 'My parcels';
+
+  @override
+  String get myParcelsEmpty =>
+      'You have no parcels yet. Choose your field on the map and confirm it is yours.';
+
+  @override
+  String get myParcelsSwipeHint =>
+      'Tap a parcel to work on it. Swipe it to the right to remove it.';
+
+  @override
+  String myParcelsSynced(String date) {
+    return 'Synced with your account: $date';
+  }
+
+  @override
+  String get myParcelAskTitle => 'Is this your parcel?';
+
+  @override
+  String myParcelAskBody(String name) {
+    return 'Is $name your parcel?';
+  }
+
+  @override
+  String get myParcelYes => 'Yes';
+
+  @override
+  String get myParcelNo => 'No';
+
+  @override
+  String get myParcelAdded => 'Parcel added to your parcels.';
+
+  @override
+  String get myParcelRemoveTitle => 'Remove this parcel?';
+
+  @override
+  String myParcelRemoveBody(String name) {
+    return '$name will be removed from your parcels.';
+  }
+
+  @override
+  String get myParcelRemoveYes => 'Remove';
+
+  @override
+  String get myParcelRemoved => 'Parcel removed.';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeHint =>
+      'Switch between the light and the dark look of the app.';
+
+  @override
+  String get settingsFrostAlerts => 'Frost alerts';
+
+  @override
+  String get settingsFrostAlertsHint =>
+      'Once a week we check the weather forecast for your plots and warn you if frost is coming.';
+
+  @override
+  String get frostAlertChannel => 'Frost alerts';
+
+  @override
+  String get frostAlertTitleFrost => 'Frost expected';
+
+  @override
+  String get frostAlertTitleLight => 'Possible ground frost';
+
+  @override
+  String frostAlertBody(String temp, String date) {
+    return 'Near your plot, the lowest temperature will be $temp °C on $date.';
+  }
 
   @override
   String overlayContextUsual(String mean, int years) {

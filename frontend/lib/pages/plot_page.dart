@@ -1,13 +1,16 @@
 import 'package:forui/forui.dart';
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../components/map_button.dart';
+import '../components/my_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
 import '../overlays/field_conditions_controller.dart';
 import '../overlays/map_layers_repository.dart';
 import '../repositories/auth_store.dart';
+import '../repositories/my_parcels_store.dart';
 import '../repositories/selected_plot_store.dart';
 import '../widgets/field_conditions_section.dart';
 import 'rotation_wizard_page.dart';
@@ -22,6 +25,7 @@ class PlotPage extends StatefulWidget {
     required this.authStore,
     this.repository,
     this.onShowConditions,
+    this.parcels,
   });
 
   final SelectedPlotStore store;
@@ -36,11 +40,15 @@ class PlotPage extends StatefulWidget {
   /// Opens the "Conditions" tab.
   final VoidCallback? onShowConditions;
 
+  /// "My parcels" (the app's own list by default).
+  final MyParcelsStore? parcels;
+
   @override
   State<PlotPage> createState() => _PlotPageState();
 }
 
 class _PlotPageState extends State<PlotPage> {
+  late final MyParcelsStore _mine = widget.parcels ?? MyParcelsStore.shared;
   late final _conditions = FieldConditionsController(
     repository: widget.repository ?? MapLayersRepository(),
   );
@@ -73,10 +81,19 @@ class _PlotPageState extends State<PlotPage> {
 
   void _fieldChanged() => _conditions.show(widget.store.parcel);
 
+  Future<void> _remove(Parcel parcel) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    await _mine.remove(parcel.id);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.myParcelRemoved)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.store,
+      listenable: Listenable.merge([widget.store, _mine, widget.authStore]),
       builder: (context, _) => _buildPage(context),
     );
   }
@@ -88,6 +105,7 @@ class _PlotPageState extends State<PlotPage> {
     final type = theme.typography;
     final Parcel? parcel = widget.store.parcel;
     final nearby = widget.store.nearby;
+    final mine = _mine.parcels;
 
     // Centred column on wide (web) screens, so lines stay readable.
     return Align(
@@ -190,6 +208,52 @@ class _PlotPageState extends State<PlotPage> {
                   : l10n.rotationStartHint,
               style: type.body.md.copyWith(color: colors.mutedForeground),
             ),
+
+            // The user's own parcels: added on the map ("Is this your
+            // parcel?"), removed by swiping to the right.
+            const SizedBox(height: 32),
+            Semantics(
+              header: true,
+              child: Text(
+                l10n.myParcelsTitle,
+                style: type.display.xl.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (mine.isEmpty)
+              Text(
+                l10n.myParcelsEmpty,
+                style: type.body.md.copyWith(color: colors.mutedForeground),
+              )
+            else ...[
+              Text(
+                l10n.myParcelsSwipeHint,
+                style: type.body.md.copyWith(color: colors.mutedForeground),
+              ),
+              const SizedBox(height: 8),
+              MyPlotList(
+                parcels: mine,
+                selectedId: parcel?.id,
+                onSelected: widget.store.select,
+                onRemoved: _remove,
+              ),
+              if (widget.authStore.status == AuthStatus.signedIn &&
+                  _mine.syncedAt != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    l10n.myParcelsSynced(
+                      DateFormat.yMd(Localizations.localeOf(context).toString())
+                          .add_Hm()
+                          .format(_mine.syncedAt!.toLocal()),
+                    ),
+                    style: type.body.sm.copyWith(color: colors.mutedForeground),
+                  ),
+                ),
+            ],
 
             // What NASA data and the registers say about the field. Fills in
             // as the data arrives (progress bar until then).

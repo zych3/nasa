@@ -374,23 +374,11 @@ abstract class AppLocalizations {
   /// **'Could not find your location. You can move the map to your field by hand.'**
   String get locationFailed;
 
-  /// No description provided for @nearbyParcelsSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Parcels near you'**
-  String get nearbyParcelsSection;
-
   /// No description provided for @parcelHere.
   ///
   /// In en, this message translates to:
   /// **'Parcel where you are'**
   String get parcelHere;
-
-  /// No description provided for @distanceFromYou.
-  ///
-  /// In en, this message translates to:
-  /// **'{distance} from you'**
-  String distanceFromYou(String distance);
 
   /// No description provided for @myFieldMarker.
   ///
@@ -866,24 +854,6 @@ abstract class AppLocalizations {
   /// **'{step, select, s0{low} s1{moderate} s2{high} other{very high}}'**
   String overlayStepsRisk(String step);
 
-  /// No description provided for @readAloud.
-  ///
-  /// In en, this message translates to:
-  /// **'Read aloud'**
-  String get readAloud;
-
-  /// No description provided for @readAloudStop.
-  ///
-  /// In en, this message translates to:
-  /// **'Stop reading'**
-  String get readAloudStop;
-
-  /// No description provided for @readAloudUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading aloud does not work on this device.'**
-  String get readAloudUnavailable;
-
   /// No description provided for @overlaysHeatmapLoading.
   ///
   /// In en, this message translates to:
@@ -1172,6 +1142,265 @@ abstract class AppLocalizations {
   /// **'No crop on our list suits this field with these answers. Try changing your answers.'**
   String get reportNoPlan;
 
+  /// No description provided for @climateSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How the climate in your area is changing'**
+  String get climateSectionTitle;
+
+  /// No description provided for @climateLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking many years of climate data…'**
+  String get climateLoading;
+
+  /// No description provided for @climateNoClearTrends.
+  ///
+  /// In en, this message translates to:
+  /// **'The data for {from}–{to} show no clear changes for this area.'**
+  String climateNoClearTrends(String from, String to);
+
+  /// No description provided for @climateNotForecast.
+  ///
+  /// In en, this message translates to:
+  /// **'This describes past years. It is not a forecast.'**
+  String get climateNotForecast;
+
+  /// No description provided for @climateFact.
+  ///
+  /// In en, this message translates to:
+  /// **'On average {early} in {earlyFrom}–{earlyTo}, and {recent} in {recentFrom}–{recentTo}.'**
+  String climateFact(
+    String early,
+    String earlyFrom,
+    String earlyTo,
+    String recent,
+    String recentFrom,
+    String recentTo,
+  );
+
+  /// No description provided for @climateValueDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String climateValueDays(int count);
+
+  /// No description provided for @climateValueHeatUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} heat units'**
+  String climateValueHeatUnits(String value);
+
+  /// No description provided for @climateValueCelsius.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} °C'**
+  String climateValueCelsius(String value);
+
+  /// No description provided for @climateValueMillimetres.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} mm'**
+  String climateValueMillimetres(String value);
+
+  /// No description provided for @climateAdviceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What you could consider in the long run:'**
+  String get climateAdviceTitle;
+
+  /// No description provided for @climateSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: {source}, years {from}–{to}. Estimated data.'**
+  String climateSource(String source, String from, String to);
+
+  /// No description provided for @climateNoteRegional.
+  ///
+  /// In en, this message translates to:
+  /// **'These numbers describe an area about {km} km wide, not this one field.'**
+  String climateNoteRegional(String km);
+
+  /// No description provided for @climateNoteAirFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost is counted from the air temperature 2 m above the ground. Close to the ground, frost comes more often.'**
+  String get climateNoteAirFrost;
+
+  /// No description provided for @climateNoteEvaporation.
+  ///
+  /// In en, this message translates to:
+  /// **'The rain itself has not clearly changed. The balance changed because of evaporation, which we estimate from temperature.'**
+  String get climateNoteEvaporation;
+
+  /// No description provided for @climateFrostFreeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Longer season without frost'**
+  String get climateFrostFreeUp;
+
+  /// No description provided for @climateFrostFreeDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Shorter season without frost'**
+  String get climateFrostFreeDown;
+
+  /// No description provided for @climateLastSpringFrostDown.
+  ///
+  /// In en, this message translates to:
+  /// **'The last spring frost comes earlier'**
+  String get climateLastSpringFrostDown;
+
+  /// No description provided for @climateLastSpringFrostUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The last spring frost comes later'**
+  String get climateLastSpringFrostUp;
+
+  /// No description provided for @climateFirstAutumnFrostUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The first autumn frost comes later'**
+  String get climateFirstAutumnFrostUp;
+
+  /// No description provided for @climateFirstAutumnFrostDown.
+  ///
+  /// In en, this message translates to:
+  /// **'The first autumn frost comes earlier'**
+  String get climateFirstAutumnFrostDown;
+
+  /// No description provided for @climateHotDaysUp.
+  ///
+  /// In en, this message translates to:
+  /// **'More hot days (30 °C and more)'**
+  String get climateHotDaysUp;
+
+  /// No description provided for @climateHotDaysDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Fewer hot days (30 °C and more)'**
+  String get climateHotDaysDown;
+
+  /// No description provided for @climateMaxTemperatureUp.
+  ///
+  /// In en, this message translates to:
+  /// **'The hottest day of the year is hotter'**
+  String get climateMaxTemperatureUp;
+
+  /// No description provided for @climateMaxTemperatureDown.
+  ///
+  /// In en, this message translates to:
+  /// **'The hottest day of the year is cooler'**
+  String get climateMaxTemperatureDown;
+
+  /// No description provided for @climateGrowingWarmthUp.
+  ///
+  /// In en, this message translates to:
+  /// **'More warmth for plants to grow'**
+  String get climateGrowingWarmthUp;
+
+  /// No description provided for @climateGrowingWarmthDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Less warmth for plants to grow'**
+  String get climateGrowingWarmthDown;
+
+  /// No description provided for @climateDrySpellUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Longer spells without rain (April to September)'**
+  String get climateDrySpellUp;
+
+  /// No description provided for @climateDrySpellDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Shorter spells without rain (April to September)'**
+  String get climateDrySpellDown;
+
+  /// No description provided for @climateSeasonRainUp.
+  ///
+  /// In en, this message translates to:
+  /// **'More rain in the growing season (April to September)'**
+  String get climateSeasonRainUp;
+
+  /// No description provided for @climateSeasonRainDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Less rain in the growing season (April to September)'**
+  String get climateSeasonRainDown;
+
+  /// No description provided for @climateWaterBalanceUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Better water balance: rain minus evaporation (April to September)'**
+  String get climateWaterBalanceUp;
+
+  /// No description provided for @climateWaterBalanceDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Worse water balance: rain minus evaporation (April to September)'**
+  String get climateWaterBalanceDown;
+
+  /// No description provided for @climateHeavyRainUp.
+  ///
+  /// In en, this message translates to:
+  /// **'More days with heavy rain (over 20 mm)'**
+  String get climateHeavyRainUp;
+
+  /// No description provided for @climateHeavyRainDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Fewer days with heavy rain (over 20 mm)'**
+  String get climateHeavyRainDown;
+
+  /// No description provided for @climateAdviceHeatTolerantVarieties.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider varieties that flower earlier or cope better with heat, and sowing on time, so the crop flowers before the hottest weeks. Where possible, winter crops instead of spring crops.'**
+  String get climateAdviceHeatTolerantVarieties;
+
+  /// No description provided for @climateAdviceKeepSoilCovered.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider keeping the soil covered (catch crops, straw), ploughing less often and building up humus. Such soil loses less water.'**
+  String get climateAdviceKeepSoilCovered;
+
+  /// No description provided for @climateAdviceDroughtCropsOnLightSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Your soil is light and holds little water. Consider crops that root deeply and cope better with drought, such as rye or lupin, and check whether watering would pay off.'**
+  String get climateAdviceDroughtCropsOnLightSoil;
+
+  /// No description provided for @climateAdviceUseLongerSeason.
+  ///
+  /// In en, this message translates to:
+  /// **'A longer season lets you consider varieties that ripen later, or a catch crop after harvest.'**
+  String get climateAdviceUseLongerSeason;
+
+  /// No description provided for @climateAdviceDoNotSowEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Mind this: the last spring frosts do not clearly come earlier. Crops that frost can kill, such as maize, are better not sown earlier than before.'**
+  String get climateAdviceDoNotSowEarlier;
+
+  /// No description provided for @climateAdviceCheckWarmSeasonCrops.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops that need warmth, such as grain maize or soybean, have a better chance to ripen. It is worth trying them on a small part of the field before you change your plan.'**
+  String get climateAdviceCheckWarmSeasonCrops;
+
+  /// No description provided for @climateAdviceProtectFromErosion.
+  ///
+  /// In en, this message translates to:
+  /// **'Consider not leaving the soil bare: catch crops and crop residues protect it from being washed away.'**
+  String get climateAdviceProtectFromErosion;
+
+  /// No description provided for @climateAdviceWorkAcrossSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Your field has a clear slope. Consider working across the slope and keeping the soil covered all year.'**
+  String get climateAdviceWorkAcrossSlope;
+
   /// No description provided for @reportMainTitle.
   ///
   /// In en, this message translates to:
@@ -1214,12 +1443,6 @@ abstract class AppLocalizations {
   /// **'{year}: {crop}'**
   String readSeason(String year, String crop);
 
-  /// No description provided for @readPair.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}: {value}'**
-  String readPair(String label, String value);
-
   /// No description provided for @planSow.
   ///
   /// In en, this message translates to:
@@ -1231,6 +1454,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Harvest time: {period}'**
   String planHarvestTime(String period);
+
+  /// No description provided for @calendarAddFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to calendar: {event}'**
+  String calendarAddFor(String event);
+
+  /// No description provided for @calendarSowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow: {crop}'**
+  String calendarSowTitle(String crop);
+
+  /// No description provided for @calendarHarvestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest: {crop}'**
+  String calendarHarvestTitle(String crop);
+
+  /// No description provided for @calendarCoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow cover crop: {crop}'**
+  String calendarCoverTitle(String crop);
+
+  /// No description provided for @calendarNote.
+  ///
+  /// In en, this message translates to:
+  /// **'From your Field Shift rotation plan. The dates are approximate: do it within this window.'**
+  String get calendarNote;
+
+  /// No description provided for @calendarFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the calendar on this device.'**
+  String get calendarFailed;
 
   /// No description provided for @planPeriodOneMonth.
   ///
@@ -1373,8 +1632,20 @@ abstract class AppLocalizations {
   /// No description provided for @reportSaveDone.
   ///
   /// In en, this message translates to:
-  /// **'The plan is saved in your profile.'**
+  /// **'The plan is saved on this phone.'**
   String get reportSaveDone;
+
+  /// No description provided for @reportSaveDoneAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan is saved on this phone and in your account.'**
+  String get reportSaveDoneAccount;
+
+  /// No description provided for @reportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get reportDone;
 
   /// No description provided for @reportSaveFailed.
   ///
@@ -1705,12 +1976,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan your crops with NASA satellite data.'**
   String get authTagline;
-
-  /// No description provided for @authReadAloudHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in or create an account. The app also works without an account.'**
-  String get authReadAloudHelp;
 
   /// No description provided for @authLoginTab.
   ///
@@ -3185,7 +3450,7 @@ abstract class AppLocalizations {
   /// No description provided for @myPlansDeleteBody.
   ///
   /// In en, this message translates to:
-  /// **'It will be removed from your profile.'**
+  /// **'It will be removed from this phone and from your account.'**
   String get myPlansDeleteBody;
 
   /// No description provided for @myPlansDeleted.
@@ -3199,6 +3464,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the plan. Please try again.'**
   String get myPlansDeleteFailed;
+
+  /// No description provided for @myParcelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My parcels'**
+  String get myParcelsTitle;
+
+  /// No description provided for @myParcelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no parcels yet. Choose your field on the map and confirm it is yours.'**
+  String get myParcelsEmpty;
+
+  /// No description provided for @myParcelsSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a parcel to work on it. Swipe it to the right to remove it.'**
+  String get myParcelsSwipeHint;
+
+  /// No description provided for @myParcelsSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced with your account: {date}'**
+  String myParcelsSynced(String date);
+
+  /// No description provided for @myParcelAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your parcel?'**
+  String get myParcelAskTitle;
+
+  /// No description provided for @myParcelAskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Is {name} your parcel?'**
+  String myParcelAskBody(String name);
+
+  /// No description provided for @myParcelYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get myParcelYes;
+
+  /// No description provided for @myParcelNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get myParcelNo;
+
+  /// No description provided for @myParcelAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel added to your parcels.'**
+  String get myParcelAdded;
+
+  /// No description provided for @myParcelRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this parcel?'**
+  String get myParcelRemoveTitle;
+
+  /// No description provided for @myParcelRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will be removed from your parcels.'**
+  String myParcelRemoveBody(String name);
+
+  /// No description provided for @myParcelRemoveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get myParcelRemoveYes;
+
+  /// No description provided for @myParcelRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel removed.'**
+  String get myParcelRemoved;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between the light and the dark look of the app.'**
+  String get settingsDarkModeHint;
+
+  /// No description provided for @settingsFrostAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get settingsFrostAlerts;
+
+  /// No description provided for @settingsFrostAlertsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a week we check the weather forecast for your plots and warn you if frost is coming.'**
+  String get settingsFrostAlertsHint;
+
+  /// No description provided for @frostAlertChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get frostAlertChannel;
+
+  /// No description provided for @frostAlertTitleFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost expected'**
+  String get frostAlertTitleFrost;
+
+  /// No description provided for @frostAlertTitleLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible ground frost'**
+  String get frostAlertTitleLight;
+
+  /// No description provided for @frostAlertBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Near your plot, the lowest temperature will be {temp} °C on {date}.'**
+  String frostAlertBody(String temp, String date);
 
   /// No description provided for @overlayContextUsual.
   ///

@@ -21,6 +21,8 @@ public sealed class User
     public List<UserCrop> Crops { get; } = [];
 
     public List<SavedPlan> SavedPlans { get; } = [];
+
+    public List<SavedParcel> SavedParcels { get; } = [];
 }
 
 /// <summary>
@@ -51,6 +53,28 @@ public sealed class SavedPlan
 
     /// <summary>What the farmer answered (past crops, exclusions, ...), as JSON; null when not sent.</summary>
     public string? AnswersJson { get; set; }
+}
+
+/// <summary>
+/// One parcel of the user's "My parcels" list (table <c>saved_parcels</c>), a backup of what their devices keep.
+/// A removed parcel stays as a marker (<see cref="IsDeleted"/>) for a while so other devices remove it too.
+/// </summary>
+public sealed class SavedParcel
+{
+    public Guid UserId { get; set; }
+
+    public User? User { get; set; }
+
+    /// <summary>The parcel's id from the land register lookup.</summary>
+    public required string ParcelId { get; set; }
+
+    /// <summary>The parcel object as the app keeps it (id, centre, outline, address), as JSON.</summary>
+    public required string DataJson { get; set; }
+
+    /// <summary>When the user last added or removed it, as set by the app; the newer change wins.</summary>
+    public DateTimeOffset UpdatedAt { get; set; }
+
+    public bool IsDeleted { get; set; }
 }
 
 /// <summary>
@@ -119,6 +143,8 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
 
     public DbSet<SavedPlan> SavedPlans => Set<SavedPlan>();
 
+    public DbSet<SavedParcel> SavedParcels => Set<SavedParcel>();
+
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
     public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
 
@@ -186,6 +212,19 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
             e.HasOne(p => p.User).WithMany(u => u.SavedPlans).HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(p => new { p.UserId, p.CreatedAt });
+        });
+
+        model.Entity<SavedParcel>(e =>
+        {
+            e.ToTable("saved_parcels");
+            e.HasKey(p => new { p.UserId, p.ParcelId });
+            e.Property(p => p.UserId).HasColumnName("user_id");
+            e.Property(p => p.ParcelId).HasColumnName("parcel_id").HasColumnType("text");
+            e.Property(p => p.DataJson).HasColumnName("data").HasColumnType("jsonb");
+            e.Property(p => p.UpdatedAt).HasColumnName("updated_at");
+            e.Property(p => p.IsDeleted).HasColumnName("is_deleted");
+            e.HasOne(p => p.User).WithMany(u => u.SavedParcels).HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

@@ -3,6 +3,8 @@ import 'package:material_ui/material_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/rotation_text.dart';
 import '../../models/rotation_report.dart';
+import '../../widgets/add_to_calendar_button.dart';
+import 'plan_calendar.dart';
 import 'star_rating.dart';
 
 class PlanTimeline extends StatelessWidget {
@@ -10,10 +12,16 @@ class PlanTimeline extends StatelessWidget {
 
   final RotationPlan plan;
 
-  Widget _dateRow(ThemeData theme, IconData icon, String text) => Padding(
+  /// A dated task ("Sow: March – April 2027") with, where the device has a
+  /// calendar, a button that puts the window in it.
+  Widget _dateRow(
+    ThemeData theme,
+    IconData icon,
+    String text,
+    CalendarEntry? entry,
+  ) => Padding(
     padding: const EdgeInsets.only(top: 6),
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(icon, size: 22),
         const SizedBox(width: 6),
@@ -23,6 +31,7 @@ class PlanTimeline extends StatelessWidget {
             style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
           ),
         ),
+        if (entry != null) AddToCalendarButton(entry: entry),
       ],
     ),
   );
@@ -78,10 +87,20 @@ class PlanTimeline extends StatelessWidget {
                         ),
                         if (seasonSowText(l10n, locale, season)
                             case final text?)
-                          _dateRow(theme, Icons.grain, text),
+                          _dateRow(
+                            theme,
+                            Icons.grain,
+                            text,
+                            seasonSowEntry(l10n, language, season),
+                          ),
                         if (seasonHarvestText(l10n, locale, season)
                             case final text?)
-                          _dateRow(theme, Icons.agriculture, text),
+                          _dateRow(
+                            theme,
+                            Icons.agriculture,
+                            text,
+                            seasonHarvestEntry(l10n, language, season),
+                          ),
                         if (season.catchCrop != null) ...[
                           const Padding(
                             padding: EdgeInsets.only(top: 12),
@@ -107,7 +126,12 @@ class PlanTimeline extends StatelessWidget {
                           ),
                           if (catchSowText(l10n, locale, season)
                               case final text?)
-                            _dateRow(theme, Icons.grain, text),
+                            _dateRow(
+                              theme,
+                              Icons.grain,
+                              text,
+                              catchSowEntry(l10n, language, season),
+                            ),
                         ],
                       ],
                     ),

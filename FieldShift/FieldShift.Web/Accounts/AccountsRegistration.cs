@@ -23,6 +23,7 @@ public static class AccountsRegistration
         builder.Services.AddSingleton<AccountService>();
         builder.Services.AddSingleton<UserCropService>();
         builder.Services.AddSingleton<SavedPlanService>();
+        builder.Services.AddSingleton<SavedParcelService>();
 
         builder.Services
             .AddAuthentication(TokenAuthenticationHandler.SchemeName)

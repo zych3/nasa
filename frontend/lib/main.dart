@@ -7,20 +7,50 @@ import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
 import 'components/map_button.dart';
 import 'l10n/app_localizations.dart';
-import 'l10n/language_options.dart';
 import 'overlays/map_layers_repository.dart';
 import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'repositories/auth_store.dart';
+import 'repositories/local_plans_store.dart';
+import 'repositories/my_parcels_store.dart';
 import 'repositories/selected_plot_store.dart';
+import 'repositories/settings_store.dart';
+import 'services/frost_alert_service.dart';
 import 'screens/overlays_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final plotStore = SelectedPlotStore();
   final authStore = AuthStore();
-  await Future.wait([plotStore.load(), authStore.load()]);
-  runApp(FieldShiftApp(plotStore: plotStore, authStore: authStore));
+  final plans = LocalPlansStore.shared;
+  final parcels = MyParcelsStore.shared;
+  final settings = SettingsStore();
+  await Future.wait([
+    plotStore.load(),
+    authStore.load(),
+    plans.load(),
+    parcels.load(),
+    settings.load(),
+  ]);
+  // With an account the plans on the phone are merged with it on sign-in.
+  plans.attach(authStore);
+  // The same for "My parcels"; the active parcel always belongs to the list.
+  await parcels.bind(plotStore);
+  parcels.attach(authStore);
+  runApp(
+    FieldShiftApp(
+      plotStore: plotStore,
+      authStore: authStore,
+      settings: settings,
+    ),
+  );
+  // Weekly frost check for the saved plots (Android).
+  FrostAlertService.start(
+    settings: settings,
+    plotStore: plotStore,
+    plans: plans,
+    parcels: parcels,
+  ).catchError((Object _) {});
 }
 
 class FieldShiftApp extends StatefulWidget {
@@ -28,23 +58,34 @@ class FieldShiftApp extends StatefulWidget {
     super.key,
     required this.plotStore,
     required this.authStore,
+    required this.settings,
   });
 
   final SelectedPlotStore plotStore;
   final AuthStore authStore;
+  final SettingsStore settings;
 
   @override
   State<FieldShiftApp> createState() => _FieldShiftAppState();
 }
 
 class _FieldShiftAppState extends State<FieldShiftApp> {
-  Locale _locale = defaultLocale;
+  late Locale _locale = widget.settings.locale;
 
   @override
   Widget build(BuildContext context) {
+    // Light or dark mode is a setting: a change redraws the whole app.
+    return ListenableBuilder(
+      listenable: widget.settings,
+      builder: (context, _) => _buildApp(),
+    );
+  }
+
+  Widget _buildApp() {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       locale: _locale,
+      themeMode: widget.settings.themeMode,
       supportedLocales: AppLocalizations.supportedLocales,
       // material_ui ships its own Material/Cupertino/Widgets delegates; the
       // generated AppLocalizations.localizationsDelegates would pull in the
@@ -70,7 +111,7 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
       home: MyScaffold(
         plotStore: widget.plotStore,
         authStore: widget.authStore,
-        locale: _locale,
+        settings: widget.settings,
         onLocaleChanged: (locale) => setState(() => _locale = locale),
       ),
     );
@@ -82,13 +123,13 @@ class MyScaffold extends StatefulWidget {
     super.key,
     required this.plotStore,
     required this.authStore,
-    required this.locale,
+    required this.settings,
     required this.onLocaleChanged,
   });
 
   final SelectedPlotStore plotStore;
   final AuthStore authStore;
-  final Locale locale;
+  final SettingsStore settings;
   final ValueChanged<Locale> onLocaleChanged;
 
   @override
@@ -104,8 +145,8 @@ class _MyScaffoldState extends State<MyScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    final flag = LanguageFlagButton(
-      locale: widget.locale,
+    final flag = SettingsButton(
+      settings: widget.settings,
       onLocaleChanged: widget.onLocaleChanged,
     );
 
@@ -156,7 +197,7 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 }
 
-/// A tab with the language flag floating in its top corner, the same button
+/// A tab with the settings gear floating in its top corner, the same button
 /// as on the "My area" map (no bar of its own).
 class _TabWithFlag extends StatelessWidget {
   const _TabWithFlag({required this.flag, required this.child});

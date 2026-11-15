@@ -8,7 +8,6 @@ import '../models/satellite_data.dart';
 import '../overlays/field_conditions_controller.dart';
 import 'overlay_panel.dart' show overlayErrorText;
 import 'farm_indicators_card.dart';
-import 'read_aloud_button.dart';
 import 'satellite_card.dart';
 
 /// "My field" summary from recent data only: what it means for the field
@@ -66,10 +65,7 @@ class FieldConditionsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Heading(
-          text: l10n.overlaysTitle,
-          readAloud: () => _readAloudText(l10n),
-        ),
+        _Heading(text: l10n.overlaysTitle),
         if (c.isDemo) ...[
           FAlert(
             icon: const Icon(FLucideIcons.info),
@@ -129,31 +125,14 @@ class FieldConditionsSection extends StatelessWidget {
       ],
     );
   }
-
-  String _readAloudText(AppLocalizations l10n) {
-    final c = controller;
-    return sentencesForReading([
-      l10n.overlaysTitle,
-      if (c.isDemo) l10n.overlaysDemoNotice,
-      if (c.isLoading) l10n.fieldDataLoading,
-      ...FarmIndicatorsCard.sentences(l10n, c.indicators),
-      if (c.facts case final facts?) ..._factsSentences(l10n, facts),
-    ]);
-  }
 }
-
-List<String> _factsSentences(AppLocalizations l10n, ParcelFacts facts) => [
-  for (final row in _factRows(l10n, facts))
-    l10n.fieldFactSentence(row.label, row.value),
-];
 
 // ---------------------------------------------------------------- parts
 
 class _Heading extends StatelessWidget {
-  const _Heading({required this.text, this.readAloud});
+  const _Heading({required this.text});
 
   final String text;
-  final String Function()? readAloud;
 
   @override
   Widget build(BuildContext context) {
@@ -174,10 +153,6 @@ class _Heading extends StatelessWidget {
               ),
             ),
           ),
-          if (readAloud case final read?) ...[
-            const SizedBox(width: 8),
-            ReadAloudButton(text: read),
-          ],
         ],
       ),
     );

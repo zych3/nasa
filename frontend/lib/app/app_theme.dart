@@ -258,6 +258,29 @@ abstract final class AppTheme {
           color: c.mutedForeground,
         ),
       ),
+      // Light theme: the default "off" switch (pale track, pale outline) is
+      // hard to see on the off-white background, so it gets a darker outline
+      // and thumb; "on" is solid green with a white thumb.
+      switchTheme: dark
+          ? null
+          : SwitchThemeData(
+              trackColor: WidgetStateProperty.resolveWith(
+                (s) => s.contains(WidgetState.selected)
+                    ? c.primary
+                    : const Color(0xFFDDE0D8),
+              ),
+              trackOutlineColor: WidgetStateProperty.resolveWith(
+                (s) => s.contains(WidgetState.selected)
+                    ? c.primary
+                    : const Color(0xFF5F655B),
+              ),
+              trackOutlineWidth: const WidgetStatePropertyAll(2),
+              thumbColor: WidgetStateProperty.resolveWith(
+                (s) => s.contains(WidgetState.selected)
+                    ? Colors.white
+                    : const Color(0xFF5F655B),
+              ),
+            ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: c.background,
         surfaceTintColor: Colors.transparent,

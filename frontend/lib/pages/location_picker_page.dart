@@ -5,7 +5,6 @@ import 'package:material_ui/material_ui.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
-import '../widgets/read_aloud_button.dart';
 import 'my_crops_page.dart';
 
 /// Point the exact place on a map: the pin stays in the middle, the user
@@ -69,16 +68,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
     final coordinates = placeText(context, null, _center);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.pickerTitle),
-        actions: [
-          ReadAloudButton(
-            text: () =>
-                sentencesForReading([l10n.pickerTitle, l10n.pickerHelp]),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.pickerTitle)),
       body: Column(
         children: [
           Expanded(

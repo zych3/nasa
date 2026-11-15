@@ -46,9 +46,7 @@
   "locationServiceOff": "Lokalizacja jest wyłączona w tym urządzeniu. Włącz ją i spróbuj ponownie.",
   "locationPermissionDenied": "Nie widzimy Twojej lokalizacji. Nadal możesz przesuwać mapę ręcznie.",
   "locationFailed": "Nie udało się znaleźć Twojej lokalizacji. Możesz przesunąć mapę do swojego pola ręcznie.",
-  "nearbyParcelsSection": "Działki w pobliżu",
   "parcelHere": "Działka, na której jesteś",
-  "distanceFromYou": "{distance} od Ciebie",
   "myFieldMarker": "Moje pole",
   "youAreHere": "Tu jesteś",
   "zoomInForParcels": "Przybliż mapę, aby zobaczyć działki",
@@ -127,9 +125,6 @@
   "overlayStepsHeat": "{step, select, s0{brak upałów} s1{kilka dni upału} s2{częste upały} other{bardzo częste upały}}",
   "overlayErosionTitle": "Erozja (zmywanie gleby)",
   "overlayStepsRisk": "{step, select, s0{niski} s1{umiarkowany} s2{wysoki} other{bardzo wysoki}}",
-  "readAloud": "Przeczytaj na głos",
-  "readAloudStop": "Zatrzymaj czytanie",
-  "readAloudUnavailable": "Czytanie na głos nie działa na tym urządzeniu.",
   "overlaysHeatmapLoading": "Wczytuję mapę okolicy…",
   "overlayHeatmapNote": "Kolory na mapie to dane NASA dla okolicy pola; po przesunięciu mapy doczytują się kolejne. Przejścia między kolorami są wygładzone.",
   "overlaysHeatmapZoomIn": "Przybliż mapę, aby zobaczyć kolory",
@@ -178,6 +173,48 @@
   "reportLoading": "Przygotowujemy Twój plan…",
   "reportLoadError": "Nie udało się przygotować planu. Sprawdź internet i spróbuj ponownie.",
   "reportNoPlan": "Żadna uprawa z naszej listy nie pasuje do tego pola przy tych odpowiedziach. Spróbuj zmienić odpowiedzi.",
+  "climateSectionTitle": "Jak zmienia się klimat w Twojej okolicy",
+  "climateLoading": "Sprawdzamy dane o klimacie z wielu lat…",
+  "climateNoClearTrends": "W danych z lat {from}–{to} nie widać wyraźnych zmian dla tej okolicy.",
+  "climateNotForecast": "To opis minionych lat, a nie prognoza.",
+  "climateFact": "Średnio {early} w latach {earlyFrom}–{earlyTo}, a {recent} w latach {recentFrom}–{recentTo}.",
+  "climateValueDays": "{count, plural, =1{1 dzień} few{{count} dni} many{{count} dni} other{{count} dnia}}",
+  "climateValueHeatUnits": "{value} jednostek ciepła",
+  "climateValueCelsius": "{value} °C",
+  "climateValueMillimetres": "{value} mm",
+  "climateAdviceTitle": "Co można rozważyć na dłuższą metę:",
+  "climateSource": "Źródło: {source}, lata {from}–{to}. Dane szacowane.",
+  "climateNoteRegional": "Te liczby opisują okolicę o szerokości około {km} km, a nie to jedno pole.",
+  "climateNoteAirFrost": "Przymrozki liczymy z temperatury powietrza 2 m nad ziemią. Przy samej ziemi zdarzają się częściej.",
+  "climateNoteEvaporation": "Sam opad nie zmienił się wyraźnie. Bilans zmienił się przez parowanie, które szacujemy z temperatury.",
+  "climateFrostFreeUp": "Dłuższy okres bez przymrozków",
+  "climateFrostFreeDown": "Krótszy okres bez przymrozków",
+  "climateLastSpringFrostDown": "Ostatni wiosenny przymrozek przychodzi wcześniej",
+  "climateLastSpringFrostUp": "Ostatni wiosenny przymrozek przychodzi później",
+  "climateFirstAutumnFrostUp": "Pierwszy jesienny przymrozek przychodzi później",
+  "climateFirstAutumnFrostDown": "Pierwszy jesienny przymrozek przychodzi wcześniej",
+  "climateHotDaysUp": "Więcej upalnych dni (30 °C i więcej)",
+  "climateHotDaysDown": "Mniej upalnych dni (30 °C i więcej)",
+  "climateMaxTemperatureUp": "Najgorętszy dzień roku jest cieplejszy",
+  "climateMaxTemperatureDown": "Najgorętszy dzień roku jest chłodniejszy",
+  "climateGrowingWarmthUp": "Więcej ciepła dla wzrostu roślin",
+  "climateGrowingWarmthDown": "Mniej ciepła dla wzrostu roślin",
+  "climateDrySpellUp": "Dłuższe okresy bez deszczu (od kwietnia do września)",
+  "climateDrySpellDown": "Krótsze okresy bez deszczu (od kwietnia do września)",
+  "climateSeasonRainUp": "Więcej deszczu w sezonie wzrostu (od kwietnia do września)",
+  "climateSeasonRainDown": "Mniej deszczu w sezonie wzrostu (od kwietnia do września)",
+  "climateWaterBalanceUp": "Lepszy bilans wody: deszcz minus parowanie (od kwietnia do września)",
+  "climateWaterBalanceDown": "Gorszy bilans wody: deszcz minus parowanie (od kwietnia do września)",
+  "climateHeavyRainUp": "Więcej dni z ulewą (ponad 20 mm)",
+  "climateHeavyRainDown": "Mniej dni z ulewą (ponad 20 mm)",
+  "climateAdviceHeatTolerantVarieties": "Warto rozważyć odmiany, które kwitną wcześniej albo lepiej znoszą upał, oraz siew w terminie, żeby rośliny kwitły przed najgorętszymi tygodniami. Tam, gdzie to możliwe, rośliny ozime zamiast jarych.",
+  "climateAdviceKeepSoilCovered": "Warto trzymać glebę pod okrywą (międzyplony, słoma), rzadziej ją orać i dbać o próchnicę. Taka gleba traci mniej wody.",
+  "climateAdviceDroughtCropsOnLightSoil": "Twoja gleba jest lekka i słabo trzyma wodę. Warto rozważyć rośliny, które korzenią się głęboko i lepiej znoszą suszę, na przykład żyto albo łubin, oraz sprawdzić, czy opłaca się nawadnianie.",
+  "climateAdviceUseLongerSeason": "Dłuższy sezon pozwala rozważyć odmiany, które dojrzewają później, albo międzyplon po żniwach.",
+  "climateAdviceDoNotSowEarlier": "Uwaga: ostatnie wiosenne przymrozki nie przychodzą wyraźnie wcześniej. Roślin, które przymrozek może zniszczyć, na przykład kukurydzy, lepiej nie siać wcześniej niż dotąd.",
+  "climateAdviceCheckWarmSeasonCrops": "Uprawy ciepłolubne, takie jak kukurydza na ziarno czy soja, mają większą szansę dojrzeć. Warto sprawdzić je na małej części pola, zanim zmienisz plan.",
+  "climateAdviceProtectFromErosion": "Warto nie zostawiać gołej gleby: międzyplony i resztki roślin chronią ją przed zmywaniem.",
+  "climateAdviceWorkAcrossSlope": "Twoje pole ma wyraźny spadek. Warto uprawiać je w poprzek stoku i trzymać glebę pod okrywą przez cały rok.",
   "reportMainTitle": "Najlepszy plan dla Ciebie",
   "reportGoalPicker": "Plan pod kątem:",
   "reportSowNext": "Co uprawiać, rok po roku",
@@ -185,9 +222,14 @@
   "planRepeats": "{count, plural, =1{Potem plan powtarza się co rok.} few{Potem plan powtarza się co {count} lata.} many{Potem plan powtarza się co {count} lat.} other{Potem plan powtarza się co {count} lat.}}",
   "planHarvest": "Jakość plonu",
   "readSeason": "{year}: {crop}",
-  "readPair": "{label}: {value}",
   "planSow": "Siew: {period}",
   "planHarvestTime": "Zbiór: {period}",
+  "calendarAddFor": "Dodaj do kalendarza: {event}",
+  "calendarSowTitle": "Siew: {crop}",
+  "calendarHarvestTitle": "Zbiór: {crop}",
+  "calendarCoverTitle": "Siew poplonu: {crop}",
+  "calendarNote": "Z Twojego planu zmianowania w Field Shift. Terminy są orientacyjne: wykonaj w tym oknie.",
+  "calendarFailed": "Nie udało się otworzyć kalendarza na tym urządzeniu.",
   "planPeriodOneMonth": "{month} {year}",
   "planPeriodRange": "{from} – {to} {year}",
   "harvestStars": "Jakość plonu: {stars} na {total} gwiazdek",
@@ -211,7 +253,9 @@
   "detailsChoosePlan": "Wybierz ten plan",
   "reportSavePlan": "Zapisz ten plan",
   "reportPlanSaved": "Plan zapisany",
-  "reportSaveDone": "Plan jest zapisany w Twoim profilu.",
+  "reportSaveDone": "Plan jest zapisany w tym telefonie.",
+  "reportSaveDoneAccount": "Plan jest zapisany w tym telefonie i na Twoim koncie.",
+  "reportDone": "Gotowe",
   "reportSaveFailed": "Nie udało się zapisać planu. Spróbuj ponownie.",
   "reportSaveTooMany": "Masz za dużo zapisanych planów. Usuń któryś.",
   "reportSaveSessionExpired": "Logowanie wygasło. Zaloguj się ponownie.",
@@ -267,7 +311,6 @@
   "addressKindAddress": "Adres",
   "authWelcome": "Witaj w FieldShift",
   "authTagline": "Planuj uprawy z danymi satelitarnymi NASA.",
-  "authReadAloudHelp": "Zaloguj się albo załóż konto. Aplikacja działa też bez konta.",
   "authLoginTab": "Logowanie",
   "authRegisterTab": "Rejestracja",
   "authUsernameLabel": "Login",
@@ -513,9 +556,63 @@
   "myPlansDelete": "Usuń",
   "myPlansCancel": "Anuluj",
   "myPlansDeleteTitle": "Usunąć ten plan?",
-  "myPlansDeleteBody": "Zostanie usunięty z Twojego profilu.",
+  "myPlansDeleteBody": "Zostanie usunięty z tego telefonu i z Twojego konta.",
   "myPlansDeleted": "Plan usunięty.",
   "myPlansDeleteFailed": "Nie udało się usunąć planu. Spróbuj ponownie.",
+  "myParcelsTitle": "Moje działki",
+  "myParcelsEmpty": "Nie masz jeszcze działek. Wybierz swoje pole na mapie i potwierdź, że jest Twoje.",
+  "myParcelsSwipeHint": "Dotknij działki, aby z nią pracować. Przesuń ją w prawo, aby usunąć.",
+  "myParcelsSynced": "Zsynchronizowano z kontem: {date}",
+  "myParcelAskTitle": "Czy to Twoja działka?",
+  "myParcelAskBody": "Czy {name} to Twoja działka?",
+  "myParcelYes": "Tak",
+  "myParcelNo": "Nie",
+  "myParcelAdded": "Działka dodana do Twoich działek.",
+  "myParcelRemoveTitle": "Usunąć tę działkę?",
+  "myParcelRemoveBody": "{name} zostanie usunięta z Twoich działek.",
+  "myParcelRemoveYes": "Usuń",
+  "myParcelRemoved": "Działka usunięta.",
+  "@myParcelsSynced": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@myParcelAskBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@myParcelRemoveBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settings": "Ustawienia",
+  "settingsLanguage": "Język",
+  "settingsDarkMode": "Tryb ciemny",
+  "settingsDarkModeHint": "Przełącz między jasnym a ciemnym wyglądem aplikacji.",
+  "settingsFrostAlerts": "Alerty o przymrozkach",
+  "settingsFrostAlertsHint": "Raz w tygodniu sprawdzimy prognozę pogody dla Twoich działek i ostrzeżemy, gdy zbliża się przymrozek.",
+  "frostAlertChannel": "Alerty o przymrozkach",
+  "frostAlertTitleFrost": "Zbliża się przymrozek",
+  "frostAlertTitleLight": "Możliwy przymrozek przygruntowy",
+  "frostAlertBody": "Przy Twojej działce temperatura spadnie do {temp} °C, dnia {date}.",
+  "@frostAlertBody": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "overlayContextUsual": "Jak zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
   "overlayContextAbove": "O {diff} więcej niż zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
   "overlayContextBelow": "O {diff} mniej niż zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
