@@ -603,4 +603,292 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysSoilMapZoomIn => 'Przybliż mapę, aby zobaczyć mapę gleb';
+
+  @override
+  String get sourceModel =>
+      'Model komputerowy na prawdziwych danych (ISRIC SoilGrids)';
+
+  @override
+  String get rotationStart => 'Zaplanuj zmianowanie';
+
+  @override
+  String get rotationStartHint =>
+      'Dowiedz się, co uprawiać w kolejnych latach.';
+
+  @override
+  String get rotationStartNeedPlot => 'Najpierw wybierz swoje pole na mapie.';
+
+  @override
+  String wizardStep(int current, int total) {
+    return 'Krok $current z $total';
+  }
+
+  @override
+  String get wizardNext => 'Dalej';
+
+  @override
+  String get wizardBack => 'Wstecz';
+
+  @override
+  String get wizardShowPlan => 'Pokaż mój plan';
+
+  @override
+  String get wizardOptional => 'Nieobowiązkowe';
+
+  @override
+  String get pastCropsTitle => 'Co ostatnio uprawiałeś na tym polu?';
+
+  @override
+  String get pastCropsHint =>
+      'Zacznij od ostatniego zbioru. Każdy dodatkowy rok poprawia poradę.';
+
+  @override
+  String get pastCropLast => 'Ostatni sezon';
+
+  @override
+  String get pastCropBefore => 'Sezon wcześniej';
+
+  @override
+  String get pastCropEarlier => 'Dwa sezony temu';
+
+  @override
+  String get pastCropChoose => 'Wybierz uprawę';
+
+  @override
+  String get pastCropClear => 'Wyczyść';
+
+  @override
+  String get pastCropRequired =>
+      'Aby przejść dalej, wybierz co najmniej ostatnią uprawę.';
+
+  @override
+  String get goalTitle => 'Co jest dla Ciebie najważniejsze?';
+
+  @override
+  String get goalNoPreference => 'Bez znaczenia';
+
+  @override
+  String get goalBalanced => 'Po trochu wszystko';
+
+  @override
+  String get goalBalancedHint => 'Dobry plon i zdrowa gleba razem.';
+
+  @override
+  String get goalSoilHealth => 'Zdrowa gleba';
+
+  @override
+  String get goalSoilHealthHint => 'Budowanie gleby na długie lata.';
+
+  @override
+  String get goalSafeHarvest => 'Pewny plon';
+
+  @override
+  String get goalSafeHarvestHint =>
+      'Uprawy, które najlepiej znoszą suche i zimne lata.';
+
+  @override
+  String get extrasTitle => 'Czy jest coś jeszcze, co powinniśmy wiedzieć?';
+
+  @override
+  String get extrasLivestock => 'Mam zwierzęta lub obornik';
+
+  @override
+  String get extrasIrrigation => 'Mogę nawadniać to pole';
+
+  @override
+  String get extrasExcludedLabel => 'Uprawy, których nie chcę siać:';
+
+  @override
+  String get extrasPhLabel => 'pH gleby z badania gleby';
+
+  @override
+  String get extrasPhHint => 'Na przykład 5,8';
+
+  @override
+  String get extrasPhInvalid => 'Wpisz liczbę od 3 do 9.';
+
+  @override
+  String get reportTitle => 'Twój plan upraw';
+
+  @override
+  String get reportLoading => 'Przygotowujemy Twój plan…';
+
+  @override
+  String get reportLoadError =>
+      'Nie udało się przygotować planu. Sprawdź internet i spróbuj ponownie.';
+
+  @override
+  String get reportNoPlan =>
+      'Żadna uprawa z naszej listy nie pasuje do tego pola przy tych odpowiedziach. Spróbuj zmienić odpowiedzi.';
+
+  @override
+  String get reportMainTitle => 'Najlepszy plan dla Ciebie';
+
+  @override
+  String get reportGoalPicker => 'Plan pod kątem:';
+
+  @override
+  String get reportSowNext => 'Co uprawiać, rok po roku';
+
+  @override
+  String planThenCover(String crop) {
+    return 'Potem wysiej poplon: $crop';
+  }
+
+  @override
+  String planRepeats(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Potem plan powtarza się co $count lat.',
+      many: 'Potem plan powtarza się co $count lat.',
+      few: 'Potem plan powtarza się co $count lata.',
+      one: 'Potem plan powtarza się co rok.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planHarvest => 'Plon';
+
+  @override
+  String harvestStars(String stars, int total) {
+    return 'Ocena plonu: $stars na $total gwiazdek';
+  }
+
+  @override
+  String get levelGood => 'Dobry';
+
+  @override
+  String get levelOk => 'Średni';
+
+  @override
+  String get levelPoor => 'Słaby';
+
+  @override
+  String get planNotFeasible =>
+      'Ten plan łamie jedną z zasad uprawy, więc potraktuj go ostrożnie.';
+
+  @override
+  String get reportQualityTitle => 'Jak dobry jest ten plan?';
+
+  @override
+  String get scoreHarvest => 'Siła plonu';
+
+  @override
+  String get scoreHumus => 'Żyzna gleba (próchnica)';
+
+  @override
+  String get scoreDisease => 'Ochrona przed chorobami';
+
+  @override
+  String get scoreWater => 'Zużycie wody';
+
+  @override
+  String get scoreNitrogen => 'Azot w glebie';
+
+  @override
+  String get scoreCover => 'Gleba okryta zimą';
+
+  @override
+  String get scoreStructure => 'Luźna, zdrowa gleba';
+
+  @override
+  String get detailsAlternatives => 'Inne plany dla tego celu';
+
+  @override
+  String detailsOption(int number) {
+    return 'Wariant $number';
+  }
+
+  @override
+  String get detailsOtherGoals => 'Plany pod kątem innych celów';
+
+  @override
+  String get detailsAllScores => 'Wszystkie oceny';
+
+  @override
+  String get detailsWhy => 'Dlaczego ten plan';
+
+  @override
+  String get detailsInputs => 'Skąd są dane';
+
+  @override
+  String get detailsDisclaimer =>
+      'Ta porada pochodzi z modelu komputerowego, który korzysta z szacunków. To nie jest obietnica. Przed decyzją porozmawiaj z lokalnym doradcą rolnym.';
+
+  @override
+  String get inputClimate => 'Pogoda';
+
+  @override
+  String get inputSoil => 'Gleba';
+
+  @override
+  String get inputHistory => 'Twoje poprzednie uprawy';
+
+  @override
+  String get inputFarmer => 'Twoje pozostałe odpowiedzi';
+
+  @override
+  String get warnSoilEstimated =>
+      'Nie udało się odczytać gleby tego pola, więc przyjęliśmy typową polską glebę. Badanie gleby (pH) poprawi poradę.';
+
+  @override
+  String get warnFewCropsFit =>
+      'Zbyt mało upraw z naszej listy pasuje do tego pola (jego gleba, pogoda lub uprawy, które pominąłeś), więc nie zbudujemy pełnego zmianowania.';
+
+  @override
+  String warnGoalUnavailable(String goal) {
+    return 'Nie znaleźliśmy planu dla celu „$goal”, więc pokazujemy inny.';
+  }
+
+  @override
+  String warnCropNotSupported(String crop) {
+    return 'Uprawy „$crop” nie ma jeszcze w naszym modelu zmianowania, więc ją pominęliśmy.';
+  }
+
+  @override
+  String reasonHumusUp(String crop) {
+    return '$crop dodaje próchnicy do gleby.';
+  }
+
+  @override
+  String reasonHumusDown(String crop) {
+    return '$crop zużywa próchnicę.';
+  }
+
+  @override
+  String reasonNitrogenUp(String crop) {
+    return '$crop zostawia azot dla następnej uprawy.';
+  }
+
+  @override
+  String reasonNitrogenDown(String crop) {
+    return '$crop zabiera azot z gleby.';
+  }
+
+  @override
+  String reasonDiseaseUp(String crop) {
+    return '$crop może zwiększać choroby i szkodniki w glebie.';
+  }
+
+  @override
+  String reasonDiseaseDown(String crop) {
+    return '$crop zmniejsza choroby i szkodniki.';
+  }
+
+  @override
+  String reasonCoverUp(String crop) {
+    return '$crop chroni glebę zimą.';
+  }
+
+  @override
+  String reasonCompactionUp(String crop) {
+    return '$crop zagęszcza glebę.';
+  }
+
+  @override
+  String reasonCompactionDown(String crop) {
+    return '$crop spulchnia glebę.';
+  }
 }

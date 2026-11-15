@@ -19,10 +19,14 @@ public sealed class SoilGridsClient(HttpClient http)
     private static readonly string[] Properties =
         ["sand", "clay", "silt", "phh2o", "soc", "nitrogen", "cec", "bdod", "cfvo"];
 
-    public async Task<SoilGridsData> GetTopsoilAsync(double lat, double lon, CancellationToken ct)
+    /// <summary>What the decision engine needs; fetching only these is several times faster than all of <see cref="Properties"/>.</summary>
+    public static readonly string[] EngineProperties = ["sand", "clay", "silt", "phh2o", "soc"];
+
+    public async Task<SoilGridsData> GetTopsoilAsync(
+        double lat, double lon, CancellationToken ct, IReadOnlyCollection<string>? properties = null)
     {
         // SoilGrids does not support depth=0-30cm for these properties, so fetch 3 layers and average them ourselves.
-        var props = string.Concat(Properties.Select(p => $"&property={p}"));
+        var props = string.Concat((properties ?? Properties).Select(p => $"&property={p}"));
         var depths = string.Concat(Depths.Select(d => $"&depth={d}"));
         var url = string.Create(CultureInfo.InvariantCulture,
             $"soilgrids/v2.0/properties/query?lon={lon}&lat={lat}{props}{depths}&value=mean");

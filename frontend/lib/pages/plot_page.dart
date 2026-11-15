@@ -8,6 +8,7 @@ import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
+import 'rotation_wizard_page.dart';
 
 /// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
 /// user pick another one from the parcels nearby or by typing an address.
@@ -99,6 +100,28 @@ class _PlotPageState extends State<PlotPage> {
                 ),
         ),
         if (_loading) const LinearProgressIndicator(),
+        const SizedBox(height: 16),
+
+        FilledButton.icon(
+          style: FilledButton.styleFrom(
+            minimumSize: const Size.fromHeight(64),
+            textStyle: const TextStyle(fontSize: 20),
+          ),
+          icon: const Icon(Icons.autorenew, size: 28),
+          label: Text(l10n.rotationStart),
+          onPressed: parcel == null
+              ? null
+              : () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => RotationWizardPage(parcel: parcel),
+                  ),
+                ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          parcel == null ? l10n.rotationStartNeedPlot : l10n.rotationStartHint,
+          style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+        ),
         const SizedBox(height: 24),
 
         // Parcels near the user's location (from the map)

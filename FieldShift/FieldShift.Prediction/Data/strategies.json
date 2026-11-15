@@ -1,0 +1,14 @@
+[
+  {
+    "id": "soilHealth", "namePl": "Zdrowie gleby", "mode": "weightedSum", "survivalFloor": 0.3,
+    "weights": { "survival": 0.15, "humus": 0.3, "pathogen": 0.2, "nitrogen": 0.1, "cover": 0.15, "structure": 0.1 }
+  },
+  {
+    "id": "survival", "namePl": "Przeżywalność", "mode": "weightedSum", "survivalFloor": 0.5,
+    "weights": { "survival": 0.7, "water": 0.2, "pathogen": 0.1 }
+  },
+  {
+    "id": "balanced", "namePl": "Zrównoważona", "mode": "knee", "survivalFloor": 0.4,
+    "weights": { "survival": 0.25, "humus": 0.15, "pathogen": 0.15, "nitrogen": 0.1, "cover": 0.1, "structure": 0.1, "water": 0.15 }
+  }
+]

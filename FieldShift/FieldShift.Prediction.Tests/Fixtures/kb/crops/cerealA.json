@@ -1,0 +1,25 @@
+{
+  "id": "cerealA", "namePl": "Zboże A", "family": "FamilyCereal", "tags": ["cereal", "winterCrop"], "type": "winter",
+  "sowWindow": [260, 290], "harvestWindow": [205, 230],
+  "management": { "nRateKgHa": 150, "residue": "incorporate" },
+  "suitability": {
+    "sandPct": { "absMin": 10, "optMin": 30, "optMax": 70, "absMax": 90 },
+    "clayPct": { "absMin": 5, "optMin": 15, "optMax": 35, "absMax": 45 },
+    "heatDaysAbove30AtFlowering": { "optMax": 3, "absMax": 10 },
+    "winterMinC": -20, "winterMinCWithSnow": -28, "seasonWaterNeedMm": [400, 550]
+  },
+  "water": { "kc": [0.4, 1.15, 0.35], "stageLengthsDays": [30, 40, 60, 30], "rootDepthM": 1.2, "depletionFraction": 0.55 },
+  "responses": [
+    { "var": "ph", "curve": [[4.5, 0], [5.5, 1], [7.5, 1], [8.2, 0]], "target": "yield", "source": "S1", "confidence": "high" },
+    { "var": "pathogen:p1", "curve": [[0, 1], [0.5, 0.7], [1, 0.3]], "target": "yield", "source": "S1" },
+    { "var": "residualN", "curve": [[0, 0.7], [60, 1]], "target": "yield", "source": "S1" }
+  ],
+  "effects": [
+    { "var": "humusC", "op": "add", "amount": 50, "source": "S1", "confidence": "medium" },
+    { "var": "residualN", "op": "add", "amount": -20, "source": "S1", "confidence": "medium" },
+    { "var": "soilCoverWinter", "op": "add", "amount": 0.8, "source": "S1" },
+    { "var": "pathogen:p1", "op": "load", "amount": 0.5, "source": "S1" }
+  ],
+  "predecessorRatingIUNG": { "bestBefore": ["legumeA"], "worstBefore": ["cerealA"], "source": "S1" },
+  "sources": [ { "id": "S1", "title": "synthetic" } ]
+}

@@ -1,0 +1,23 @@
+# Only the database, for running the backend and frontend locally (dotnet run / flutter run).
+#
+#   docker compose -f docker-compose.db.yml up -d --build
+#   docker compose -f docker-compose.db.yml down      # stop (data is kept; add -v to wipe it)
+#
+# Database: localhost:5432 (fieldshift / fieldshift), the default of ConnectionStrings:Prices.
+# Change the host port with DB_PORT (then set ConnectionStrings__Prices to match).
+# The backend creates the tables itself when it starts.
+
+name: fieldshift-dev
+
+services:
+  db:
+    build: db
+    environment:
+      POSTGRES_PASSWORD: fieldshift
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - fieldshift-dev-db-data:/var/lib/postgresql/data
+
+volumes:
+  fieldshift-dev-db-data:

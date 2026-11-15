@@ -997,6 +997,480 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Zoom in to see the soil map'**
   String get overlaysSoilMapZoomIn;
+
+  /// No description provided for @sourceModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Computer model on real data (ISRIC SoilGrids)'**
+  String get sourceModel;
+
+  /// No description provided for @rotationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan my crop rotation'**
+  String get rotationStart;
+
+  /// No description provided for @rotationStartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Find out what to grow in the next years.'**
+  String get rotationStartHint;
+
+  /// No description provided for @rotationStartNeedPlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your field on the map first.'**
+  String get rotationStartNeedPlot;
+
+  /// No description provided for @wizardStep.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {current} of {total}'**
+  String wizardStep(int current, int total);
+
+  /// No description provided for @wizardNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get wizardNext;
+
+  /// No description provided for @wizardBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get wizardBack;
+
+  /// No description provided for @wizardShowPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my plan'**
+  String get wizardShowPlan;
+
+  /// No description provided for @wizardOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get wizardOptional;
+
+  /// No description provided for @pastCropsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What did you grow here lately?'**
+  String get pastCropsTitle;
+
+  /// No description provided for @pastCropsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with the last harvest. Each extra year makes the advice better.'**
+  String get pastCropsHint;
+
+  /// No description provided for @pastCropLast.
+  ///
+  /// In en, this message translates to:
+  /// **'Last season'**
+  String get pastCropLast;
+
+  /// No description provided for @pastCropBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Season before'**
+  String get pastCropBefore;
+
+  /// No description provided for @pastCropEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Two seasons ago'**
+  String get pastCropEarlier;
+
+  /// No description provided for @pastCropChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a crop'**
+  String get pastCropChoose;
+
+  /// No description provided for @pastCropClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get pastCropClear;
+
+  /// No description provided for @pastCropRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose at least the last crop to continue.'**
+  String get pastCropRequired;
+
+  /// No description provided for @goalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What matters most to you?'**
+  String get goalTitle;
+
+  /// No description provided for @goalNoPreference.
+  ///
+  /// In en, this message translates to:
+  /// **'No preference'**
+  String get goalNoPreference;
+
+  /// No description provided for @goalBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'A bit of everything'**
+  String get goalBalanced;
+
+  /// No description provided for @goalBalancedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Good harvest and healthy soil together.'**
+  String get goalBalancedHint;
+
+  /// No description provided for @goalSoilHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy soil'**
+  String get goalSoilHealth;
+
+  /// No description provided for @goalSoilHealthHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Build up the soil for the long run.'**
+  String get goalSoilHealthHint;
+
+  /// No description provided for @goalSafeHarvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe harvest'**
+  String get goalSafeHarvest;
+
+  /// No description provided for @goalSafeHarvestHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops that cope best with dry or cold years.'**
+  String get goalSafeHarvestHint;
+
+  /// No description provided for @extrasTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything else we should know?'**
+  String get extrasTitle;
+
+  /// No description provided for @extrasLivestock.
+  ///
+  /// In en, this message translates to:
+  /// **'I have animals or manure'**
+  String get extrasLivestock;
+
+  /// No description provided for @extrasIrrigation.
+  ///
+  /// In en, this message translates to:
+  /// **'I can water this field'**
+  String get extrasIrrigation;
+
+  /// No description provided for @extrasExcludedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crops I do not want to grow:'**
+  String get extrasExcludedLabel;
+
+  /// No description provided for @extrasPhLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil pH from a soil test'**
+  String get extrasPhLabel;
+
+  /// No description provided for @extrasPhHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example 5.8'**
+  String get extrasPhHint;
+
+  /// No description provided for @extrasPhInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number between 3 and 9.'**
+  String get extrasPhInvalid;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your crop plan'**
+  String get reportTitle;
+
+  /// No description provided for @reportLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Working out your plan…'**
+  String get reportLoading;
+
+  /// No description provided for @reportLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not make the plan. Check your internet and try again.'**
+  String get reportLoadError;
+
+  /// No description provided for @reportNoPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No crop on our list suits this field with these answers. Try changing your answers.'**
+  String get reportNoPlan;
+
+  /// No description provided for @reportMainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Best plan for you'**
+  String get reportMainTitle;
+
+  /// No description provided for @reportGoalPicker.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for:'**
+  String get reportGoalPicker;
+
+  /// No description provided for @reportSowNext.
+  ///
+  /// In en, this message translates to:
+  /// **'What to grow, year by year'**
+  String get reportSowNext;
+
+  /// No description provided for @planThenCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Then sow a cover crop: {crop}'**
+  String planThenCover(String crop);
+
+  /// No description provided for @planRepeats.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Then the plan repeats every year.} other{Then the plan repeats every {count} years.}}'**
+  String planRepeats(int count);
+
+  /// No description provided for @planHarvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest'**
+  String get planHarvest;
+
+  /// No description provided for @harvestStars.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest rating: {stars} out of {total} stars'**
+  String harvestStars(String stars, int total);
+
+  /// No description provided for @levelGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get levelGood;
+
+  /// No description provided for @levelOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get levelOk;
+
+  /// No description provided for @levelPoor.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get levelPoor;
+
+  /// No description provided for @planNotFeasible.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan breaks one of the growing rules, so treat it with care.'**
+  String get planNotFeasible;
+
+  /// No description provided for @reportQualityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How good is this plan?'**
+  String get reportQualityTitle;
+
+  /// No description provided for @scoreHarvest.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest strength'**
+  String get scoreHarvest;
+
+  /// No description provided for @scoreHumus.
+  ///
+  /// In en, this message translates to:
+  /// **'Rich soil (humus)'**
+  String get scoreHumus;
+
+  /// No description provided for @scoreDisease.
+  ///
+  /// In en, this message translates to:
+  /// **'Protection from disease'**
+  String get scoreDisease;
+
+  /// No description provided for @scoreWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water use'**
+  String get scoreWater;
+
+  /// No description provided for @scoreNitrogen.
+  ///
+  /// In en, this message translates to:
+  /// **'Nitrogen in the soil'**
+  String get scoreNitrogen;
+
+  /// No description provided for @scoreCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil covered in winter'**
+  String get scoreCover;
+
+  /// No description provided for @scoreStructure.
+  ///
+  /// In en, this message translates to:
+  /// **'Loose, healthy soil'**
+  String get scoreStructure;
+
+  /// No description provided for @detailsAlternatives.
+  ///
+  /// In en, this message translates to:
+  /// **'Other plans for this goal'**
+  String get detailsAlternatives;
+
+  /// No description provided for @detailsOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Option {number}'**
+  String detailsOption(int number);
+
+  /// No description provided for @detailsOtherGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans for other goals'**
+  String get detailsOtherGoals;
+
+  /// No description provided for @detailsAllScores.
+  ///
+  /// In en, this message translates to:
+  /// **'All ratings'**
+  String get detailsAllScores;
+
+  /// No description provided for @detailsWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Why this plan'**
+  String get detailsWhy;
+
+  /// No description provided for @detailsInputs.
+  ///
+  /// In en, this message translates to:
+  /// **'Where the data comes from'**
+  String get detailsInputs;
+
+  /// No description provided for @detailsDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'This advice comes from a computer model that uses estimates. It is not a promise. Talk to your local farm advisor before you decide.'**
+  String get detailsDisclaimer;
+
+  /// No description provided for @inputClimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather'**
+  String get inputClimate;
+
+  /// No description provided for @inputSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil'**
+  String get inputSoil;
+
+  /// No description provided for @inputHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Your past crops'**
+  String get inputHistory;
+
+  /// No description provided for @inputFarmer.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other answers'**
+  String get inputFarmer;
+
+  /// No description provided for @warnSoilEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.'**
+  String get warnSoilEstimated;
+
+  /// No description provided for @warnFewCropsFit.
+  ///
+  /// In en, this message translates to:
+  /// **'Too few crops on our list suit this field (its soil, the weather or the crops you left out), so we cannot build a full rotation.'**
+  String get warnFewCropsFit;
+
+  /// No description provided for @warnGoalUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'We found no plan for “{goal}”, so we show another one.'**
+  String warnGoalUnavailable(String goal);
+
+  /// No description provided for @warnCropNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} is not in our rotation model yet, so it was left out.'**
+  String warnCropNotSupported(String crop);
+
+  /// No description provided for @reasonHumusUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} adds humus to the soil.'**
+  String reasonHumusUp(String crop);
+
+  /// No description provided for @reasonHumusDown.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} uses up humus.'**
+  String reasonHumusDown(String crop);
+
+  /// No description provided for @reasonNitrogenUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} leaves nitrogen for the next crop.'**
+  String reasonNitrogenUp(String crop);
+
+  /// No description provided for @reasonNitrogenDown.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} takes nitrogen from the soil.'**
+  String reasonNitrogenDown(String crop);
+
+  /// No description provided for @reasonDiseaseUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} can build up disease and pests in the soil.'**
+  String reasonDiseaseUp(String crop);
+
+  /// No description provided for @reasonDiseaseDown.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} lowers disease and pests.'**
+  String reasonDiseaseDown(String crop);
+
+  /// No description provided for @reasonCoverUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} protects the soil over winter.'**
+  String reasonCoverUp(String crop);
+
+  /// No description provided for @reasonCompactionUp.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} packs the soil.'**
+  String reasonCompactionUp(String crop);
+
+  /// No description provided for @reasonCompactionDown.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop} loosens the soil.'**
+  String reasonCompactionDown(String crop);
 }
 
 class _AppLocalizationsDelegate

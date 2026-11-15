@@ -1,0 +1,13 @@
+[
+  {
+    "id": "lime",
+    "namePl": "Wapnowanie",
+    "timing": "afterHarvest",
+    "effects": [
+      { "var": "acidificationCaO", "op": "add", "amount": -1000, "source": "S1", "confidence": "medium" },
+      { "var": "recentLiming", "op": "set", "amount": 1, "source": "S1", "confidence": "medium" }
+    ],
+    "costPlnPerHa": 400,
+    "sources": [ { "id": "S1" } ]
+  }
+]

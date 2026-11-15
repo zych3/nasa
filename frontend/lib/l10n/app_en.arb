@@ -367,14 +367,244 @@
   "overlaysShowExamplePlace": "Show the example place",
   "overlayCoverageParcel": "Data for the parcel from the soil-agricultural map (scale 1:5000). The colours on the map are its complexes.",
   "overlaySoilType": "Soil type: {name}",
-  "@overlaySoilType": {"placeholders": {"name": {"type": "String"}}},
+  "@overlaySoilType": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "overlaySoilTexture": "Texture: {layers}",
-  "@overlaySoilTexture": {"placeholders": {"layers": {"type": "String"}}},
+  "@overlaySoilTexture": {
+    "placeholders": {
+      "layers": {
+        "type": "String"
+      }
+    }
+  },
   "overlaySoilTextureDeeper": "from {depth}: {name}",
-  "@overlaySoilTextureDeeper": {"placeholders": {"depth": {"type": "String"}, "name": {"type": "String"}}},
+  "@overlaySoilTextureDeeper": {
+    "placeholders": {
+      "depth": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "overlayLandClasses": "Land register classes: {classes}",
-  "@overlayLandClasses": {"placeholders": {"classes": {"type": "String"}}},
+  "@overlayLandClasses": {
+    "placeholders": {
+      "classes": {
+        "type": "String"
+      }
+    }
+  },
   "overlaySoilSurveyed": "Soil survey from {year}.",
-  "@overlaySoilSurveyed": {"placeholders": {"year": {"type": "String"}}},
-  "overlaysSoilMapZoomIn": "Zoom in to see the soil map"
+  "@overlaySoilSurveyed": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "overlaysSoilMapZoomIn": "Zoom in to see the soil map",
+  "sourceModel": "Computer model on real data (ISRIC SoilGrids)",
+  "rotationStart": "Plan my crop rotation",
+  "rotationStartHint": "Find out what to grow in the next years.",
+  "rotationStartNeedPlot": "Choose your field on the map first.",
+  "wizardStep": "Step {current} of {total}",
+  "@wizardStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "wizardNext": "Next",
+  "wizardBack": "Back",
+  "wizardShowPlan": "Show my plan",
+  "wizardOptional": "Optional",
+  "pastCropsTitle": "What did you grow here lately?",
+  "pastCropsHint": "Start with the last harvest. Each extra year makes the advice better.",
+  "pastCropLast": "Last season",
+  "pastCropBefore": "Season before",
+  "pastCropEarlier": "Two seasons ago",
+  "pastCropChoose": "Choose a crop",
+  "pastCropClear": "Clear",
+  "pastCropRequired": "Choose at least the last crop to continue.",
+  "goalTitle": "What matters most to you?",
+  "goalNoPreference": "No preference",
+  "goalBalanced": "A bit of everything",
+  "goalBalancedHint": "Good harvest and healthy soil together.",
+  "goalSoilHealth": "Healthy soil",
+  "goalSoilHealthHint": "Build up the soil for the long run.",
+  "goalSafeHarvest": "Safe harvest",
+  "goalSafeHarvestHint": "Crops that cope best with dry or cold years.",
+  "extrasTitle": "Anything else we should know?",
+  "extrasLivestock": "I have animals or manure",
+  "extrasIrrigation": "I can water this field",
+  "extrasExcludedLabel": "Crops I do not want to grow:",
+  "extrasPhLabel": "Soil pH from a soil test",
+  "extrasPhHint": "For example 5.8",
+  "extrasPhInvalid": "Enter a number between 3 and 9.",
+  "reportTitle": "Your crop plan",
+  "reportLoading": "Working out your plan…",
+  "reportLoadError": "We could not make the plan. Check your internet and try again.",
+  "reportNoPlan": "No crop on our list suits this field with these answers. Try changing your answers.",
+  "reportMainTitle": "Best plan for you",
+  "reportGoalPicker": "Plan for:",
+  "reportSowNext": "What to grow, year by year",
+  "planThenCover": "Then sow a cover crop: {crop}",
+  "@planThenCover": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "planRepeats": "{count, plural, =1{Then the plan repeats every year.} other{Then the plan repeats every {count} years.}}",
+  "@planRepeats": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "planHarvest": "Harvest",
+  "harvestStars": "Harvest rating: {stars} out of {total} stars",
+  "@harvestStars": {
+    "placeholders": {
+      "stars": {
+        "type": "String"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "levelGood": "Good",
+  "levelOk": "Fair",
+  "levelPoor": "Weak",
+  "planNotFeasible": "This plan breaks one of the growing rules, so treat it with care.",
+  "reportQualityTitle": "How good is this plan?",
+  "scoreHarvest": "Harvest strength",
+  "scoreHumus": "Rich soil (humus)",
+  "scoreDisease": "Protection from disease",
+  "scoreWater": "Water use",
+  "scoreNitrogen": "Nitrogen in the soil",
+  "scoreCover": "Soil covered in winter",
+  "scoreStructure": "Loose, healthy soil",
+  "detailsAlternatives": "Other plans for this goal",
+  "detailsOption": "Option {number}",
+  "@detailsOption": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "detailsOtherGoals": "Plans for other goals",
+  "detailsAllScores": "All ratings",
+  "detailsWhy": "Why this plan",
+  "detailsInputs": "Where the data comes from",
+  "detailsDisclaimer": "This advice comes from a computer model that uses estimates. It is not a promise. Talk to your local farm advisor before you decide.",
+  "inputClimate": "Weather",
+  "inputSoil": "Soil",
+  "inputHistory": "Your past crops",
+  "inputFarmer": "Your other answers",
+  "warnSoilEstimated": "We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.",
+  "warnFewCropsFit": "Too few crops on our list suit this field (its soil, the weather or the crops you left out), so we cannot build a full rotation.",
+  "warnGoalUnavailable": "We found no plan for “{goal}”, so we show another one.",
+  "@warnGoalUnavailable": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "warnCropNotSupported": "{crop} is not in our rotation model yet, so it was left out.",
+  "@warnCropNotSupported": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "reasonHumusUp": "{crop} adds humus to the soil.",
+  "reasonHumusDown": "{crop} uses up humus.",
+  "reasonNitrogenUp": "{crop} leaves nitrogen for the next crop.",
+  "reasonNitrogenDown": "{crop} takes nitrogen from the soil.",
+  "reasonDiseaseUp": "{crop} can build up disease and pests in the soil.",
+  "reasonDiseaseDown": "{crop} lowers disease and pests.",
+  "reasonCoverUp": "{crop} protects the soil over winter.",
+  "reasonCompactionUp": "{crop} packs the soil.",
+  "reasonCompactionDown": "{crop} loosens the soil.",
+  "@reasonHumusUp": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonHumusDown": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonNitrogenUp": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonNitrogenDown": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonDiseaseUp": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonDiseaseDown": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonCoverUp": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonCompactionUp": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonCompactionDown": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  }
 }
