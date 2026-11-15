@@ -126,6 +126,41 @@ void main() {
     expect(find.text(pl.satRainTitle), findsNothing);
   });
 
+  Map<SatellitePart, Object> notConfigured(Iterable<SatellitePart> parts) => {
+    for (final part in parts)
+      part: FieldConditionsController.parseSatellite(part, {
+        'status': 'notConfigured',
+        'source': 'NASA',
+      }),
+  };
+
+  testWidgets('a part the server cannot measure is left out, with no note', (
+    tester,
+  ) async {
+    final data = {
+      ..._all(),
+      ...notConfigured([SatellitePart.rain]),
+    };
+
+    await tester.pumpWidget(_app(SatelliteCard(data: data)));
+
+    expect(find.text(pl.satTitle), findsOneWidget);
+    expect(find.text(pl.satRainTitle), findsNothing);
+    expect(find.text(pl.satSoilTitle), findsOneWidget);
+    expect(find.textContaining('Earthdata'), findsNothing);
+  });
+
+  testWidgets('with nothing measurable the whole card is left out', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(SatelliteCard(data: notConfigured(SatellitePart.values))),
+    );
+
+    expect(find.text(pl.satTitle), findsNothing);
+    expect(find.textContaining('Earthdata'), findsNothing);
+  });
+
   testWidgets('fits a phone at 1.5× text in both languages', (tester) async {
     tester.view.physicalSize = const Size(360, 4000);
     tester.view.devicePixelRatio = 1;

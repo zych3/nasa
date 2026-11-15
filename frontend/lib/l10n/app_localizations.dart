@@ -2679,12 +2679,6 @@ abstract class AppLocalizations {
   /// **'No satellite data for this place'**
   String get satNoData;
 
-  /// No description provided for @satNotConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'The server has no NASA Earthdata key for this data'**
-  String get satNotConfigured;
-
   /// No description provided for @satUnavailable.
   ///
   /// In en, this message translates to:

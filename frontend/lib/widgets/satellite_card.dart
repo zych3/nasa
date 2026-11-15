@@ -58,7 +58,7 @@ class SatelliteCard extends StatelessWidget {
     final colors = theme.colors;
     final rows = <Widget>[
       for (final part in parts)
-        if (data[part] case final model?)
+        if (data[part] case final model? when !_notConfigured(model))
           switch (model) {
             RainData m => _RainRow(m),
             SoilData m => _SoilRow(m),
@@ -111,12 +111,24 @@ String _n(AppLocalizations l10n, double v, int decimals) =>
 String _day(AppLocalizations l10n, DateTime d) =>
     DateFormat.yMMMd(l10n.localeName).format(d);
 
-/// Words for a part that has no value.
+/// A part the server cannot measure (it has no NASA Earthdata key) is left out
+/// of the card: the user cannot do anything about it, and a technical note
+/// about the server would only confuse.
+bool _notConfigured(Object model) => switch (model) {
+  RainData m => m.status == SatelliteStatus.notConfigured,
+  SoilData m => m.status == SatelliteStatus.notConfigured,
+  VegetationData m => m.status == SatelliteStatus.notConfigured,
+  SurfaceTempData m => m.status == SatelliteStatus.notConfigured,
+  EvapotranspirationData m => m.status == SatelliteStatus.notConfigured,
+  _ => false,
+};
+
+/// Words for a part that has no value. (`notConfigured` parts are not shown at
+/// all, see [_notConfigured].)
 String? _statusText(AppLocalizations l10n, SatelliteStatus status) =>
     switch (status) {
-      SatelliteStatus.ok => null,
+      SatelliteStatus.ok || SatelliteStatus.notConfigured => null,
       SatelliteStatus.noData => l10n.satNoData,
-      SatelliteStatus.notConfigured => l10n.satNotConfigured,
       SatelliteStatus.unavailable => l10n.satUnavailable,
     };
 

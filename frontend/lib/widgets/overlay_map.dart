@@ -11,6 +11,7 @@ import '../l10n/app_localizations.dart';
 import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
 import '../models/parcel.dart';
+import '../overlays/overlay_controller.dart' show OverlayController;
 import 'map_attribution.dart';
 import 'heatmap_image.dart';
 import 'map_pill.dart';
@@ -39,6 +40,7 @@ class OverlayMap extends StatefulWidget {
     this.heatmapFocus,
     this.heatmapLoading = false,
     this.heatmapTooFar = false,
+    this.heatmapBlockSize,
     this.onVisibleAreaChanged,
     this.initialZoom = 13,
   });
@@ -67,11 +69,67 @@ class OverlayMap extends StatefulWidget {
   /// Shows "Zoom in to see the colours" (the heat map is hidden).
   final bool heatmapTooFar;
 
+  /// Size of one heat map block in degrees when the shown overlay has a heat
+  /// map: the map then cannot be zoomed out further than [minZoomFor] allows,
+  /// so the heat map never needs more blocks than it may load.
+  final ({double lat, double lon})? heatmapBlockSize;
+
   /// The visible area, after the map stopped moving.
   final ValueChanged<LatLngBounds>? onVisibleAreaChanged;
 
   @override
   State<OverlayMap> createState() => _OverlayMapState();
+
+  /// How far the user can zoom out when there is no heat map (about Poland and
+  /// its neighbours: further out the data says nothing about a field).
+  static const _minZoom = 7.0;
+
+  /// A little more than the exact limit, so rounding never tips the view over
+  /// the block count.
+  static const _zoomMargin = 0.05;
+
+  /// The map may be panned this far towards the equator before the latitude
+  /// used for the limit stops being on the safe side (degrees).
+  static const _latitudePanMargin = 8.0;
+
+  /// The smallest zoom at which the visible area never needs more than
+  /// [OverlayController.maxVisibleBlocks] heat map blocks, wherever the map is
+  /// panned: with blocks [block] big, an area of at most two blocks per side
+  /// touches at most three blocks per side (3 × 3). Above that the heat map is
+  /// hidden, so a wide window used to lose it at the last step of zooming out.
+  ///
+  /// [size] is the size of the map in pixels. The area is taken as the circle
+  /// around the map (its diagonal), so the limit also holds when the user
+  /// rotates the map. Without a heat map ([block] is null) it is the plain
+  /// minimum, 7.
+  @visibleForTesting
+  static double minZoomFor({
+    required Size size,
+    required double latitude,
+    required ({double lat, double lon})? block,
+  }) {
+    if (block == null || size.isEmpty || !size.isFinite) return _minZoom;
+
+    final perAxis = math.sqrt(OverlayController.maxVisibleBlocks).floor();
+    final diagonal = math.sqrt(
+      size.width * size.width + size.height * size.height,
+    );
+    // Degrees per pixel at zoom z: 360 / (256 · 2^z) east–west, and that times
+    // cos(latitude) north–south (Web Mercator). The cosine is taken a bit
+    // nearer the equator, where an area is taller, to stay on the safe side
+    // while panning.
+    final cosLat = math.cos(
+      (latitude.abs() - _latitudePanMargin).clamp(0.0, 85.0) * math.pi / 180,
+    );
+    double zoomFor(double pixelsPerDegree) =>
+        math.log(pixelsPerDegree) / math.ln2;
+    // z such that diagonal · degrees-per-pixel = (blocks − 1) · block size.
+    final byLon = zoomFor(diagonal * 360 / (256 * (perAxis - 1) * block.lon));
+    final byLat = zoomFor(
+      diagonal * 360 * cosLat / (256 * (perAxis - 1) * block.lat),
+    );
+    return math.max(_minZoom, math.max(byLon, byLat) + _zoomMargin);
+  }
 }
 
 class _OverlayMapState extends State<OverlayMap> {
@@ -82,8 +140,11 @@ class _OverlayMapState extends State<OverlayMap> {
 
   static const _maxLabelTextScale = 1.3;
 
-  /// How far the user can zoom out (see `MapOptions.minZoom` below).
-  static const _minZoom = 7.0;
+  /// The map is built (the controller can be used).
+  bool _ready = false;
+
+  /// The limit the camera was last brought back to (see [_keepAbove]).
+  double? _clampedFor;
 
   HeatmapImageProvider? _image;
 
@@ -202,7 +263,32 @@ class _OverlayMapState extends State<OverlayMap> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final minZoom = OverlayMap.minZoomFor(
+        size: constraints.biggest,
+        latitude: widget.center.latitude,
+        block: widget.heatmapBlockSize,
+      );
+      _keepAbove(minZoom);
+      return _map(context, minZoom);
+    },
+  );
+
+  /// The map was zoomed out when its limit rose (a bigger window, or the
+  /// choice of an overlay with a heat map): brings it back to the new limit.
+  /// Done after the frame, as the camera cannot be moved while building.
+  void _keepAbove(double minZoom) {
+    if (_clampedFor == minZoom) return;
+    _clampedFor = minZoom;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_ready) return;
+      final camera = _controller.camera;
+      if (camera.zoom < minZoom) _controller.move(camera.center, minZoom);
+    });
+  }
+
+  Widget _map(BuildContext context, double minZoom) {
     final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final layer = widget.layer;
@@ -222,10 +308,13 @@ class _OverlayMapState extends State<OverlayMap> {
         initialCameraFit: fit == null ? null : _fit(fit),
         // About Poland and its neighbours: further out the data says
         // nothing about a field, and the heat map would need too many blocks.
-        minZoom: _minZoom,
+        minZoom: minZoom,
         onPositionChanged: _onPositionChanged,
         // The first view counts too, before the user moves anything.
-        onMapReady: () => _onPositionChanged(_controller.camera, false),
+        onMapReady: () {
+          _ready = true;
+          _onPositionChanged(_controller.camera, false);
+        },
       ),
       children: [
         TileLayer(

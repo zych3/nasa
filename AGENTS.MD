@@ -128,7 +128,9 @@ Change the contract only after agreeing with both frontend and backend owners.
 - Heat map: NASA overlays also read `GET /api/map-layers/grid` (5 × 5 NASA POWER cells, ~250 km per block; loaded
   next to the value, the card never waits for it). First the block around the field, then the blocks the map shows
   as the user pans or zooms out (`OverlayController.showArea`, nearest first, 2 at a time); with more than 3 × 3
-  blocks on screen the heat map is hidden ("zoom in") and nothing loads. Loaded blocks are merged into one grid
+  blocks on screen the heat map is hidden ("zoom in") and nothing loads. The map's minimum zoom follows its size and
+  the block size (`OverlayMap.minZoomFor`: a view is at most two blocks per side, also when rotated), so a view never
+  needs more than 3 × 3 and a wide window does not lose the heat map at the last step of zooming out. Loaded blocks are merged into one grid
   (`OverlayHeatmap.merge`) so colours blend across block edges; the camera fits only the field's block. `MonthlyLayerOverlay.parseHeatmap` picks the shown
   month; `heatmapPixels` (`lib/models/overlay_heatmap.dart`) blends values between cell centres and colours them with
   the legend's own steps, so every colour on the map is a legend step with words and bars, and the field's cell has

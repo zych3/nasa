@@ -1668,10 +1668,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get satNoData => 'No satellite data for this place';
 
   @override
-  String get satNotConfigured =>
-      'The server has no NASA Earthdata key for this data';
-
-  @override
   String get satUnavailable => 'The source is not answering right now';
 
   @override

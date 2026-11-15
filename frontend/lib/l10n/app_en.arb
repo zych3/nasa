@@ -1116,7 +1116,6 @@
   "satTitle": "From NASA satellites – recent",
   "satSubtitle": "Measured from space for the area of your field. Each value says how big an area it covers.",
   "satNoData": "No satellite data for this place",
-  "satNotConfigured": "The server has no NASA Earthdata key for this data",
   "satUnavailable": "The source is not answering right now",
   "satDate": "As of {date}",
   "@satDate": {
