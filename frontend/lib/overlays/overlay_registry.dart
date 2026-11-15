@@ -2,6 +2,7 @@ import 'erosion_overlay.dart';
 import 'frost_overlay.dart';
 import 'heat_overlay.dart';
 import 'map_overlay.dart';
+import 'plant_stress_overlay.dart';
 import 'precipitation_overlay.dart';
 import 'soil_moisture_overlay.dart';
 import 'soil_quality_overlay.dart';
@@ -16,5 +17,6 @@ const List<MapOverlay> overlayRegistry = [
   TemperatureOverlay(),
   FrostOverlay(),
   HeatOverlay(),
+  PlantStressOverlay(),
   ErosionOverlay(),
 ];

@@ -221,5 +221,6 @@
   "reasonDiseaseDown": "{crop} zmniejsza choroby i szkodniki.",
   "reasonCoverUp": "{crop} chroni glebę zimą.",
   "reasonCompactionUp": "{crop} zagęszcza glebę.",
-  "reasonCompactionDown": "{crop} spulchnia glebę."
+  "reasonCompactionDown": "{crop} spulchnia glebę.",
+  "overlayPlantStressTitle": "Stres roślin"
 }

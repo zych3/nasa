@@ -870,4 +870,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String reasonCompactionDown(String crop) {
     return '$crop spulchnia glebę.';
   }
+
+  @override
+  String get overlayPlantStressTitle => 'Stres roślin';
 }

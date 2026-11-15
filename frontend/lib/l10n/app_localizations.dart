@@ -1435,6 +1435,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{crop} loosens the soil.'**
   String reasonCompactionDown(String crop);
+
+  /// No description provided for @overlayPlantStressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant stress'**
+  String get overlayPlantStressTitle;
 }
 
 class _AppLocalizationsDelegate

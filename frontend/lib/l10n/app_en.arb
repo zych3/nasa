@@ -600,5 +600,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "overlayPlantStressTitle": "Plant stress"
 }
