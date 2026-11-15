@@ -1,14 +1,17 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../components/rotation/climate_trends_section.dart';
 import '../components/rotation/plan_timeline.dart';
 import '../components/rotation/rating_row.dart';
 import '../components/rotation/rotation_details.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/rotation_text.dart';
+import '../models/climate_trends.dart';
 import '../models/crop.dart';
 import '../models/parcel.dart';
 import '../models/rotation_report.dart';
 import '../repositories/auth_store.dart';
+import '../repositories/climate_trends_repository.dart';
 import '../repositories/crop_repository.dart';
 import '../repositories/local_plans_store.dart';
 import '../repositories/rotation_repository.dart';
@@ -21,6 +24,7 @@ class RotationReportPage extends StatefulWidget {
     required this.authStore,
     this.repository,
     this.plans,
+    this.climateRepository,
   });
 
   final Parcel parcel;
@@ -35,6 +39,9 @@ class RotationReportPage extends StatefulWidget {
   /// Where saved plans go (the app's own by default).
   final LocalPlansStore? plans;
 
+  /// Long-term climate changes shown under the plan.
+  final ClimateTrendsRepository? climateRepository;
+
   @override
   State<RotationReportPage> createState() => _RotationReportPageState();
 }
@@ -46,6 +53,10 @@ class _RotationReportPageState extends State<RotationReportPage> {
   late Future<RotationReport> _report = _load();
   List<Crop> _catalogue = const [];
 
+  /// Loaded once, next to the plan: the plan never waits for it, and a
+  /// failure only leaves the climate section out.
+  late final Future<ClimateTrends?> _climate;
+
   String? _goal;
 
   /// The plan the user picked in "More details" (null: the recommended one).
@@ -56,6 +67,17 @@ class _RotationReportPageState extends State<RotationReportPage> {
   bool _saving = false;
 
   static const _headline = ['harvest', 'humus', 'disease', 'water'];
+
+  @override
+  void initState() {
+    super.initState();
+    _climate = (widget.climateRepository ?? ClimateTrendsRepository())
+        .getTrends(
+          parcelId: widget.parcel.id,
+          lat: widget.parcel.center.latitude,
+          lon: widget.parcel.center.longitude,
+        );
+  }
 
   Future<RotationReport> _load() {
     CropRepository().getCrops().then((c) {
@@ -429,6 +451,7 @@ class _RotationReportPageState extends State<RotationReportPage> {
           onPressed: _finish,
         ),
         const SizedBox(height: 16),
+        ClimateTrendsSection(future: _climate),
       ],
     );
   }

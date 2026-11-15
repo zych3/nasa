@@ -45,6 +45,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Parcel details: land register classes, soil map, terrain, modelled soil (sections with status and source) | `GET /api/parcels/details?lat=..&lon=..`, `GET /api/parcels/{id}/details` |
 | Address hints while typing (`kind`: `place` / `street` / `address`; empty list for < 3 chars or no match) | `GET /api/parcels/suggest?q=...` |
 | Parcel at a point (e.g. a chosen address hint; 404 when none) | `GET /api/parcels/at?lat=..&lon=..` |
+| Clear long-term climate changes in the area of a parcel since 1981 (NASA POWER): at most 3 trends as means of the first and last 15 years, with long-term advice codes; `status` `ok` / `no_clear_trends` / `no_data`. Facts about the past, not a forecast; rules and thresholds in `FieldShift.Web/Data/climate-trend-rules.json` | `GET /api/parcels/climate-trends?parcelId=...` or `?lat=..&lon=..` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |
 | Monthly map layers with legends for a date slider | `GET /api/map-layers?lat=...&lon=...&from=yyyy-MM&to=yyyy-MM&layers=...` |

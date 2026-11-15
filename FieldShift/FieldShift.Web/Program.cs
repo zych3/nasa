@@ -1,4 +1,5 @@
 using FieldShift.Web.Accounts;
+using FieldShift.Web.ClimateTrends;
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
 using FieldShift.Web.Data;
@@ -40,6 +41,7 @@ builder.AddMapLayers();
 builder.AddFieldData();
 builder.AddRecommendations();
 builder.AddAccounts();
+builder.AddClimateTrends();
 builder.AddSatellite();
 
 builder.Services.AddHttpClient<FrostRiskService>(c =>
