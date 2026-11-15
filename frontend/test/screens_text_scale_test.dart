@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:hopito_field_shift/app/app_theme.dart';
 import 'package:hopito_field_shift/components/crop_details_sheet.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
@@ -19,12 +21,17 @@ Widget _app(Widget child, Locale locale) => MaterialApp(
   supportedLocales: AppLocalizations.supportedLocales,
   localizationsDelegates: const [
     AppLocalizations.delegate,
+    FLocalizations.delegate,
     ...GlobalMaterialLocalizations.delegates,
   ],
-  builder: (context, child) => MediaQuery(
-    data: MediaQuery.of(context)
-        .copyWith(textScaler: const TextScaler.linear(1.5)),
-    child: child!,
+  theme: AppTheme.material(AppTheme.light),
+  builder: (context, child) => FTheme(
+    data: AppTheme.light,
+    child: MediaQuery(
+      data: MediaQuery.of(context)
+          .copyWith(textScaler: const TextScaler.linear(1.5)),
+      child: child!,
+    ),
   ),
   home: Scaffold(body: child),
 );

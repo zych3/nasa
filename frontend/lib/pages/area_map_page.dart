@@ -10,6 +10,7 @@ import '../components/map_button.dart';
 import '../components/map_search_bar.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
@@ -78,6 +79,9 @@ class _AreaMapPageState extends State<AreaMapPage> {
   /// Parcel found by the address search; highlighted until one is chosen.
   String? _foundId;
   bool _locating = false;
+
+  /// The address search is open: it gets the whole top bar.
+  bool _searchOpen = false;
   int _pendingLoads = 0;
   bool _zoomedIn = false;
   Timer? _debounce;
@@ -213,11 +217,22 @@ class _AreaMapPageState extends State<AreaMapPage> {
 
   /// Address search from the top bar: flies to the parcel and highlights it.
   /// The user still taps it to choose it. Returns `true` when found.
-  Future<bool> _searchAddress(String address) async {
+  Future<bool> _searchAddress(String address) =>
+      _goToParcel(() => _repo.searchByAddress(address));
+
+  /// A full address picked from the hints: the parcel at its point, shown
+  /// with the address as it was picked.
+  Future<bool> _goToHint(AddressSuggestion hint) => _goToParcel(() async {
+    final parcel = await _repo.parcelAt(hint.point);
+    return parcel?.withAddress(hint.fillText);
+  });
+
+  /// Looks up a parcel, moves the map there and highlights it.
+  Future<bool> _goToParcel(Future<Parcel?> Function() lookUp) async {
     final l10n = AppLocalizations.of(context);
     setState(() => _pendingLoads++);
     try {
-      final parcel = await _repo.searchByAddress(address);
+      final parcel = await lookUp();
       if (!mounted) return false;
       if (parcel == null) {
         _tell(l10n.parcelNotFound);
@@ -308,20 +323,33 @@ class _AreaMapPageState extends State<AreaMapPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                   child: Row(
+                    // Top: the search grows downwards with its hints.
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: MapSearchBar(onSearch: _searchAddress)),
-                      for (final action in widget.topBarActions) ...[
-                        const SizedBox(width: 8),
-                        MapButton(child: action),
-                      ],
-                      const SizedBox(width: 8),
-                      MapButton(
-                        child: IconButton(
-                          tooltip: l10n.locationMyPosition,
-                          onPressed: _locating ? null : _locate,
-                          icon: const Icon(Icons.my_location),
+                      Expanded(
+                        child: MapSearchBar(
+                          onSearch: _searchAddress,
+                          onAddressChosen: _goToHint,
+                          onOpenChanged: (open) =>
+                              setState(() => _searchOpen = open),
                         ),
                       ),
+                      // While typing, the search and its hints get the whole
+                      // width (small phones); the buttons come back after.
+                      if (!_searchOpen) ...[
+                        for (final action in widget.topBarActions) ...[
+                          const SizedBox(width: 8),
+                          MapButton(child: action),
+                        ],
+                        const SizedBox(width: 8),
+                        MapButton(
+                          child: IconButton(
+                            tooltip: l10n.locationMyPosition,
+                            onPressed: _locating ? null : _locate,
+                            icon: const Icon(Icons.my_location),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

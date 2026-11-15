@@ -46,6 +46,8 @@ public static class LayerDefinitions
     public const string Evaporation = "evaporation";
     public const string PlantStress = "plantStress";
     public const string ErosionRisk = "erosionRisk";
+    public const string FungalRisk = "fungalRisk";
+    public const string PestHeat = "pestHeat";
 
     private const string Climate = "Klimat";
     private const string Water = "Woda";
@@ -158,6 +160,30 @@ public static class LayerDefinitions
             "Szacunek z NASA POWER (PRECTOTCORR), ISRIC SoilGrids i nachylenia terenu (NASA SRTM)",
             "Szacunkowe ryzyko erozji wodnej: ulewy w miesiącu, podatność gleby i nachylenie terenu (uproszczone czynniki R, K i LS modelu RUSLE).",
             RiskLegend, null, YearlyAggregation.Mean),
+
+        new(FungalRisk, "Pogoda sprzyjająca chorobom grzybowym (szacunek)", "dni", PlantsAndSoil, 10, 0, true,
+            "Szacunek z NASA POWER (T2M, RH2M, PRECTOTCORR)",
+            "Liczba dni w miesiącu, gdy pogoda sprzyja chorobom grzybowym (np. zaraza ziemniaka, mączniaki, rdze): "
+            + "średnio 10–25 °C i bardzo wilgotne powietrze (≥ 85 %) albo wilgotne (≥ 75 %) z deszczem. "
+            + "To nie jest wykrycie choroby – tylko sygnał, że warto obejrzeć rośliny.",
+            Sequential(
+                (3, "#EEF6EA", "rzadko (0–2 dni)"),
+                (8, "#B9DDB0", "czasem (3–7 dni)"),
+                (15, "#5FA36A", "często (8–14 dni)"),
+                (null, "#1F5E3B", "bardzo często (≥ 15 dni)")),
+            null, YearlyAggregation.Sum),
+
+        new(PestHeat, "Ciepło sprzyjające szkodnikom (szacunek)", "°C·dni", PlantsAndSoil, 11, 0, true,
+            "Szacunek z NASA POWER (T2M): suma stopniodni powyżej 10 °C od 1 stycznia",
+            "Ciepło zebrane od początku roku (stopniodni powyżej 10 °C). Od niego zależy, jak szybko rozwijają się owady, "
+            + "np. stonka ziemniaczana czy omacnica prosowianka – im więcej, tym więcej ich pokoleń może się pojawić. "
+            + "To nie jest wykrycie szkodników.",
+            Sequential(
+                (100, "#FFF5EB", "owady w spoczynku (< 100)"),
+                (400, "#FDD0A2", "początek rozwoju owadów (100–400)"),
+                (800, "#F98E3D", "szybki rozwój owadów (400–800)"),
+                (null, "#A63603", "wiele pokoleń owadów (≥ 800)")),
+            null, YearlyAggregation.Mean),
     ];
 
     private static readonly Dictionary<string, LayerDefinition> ById =

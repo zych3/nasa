@@ -1,11 +1,14 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'app/app_theme.dart';
 import 'components/account_button.dart';
 import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
 import 'components/map_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
+import 'overlays/map_layers_repository.dart';
 import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'repositories/auth_store.dart';
@@ -48,8 +51,18 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
       // ones for package:flutter/material instead.
       localizationsDelegates: const [
         AppLocalizations.delegate,
+        FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
+      // forui look, light or dark like the phone. The Material theme is
+      // derived from it so both kinds of widgets match; FTheme sits above
+      // every route (sheets and dialogs too).
+      theme: AppTheme.material(AppTheme.light),
+      darkTheme: AppTheme.material(AppTheme.dark),
+      builder: (context, child) => FTheme(
+        data: AppTheme.of(Theme.of(context).brightness),
+        child: child!,
+      ),
       // No SafeArea here: the map runs edge to edge and keeps its own
       // controls clear of the notch; the other tabs add their own.
       // The app opens straight away, without an account; signing in is
@@ -85,6 +98,10 @@ class MyScaffold extends StatefulWidget {
 class _MyScaffoldState extends State<MyScaffold> {
   int _selectedIndex = 0;
 
+  /// One for "My field" and "Conditions", so a place's NASA data is fetched
+  /// once and both tabs show it.
+  final _mapLayers = MapLayersRepository();
+
   @override
   Widget build(BuildContext context) {
     final flag = LanguageFlagButton(
@@ -114,6 +131,8 @@ class _MyScaffoldState extends State<MyScaffold> {
             flag: flag,
             child: PlotPage(
               store: widget.plotStore,
+              repository: _mapLayers,
+              onShowConditions: () => setState(() => _selectedIndex = 2),
               authStore: widget.authStore,
             ),
           ),
@@ -121,6 +140,7 @@ class _MyScaffoldState extends State<MyScaffold> {
             flag: flag,
             child: OverlaysScreen(
               store: widget.plotStore,
+              repository: _mapLayers,
               // Loads data (5–10 s from NASA) only once the tab is opened.
               active: _selectedIndex == 2,
               onChooseField: () => setState(() => _selectedIndex = 0),

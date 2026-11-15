@@ -98,7 +98,8 @@ class _AuthPageState extends State<AuthPage> {
                   SegmentedButton<bool>(
                     style: SegmentedButton.styleFrom(
                       minimumSize: const Size.fromHeight(56),
-                      textStyle: const TextStyle(fontSize: 18),
+                      textStyle: Theme.of(context).textTheme.labelLarge
+                          ?.copyWith(fontSize: 18),
                     ),
                     showSelectedIcon: false,
                     segments: [
@@ -133,7 +134,8 @@ class _AuthPageState extends State<AuthPage> {
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size.fromHeight(64),
-                      textStyle: const TextStyle(fontSize: 18),
+                      textStyle: Theme.of(context).textTheme.labelLarge
+                          ?.copyWith(fontSize: 18),
                     ),
                     onPressed: () => Navigator.of(context).maybePop(),
                     icon: const Icon(Icons.arrow_back),
@@ -447,7 +449,8 @@ class _TestLoginButtonState extends State<_TestLoginButton> {
         TextButton.icon(
           style: TextButton.styleFrom(
             minimumSize: const Size.fromHeight(56),
-            textStyle: const TextStyle(fontSize: 18),
+            textStyle: Theme.of(context).textTheme.labelLarge
+                ?.copyWith(fontSize: 18),
           ),
           onPressed: _busy ? null : _press,
           icon: _busy

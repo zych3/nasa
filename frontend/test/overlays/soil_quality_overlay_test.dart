@@ -139,12 +139,82 @@ void main() {
       },
     );
 
-    test('no soil map data: no parcel layer (the SoilGrids one is used)', () {
+    test('no soil map data: quality classes from the land register', () {
+      // E.g. the GUGiK soil map answers 503 for parts of Poland (Lublin).
       final details = loadParcelSample()
-        ..['soilMap'] = {'status': 'noData', 'data': null};
+        ..['soilMap'] = {'status': 'unavailable', 'data': null};
 
-      expect(overlay.parseParcel(details, soilMapLegend), isNull);
+      final layer = overlay.parseParcel(details, soilMapLegend)!;
+
+      expect(layer.current!.label(pl), 'Klasa IVb – orne średnie gorsze');
+      expect(layer.isEstimate, isFalse);
+      expect(layer.ordered, isFalse);
+      expect(layer.details.last.text(pl), pl.overlaySoilFromRegister);
+    });
+
+    test('built-up parcel: its land use instead of "no data"', () {
+      // Real case: a residential plot in Piaseczno (register use "B", no
+      // soil class) while the soil map answered 503.
+      final details = loadParcelSample()
+        ..['soilMap'] = {'status': 'unavailable', 'data': null}
+        ..['landRegistry'] = {
+          'status': 'ok',
+          'data': {
+            'source': 'EGiB',
+            'classes': [
+              {'code': 'B', 'landUse': 'tereny mieszkaniowe'},
+            ],
+          },
+        };
+
+      final layer = overlay.parseParcel(details, soilMapLegend)!;
+
+      expect(layer.current!.label(pl), 'tereny mieszkaniowe');
+      expect(layer.details.single.text(pl), pl.overlaySoilNotFarmland);
+    });
+
+    test('nothing known about the parcel: the soil map is still drawn', () {
+      final details = loadParcelSample()
+        ..['soilMap'] = {'status': 'noData', 'data': null}
+        ..['landRegistry'] = {'status': 'unavailable', 'data': null};
+
+      final layer = overlay.parseParcel(details, soilMapLegend)!;
+
+      // Like on the Geoportal: the map and its legend, no "here" value.
+      expect(layer.tileLayer, SoilQualityOverlay.soilMapLayer);
+      expect(layer.legend, hasLength(soilMapLegend.length));
+      expect(layer.currentIndex, isNull);
       expect(overlay.usesParcelDetails, isTrue);
+    });
+
+    test(
+      'no parcel at all (e.g. outside the register): map around the place',
+      () {
+        final layer = overlay.parseParcel({
+          'location': {'lat': 52.2, 'lon': 21.48},
+        }, soilMapLegend)!;
+
+        expect(layer.tileLayer, SoilQualityOverlay.soilMapLayer);
+        expect(layer.currentIndex, isNull);
+      },
+    );
+
+    test('without the soil map legend and parcel data: SoilGrids answers', () {
+      final details = loadParcelSample()
+        ..['soilMap'] = {'status': 'noData', 'data': null}
+        ..['landRegistry'] = {'status': 'unavailable', 'data': null};
+
+      expect(overlay.parseParcel(details, const []), isNull);
+    });
+
+    test('register class and land use keep the soil map under them', () {
+      final details = loadParcelSample()
+        ..['soilMap'] = {'status': 'unavailable', 'data': null};
+
+      final layer = overlay.parseParcel(details, soilMapLegend)!;
+
+      expect(layer.tileLayer, SoilQualityOverlay.soilMapLayer);
+      expect(layer.legend, hasLength(soilMapLegend.length + 1));
     });
   });
 }

@@ -27,10 +27,15 @@ services:
     build: FieldShift
     environment:
       ConnectionStrings__Prices: "Host=db;Port=5432;Database=fieldshift;Username=fieldshift;Password=fieldshift"
+      # appsettings.json also names FieldData (provider cache: soil map, SoilGrids, NASA data) on localhost, which
+      # inside the container is the container itself: point it at the database service too.
+      ConnectionStrings__FieldData: "Host=db;Port=5432;Database=fieldshift;Username=fieldshift;Password=fieldshift"
       # Optional: GUS BDL API key from the host environment or a .env file.
       Poland__GusBdlApiKey: ${GUS_BDL_API_KEY:-}
       # POST /api/auth/test-login (shared "test" account, no password). Local stack only.
       Accounts__TestLogin: ${TEST_LOGIN:-true}
+      # NASA Earthdata user token (IMERG rain, SMAP soil) from the host environment or the git-ignored .env file.
+      Earthdata__Token: ${EARTHDATA_TOKEN:-}
     ports:
       - "${BACKEND_PORT:-5066}:8080"
     depends_on:

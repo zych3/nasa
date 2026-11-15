@@ -54,6 +54,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
 | Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |
+| NASA satellites at a field, one part per call so each shows when ready (`rain`: GPM IMERG daily ~10 km; `soil`: SMAP L4 moisture / soil temperature 9 km with a normal from earlier years; `vegetation`: MODIS NDVI 250 m with this season vs normal; `surface-temperature`: MODIS LST 1 km; `evapotranspiration`: MODIS ET 500 m). Every part has `status` (`ok`, `noData`, `unavailable`, `notConfigured`), `source` and codes (`level`: `below` / `normal` / `above`) | `GET /api/satellite/{part}?lat=..&lon=..`, all parts: `GET /api/satellite?lat=..&lon=..` |
 | Create an account (body: `username` 3–32 letters/digits/`._-`, `password` ≥ 8 chars; answer: `token`, `expiresAt`, `user` {`id`, `username`, `createdAt`}; errors: ProblemDetails with `code`: `invalid_username`, `password_too_short`, `password_too_long`, 409 `username_taken`, 503 `database_unavailable`) | `POST /api/auth/register` |
 | Log in (same body and answer; 401 `invalid_credentials`) | `POST /api/auth/login` |
 | Testing only: log in to the shared `test` account without a password (404 unless `Accounts:TestLogin` is true: Development, docker compose) | `POST /api/auth/test-login` |
@@ -79,6 +80,17 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One widget per file, file names in `snake_case`, classes in `PascalCase`.
 - Use **relative imports** inside `lib/`.
 - Screens call a repository, never `ApiClient` directly. The repository returns mock data from `assets/mock/` when `useMock` is true, otherwise calls the backend.
+- Look: **forui** (`lib/app/app_theme.dart`: calm "paper and forest" palette, Inter, touch sizes, light/dark like
+  the phone). `main.dart` puts an `FTheme` above every route (`MaterialApp.builder`) and derives the Material theme
+  from it, so forui widgets (`FCard`, `FButton`, `FAlert`, `FBadge`, ...) and Material widgets match. Do not remove
+  that `FTheme`: forui widgets crash without it. Widget tests that show forui widgets need the same wrapper (see
+  `test/widget_test.dart`). Button styles: set sizes on a theme text style (`textTheme.labelLarge?.copyWith(...)`),
+  not `TextStyle(fontSize: ...)`, or the label loses the app font.
+- NASA Earthdata (IMERG, SMAP): the backend reads the user token from `Earthdata__Token` (Docker: `EARTHDATA_TOKEN` in
+  the git-ignored `.env`; `dotnet run`: `dotnet user-secrets set "Earthdata:Token" ...`). Never commit it or paste it
+  in chats. Without it those parts answer `notConfigured` and the rest still works. The token expires after 60 days.
+  The Earthdata app "NASA GESDISC DATA ARCHIVE" must be approved once (IMERG). MODIS comes from ORNL DAAC without a
+  login. Values read from NASA are kept in PostgreSQL (`provider_cache`).
 - Keep state management simple (`setState` or `provider`). Do not add heavy architecture.
 - Backend base URL is a single constant. Remember: `localhost` for desktop/web, `10.0.2.2` for the Android emulator, the computer's LAN IP for a real phone.
 - Run `dart format .` and `flutter analyze` before committing.

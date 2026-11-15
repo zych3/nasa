@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:latlong2/latlong.dart';
 
 import '../api/api_client.dart';
+import '../models/satellite_data.dart';
 
 /// Source of `GET /api/map-layers` for the overlays. Screens use this (through
 /// `OverlayController`), never [ApiClient].
@@ -22,6 +24,14 @@ class MapLayersRepository {
 
   /// Saved real `GET /api/parcels/details` response for the same place.
   static const mockParcelAsset = 'assets/mock/parcel_details_sample.json';
+
+  /// Saved real `GET /api/satellite` response (NASA IMERG, SMAP, MODIS) for
+  /// the same place.
+  static const mockSatelliteAsset = 'assets/mock/satellite_sample.json';
+
+  /// One satellite part asks NASA (IMERG, SMAP via Earthdata; MODIS via ORNL)
+  /// for up to ~30 values; the first time for a place 5–25 s, later at once.
+  static const satelliteTimeout = Duration(seconds: 60);
 
   /// The parcel details call the register, the soil map, the terrain model
   /// and SoilGrids (first time up to ~15 s; later from the backend's cache).
@@ -50,6 +60,7 @@ class MapLayersRepository {
   final _cache = <String, Future<Map<String, dynamic>>>{};
   final _gridCache = <String, Future<Map<String, dynamic>>>{};
   final _parcelCache = <String, Future<Map<String, dynamic>>>{};
+  final _satelliteCache = <String, Future<Map<String, dynamic>>>{};
   final _legends = <String, Future<List<Map<String, dynamic>>>>{};
 
   /// The backend rounds the point to 2 decimal places (~1 km), so points that
@@ -73,7 +84,7 @@ class MapLayersRepository {
       _cache,
       _cacheKey(point),
       refresh,
-      () => _fetch('/api/map-layers', point, timeout),
+      () => _fetch('/api/map-layers', point, timeout, extra: periodQuery()),
     );
   }
 
@@ -86,7 +97,12 @@ class MapLayersRepository {
       _gridCache,
       _gridCacheKey(point),
       refresh,
-      () => _fetch('/api/map-layers/grid', point, gridTimeout),
+      () => _fetch(
+        '/api/map-layers/grid',
+        point,
+        gridTimeout,
+        extra: periodQuery(),
+      ),
     );
   }
 
@@ -122,6 +138,33 @@ class MapLayersRepository {
       refresh,
       () => _fetch('/api/parcels/details', point, parcelTimeout),
     );
+  }
+
+  /// One part of `GET /api/satellite/{part}` for [point]: what NASA
+  /// satellites saw there (rain, soil, plant greenness, …). Cached and failing
+  /// like [mapLayers]; the backend rounds the point to ~100 m.
+  Future<Map<String, dynamic>> satellite(
+    SatellitePart part,
+    LatLng point, {
+    bool refresh = false,
+  }) {
+    if (useMock) return demoSatellite(part);
+    return _cached(
+      _satelliteCache,
+      '${part.path}:${point.latitude.toStringAsFixed(3)},${point.longitude.toStringAsFixed(3)}',
+      refresh,
+      () => _fetch('/api/satellite/${part.path}', point, satelliteTimeout),
+    );
+  }
+
+  /// One part of the saved satellite response (the same place as [demo]).
+  Future<Map<String, dynamic>> demoSatellite(SatellitePart part) async {
+    final all = await _load(mockSatelliteAsset);
+    final json = all[part.key];
+    if (json is! Map<String, dynamic>) {
+      throw FormatException('satellite demo: no part "${part.key}"');
+    }
+    return json;
   }
 
   /// Legend of a map tile layer (`GET /api/map-tiles/{layer}/legend`): code,
@@ -183,20 +226,45 @@ class MapLayersRepository {
     return future;
   }
 
+  /// GET [path] for [point]. After a timeout it asks once more: the backend
+  /// keeps downloading in the background and stores the result, so the second
+  /// request usually gets it at once (the user sees one longer wait instead
+  /// of an error).
   Future<Map<String, dynamic>> _fetch(
     String path,
     LatLng point,
-    Duration timeout,
-  ) async => _asObject(
-    await _api.getJson(
-      path,
-      query: {
-        'lat': point.latitude.toStringAsFixed(5),
-        'lon': point.longitude.toStringAsFixed(5),
-      },
-      timeout: timeout,
-    ),
-  );
+    Duration timeout, {
+    Map<String, String> extra = const {},
+  }) async {
+    Future<Map<String, dynamic>> get() async => _asObject(
+      await _api.getJson(
+        path,
+        query: {
+          'lat': point.latitude.toStringAsFixed(5),
+          'lon': point.longitude.toStringAsFixed(5),
+          ...extra,
+        },
+        timeout: timeout,
+      ),
+    );
+    try {
+      return await get();
+    } on TimeoutException {
+      return get();
+    }
+  }
+
+  /// Months asked for: up to the last full month (the backend's default ends
+  /// in December of last year, which in November is 11 months old), from
+  /// January ten years earlier (so yearly sums like pest warmth start in
+  /// January). In UTC, like the backend's "last full month" check.
+  static Map<String, String> periodQuery([DateTime? now]) {
+    final today = (now ?? DateTime.now()).toUtc();
+    final last = DateTime.utc(today.year, today.month - 1);
+    String ym(DateTime d) =>
+        '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}';
+    return {'from': ym(DateTime.utc(last.year - 9)), 'to': ym(last)};
+  }
 
   static Map<String, dynamic> _asObject(Object? json) {
     if (json is Map<String, dynamic>) return json;

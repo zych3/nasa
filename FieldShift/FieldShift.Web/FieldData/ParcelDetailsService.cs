@@ -21,6 +21,16 @@ public sealed class ParcelDetailsService(
     TimeProvider time,
     ILogger<ParcelDetailsService> logger)
 {
+    /// <summary>
+    /// How long the answer waits for one section. A slower source (SoilGrids can hang for a minute) is reported as
+    /// "unavailable" for now, so it does not hold up the others; it keeps loading in the background and is stored,
+    /// so the next request has it.
+    /// </summary>
+    public static readonly TimeSpan SectionWait = TimeSpan.FromSeconds(12);
+
+    /// <summary>Longest a section may keep loading in the background.</summary>
+    public static readonly TimeSpan BackgroundTimeout = TimeSpan.FromSeconds(90);
+
     /// <summary>Details of the parcel at a point; null when no country's register has a parcel there.</summary>
     public async Task<ParcelDetailsResponse?> AtAsync(double lat, double lon, CancellationToken ct) =>
         await parcels.AtAsync(lat, lon, ct) is { } location ? await BuildAsync(location, ct) : null;
@@ -74,9 +84,12 @@ public sealed class ParcelDetailsService(
             return new FieldDataSection<T> { Status = FieldDataSection<T>.NotSupported };
         }
 
+        // Not tied to this request: a slow source finishes in the background and is stored for the next one.
+        var load = LoadInBackgroundAsync(provider, location);
         try
         {
-            var result = await cache.GetAsync(provider, location, ct);
+            await load.WaitAsync(SectionWait, ct);
+            var result = await load;
             return new FieldDataSection<T>
             {
                 Status = result.Value is null ? FieldDataSection<T>.NoData : FieldDataSection<T>.Ok,
@@ -86,10 +99,22 @@ public sealed class ParcelDetailsService(
                 FromCache = result.FromCache,
             };
         }
+        catch (TimeoutException)
+        {
+            logger.LogInformation("{Provider} is slow for parcel {Parcel}; answering without it", provider.Id, location.ParcelId);
+            return new FieldDataSection<T> { Status = FieldDataSection<T>.Unavailable, Provider = provider.Id };
+        }
         catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             logger.LogWarning(ex, "{Provider} failed for parcel {Parcel}", provider.Id, location.ParcelId);
             return new FieldDataSection<T> { Status = FieldDataSection<T>.Unavailable, Provider = provider.Id };
         }
+    }
+
+    private async Task<FieldDataResult<T>> LoadInBackgroundAsync<T>(IFieldDataProvider<T> provider, FieldLocation location)
+        where T : class
+    {
+        using var timeout = new CancellationTokenSource(BackgroundTimeout);
+        return await cache.GetAsync(provider, location, timeout.Token);
     }
 }

@@ -67,12 +67,20 @@ public static partial class WebApplicationBuilderExtensions
             c.Timeout = TimeSpan.FromSeconds(30);
             c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
         });
+        // The soil map WMS answers 503 now and then (seen for parcels that a second later answer fine): retried,
+        // within the 12 s a parcel details section may take.
         builder.Services.AddHttpClient<ISoilMapProvider, SoilAgriculturalMapProvider>(c =>
-        {
-            c.BaseAddress = new Uri(soilMapWmsUrl);
-            c.Timeout = TimeSpan.FromSeconds(20);
-            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-        });
+            {
+                c.BaseAddress = new Uri(soilMapWmsUrl);
+                c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            })
+            .AddStandardResilienceHandler(o =>
+            {
+                o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(4);
+                o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(11);
+                o.Retry.Delay = TimeSpan.FromMilliseconds(300);
+                o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
+            });
         // The soil map WMS answers 503 now and then; the standard handler retries such answers.
         builder.Services.AddHttpClient<IMapTileProvider, SoilMapTileProvider>(c =>
             {

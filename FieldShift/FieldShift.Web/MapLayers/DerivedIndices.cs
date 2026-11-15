@@ -25,8 +25,38 @@ public static class DerivedIndices
             return null;
         }
 
-        var stress = 0.6 * Clamp01((0.50 - moisture) / 0.25) + 0.4 * Clamp01(heat / 10);
-        return Math.Round(100 * stress, MidpointRounding.AwayFromZero);
+        var (drought, hot) = PlantStressParts(moisture, heat);
+        return Math.Round(drought + hot, MidpointRounding.AwayFromZero);
+    }
+
+    /// <summary>
+    /// The two parts of <see cref="PlantStress"/> in points: drought in the root zone (0–60) and hot days (0–40),
+    /// so the app can say what drives the stress.
+    /// </summary>
+    public static (double Drought, double Heat) PlantStressParts(double moisture, double heatDays) =>
+        (60 * Clamp01((0.50 - moisture) / 0.25), 40 * Clamp01(heatDays / 10));
+
+    /// <summary>
+    /// Degree-days summed from 1 January of each year up to the end of each month (insects develop with the warmth
+    /// gathered since winter). A month without data leaves the sum unknown until the next January; so does a range
+    /// that starts after January (the start of that year's sum is missing).
+    /// </summary>
+    public static double?[] CumulativeDegreeDays(IReadOnlyList<YearMonth> months, double?[] monthly)
+    {
+        var result = new double?[months.Count];
+        double? sum = null;
+        for (var i = 0; i < months.Count; i++)
+        {
+            if (months[i].Month == 1)
+            {
+                sum = 0;
+            }
+
+            sum = sum is { } s && monthly[i] is { } m ? s + m : null;
+            result[i] = sum;
+        }
+
+        return result;
     }
 
     /// <summary>

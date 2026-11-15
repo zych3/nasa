@@ -50,7 +50,7 @@ public class MapLayersTests
         Assert.Equal("2025-12", response.Dates[^1]);
         Assert.Equal(23, response.DefaultIndex);
         Assert.Equal("soilMoisture", response.DefaultLayerId);
-        Assert.Equal(9, response.Layers.Count);
+        Assert.Equal(LayerDefinitions.All.Count, response.Layers.Count);
         foreach (var layer in response.Layers)
         {
             Assert.Equal(24, layer.Values.Count);

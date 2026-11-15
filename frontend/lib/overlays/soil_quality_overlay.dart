@@ -56,12 +56,12 @@ class SoilQualityOverlay extends MapOverlay {
     Map<String, dynamic> details,
     List<Map<String, dynamic>> legend,
   ) {
-    final soilMap = _okData(details['soilMap']);
-    if (soilMap == null) return null;
-    final code = _text(soilMap['complexCode']);
-    final name = _text(soilMap['complexName']) ?? code;
-    if (code == null || name == null) return null;
-
+    // The soil-agricultural map is always drawn (like on the Geoportal), with
+    // its complexes as the legend. What is said about the parcel itself
+    // ("here") comes from the best source that has something: the soil map
+    // at the parcel, else the register's quality classes, else the register's
+    // land use (built-up, roads…), else nothing (the map still shows the
+    // soils around).
     final items = <(String, OverlayLegendItem)>[
       for (final item in legend)
         if (_text(item['code']) case final itemCode?)
@@ -73,14 +73,35 @@ class SoilQualityOverlay extends MapOverlay {
             ),
           ),
     ];
-    var current = items.indexWhere((i) => i.$1 == code);
-    if (current < 0) {
-      items.add((
-        code,
-        OverlayLegendItem(color: _otherColor, label: _fixed(name)),
-      ));
+
+    final soilMap = _okData(details['soilMap']);
+    final register = _okData(details['landRegistry']);
+    final code = _text(soilMap?['complexCode']);
+    final name = _text(soilMap?['complexName']) ?? code;
+
+    int? current;
+    String? source;
+    var details_ = <OverlayDetail>[];
+    if (soilMap != null && code != null && name != null) {
+      current = items.indexWhere((i) => i.$1 == code);
+      if (current < 0) {
+        items.add((
+          code,
+          OverlayLegendItem(color: _otherColor, label: _fixed(name)),
+        ));
+        current = items.length - 1;
+      }
+      source = _text(soilMap['source']);
+      details_ = _details(soilMap, register);
+    } else if (_registerValue(register) case final here?) {
+      items.add(('register', here.item));
       current = items.length - 1;
+      source = _text(register!['source']);
+      details_ = here.details;
     }
+
+    // Nothing to draw and nothing to say: let the modelled soil answer.
+    if (items.isEmpty) return null;
 
     final location = details['location'];
     if (location is! Map<String, dynamic>) {
@@ -92,22 +113,118 @@ class SoilQualityOverlay extends MapOverlay {
     final radius = area is num
         ? math.max(150.0, math.min(1000.0, math.sqrt(area * 10000)))
         : 150.0;
-    final source = _text(soilMap['source']);
 
     return OverlayLayer(
       area: OverlayArea(center: readLocation(details), radiusMeters: radius),
       legend: [for (final i in items) i.$2],
       currentIndex: current,
-      source: source,
-      // An official survey map, not a model.
+      source: source ?? _soilMapSource,
+      // Official survey map / register, not a model.
       isEstimate: false,
       coverage: (l10n) => l10n.overlayCoverageParcel,
       ordered: false,
-      details: _details(soilMap, _okData(details['landRegistry'])),
+      details: details_,
       tileLayer: soilMapLayer,
       tileMinZoom: soilMapMinZoom,
     );
   }
+
+  /// Name of the map drawn under the parcel (when the parcel has no value).
+  static const _soilMapSource =
+      'Mapa glebowo-rolnicza 1:5000 (PZGiK), przez Geoportal GUGiK';
+
+  /// What the land register says about the parcel's soil when the soil map
+  /// has nothing there: its quality class (farmland) or its land use
+  /// (built-up, roads, water…); null when the register has neither.
+  static ({OverlayLegendItem item, List<OverlayDetail> details})?
+  _registerValue(Map<String, dynamic>? register) {
+    if (register == null) return null;
+    final classes = <String, String?>{};
+    final uses = <String>{};
+    for (final c
+        in register['classes'] is List
+            ? register['classes'] as List
+            : const []) {
+      if (c is! Map<String, dynamic>) continue;
+      if (_text(c['qualityClass']) case final q?) {
+        classes.putIfAbsent(q, () => _text(c['qualityName']));
+      }
+      if (_text(c['landUse']) case final use?) uses.add(use);
+    }
+
+    final first = classes.keys.where(qualityClasses.contains).firstOrNull;
+    if (first != null) {
+      final name = classes[first];
+      return (
+        item: OverlayLegendItem(
+          color: _qualityColors[qualityClasses.indexOf(first)],
+          label: (l10n) => name == null
+              ? l10n.overlayQualityClass(first)
+              : l10n.overlayQualityClassNamed(first, name),
+        ),
+        details: [
+          if (classes.length > 1)
+            OverlayDetail(
+              icon: Icons.assignment_outlined,
+              text: (l10n) => l10n.overlayLandClasses(
+                [
+                  for (final e in classes.entries)
+                    e.value == null ? e.key : '${e.key} (${e.value})',
+                ].join(', '),
+              ),
+            ),
+          OverlayDetail(
+            icon: Icons.info_outline,
+            text: (l10n) => l10n.overlaySoilFromRegister,
+          ),
+        ],
+      );
+    }
+    if (uses.isNotEmpty) {
+      return (
+        item: OverlayLegendItem(
+          color: _otherColor,
+          label: _fixed(uses.join(', ')),
+        ),
+        details: [
+          OverlayDetail(
+            icon: Icons.info_outline,
+            text: (l10n) => l10n.overlaySoilNotFarmland,
+          ),
+        ],
+      );
+    }
+    return null;
+  }
+
+  /// Soil quality classes of the land register (Poland: EGiB), best first.
+  /// Used where the soil map has no data (e.g. the GUGiK soil map service
+  /// answers with an error for some regions) or did not answer in time.
+  static const qualityClasses = [
+    'I',
+    'II',
+    'IIIa',
+    'IIIb',
+    'IVa',
+    'IVb',
+    'V',
+    'VI',
+    'VIz',
+  ];
+
+  /// Greens for good soil to browns for poor, light to dark, so the order is
+  /// visible also in greyscale; the word says the class anyway.
+  static const _qualityColors = [
+    Color(0xFF1B5E20),
+    Color(0xFF2E7D32),
+    Color(0xFF558B2F),
+    Color(0xFF7CB342),
+    Color(0xFFC0CA33),
+    Color(0xFFFBC02D),
+    Color(0xFFF57C00),
+    Color(0xFFA1887F),
+    Color(0xFF6D4C41),
+  ];
 
   /// Soil type, texture by depth, the register's classes, survey year.
   static List<OverlayDetail> _details(

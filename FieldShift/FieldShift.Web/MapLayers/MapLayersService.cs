@@ -19,7 +19,7 @@ public sealed class DemoLocationsOptions
 /// to months and caches the response. <see cref="Compose"/> is the pure part (no HTTP) used by tests.
 /// </summary>
 public sealed class MapLayersService(
-    NasaPowerClient nasaClient,
+    NasaDailyCache nasaClient,
     ISoilPropertiesProvider soilProvider,
     FieldDataCache fieldData,
     ParcelLookupCache parcels,
@@ -29,15 +29,28 @@ public sealed class MapLayersService(
     TimeProvider time,
     ILogger<MapLayersService> logger)
 {
-    internal static readonly string[] BaseParameters = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "GWETROOT"];
+    internal static readonly string[] BaseParameters = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "GWETROOT", "RH2M"];
     private const string EvaporationParameter = "EVPTRNS";
     private static readonly TimeSpan CacheTtl = TimeSpan.FromHours(24);
+
+    /// <summary>A response without soil or parcel slope (slow sources not back yet) is kept only briefly.</summary>
+    private static readonly TimeSpan PartialCacheTtl = TimeSpan.FromMinutes(2);
+
+    /// <summary>
+    /// How long the map waits for the optional sources (SoilGrids, the parcel's slope) after NASA has answered.
+    /// They keep loading in the background and are stored, so the next request has them.
+    /// </summary>
+    public static readonly TimeSpan OptionalSourcesWait = TimeSpan.FromSeconds(2);
+
+    /// <summary>Longest an optional source may load in the background.</summary>
+    private static readonly TimeSpan OptionalSourcesTimeout = TimeSpan.FromSeconds(60);
 
     public const string ResolutionWarning =
         "Dane NASA POWER mają rozdzielczość ok. 50 km – jedna wartość dla całej okolicy pola.";
 
     public const string EstimatesWarning =
-        "Stres roślinny i ryzyko erozji to wskaźniki szacunkowe, liczone z danych klimatycznych i glebowych.";
+        "Stres roślinny, ryzyko erozji, pogoda sprzyjająca chorobom grzybowym i ciepło sprzyjające szkodnikom to wskaźniki "
+        + "szacunkowe, liczone z danych klimatycznych i glebowych. Nie wykrywają chorób ani szkodników na polu.";
 
     public const string NoSlopeWarning =
         "Brak danych o nachyleniu terenu – erozja liczona bez ukształtowania terenu.";
@@ -58,16 +71,15 @@ public sealed class MapLayersService(
     public async Task<MapLayersResponse> GetAsync(MapLayersRequest request, CancellationToken ct)
     {
         // The parcel is looked up at the exact point (the NASA data below uses a rounded one).
-        var parcelSlope = request.LayerIds.Contains(LayerDefinitions.ErosionRisk)
-            ? await FindParcelSlopeAsync(request.Lat, request.Lon, ct)
-            : null;
+        var (exactLat, exactLon) = (request.Lat, request.Lon);
+        var wantsErosion = request.LayerIds.Contains(LayerDefinitions.ErosionRisk);
         request = request with
         {
             Lat = Math.Round(request.Lat, 2, MidpointRounding.AwayFromZero),
             Lon = Math.Round(request.Lon, 2, MidpointRounding.AwayFromZero),
         };
         var cacheKey = string.Create(CultureInfo.InvariantCulture,
-            $"map-layers:{request.Lat:F2}:{request.Lon:F2}:{request.From}:{request.To}:{string.Join(',', request.LayerIds)}:{parcelSlope?.ParcelId}");
+            $"map-layers:{exactLat:F5}:{exactLon:F5}:{request.From}:{request.To}:{string.Join(',', request.LayerIds)}");
 
         if (cache.TryGetValue(cacheKey, out MapLayersResponse? cached) && cached is not null)
         {
@@ -76,22 +88,44 @@ public sealed class MapLayersService(
 
         var wantsEvaporation = request.LayerIds.Contains(LayerDefinitions.Evaporation);
 
-        // If NASA fails there is nothing to show, so cancel the (slow) SoilGrids call right away.
-        using var upstreamCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        var nasaTask = FetchNasaAsync(request, wantsEvaporation, upstreamCts, ct);
-        var soilTask = FetchSoilAsync(request, upstreamCts.Token, ct);
-        await Task.WhenAll(nasaTask, soilTask);
+        // All sources at once. Only NASA is needed for the map; soil and the parcel's slope (both slow the first
+        // time) are not tied to this request, so they finish and get stored even when the map does not wait.
+        var slopeTask = wantsErosion
+            ? FindParcelSlopeAsync(exactLat, exactLon)
+            : Task.FromResult<ParcelSlope?>(null);
+        var soilTask = FetchSoilAsync(request);
+        var (nasa, evaporationAvailable) = await FetchNasaAsync(request, wantsEvaporation, ct);
 
-        var (nasa, evaporationAvailable) = nasaTask.Result;
-        var soil = FieldProfileService.BuildSoilProfile(soilTask.Result);
+        var deadline = Task.Delay(OptionalSourcesWait, ct);
+        var (soilData, soilDone) = await Within(soilTask, deadline);
+        var (parcelSlope, slopeDone) = await Within(slopeTask, deadline);
+        var soil = FieldProfileService.BuildSoilProfile(soilData);
         var demoLocation = parcelSlope is null
             ? DerivedIndices.FindDemoLocation(request.Lat, request.Lon, demoLocations.Value.Locations)
             : new DemoLocation { Name = parcelSlope.ParcelId, Lat = request.Lat, Lon = request.Lon, SlopePct = parcelSlope.SlopePct };
 
         var response = Compose(request, nasa, evaporationAvailable, soil, demoLocation, time.GetUtcNow(),
             parcelSlope?.Source);
-        cache.Set(cacheKey, response, CacheTtl);
+        cache.Set(cacheKey, response, soilDone && slopeDone ? CacheTtl : PartialCacheTtl);
         return response;
+    }
+
+    /// <summary>The task's result if it finishes before <paramref name="deadline"/>; (default, false) otherwise.</summary>
+    private static async Task<(T? Value, bool Done)> Within<T>(Task<T?> task, Task deadline)
+    {
+        if (!task.IsCompleted)
+        {
+            try
+            {
+                await Task.WhenAny(task, deadline);
+            }
+            catch (OperationCanceledException)
+            {
+                // The request was cancelled: the caller stops anyway.
+            }
+        }
+
+        return task.IsCompletedSuccessfully ? (task.Result, true) : (default, false);
     }
 
     /// <summary>
@@ -99,8 +133,10 @@ public sealed class MapLayersService(
     /// through the field data cache; null where there is no parcel, no terrain source or a source fails (erosion
     /// is then estimated without terrain, as before). The parcel lookup is kept in memory for a day.
     /// </summary>
-    private async Task<ParcelSlope?> FindParcelSlopeAsync(double lat, double lon, CancellationToken ct)
+    private async Task<ParcelSlope?> FindParcelSlopeAsync(double lat, double lon)
     {
+        using var timeout = new CancellationTokenSource(OptionalSourcesTimeout);
+        var ct = timeout.Token;
         var key = string.Create(CultureInfo.InvariantCulture, $"parcel-slope:{lat:F5}:{lon:F5}");
         if (cache.TryGetValue(key, out ParcelSlope? known))
         {
@@ -117,7 +153,7 @@ public sealed class MapLayersService(
                 result = new ParcelSlope(field.ParcelId!, info.SlopePct, info.Source);
             }
         }
-        catch (Exception ex) when (!ct.IsCancellationRequested)
+        catch (Exception ex)
         {
             logger.LogWarning(ex, "Parcel slope for {Lat},{Lon} unavailable; erosion without terrain", lat, lon);
             return null;
@@ -128,7 +164,7 @@ public sealed class MapLayersService(
     }
 
     private async Task<(NasaPowerDailyData Data, bool EvaporationAvailable)> FetchNasaAsync(
-        MapLayersRequest request, bool wantsEvaporation, CancellationTokenSource upstreamCts, CancellationToken requestCt)
+        MapLayersRequest request, bool wantsEvaporation, CancellationToken ct)
     {
         try
         {
@@ -136,7 +172,7 @@ public sealed class MapLayersService(
             {
                 try
                 {
-                    var withEvaporation = await GetDailyAsync(request, [.. BaseParameters, EvaporationParameter], upstreamCts.Token);
+                    var withEvaporation = await GetDailyAsync(request, [.. BaseParameters, EvaporationParameter], ct);
                     var available = withEvaporation.Parameters.TryGetValue(EvaporationParameter, out var series) && series.Count > 0;
                     return (withEvaporation, available);
                 }
@@ -147,35 +183,30 @@ public sealed class MapLayersService(
                 }
             }
 
-            return (await GetDailyAsync(request, BaseParameters, upstreamCts.Token), false);
+            return (await GetDailyAsync(request, BaseParameters, ct), false);
         }
-        catch (Exception ex) when (!requestCt.IsCancellationRequested)
+        catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             logger.LogError(ex, "NASA POWER daily request failed for {Lat},{Lon} {From}..{To}",
                 request.Lat, request.Lon, request.From, request.To);
-            await upstreamCts.CancelAsync();
             throw new UpstreamServiceException("NASA POWER", ex);
         }
     }
 
     private Task<NasaPowerDailyData> GetDailyAsync(MapLayersRequest request, string[] parameters, CancellationToken ct) =>
-        nasaClient.GetDailyAsync(request.Lat, request.Lon, request.From.FirstDay, request.To.LastDay, parameters, ct);
+        nasaClient.GetAsync(request.Lat, request.Lon, request.From.FirstDay, request.To.LastDay, parameters, ct);
 
-    private async Task<SoilGridsData?> FetchSoilAsync(
-        MapLayersRequest request, CancellationToken upstreamCt, CancellationToken requestCt)
+    private async Task<SoilGridsData?> FetchSoilAsync(MapLayersRequest request)
     {
+        using var timeout = new CancellationTokenSource(OptionalSourcesTimeout);
         try
         {
             // Cached in PostgreSQL for months: SoilGrids is slow and its model rarely changes.
-            return (await fieldData.GetAsync(soilProvider, new FieldLocation(request.Lat, request.Lon), upstreamCt)).Value;
+            return (await fieldData.GetAsync(soilProvider, new FieldLocation(request.Lat, request.Lon), timeout.Token)).Value;
         }
-        catch (Exception ex) when (!requestCt.IsCancellationRequested)
+        catch (Exception ex)
         {
-            if (!upstreamCt.IsCancellationRequested)
-            {
-                logger.LogWarning(ex, "SoilGrids request failed for {Lat},{Lon}; map layers without soil", request.Lat, request.Lon);
-            }
-
+            logger.LogWarning(ex, "SoilGrids request failed for {Lat},{Lon}; map layers without soil", request.Lat, request.Lon);
             return null;
         }
     }
@@ -199,13 +230,19 @@ public sealed class MapLayersService(
         var plantStress = Enumerable.Range(0, n)
             .Select(i => DerivedIndices.PlantStress(climate.SoilMoistureMean[i], climate.HeatDays[i]))
             .ToArray();
+        var stressParts = Enumerable.Range(0, n)
+            .Select(i => climate.SoilMoistureMean[i] is { } m && climate.HeatDays[i] is { } h
+                ? DerivedIndices.PlantStressParts(m, h)
+                : ((double, double)?)null)
+            .ToArray();
+        var degreeDays = DerivedIndices.CumulativeDegreeDays(months, climate.DegreeDays);
         var erosionRisk = Enumerable.Range(0, n)
             .Select(i => DerivedIndices.ErosionRisk(climate.ExtremeRainDays[i], susceptibility, slopeFactor))
             .ToArray();
 
         var warnings = new List<string> { ResolutionWarning };
         var ids = request.LayerIds;
-        if (ids.Contains(LayerDefinitions.PlantStress) || ids.Contains(LayerDefinitions.ErosionRisk))
+        if (ids.Any(id => LayerDefinitions.Find(id)?.IsEstimate == true))
         {
             warnings.Add(EstimatesWarning);
         }
@@ -235,7 +272,16 @@ public sealed class MapLayersService(
                 }),
                 LayerDefinitions.SoilMoisture => (climate.SoilMoistureMean, null),
                 LayerDefinitions.Evaporation => (climate.EvaporationSum, null),
-                LayerDefinitions.PlantStress => (plantStress, null),
+                LayerDefinitions.PlantStress => (plantStress, new Dictionary<string, double?[]>
+                {
+                    // Points of the 0–100 score: drought in the root zone (0–60) and hot days (0–40).
+                    ["drought"] = stressParts.Select(p => p?.Item1).ToArray(),
+                    ["heat"] = stressParts.Select(p => p?.Item2).ToArray(),
+                    ["soilMoisture"] = climate.SoilMoistureMean,
+                    ["heatDays"] = climate.HeatDays,
+                }),
+                LayerDefinitions.FungalRisk => (climate.FungalDays, null),
+                LayerDefinitions.PestHeat => (degreeDays, null),
                 LayerDefinitions.ErosionRisk => (erosionRisk, null),
                 _ => throw new InvalidOperationException($"No data mapping for layer '{definition.Id}'."),
             };
@@ -325,7 +371,7 @@ public sealed class MapLayersService(
             Description = definition.Description,
             Values = RoundAll(values, decimals),
             Anomalies = definition.HasAnomalies ? RoundAll(TrendCalculator.Anomalies(values, months), decimals) : null,
-            Extra = extra?.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<double?>)RoundAll(kv.Value, 1)),
+            Extra = extra?.ToDictionary(kv => kv.Key, kv => (IReadOnlyList<double?>)RoundAll(kv.Value, 2)),
             Legend = definition.Legend,
             AnomalyLegend = definition.AnomalyLegend,
             Stats = new LayerStats

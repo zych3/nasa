@@ -1,75 +1,77 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../components/address_search_field.dart';
-import '../components/input/plotInput/plot_input.dart';
 import '../components/map_button.dart';
-import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
-import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
-import '../repositories/parcel_repository.dart';
+import '../overlays/field_conditions_controller.dart';
+import '../overlays/map_layers_repository.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/selected_plot_store.dart';
+import '../widgets/field_conditions_section.dart';
 import 'rotation_wizard_page.dart';
 
-/// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
-/// user pick another one from the parcels nearby or by typing an address.
+/// "Moje pole" – plot data page: the chosen (saved) parcel and what recent
+/// NASA satellite data and the registers say about it. Fields are chosen on
+/// the "My area" map (also by address).
 class PlotPage extends StatefulWidget {
-  const PlotPage({super.key, required this.store, required this.authStore});
+  const PlotPage({
+    super.key,
+    required this.store,
+    required this.authStore,
+    this.repository,
+    this.onShowConditions,
+  });
 
   final SelectedPlotStore store;
 
+  /// Saving a rotation plan needs an account; passed on to the planner.
   final AuthStore authStore;
+
+  /// NASA and parcel data; share the "Conditions" tab's one so both use the
+  /// same cache (one request per place).
+  final MapLayersRepository? repository;
+
+  /// Opens the "Conditions" tab.
+  final VoidCallback? onShowConditions;
 
   @override
   State<PlotPage> createState() => _PlotPageState();
 }
 
 class _PlotPageState extends State<PlotPage> {
-  final _parcels = ParcelRepository();
-  bool _loading = false;
+  late final _conditions = FieldConditionsController(
+    repository: widget.repository ?? MapLayersRepository(),
+  );
 
-  Future<void> _findParcel(String address) async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _loading = true);
-    try {
-      final parcel = await _parcels.searchByAddress(address);
-      if (!mounted) return;
-      if (parcel != null) {
-        await widget.store.select(parcel.withAddress(address));
-      } else {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
-      }
-    } catch (_) {
-      if (!mounted) return;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
-    } finally {
-      if (mounted) setState(() => _loading = false);
+  @override
+  void initState() {
+    super.initState();
+    // Start loading at once (the data can take a while) and again whenever
+    // another field is chosen.
+    _conditions.show(widget.store.parcel);
+    widget.store.addListener(_fieldChanged);
+  }
+
+  @override
+  void didUpdateWidget(PlotPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.store != widget.store) {
+      oldWidget.store.removeListener(_fieldChanged);
+      widget.store.addListener(_fieldChanged);
+      _fieldChanged();
     }
   }
 
-  /// The user picked a full address from the hints: take the parcel there.
-  Future<void> _choosePoint(AddressSuggestion hint, String text) async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _loading = true);
-    try {
-      final parcel = await _parcels.parcelAt(hint.point);
-      if (!mounted) return;
-      if (parcel != null) {
-        await widget.store.select(parcel.withAddress(text));
-      } else {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
-      }
-    } catch (_) {
-      if (!mounted) return;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
+  @override
+  void dispose() {
+    widget.store.removeListener(_fieldChanged);
+    _conditions.dispose();
+    super.dispose();
   }
+
+  void _fieldChanged() => _conditions.show(widget.store.parcel);
 
   @override
   Widget build(BuildContext context) {
@@ -80,223 +82,123 @@ class _PlotPageState extends State<PlotPage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final Parcel? parcel = widget.store.parcel;
     final nearby = widget.store.nearby;
 
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        // Address search with hints, at the very top. Room on the right for
-        // the language button floating in the top corner.
-        Padding(
-          padding: const EdgeInsetsDirectional.only(
-            end: MapButton.reservedEnd - 16,
-          ),
-          child: AddressSearchField(
-            onAddressChosen: _choosePoint,
-            onSearch: _findParcel,
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Header: plot name, area, location
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.agriculture, size: 40),
-            title: Text(
-              parcel?.address ?? '—',
-              style: theme.textTheme.titleLarge,
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Map: highlighted parcel once found, placeholder before that
-        SizedBox(
-          height: 280,
-          child: parcel != null
-              ? _FieldMap(
-                  field: parcel,
-                  nearby: nearby,
-                  caption: [
-                    ?parcel.address,
-                    l10n.parcelNumber(parcel.id),
-                  ].join('\n'),
-                )
-              : Container(
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(Icons.map_outlined, size: 48),
-                ),
-        ),
-        if (_loading) const LinearProgressIndicator(),
-        const SizedBox(height: 16),
-
-        FilledButton.icon(
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(64),
-            textStyle: const TextStyle(fontSize: 20),
-          ),
-          icon: const Icon(Icons.autorenew, size: 28),
-          label: Text(l10n.rotationStart),
-          onPressed: parcel == null
-              ? null
-              : () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => RotationWizardPage(
-                      parcel: parcel,
-                      authStore: widget.authStore,
+    // Centred column on wide (web) screens, so lines stay readable.
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720),
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
+          children: [
+            // Title: the field's address (or "My plot" when it has none) and
+            // its parcel number. Room on the right for the language button
+            // floating in the top corner. (Fields are found on the "My area"
+            // map, which has the address search.)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: MapButton.reservedEnd - 20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.navPlot.toUpperCase(),
+                    style: type.body.sm.copyWith(
+                      color: colors.mutedForeground,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          parcel == null ? l10n.rotationStartNeedPlot : l10n.rotationStartHint,
-          style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
-        ),
-        const SizedBox(height: 24),
-
-        // Parcels near the user's location (from the map)
-        if (nearby.isNotEmpty) ...[
-          Text(l10n.nearbyParcelsSection, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          NearbyPlotList(
-            parcels: nearby,
-            selectedId: parcel?.id,
-            onSelected: widget.store.select,
-          ),
-          const SizedBox(height: 24),
-        ],
-
-        // Plot input form (left as-is)
-        // Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
-        // const SizedBox(height: 8),
-        // The address is typed in the search field at the top.
-        // No "Save" button until the plot can be saved somewhere (it used
-        // to clear the form without saving anything).
-        PlotInput(address: parcel?.address ?? ''),
-        const SizedBox(height: 24),
-
-        // Info cards
-        Text(l10n.infoSection, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: _InfoCard(
-                icon: Icons.landscape_outlined,
-                label: l10n.soil,
-                value: '—',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _InfoCard(icon: Icons.grass, label: l10n.crop, value: '—'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _InfoCard(
-                icon: Icons.water_drop_outlined,
-                label: l10n.moisture,
-                value: '—',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _InfoCard(
-                icon: Icons.thermostat_outlined,
-                label: l10n.temperature,
-                value: '—',
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-/// The same map as the "Map" screen, but view-only (no tap handler, so the
-/// parcels cannot be chosen here), fitted around the field, with its address
-/// on top.
-class _FieldMap extends StatelessWidget {
-  const _FieldMap({
-    required this.field,
-    required this.nearby,
-    required this.caption,
-  });
-
-  final Parcel field;
-  final List<Parcel> nearby;
-  final String caption;
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: ParcelMap(myField: field, parcels: nearby, fitMyField: true),
-          ),
-          Positioned(
-            top: 8,
-            left: 8,
-            right: 8,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                  const SizedBox(height: 6),
+                  Semantics(
+                    header: true,
+                    child: Text(
+                      parcel?.address ?? l10n.plotName,
+                      style: type.display.xl2.copyWith(
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.6,
+                        height: 1.15,
+                        color: colors.foreground,
+                      ),
+                    ),
                   ),
-                  child: Text(caption),
-                ),
+                  if (parcel != null) ...[
+                    const SizedBox(height: 10),
+                    FBadge(
+                      variant: FBadgeVariant.secondary,
+                      child: Text(l10n.parcelNumber(parcel.id)),
+                    ),
+                  ],
+                ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+            const SizedBox(height: 20),
 
-class _InfoCard extends StatelessWidget {
-  const _InfoCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+            // Map: the field once chosen, a quiet placeholder before that.
+            FCard(
+              clipBehavior: Clip.antiAlias,
+              child: SizedBox(
+                height: 240,
+                child: parcel != null
+                    ? ParcelMap(
+                        myField: parcel,
+                        parcels: nearby,
+                        fitMyField: true,
+                      )
+                    : ColoredBox(
+                        color: colors.muted,
+                        child: Center(
+                          child: Icon(
+                            FLucideIcons.map,
+                            size: 40,
+                            color: colors.mutedForeground,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 16),
 
-  final IconData icon;
-  final String label;
-  final String value;
+            FButton(
+              size: FButtonSizeVariant.lg,
+              onPress: parcel == null
+                  ? null
+                  : () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => RotationWizardPage(
+                          parcel: parcel,
+                          authStore: widget.authStore,
+                        ),
+                      ),
+                    ),
+              prefix: const Icon(FLucideIcons.refreshCcw),
+              child: Flexible(
+                child: Text(l10n.rotationStart, textAlign: TextAlign.center),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              parcel == null
+                  ? l10n.rotationStartNeedPlot
+                  : l10n.rotationStartHint,
+              style: type.body.md.copyWith(color: colors.mutedForeground),
+            ),
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon),
-            const SizedBox(height: 8),
-            Text(label, style: theme.textTheme.labelMedium),
-            Text(value, style: theme.textTheme.titleMedium),
+            // What NASA data and the registers say about the field. Fills in
+            // as the data arrives (progress bar until then).
+            const SizedBox(height: 36),
+            FieldConditionsSection(
+              controller: _conditions,
+              hasField: parcel != null,
+              onShowOnMap: widget.onShowConditions,
+            ),
           ],
         ),
       ),
