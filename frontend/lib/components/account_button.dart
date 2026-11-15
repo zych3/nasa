@@ -105,19 +105,21 @@ class _AccountSheet extends StatelessWidget {
                   label: Text(l10n.myCropsTitle),
                 ),
                 const SizedBox(height: 12),
-                FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(64),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
-                  onPressed: () => _closeAndOpen(
-                    context,
-                    (navContext) => MyPlansPage.open(navContext, store),
-                  ),
-                  icon: const Icon(Icons.bookmarks_outlined),
-                  label: Text(l10n.accountMyPlans),
+              ],
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(64),
+                  textStyle: const TextStyle(fontSize: 18),
                 ),
-                const SizedBox(height: 12),
+                onPressed: () => _closeAndOpen(
+                  context,
+                  (navContext) => MyPlansPage.open(navContext, store),
+                ),
+                icon: const Icon(Icons.bookmarks_outlined),
+                label: Text(l10n.accountMyPlans),
+              ),
+              const SizedBox(height: 12),
+              if (signedIn) ...[
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(64),

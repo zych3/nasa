@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../api/api_client.dart';
 import '../components/rotation/plan_reading.dart';
 import '../components/rotation/plan_timeline.dart';
 import '../components/rotation/rating_row.dart';
@@ -12,9 +11,9 @@ import '../models/parcel.dart';
 import '../models/rotation_report.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/crop_repository.dart';
+import '../repositories/local_plans_store.dart';
 import '../repositories/rotation_repository.dart';
 import '../widgets/read_aloud_button.dart';
-import 'auth_page.dart';
 
 class RotationReportPage extends StatefulWidget {
   const RotationReportPage({
@@ -23,15 +22,20 @@ class RotationReportPage extends StatefulWidget {
     required this.answers,
     required this.authStore,
     this.repository,
+    this.plans,
   });
 
   final Parcel parcel;
   final RotationAnswers answers;
 
-  /// Saving a plan needs an account; without one the sign-in page opens first.
+  /// Saving never needs an account; it only decides where the plan is kept
+  /// (the phone, and the account too when signed in).
   final AuthStore authStore;
 
   final RotationRepository? repository;
+
+  /// Where saved plans go (the app's own by default).
+  final LocalPlansStore? plans;
 
   @override
   State<RotationReportPage> createState() => _RotationReportPageState();
@@ -40,6 +44,7 @@ class RotationReportPage extends StatefulWidget {
 class _RotationReportPageState extends State<RotationReportPage> {
   late final RotationRepository _repository =
       widget.repository ?? RotationRepository();
+  late final LocalPlansStore _plans = widget.plans ?? LocalPlansStore.shared;
   late Future<RotationReport> _report = _load();
   List<Crop> _catalogue = const [];
 
@@ -49,7 +54,7 @@ class _RotationReportPageState extends State<RotationReportPage> {
   /// The plan the user picked in "More details" (null: the recommended one).
   RotationPlan? _choice;
 
-  /// Plans already saved to the profile, so the button says so.
+  /// Plans already saved, so the button says so.
   final Set<RotationPlan> _saved = {};
   bool _saving = false;
 
@@ -88,25 +93,20 @@ class _RotationReportPageState extends State<RotationReportPage> {
     return plans.best;
   }
 
-  /// Keeps [plan] in the user's profile; signs in first when needed.
+  /// Keeps [plan] on the phone; with an account it is copied there too.
+  /// Never asks the user to sign in.
   Future<void> _save(GoalPlans plans, RotationPlan plan) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final auth = widget.authStore;
+    final signedIn = widget.authStore.status == AuthStatus.signedIn;
 
     void say(String text) => messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(text)));
 
-    if (auth.status != AuthStatus.signedIn) {
-      await AuthPage.open(context, auth);
-      if (!mounted || auth.status != AuthStatus.signedIn) return;
-    }
-
     setState(() => _saving = true);
     try {
-      await _repository.savePlan(
-        authToken: auth.token!,
+      final kept = await _plans.add(
         parcelId: widget.parcel.id,
         lat: widget.parcel.center.latitude,
         lon: widget.parcel.center.longitude,
@@ -115,16 +115,11 @@ class _RotationReportPageState extends State<RotationReportPage> {
         answers: widget.answers,
       );
       if (!mounted) return;
-      setState(() => _saved.add(plan));
-      say(l10n.reportSaveDone);
-    } on ApiException catch (e) {
-      if (e.statusCode == 401) {
-        await auth.signOut();
-        say(l10n.reportSaveSessionExpired);
-      } else if (e.code == 'too_many_plans') {
-        say(l10n.reportSaveTooMany);
+      if (kept) {
+        setState(() => _saved.add(plan));
+        say(signedIn ? l10n.reportSaveDoneAccount : l10n.reportSaveDone);
       } else {
-        say(l10n.reportSaveFailed);
+        say(l10n.reportSaveTooMany);
       }
     } catch (_) {
       say(l10n.reportSaveFailed);
@@ -132,6 +127,9 @@ class _RotationReportPageState extends State<RotationReportPage> {
       if (mounted) setState(() => _saving = false);
     }
   }
+
+  /// Leaves the planning and goes back to the start of the app.
+  void _finish() => Navigator.of(context).popUntil((route) => route.isFirst);
 
   /// Everything the report shows, in the order it shows it.
   String _readAloud(AppLocalizations l10n) {
@@ -457,6 +455,17 @@ class _RotationReportPageState extends State<RotationReportPage> {
           icon: const Icon(Icons.info_outline),
           label: Text(l10n.moreDetails),
           onPressed: () => _showDetails(report, plans.goal, plan, names),
+        ),
+        const SizedBox(height: 12),
+        // Always there: planning can end without saving anything.
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            textStyle: const TextStyle(fontSize: 18),
+          ),
+          icon: const Icon(Icons.check),
+          label: Text(l10n.reportDone),
+          onPressed: _finish,
         ),
         const SizedBox(height: 16),
       ],

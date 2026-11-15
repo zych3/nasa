@@ -825,7 +825,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get reportPlanSaved => 'Plan zapisany';
 
   @override
-  String get reportSaveDone => 'Plan jest zapisany w Twoim profilu.';
+  String get reportSaveDone => 'Plan jest zapisany w tym telefonie.';
+
+  @override
+  String get reportSaveDoneAccount =>
+      'Plan jest zapisany w tym telefonie i na Twoim koncie.';
+
+  @override
+  String get reportDone => 'Gotowe';
 
   @override
   String get reportSaveFailed =>
@@ -1295,7 +1302,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get myPlansDeleteTitle => 'Usunąć ten plan?';
 
   @override
-  String get myPlansDeleteBody => 'Zostanie usunięty z Twojego profilu.';
+  String get myPlansDeleteBody =>
+      'Zostanie usunięty z tego telefonu i z Twojego konta.';
 
   @override
   String get myPlansDeleted => 'Plan usunięty.';

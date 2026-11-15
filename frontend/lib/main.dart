@@ -9,6 +9,7 @@ import 'l10n/language_options.dart';
 import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'repositories/auth_store.dart';
+import 'repositories/local_plans_store.dart';
 import 'repositories/selected_plot_store.dart';
 import 'screens/overlays_screen.dart';
 
@@ -16,7 +17,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final plotStore = SelectedPlotStore();
   final authStore = AuthStore();
-  await Future.wait([plotStore.load(), authStore.load()]);
+  final plans = LocalPlansStore.shared;
+  await Future.wait([plotStore.load(), authStore.load(), plans.load()]);
+  // With an account the plans on the phone are merged with it on sign-in.
+  plans.attach(authStore);
   runApp(FieldShiftApp(plotStore: plotStore, authStore: authStore));
 }
 

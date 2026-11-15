@@ -8,10 +8,10 @@ import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/account.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/models/rotation_report.dart';
-import 'package:hopito_field_shift/pages/auth_page.dart';
 import 'package:hopito_field_shift/pages/rotation_report_page.dart';
 import 'package:hopito_field_shift/repositories/auth_repository.dart';
 import 'package:hopito_field_shift/repositories/auth_store.dart';
+import 'package:hopito_field_shift/repositories/local_plans_store.dart';
 import 'package:hopito_field_shift/repositories/rotation_repository.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -58,17 +58,7 @@ Map<String, dynamic> _reportJson() => {
   'inputs': <dynamic>[],
 };
 
-class _Saved {
-  _Saved(this.token, this.goal, this.plan);
-  final String token;
-  final String goal;
-  final RotationPlan plan;
-}
-
 class _FakeRotations extends RotationRepository {
-  final saved = <_Saved>[];
-  Object? failWith;
-
   @override
   Future<RotationReport> getReport({
     required String? parcelId,
@@ -76,20 +66,28 @@ class _FakeRotations extends RotationRepository {
     required double lon,
     required RotationAnswers answers,
   }) async => RotationReport.fromJson(_reportJson());
+}
 
-  @override
-  Future<void> savePlan({
-    required String authToken,
-    required String? parcelId,
-    required double lat,
-    required double lon,
-    required String goal,
-    required RotationPlan plan,
-    required RotationAnswers answers,
-  }) async {
-    if (failWith != null) throw failWith!;
-    saved.add(_Saved(authToken, goal, plan));
-  }
+/// The backend's plans endpoint: remembers what it was sent.
+class _Server {
+  final posted = <Map<String, dynamic>>[];
+  final tokens = <String?>[];
+  int? failWith;
+
+  ApiClient get api => ApiClient(
+    baseUrl: 'http://api',
+    httpClient: MockClient((request) async {
+      if (failWith != null) {
+        return http.Response(jsonEncode({'code': 'x'}), failWith!);
+      }
+      if (request.method == 'POST') {
+        tokens.add(request.headers['Authorization']);
+        posted.add(jsonDecode(request.body) as Map<String, dynamic>);
+        return http.Response(jsonEncode({'id': 's${posted.length}'}), 201);
+      }
+      return http.Response(jsonEncode(<dynamic>[]), 200);
+    }),
+  );
 }
 
 class _FakeAuth implements AuthRepository {
@@ -127,7 +125,7 @@ final _parcel = Parcel(
 
 Future<void> _open(
   WidgetTester tester,
-  _FakeRotations repo,
+  LocalPlansStore plans,
   AuthStore store,
 ) async {
   tester.view.physicalSize = const Size(800, 2400);
@@ -141,14 +139,27 @@ Future<void> _open(
         AppLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
-      home: RotationReportPage(
-        parcel: _parcel,
-        answers: const RotationAnswers(pastCrops: ['rye']),
-        authStore: store,
-        repository: repo,
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => RotationReportPage(
+                  parcel: _parcel,
+                  answers: const RotationAnswers(pastCrops: ['rye']),
+                  authStore: store,
+                  repository: _FakeRotations(),
+                  plans: plans,
+                ),
+              ),
+            ),
+            child: const Text('start'),
+          ),
+        ),
       ),
     ),
   );
+  await tester.tap(find.text('start'));
   await tester.pumpAndSettle();
 }
 
@@ -222,21 +233,30 @@ void main() {
   });
 
   group('report page', () {
-    testWidgets('saves the shown plan and then says it is saved', (
+    late _Server server;
+    late LocalPlansStore plans;
+
+    setUp(() {
+      server = _Server();
+      plans = LocalPlansStore(apiClient: server.api);
+    });
+
+    testWidgets('without an account the plan is kept on the phone', (
       tester,
     ) async {
-      final repo = _FakeRotations();
-      await _open(tester, repo, await _signedIn());
+      final guest = AuthStore(repository: _FakeAuth());
+      await _open(tester, plans, guest);
 
       await tester.tap(find.text('Save this plan'));
       await tester.pumpAndSettle();
 
-      expect(repo.saved, hasLength(1));
-      expect(repo.saved.single.token, 'tok');
-      expect(repo.saved.single.goal, 'balanced');
-      expect(repo.saved.single.plan.cycle.single.crop.id, 'Oats');
+      expect(find.text('Sign in'), findsNothing);
+      expect(plans.items, hasLength(1));
+      expect(plans.items.single.goal, 'balanced');
+      expect(plans.items.single.plan.cycle.single.crop.id, 'Oats');
+      expect(server.posted, isEmpty);
       expect(find.text('Plan saved'), findsOneWidget);
-      expect(find.text('The plan is saved in your profile.'), findsOneWidget);
+      expect(find.text('The plan is saved on this phone.'), findsOneWidget);
       final button = tester.widget<FilledButton>(
         find.ancestor(
           of: find.text('Plan saved'),
@@ -246,11 +266,57 @@ void main() {
       expect(button.onPressed, isNull);
     });
 
+    testWidgets('with an account it is also copied there', (tester) async {
+      await _open(tester, plans..attach(await _signedIn()), await _signedIn());
+
+      await tester.tap(find.text('Save this plan'));
+      await tester.pumpAndSettle();
+
+      expect(plans.items, hasLength(1));
+      expect(plans.items.single.serverId, 's1');
+      expect(server.tokens, ['Bearer tok']);
+      expect(server.posted.single['goal'], 'balanced');
+      expect(
+        find.text('The plan is saved on this phone and in your account.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('an unreachable account does not lose the plan', (
+      tester,
+    ) async {
+      server.failWith = 503;
+      final store = await _signedIn();
+      await _open(tester, plans..attach(store), store);
+
+      await tester.tap(find.text('Save this plan'));
+      await tester.pumpAndSettle();
+
+      expect(plans.items, hasLength(1));
+      expect(plans.items.single.serverId, isNull);
+      expect(store.status, AuthStatus.signedIn);
+      expect(find.text('Plan saved'), findsOneWidget);
+    });
+
+    testWidgets('an expired sign-in signs out but keeps the plan', (
+      tester,
+    ) async {
+      server.failWith = 401;
+      final store = await _signedIn();
+      await _open(tester, plans..attach(store), store);
+
+      await tester.tap(find.text('Save this plan'));
+      await tester.pumpAndSettle();
+
+      expect(plans.items, hasLength(1));
+      expect(store.status, AuthStatus.guest);
+      expect(find.text('Plan saved'), findsOneWidget);
+    });
+
     testWidgets('a plan chosen in More details becomes the one that is saved', (
       tester,
     ) async {
-      final repo = _FakeRotations();
-      await _open(tester, repo, await _signedIn());
+      await _open(tester, plans, AuthStore(repository: _FakeAuth()));
 
       await tester.tap(find.text('More details'));
       await tester.pumpAndSettle();
@@ -269,14 +335,13 @@ void main() {
       await tester.tap(find.text('Save this plan'));
       await tester.pumpAndSettle();
 
-      expect(repo.saved.single.plan.cycle.single.crop.id, 'Rye');
+      expect(plans.items.single.plan.cycle.single.crop.id, 'Rye');
     });
 
     testWidgets('going back to the recommended plan saves that one', (
       tester,
     ) async {
-      final repo = _FakeRotations();
-      await _open(tester, repo, await _signedIn());
+      await _open(tester, plans, AuthStore(repository: _FakeAuth()));
       await tester.tap(find.text('More details'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Option 1'));
@@ -289,67 +354,20 @@ void main() {
       await tester.tap(find.text('Save this plan'));
       await tester.pumpAndSettle();
 
-      expect(repo.saved.single.plan.cycle.single.crop.id, 'Oats');
+      expect(plans.items.single.plan.cycle.single.crop.id, 'Oats');
     });
 
-    testWidgets('without an account the sign-in page opens first', (
+    testWidgets('Done leaves the planning without saving anything', (
       tester,
     ) async {
-      final repo = _FakeRotations();
-      await _open(tester, repo, AuthStore(repository: _FakeAuth()));
+      await _open(tester, plans, AuthStore(repository: _FakeAuth()));
 
-      await tester.tap(find.text('Save this plan'));
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Done'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(AuthPage), findsOneWidget);
-      expect(repo.saved, isEmpty);
-    });
-
-    testWidgets('an expired sign-in is reported and the user is signed out', (
-      tester,
-    ) async {
-      final repo = _FakeRotations()
-        ..failWith = ApiException('x', statusCode: 401);
-      final store = await _signedIn();
-      await _open(tester, repo, store);
-
-      await tester.tap(find.text('Save this plan'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text('Your sign-in expired. Please sign in again.'),
-        findsOne,
-      );
-      expect(store.status, AuthStatus.guest);
-      expect(find.text('Save this plan'), findsOneWidget);
-    });
-
-    testWidgets('too many saved plans gets its own message', (tester) async {
-      final repo = _FakeRotations()
-        ..failWith = ApiException('x', statusCode: 400, code: 'too_many_plans');
-      await _open(tester, repo, await _signedIn());
-
-      await tester.tap(find.text('Save this plan'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text('You have too many saved plans. Delete one first.'),
-        findsOneWidget,
-      );
-      expect(find.text('Save this plan'), findsOneWidget);
-    });
-
-    testWidgets('any other failure says the save failed', (tester) async {
-      final repo = _FakeRotations()..failWith = Exception('network');
-      await _open(tester, repo, await _signedIn());
-
-      await tester.tap(find.text('Save this plan'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text('Could not save the plan. Please try again.'),
-        findsOneWidget,
-      );
+      expect(find.text('start'), findsOneWidget);
+      expect(find.text('Save this plan'), findsNothing);
+      expect(plans.items, isEmpty);
     });
   });
 }

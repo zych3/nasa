@@ -211,7 +211,9 @@
   "detailsChoosePlan": "Wybierz ten plan",
   "reportSavePlan": "Zapisz ten plan",
   "reportPlanSaved": "Plan zapisany",
-  "reportSaveDone": "Plan jest zapisany w Twoim profilu.",
+  "reportSaveDone": "Plan jest zapisany w tym telefonie.",
+  "reportSaveDoneAccount": "Plan jest zapisany w tym telefonie i na Twoim koncie.",
+  "reportDone": "Gotowe",
   "reportSaveFailed": "Nie udało się zapisać planu. Spróbuj ponownie.",
   "reportSaveTooMany": "Masz za dużo zapisanych planów. Usuń któryś.",
   "reportSaveSessionExpired": "Logowanie wygasło. Zaloguj się ponownie.",
@@ -338,7 +340,7 @@
   "myPlansDelete": "Usuń",
   "myPlansCancel": "Anuluj",
   "myPlansDeleteTitle": "Usunąć ten plan?",
-  "myPlansDeleteBody": "Zostanie usunięty z Twojego profilu.",
+  "myPlansDeleteBody": "Zostanie usunięty z tego telefonu i z Twojego konta.",
   "myPlansDeleted": "Plan usunięty.",
   "myPlansDeleteFailed": "Nie udało się usunąć planu. Spróbuj ponownie."
 }

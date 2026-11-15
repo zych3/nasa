@@ -1373,8 +1373,20 @@ abstract class AppLocalizations {
   /// No description provided for @reportSaveDone.
   ///
   /// In en, this message translates to:
-  /// **'The plan is saved in your profile.'**
+  /// **'The plan is saved on this phone.'**
   String get reportSaveDone;
+
+  /// No description provided for @reportSaveDoneAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan is saved on this phone and in your account.'**
+  String get reportSaveDoneAccount;
+
+  /// No description provided for @reportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get reportDone;
 
   /// No description provided for @reportSaveFailed.
   ///
@@ -2135,7 +2147,7 @@ abstract class AppLocalizations {
   /// No description provided for @myPlansDeleteBody.
   ///
   /// In en, this message translates to:
-  /// **'It will be removed from your profile.'**
+  /// **'It will be removed from this phone and from your account.'**
   String get myPlansDeleteBody;
 
   /// No description provided for @myPlansDeleted.
