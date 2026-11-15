@@ -683,7 +683,7 @@ abstract class AppLocalizations {
   /// No description provided for @overlaysErrorNetwork.
   ///
   /// In en, this message translates to:
-  /// **'We could not get the data. Check your internet and try again.'**
+  /// **'We cannot reach the app\'s server. Try again in a moment.'**
   String get overlaysErrorNetwork;
 
   /// No description provided for @overlaysErrorServer.
@@ -1675,6 +1675,324 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in or create an account'**
   String get accountSignIn;
+
+  /// No description provided for @fieldDataNoField.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your field on the map. Then you will see here what NASA data and the registers say about it.'**
+  String get fieldDataNoField;
+
+  /// No description provided for @fieldDataLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting data from NASA and the registers… The first time this can take up to 20 seconds.'**
+  String get fieldDataLoading;
+
+  /// No description provided for @fieldDataStepClimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather and soil moisture in the area (NASA POWER)'**
+  String get fieldDataStepClimate;
+
+  /// No description provided for @fieldDataStepParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your parcel: land register, soil map, terrain'**
+  String get fieldDataStepParcel;
+
+  /// No description provided for @fieldDataStepDone.
+  ///
+  /// In en, this message translates to:
+  /// **'ready'**
+  String get fieldDataStepDone;
+
+  /// No description provided for @fieldDataStepFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'not available'**
+  String get fieldDataStepFailed;
+
+  /// No description provided for @fieldDataStepLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'loading'**
+  String get fieldDataStepLoading;
+
+  /// No description provided for @fieldConditionSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: {value}'**
+  String fieldConditionSentence(String title, String value);
+
+  /// No description provided for @fieldFactSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String fieldFactSentence(String label, String value);
+
+  /// No description provided for @fieldWarningsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch out'**
+  String get fieldWarningsHeading;
+
+  /// No description provided for @fieldConditionsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'In your area (NASA data)'**
+  String get fieldConditionsHeading;
+
+  /// No description provided for @fieldShowOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on the Conditions map'**
+  String get fieldShowOnMap;
+
+  /// No description provided for @fieldFactsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'About your parcel'**
+  String get fieldFactsHeading;
+
+  /// No description provided for @fieldFactsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'We found no register data for this parcel. The NASA data above still applies to the area.'**
+  String get fieldFactsNone;
+
+  /// No description provided for @fieldFactArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get fieldFactArea;
+
+  /// No description provided for @fieldFactAreaValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{area} ha'**
+  String fieldFactAreaValue(String area);
+
+  /// No description provided for @fieldFactQualityClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil quality class (land register)'**
+  String get fieldFactQualityClass;
+
+  /// No description provided for @fieldFactSurveyed.
+  ///
+  /// In en, this message translates to:
+  /// **'surveyed in {year}'**
+  String fieldFactSurveyed(String year);
+
+  /// No description provided for @fieldFactSoilComplex.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil complex (soil map)'**
+  String get fieldFactSoilComplex;
+
+  /// No description provided for @fieldFactSoilType.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil type (soil map)'**
+  String get fieldFactSoilType;
+
+  /// No description provided for @fieldFactSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope'**
+  String get fieldFactSlope;
+
+  /// No description provided for @fieldFactSlopeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} ({slope} %)'**
+  String fieldFactSlopeValue(String level, String slope);
+
+  /// No description provided for @fieldSlopeFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'flat'**
+  String get fieldSlopeFlat;
+
+  /// No description provided for @fieldSlopeGentle.
+  ///
+  /// In en, this message translates to:
+  /// **'gentle slope'**
+  String get fieldSlopeGentle;
+
+  /// No description provided for @fieldSlopeModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'moderate slope'**
+  String get fieldSlopeModerate;
+
+  /// No description provided for @fieldSlopeSteep.
+  ///
+  /// In en, this message translates to:
+  /// **'steep'**
+  String get fieldSlopeSteep;
+
+  /// No description provided for @fieldFactElevation.
+  ///
+  /// In en, this message translates to:
+  /// **'{height} m above sea level'**
+  String fieldFactElevation(String height);
+
+  /// No description provided for @fieldFactPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil reaction (pH)'**
+  String get fieldFactPh;
+
+  /// No description provided for @fieldFactPhValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} (pH {ph})'**
+  String fieldFactPhValue(String level, String ph);
+
+  /// No description provided for @fieldPhAcidic.
+  ///
+  /// In en, this message translates to:
+  /// **'acidic – liming may help'**
+  String get fieldPhAcidic;
+
+  /// No description provided for @fieldPhSlightlyAcidic.
+  ///
+  /// In en, this message translates to:
+  /// **'slightly acidic'**
+  String get fieldPhSlightlyAcidic;
+
+  /// No description provided for @fieldPhNeutral.
+  ///
+  /// In en, this message translates to:
+  /// **'neutral'**
+  String get fieldPhNeutral;
+
+  /// No description provided for @fieldPhAlkaline.
+  ///
+  /// In en, this message translates to:
+  /// **'alkaline'**
+  String get fieldPhAlkaline;
+
+  /// No description provided for @fieldFactOrganic.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic matter (organic carbon)'**
+  String get fieldFactOrganic;
+
+  /// No description provided for @fieldFactOrganicValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} g per kg of soil'**
+  String fieldFactOrganicValue(String value);
+
+  /// No description provided for @fieldFactTexture.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil make-up'**
+  String get fieldFactTexture;
+
+  /// No description provided for @fieldFactTextureValue.
+  ///
+  /// In en, this message translates to:
+  /// **'sand {sand} %, clay {clay} %'**
+  String fieldFactTextureValue(String sand, String clay);
+
+  /// No description provided for @fieldDataStepSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{source}: {state}'**
+  String fieldDataStepSemantics(String source, String state);
+
+  /// No description provided for @overlaysErrorSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'The NASA data is taking longer than usual. Try again: the server keeps loading it, so the next try is usually quick.'**
+  String get overlaysErrorSlow;
+
+  /// No description provided for @overlayStressCause.
+  ///
+  /// In en, this message translates to:
+  /// **'{cause, select, drought{Main cause: drought in the root zone} heat{Main cause: hot days} other{Plants are under little stress}}'**
+  String overlayStressCause(String cause);
+
+  /// No description provided for @overlayStressDrought.
+  ///
+  /// In en, this message translates to:
+  /// **'Drought: {points} of {max} points'**
+  String overlayStressDrought(String points, String max);
+
+  /// No description provided for @overlayStressDroughtWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Drought: {points} of {max} points (soil moisture {moisture})'**
+  String overlayStressDroughtWith(String points, String max, String moisture);
+
+  /// No description provided for @overlayStressHeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat: {points} of {max} points'**
+  String overlayStressHeat(String points, String max);
+
+  /// No description provided for @overlayStressHeatWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat: {points} of {max} points ({days} days above 30 °C)'**
+  String overlayStressHeatWith(String points, String max, String days);
+
+  /// No description provided for @overlayStressNotDisease.
+  ///
+  /// In en, this message translates to:
+  /// **'This estimate is about drought and heat only. It does not detect diseases or pests: see the “Fungal weather” and “Pest warmth” layers.'**
+  String get overlayStressNotDisease;
+
+  /// No description provided for @overlayFungalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fungal weather'**
+  String get overlayFungalTitle;
+
+  /// No description provided for @overlayStepsFungal.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{rarely} s1{sometimes} s2{often} other{very often}}'**
+  String overlayStepsFungal(String step);
+
+  /// No description provided for @overlayFungalRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted days: mild (10–25 °C) and very humid air (85 % or more), or humid air (75 % or more) with rain.'**
+  String get overlayFungalRule;
+
+  /// No description provided for @overlayFungalNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Such weather helps fungal diseases such as late blight, mildews and rusts. This is not a detected disease: check your plants.'**
+  String get overlayFungalNote;
+
+  /// No description provided for @overlayPestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pest warmth'**
+  String get overlayPestTitle;
+
+  /// No description provided for @overlayStepsPest.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{insects dormant} s1{insects starting to develop} s2{insects developing fast} other{many insect generations}}'**
+  String overlayStepsPest(String step);
+
+  /// No description provided for @overlayPestRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Warmth since 1 January (degree-days above 10 °C). The more warmth, the faster insects develop.'**
+  String get overlayPestRule;
+
+  /// No description provided for @overlayPestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants.'**
+  String get overlayPestNote;
 }
 
 class _AppLocalizationsDelegate

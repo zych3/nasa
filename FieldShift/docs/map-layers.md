@@ -27,7 +27,10 @@ Responses:
 - **502** `ProblemDetails`: NASA POWER unavailable.
 
 Headers: `Cache-Control: public, max-age=3600`; responses are gzip/brotli compressed (10 years ≈ 16 kB → 7 kB).
-The first call for a new point takes ~5–10 s (NASA POWER + SoilGrids); repeated calls come from a 24 h server cache.
+The first call for a new point takes ~2–5 s: NASA POWER daily data is kept in PostgreSQL (`provider_cache`, 7 days), and
+the slow optional sources (SoilGrids, the parcel's slope) get at most 2 s after NASA has answered; they finish in the
+background and are stored, and a response without them is cached for 2 minutes only. Repeated calls come from a 24 h
+memory cache. A download is not cancelled when the browser gives up, so a retry is answered from the cache.
 
 ### `GET /api/map-layers/grid`
 
@@ -37,8 +40,8 @@ A cell is 0.5° latitude × 0.625° longitude (MERRA-2 grid, about 55 × 43 km i
 `/api/map-layers` returns for that point (NASA POWER gives every point of a cell the same values).
 
 Parameters as in `/api/map-layers`. `layers` may only name layers that come from NASA POWER alone: `temperature`,
-`heatStress`, `frostRisk`, `precipitation`, `extremeRain`, `soilMoisture`, `plantStress` (the default is all of
-them). Soil and `erosionRisk` (depends on the field's soil) are point-only, because SoilGrids answers only a few
+`heatStress`, `frostRisk`, `precipitation`, `extremeRain`, `soilMoisture`, `plantStress`, `fungalRisk`, `pestHeat` (the
+default is all of them). Soil and `erosionRisk` (depends on the field's soil) are point-only, because SoilGrids answers only a few
 requests per minute; `evaporation` is not on the grid either.
 
 Responses: **200** `MapLayersGridResponse`; **400** as above (also for a layer the grid does not have); **502** when
@@ -85,6 +88,14 @@ interface MapLayersGridResponse {
 | 7 | `evaporation` | Parowanie | mm | Woda | |
 | 8 | `plantStress` | Stres roślinny (szacunek) | 0–100 | Rośliny i gleba | yes |
 | 9 | `erosionRisk` | Ryzyko erozji (szacunek) | 0–100 | Rośliny i gleba | yes |
+| 10 | `fungalRisk` | Pogoda sprzyjająca chorobom grzybowym (szacunek) | dni | Rośliny i gleba | yes |
+| 11 | `pestHeat` | Ciepło sprzyjające szkodnikom (szacunek) | °C·dni | Rośliny i gleba | yes |
+
+`plantStress` has `extra` with its parts: `drought` (0–60 points), `heat` (0–40 points), `soilMoisture` and
+`heatDays`, so the app can say what drives the stress. `fungalRisk` counts days of the month that are mild (10–25 °C
+daily mean) and very humid (RH2M ≥ 85 %), or humid (≥ 75 %) with ≥ 1 mm of rain. `pestHeat` is degree-days above
+10 °C summed from 1 January (unknown for a range that starts after January). Both are weather signals from ~50 km
+NASA POWER cells: they do not detect diseases or pests, and the app says so.
 
 Only `temperature`, `precipitation` and `soilMoisture` have `anomalies` + `anomalyLegend` (difference from the
 same calendar month's average). `isEstimate: true` layers must be shown with an "estimate" label (project

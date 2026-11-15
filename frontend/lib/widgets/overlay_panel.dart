@@ -114,11 +114,7 @@ class OverlayPanel extends StatelessWidget {
             liveRegion: true,
             child: _Notice(
               icon: Icons.cloud_off,
-              text: switch (controller.error) {
-                OverlayError.server => l10n.overlaysErrorServer,
-                OverlayError.badData => l10n.overlaysErrorBadData,
-                _ => l10n.overlaysErrorNetwork,
-              },
+              text: overlayErrorText(l10n, controller.error),
             ),
           ),
           const SizedBox(height: 12),
@@ -508,3 +504,12 @@ class _BigButton extends StatelessWidget {
     );
   }
 }
+
+/// Words for [error] (also used by the "My field" summary).
+String overlayErrorText(AppLocalizations l10n, OverlayError? error) =>
+    switch (error) {
+      OverlayError.server => l10n.overlaysErrorServer,
+      OverlayError.badData => l10n.overlaysErrorBadData,
+      OverlayError.slow => l10n.overlaysErrorSlow,
+      _ => l10n.overlaysErrorNetwork,
+    };

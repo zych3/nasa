@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -183,20 +184,31 @@ class MapLayersRepository {
     return future;
   }
 
+  /// GET [path] for [point]. After a timeout it asks once more: the backend
+  /// keeps downloading in the background and stores the result, so the second
+  /// request usually gets it at once (the user sees one longer wait instead
+  /// of an error).
   Future<Map<String, dynamic>> _fetch(
     String path,
     LatLng point,
     Duration timeout,
-  ) async => _asObject(
-    await _api.getJson(
-      path,
-      query: {
-        'lat': point.latitude.toStringAsFixed(5),
-        'lon': point.longitude.toStringAsFixed(5),
-      },
-      timeout: timeout,
-    ),
-  );
+  ) async {
+    Future<Map<String, dynamic>> get() async => _asObject(
+      await _api.getJson(
+        path,
+        query: {
+          'lat': point.latitude.toStringAsFixed(5),
+          'lon': point.longitude.toStringAsFixed(5),
+        },
+        timeout: timeout,
+      ),
+    );
+    try {
+      return await get();
+    } on TimeoutException {
+      return get();
+    }
+  }
 
   static Map<String, dynamic> _asObject(Object? json) {
     if (json is Map<String, dynamic>) return json;

@@ -162,7 +162,8 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
                     FilledButton(
                       style: FilledButton.styleFrom(
                         minimumSize: const Size.fromHeight(60),
-                        textStyle: const TextStyle(fontSize: 20),
+                        textStyle: Theme.of(context).textTheme.labelLarge
+                            ?.copyWith(fontSize: 20),
                       ),
                       onPressed: _canContinue ? _next : null,
                       child: Text(last ? l10n.wizardShowPlan : l10n.wizardNext),

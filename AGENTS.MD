@@ -76,6 +76,12 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One widget per file, file names in `snake_case`, classes in `PascalCase`.
 - Use **relative imports** inside `lib/`.
 - Screens call a repository, never `ApiClient` directly. The repository returns mock data from `assets/mock/` when `useMock` is true, otherwise calls the backend.
+- Look: **forui** (`lib/app/app_theme.dart`: calm "paper and forest" palette, Inter, touch sizes, light/dark like
+  the phone). `main.dart` puts an `FTheme` above every route (`MaterialApp.builder`) and derives the Material theme
+  from it, so forui widgets (`FCard`, `FButton`, `FAlert`, `FBadge`, ...) and Material widgets match. Do not remove
+  that `FTheme`: forui widgets crash without it. Widget tests that show forui widgets need the same wrapper (see
+  `test/widget_test.dart`). Button styles: set sizes on a theme text style (`textTheme.labelLarge?.copyWith(...)`),
+  not `TextStyle(fontSize: ...)`, or the label loses the app font.
 - Keep state management simple (`setState` or `provider`). Do not add heavy architecture.
 - Backend base URL is a single constant. Remember: `localhost` for desktop/web, `10.0.2.2` for the Android emulator, the computer's LAN IP for a real phone.
 - Run `dart format .` and `flutter analyze` before committing.

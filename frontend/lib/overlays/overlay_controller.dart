@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show setEquals;
@@ -21,8 +22,12 @@ enum OverlayStatus {
 }
 
 enum OverlayError {
-  /// No connection or no answer in time: check the internet, try again.
+  /// Our server could not be reached (no connection, server not running).
+  /// Not necessarily the user's internet: the message does not claim it.
   network,
+
+  /// Our server did not answer in time (it was still getting NASA data).
+  slow,
 
   /// Our server answered with an error (e.g. 502 when NASA POWER is down):
   /// the user's internet is fine, trying again later may help.
@@ -239,11 +244,7 @@ class OverlayController extends ChangeNotifier {
     } catch (e) {
       if (_disposed || generation != _generation) return;
       debugPrint('Map layers for $place failed: $e');
-      _responseError = switch (e) {
-        FormatException() => OverlayError.badData,
-        ApiException() => OverlayError.server,
-        _ => OverlayError.network,
-      };
+      _responseError = overlayErrorOf(e);
       // Overlays with parcel details may still have something to show.
       _parse();
     }
@@ -522,3 +523,11 @@ class _BlockGrid {
     return c.latitude.abs() <= 90 && c.longitude.abs() <= 180;
   }
 }
+
+/// What went wrong, from an error of [MapLayersRepository].
+OverlayError overlayErrorOf(Object error) => switch (error) {
+  FormatException() => OverlayError.badData,
+  ApiException() => OverlayError.server,
+  TimeoutException() => OverlayError.slow,
+  _ => OverlayError.network,
+};

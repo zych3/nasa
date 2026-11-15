@@ -364,7 +364,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysErrorNetwork =>
-      'Nie udało się pobrać danych. Sprawdź internet i spróbuj ponownie.';
+      'Nie możemy połączyć się z serwerem aplikacji. Spróbuj ponownie za chwilę.';
 
   @override
   String get overlaysErrorServer =>
@@ -1008,4 +1008,225 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountSignIn => 'Zaloguj się lub załóż konto';
+
+  @override
+  String get fieldDataNoField =>
+      'Wybierz swoje pole na mapie. Wtedy zobaczysz tu, co mówią o nim dane NASA i rejestry.';
+
+  @override
+  String get fieldDataLoading =>
+      'Pobieramy dane z NASA i rejestrów… Za pierwszym razem może to potrwać do 20 sekund.';
+
+  @override
+  String get fieldDataStepClimate =>
+      'Pogoda i wilgotność gleby w okolicy (NASA POWER)';
+
+  @override
+  String get fieldDataStepParcel =>
+      'Twoja działka: ewidencja gruntów, mapa gleb, ukształtowanie terenu';
+
+  @override
+  String get fieldDataStepDone => 'gotowe';
+
+  @override
+  String get fieldDataStepFailed => 'niedostępne';
+
+  @override
+  String get fieldDataStepLoading => 'pobieranie';
+
+  @override
+  String fieldConditionSentence(String title, String value) {
+    return '$title: $value';
+  }
+
+  @override
+  String fieldFactSentence(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get fieldWarningsHeading => 'Na co uważać';
+
+  @override
+  String get fieldConditionsHeading => 'W Twojej okolicy (dane NASA)';
+
+  @override
+  String get fieldShowOnMap => 'Pokaż na mapie Warunki';
+
+  @override
+  String get fieldFactsHeading => 'O Twojej działce';
+
+  @override
+  String get fieldFactsNone =>
+      'Nie znaleźliśmy danych z rejestrów dla tej działki. Dane NASA powyżej dotyczą okolicy.';
+
+  @override
+  String get fieldFactArea => 'Powierzchnia';
+
+  @override
+  String fieldFactAreaValue(String area) {
+    return '$area ha';
+  }
+
+  @override
+  String get fieldFactQualityClass => 'Klasa gleby (ewidencja gruntów)';
+
+  @override
+  String fieldFactSurveyed(String year) {
+    return 'badanie z $year r.';
+  }
+
+  @override
+  String get fieldFactSoilComplex => 'Kompleks glebowy (mapa gleb)';
+
+  @override
+  String get fieldFactSoilType => 'Typ gleby (mapa gleb)';
+
+  @override
+  String get fieldFactSlope => 'Nachylenie terenu';
+
+  @override
+  String fieldFactSlopeValue(String level, String slope) {
+    return '$level ($slope %)';
+  }
+
+  @override
+  String get fieldSlopeFlat => 'płasko';
+
+  @override
+  String get fieldSlopeGentle => 'łagodny spadek';
+
+  @override
+  String get fieldSlopeModerate => 'umiarkowany spadek';
+
+  @override
+  String get fieldSlopeSteep => 'stromo';
+
+  @override
+  String fieldFactElevation(String height) {
+    return '$height m n.p.m.';
+  }
+
+  @override
+  String get fieldFactPh => 'Odczyn gleby (pH)';
+
+  @override
+  String fieldFactPhValue(String level, String ph) {
+    return '$level (pH $ph)';
+  }
+
+  @override
+  String get fieldPhAcidic => 'kwaśna – warto rozważyć wapnowanie';
+
+  @override
+  String get fieldPhSlightlyAcidic => 'lekko kwaśna';
+
+  @override
+  String get fieldPhNeutral => 'obojętna';
+
+  @override
+  String get fieldPhAlkaline => 'zasadowa';
+
+  @override
+  String get fieldFactOrganic => 'Próchnica (węgiel organiczny)';
+
+  @override
+  String fieldFactOrganicValue(String value) {
+    return '$value g na kg gleby';
+  }
+
+  @override
+  String get fieldFactTexture => 'Skład gleby';
+
+  @override
+  String fieldFactTextureValue(String sand, String clay) {
+    return 'piasek $sand %, glina $clay %';
+  }
+
+  @override
+  String fieldDataStepSemantics(String source, String state) {
+    return '$source: $state';
+  }
+
+  @override
+  String get overlaysErrorSlow =>
+      'Dane NASA ładują się dłużej niż zwykle. Spróbuj ponownie – serwer dalej je pobiera, więc następna próba zwykle jest szybka.';
+
+  @override
+  String overlayStressCause(String cause) {
+    String _temp0 = intl.Intl.selectLogic(cause, {
+      'drought': 'Główna przyczyna: susza w strefie korzeni',
+      'heat': 'Główna przyczyna: upały',
+      'other': 'Rośliny są w małym stresie',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStressDrought(String points, String max) {
+    return 'Susza: $points z $max pkt';
+  }
+
+  @override
+  String overlayStressDroughtWith(String points, String max, String moisture) {
+    return 'Susza: $points z $max pkt (wilgotność gleby $moisture)';
+  }
+
+  @override
+  String overlayStressHeat(String points, String max) {
+    return 'Upał: $points z $max pkt';
+  }
+
+  @override
+  String overlayStressHeatWith(String points, String max, String days) {
+    return 'Upał: $points z $max pkt ($days dni powyżej 30 °C)';
+  }
+
+  @override
+  String get overlayStressNotDisease =>
+      'Ten szacunek mówi tylko o suszy i upale. Nie wykrywa chorób ani szkodników – zobacz warstwy „Pogoda dla grzybów” i „Ciepło dla szkodników”.';
+
+  @override
+  String get overlayFungalTitle => 'Pogoda dla grzybów';
+
+  @override
+  String overlayStepsFungal(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'rzadko',
+      's1': 'czasem',
+      's2': 'często',
+      'other': 'bardzo często',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFungalRule =>
+      'Liczone dni: ciepło (10–25 °C) i bardzo wilgotne powietrze (od 85 %) albo wilgotne (od 75 %) z deszczem.';
+
+  @override
+  String get overlayFungalNote =>
+      'Taka pogoda sprzyja chorobom grzybowym, np. zarazie ziemniaka, mączniakom i rdzom. To nie jest wykryta choroba – obejrzyj rośliny.';
+
+  @override
+  String get overlayPestTitle => 'Ciepło dla szkodników';
+
+  @override
+  String overlayStepsPest(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'owady w spoczynku',
+      's1': 'początek rozwoju owadów',
+      's2': 'szybki rozwój owadów',
+      'other': 'wiele pokoleń owadów',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayPestRule =>
+      'Ciepło od 1 stycznia (stopniodni powyżej 10 °C). Im więcej ciepła, tym szybciej rozwijają się owady.';
+
+  @override
+  String get overlayPestNote =>
+      'Np. stonka ziemniaczana czy omacnica prosowianka. To nie jest wykrycie szkodników – sprawdź pułapki i rośliny.';
 }

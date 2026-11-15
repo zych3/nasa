@@ -20,12 +20,26 @@ class MapButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 2,
-      color: Theme.of(context).colorScheme.surface,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox.square(dimension: size, child: child),
+    final scheme = Theme.of(context).colorScheme;
+    // Thin border and a soft, wide shadow: stands out on any map without
+    // looking heavy.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.10),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: scheme.surface,
+        shape: CircleBorder(side: BorderSide(color: scheme.outline)),
+        clipBehavior: Clip.antiAlias,
+        child: SizedBox.square(dimension: size, child: child),
+      ),
     );
   }
 }

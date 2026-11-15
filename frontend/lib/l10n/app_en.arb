@@ -246,7 +246,7 @@
   "overlaysNoField": "No field is chosen yet. We show an example place.",
   "overlaysChooseField": "Choose my field on the map",
   "overlaysLoading": "Getting the data… The first time it can take up to 10 seconds.",
-  "overlaysErrorNetwork": "We could not get the data. Check your internet and try again.",
+  "overlaysErrorNetwork": "We cannot reach the app's server. Try again in a moment.",
   "overlaysErrorServer": "The data service is not working right now. Try again in a few minutes.",
   "overlaysErrorBadData": "The data we got is incomplete. Try again later.",
   "overlaysShowDemo": "Show example data",
@@ -688,5 +688,213 @@
   "accountTitle": "Account",
   "accountGuest": "You are using the app without an account.",
   "accountSignOut": "Sign out",
-  "accountSignIn": "Sign in or create an account"
+  "accountSignIn": "Sign in or create an account",
+  "fieldDataNoField": "Choose your field on the map. Then you will see here what NASA data and the registers say about it.",
+  "fieldDataLoading": "Getting data from NASA and the registers… The first time this can take up to 20 seconds.",
+  "fieldDataStepClimate": "Weather and soil moisture in the area (NASA POWER)",
+  "fieldDataStepParcel": "Your parcel: land register, soil map, terrain",
+  "fieldDataStepDone": "ready",
+  "fieldDataStepFailed": "not available",
+  "fieldDataStepLoading": "loading",
+  "fieldConditionSentence": "{title}: {value}",
+  "@fieldConditionSentence": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactSentence": "{label}: {value}",
+  "@fieldFactSentence": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldWarningsHeading": "Watch out",
+  "fieldConditionsHeading": "In your area (NASA data)",
+  "fieldShowOnMap": "Show on the Conditions map",
+  "fieldFactsHeading": "About your parcel",
+  "fieldFactsNone": "We found no register data for this parcel. The NASA data above still applies to the area.",
+  "fieldFactArea": "Area",
+  "fieldFactAreaValue": "{area} ha",
+  "@fieldFactAreaValue": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactQualityClass": "Soil quality class (land register)",
+  "fieldFactSurveyed": "surveyed in {year}",
+  "@fieldFactSurveyed": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactSoilComplex": "Soil complex (soil map)",
+  "fieldFactSoilType": "Soil type (soil map)",
+  "fieldFactSlope": "Slope",
+  "fieldFactSlopeValue": "{level} ({slope} %)",
+  "@fieldFactSlopeValue": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "slope": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldSlopeFlat": "flat",
+  "fieldSlopeGentle": "gentle slope",
+  "fieldSlopeModerate": "moderate slope",
+  "fieldSlopeSteep": "steep",
+  "fieldFactElevation": "{height} m above sea level",
+  "@fieldFactElevation": {
+    "placeholders": {
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactPh": "Soil reaction (pH)",
+  "fieldFactPhValue": "{level} (pH {ph})",
+  "@fieldFactPhValue": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "ph": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldPhAcidic": "acidic – liming may help",
+  "fieldPhSlightlyAcidic": "slightly acidic",
+  "fieldPhNeutral": "neutral",
+  "fieldPhAlkaline": "alkaline",
+  "fieldFactOrganic": "Organic matter (organic carbon)",
+  "fieldFactOrganicValue": "{value} g per kg of soil",
+  "@fieldFactOrganicValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactTexture": "Soil make-up",
+  "fieldFactTextureValue": "sand {sand} %, clay {clay} %",
+  "@fieldFactTextureValue": {
+    "placeholders": {
+      "sand": {
+        "type": "String"
+      },
+      "clay": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldDataStepSemantics": "{source}: {state}",
+  "@fieldDataStepSemantics": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "overlaysErrorSlow": "The NASA data is taking longer than usual. Try again: the server keeps loading it, so the next try is usually quick.",
+  "overlayStressCause": "{cause, select, drought{Main cause: drought in the root zone} heat{Main cause: hot days} other{Plants are under little stress}}",
+  "@overlayStressCause": {
+    "placeholders": {
+      "cause": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressDrought": "Drought: {points} of {max} points",
+  "@overlayStressDrought": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressDroughtWith": "Drought: {points} of {max} points (soil moisture {moisture})",
+  "@overlayStressDroughtWith": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "moisture": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressHeat": "Heat: {points} of {max} points",
+  "@overlayStressHeat": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressHeatWith": "Heat: {points} of {max} points ({days} days above 30 °C)",
+  "@overlayStressHeatWith": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressNotDisease": "This estimate is about drought and heat only. It does not detect diseases or pests: see the “Fungal weather” and “Pest warmth” layers.",
+  "overlayFungalTitle": "Fungal weather",
+  "overlayStepsFungal": "{step, select, s0{rarely} s1{sometimes} s2{often} other{very often}}",
+  "@overlayStepsFungal": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayFungalRule": "Counted days: mild (10–25 °C) and very humid air (85 % or more), or humid air (75 % or more) with rain.",
+  "overlayFungalNote": "Such weather helps fungal diseases such as late blight, mildews and rusts. This is not a detected disease: check your plants.",
+  "overlayPestTitle": "Pest warmth",
+  "overlayStepsPest": "{step, select, s0{insects dormant} s1{insects starting to develop} s2{insects developing fast} other{many insect generations}}",
+  "@overlayStepsPest": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayPestRule": "Warmth since 1 January (degree-days above 10 °C). The more warmth, the faster insects develop.",
+  "overlayPestNote": "For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants."
 }

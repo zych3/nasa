@@ -145,13 +145,13 @@ void main() {
     expect(repo.requests, [_field]);
   });
 
-  test('network error, then retry asks again and recovers', () async {
+  test('timeout is "slow", not "no internet"; retry recovers', () async {
     controller.showPlace(_field);
     repo.fail(_field, TimeoutException('slow'));
     await pumpEventQueue();
 
     expect(controller.status, OverlayStatus.error);
-    expect(controller.error, OverlayError.network);
+    expect(controller.error, OverlayError.slow);
 
     final retry = controller.retry();
     expect(repo.refreshes.last, isTrue);
@@ -160,6 +160,14 @@ void main() {
 
     expect(controller.status, OverlayStatus.ready);
     expect(controller.error, isNull);
+  });
+
+  test('server cannot be reached: network error', () async {
+    controller.showPlace(_field);
+    repo.fail(_field, Exception('connection refused'));
+    await pumpEventQueue();
+
+    expect(controller.error, OverlayError.network);
   });
 
   test('server error (e.g. NASA down) is not blamed on the internet', () async {

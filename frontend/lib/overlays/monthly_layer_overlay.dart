@@ -44,6 +44,12 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
   /// number of steps, its own labels are shown instead of guessing.
   int get stepWordCount => 0;
 
+  /// More lines for the value card (e.g. what makes up an estimate), from
+  /// this overlay's series [layer] in the response, for month [month] (an
+  /// index into `dates`; `null` when no month has a value). Pure.
+  List<OverlayDetail> details(Map<String, dynamic> layer, int? month) =>
+      const [];
+
   @override
   OverlayLayer parse(Map<String, dynamic> json, {int? month}) {
     final area = OverlayArea(
@@ -110,6 +116,7 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
       coverage: _coverage,
       month: hasMonth ? date : null,
       monthIndex: hasMonth ? shown : null,
+      details: details(layer, hasMonth ? shown : null),
     );
   }
 

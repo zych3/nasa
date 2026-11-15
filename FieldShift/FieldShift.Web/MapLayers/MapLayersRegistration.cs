@@ -19,6 +19,7 @@ public static class MapLayersRegistration
             o.Providers.Add<GzipCompressionProvider>();
         });
 
+        builder.Services.AddSingleton<NasaDailyCache>();
         builder.Services.AddScoped<MapLayersService>();
         builder.Services.AddScoped<MapLayersGridService>();
     }

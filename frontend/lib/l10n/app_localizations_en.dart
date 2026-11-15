@@ -361,7 +361,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysErrorNetwork =>
-      'We could not get the data. Check your internet and try again.';
+      'We cannot reach the app\'s server. Try again in a moment.';
 
   @override
   String get overlaysErrorServer =>
@@ -1001,4 +1001,225 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignIn => 'Sign in or create an account';
+
+  @override
+  String get fieldDataNoField =>
+      'Choose your field on the map. Then you will see here what NASA data and the registers say about it.';
+
+  @override
+  String get fieldDataLoading =>
+      'Getting data from NASA and the registers… The first time this can take up to 20 seconds.';
+
+  @override
+  String get fieldDataStepClimate =>
+      'Weather and soil moisture in the area (NASA POWER)';
+
+  @override
+  String get fieldDataStepParcel =>
+      'Your parcel: land register, soil map, terrain';
+
+  @override
+  String get fieldDataStepDone => 'ready';
+
+  @override
+  String get fieldDataStepFailed => 'not available';
+
+  @override
+  String get fieldDataStepLoading => 'loading';
+
+  @override
+  String fieldConditionSentence(String title, String value) {
+    return '$title: $value';
+  }
+
+  @override
+  String fieldFactSentence(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get fieldWarningsHeading => 'Watch out';
+
+  @override
+  String get fieldConditionsHeading => 'In your area (NASA data)';
+
+  @override
+  String get fieldShowOnMap => 'Show on the Conditions map';
+
+  @override
+  String get fieldFactsHeading => 'About your parcel';
+
+  @override
+  String get fieldFactsNone =>
+      'We found no register data for this parcel. The NASA data above still applies to the area.';
+
+  @override
+  String get fieldFactArea => 'Area';
+
+  @override
+  String fieldFactAreaValue(String area) {
+    return '$area ha';
+  }
+
+  @override
+  String get fieldFactQualityClass => 'Soil quality class (land register)';
+
+  @override
+  String fieldFactSurveyed(String year) {
+    return 'surveyed in $year';
+  }
+
+  @override
+  String get fieldFactSoilComplex => 'Soil complex (soil map)';
+
+  @override
+  String get fieldFactSoilType => 'Soil type (soil map)';
+
+  @override
+  String get fieldFactSlope => 'Slope';
+
+  @override
+  String fieldFactSlopeValue(String level, String slope) {
+    return '$level ($slope %)';
+  }
+
+  @override
+  String get fieldSlopeFlat => 'flat';
+
+  @override
+  String get fieldSlopeGentle => 'gentle slope';
+
+  @override
+  String get fieldSlopeModerate => 'moderate slope';
+
+  @override
+  String get fieldSlopeSteep => 'steep';
+
+  @override
+  String fieldFactElevation(String height) {
+    return '$height m above sea level';
+  }
+
+  @override
+  String get fieldFactPh => 'Soil reaction (pH)';
+
+  @override
+  String fieldFactPhValue(String level, String ph) {
+    return '$level (pH $ph)';
+  }
+
+  @override
+  String get fieldPhAcidic => 'acidic – liming may help';
+
+  @override
+  String get fieldPhSlightlyAcidic => 'slightly acidic';
+
+  @override
+  String get fieldPhNeutral => 'neutral';
+
+  @override
+  String get fieldPhAlkaline => 'alkaline';
+
+  @override
+  String get fieldFactOrganic => 'Organic matter (organic carbon)';
+
+  @override
+  String fieldFactOrganicValue(String value) {
+    return '$value g per kg of soil';
+  }
+
+  @override
+  String get fieldFactTexture => 'Soil make-up';
+
+  @override
+  String fieldFactTextureValue(String sand, String clay) {
+    return 'sand $sand %, clay $clay %';
+  }
+
+  @override
+  String fieldDataStepSemantics(String source, String state) {
+    return '$source: $state';
+  }
+
+  @override
+  String get overlaysErrorSlow =>
+      'The NASA data is taking longer than usual. Try again: the server keeps loading it, so the next try is usually quick.';
+
+  @override
+  String overlayStressCause(String cause) {
+    String _temp0 = intl.Intl.selectLogic(cause, {
+      'drought': 'Main cause: drought in the root zone',
+      'heat': 'Main cause: hot days',
+      'other': 'Plants are under little stress',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStressDrought(String points, String max) {
+    return 'Drought: $points of $max points';
+  }
+
+  @override
+  String overlayStressDroughtWith(String points, String max, String moisture) {
+    return 'Drought: $points of $max points (soil moisture $moisture)';
+  }
+
+  @override
+  String overlayStressHeat(String points, String max) {
+    return 'Heat: $points of $max points';
+  }
+
+  @override
+  String overlayStressHeatWith(String points, String max, String days) {
+    return 'Heat: $points of $max points ($days days above 30 °C)';
+  }
+
+  @override
+  String get overlayStressNotDisease =>
+      'This estimate is about drought and heat only. It does not detect diseases or pests: see the “Fungal weather” and “Pest warmth” layers.';
+
+  @override
+  String get overlayFungalTitle => 'Fungal weather';
+
+  @override
+  String overlayStepsFungal(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'rarely',
+      's1': 'sometimes',
+      's2': 'often',
+      'other': 'very often',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFungalRule =>
+      'Counted days: mild (10–25 °C) and very humid air (85 % or more), or humid air (75 % or more) with rain.';
+
+  @override
+  String get overlayFungalNote =>
+      'Such weather helps fungal diseases such as late blight, mildews and rusts. This is not a detected disease: check your plants.';
+
+  @override
+  String get overlayPestTitle => 'Pest warmth';
+
+  @override
+  String overlayStepsPest(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'insects dormant',
+      's1': 'insects starting to develop',
+      's2': 'insects developing fast',
+      'other': 'many insect generations',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayPestRule =>
+      'Warmth since 1 January (degree-days above 10 °C). The more warmth, the faster insects develop.';
+
+  @override
+  String get overlayPestNote =>
+      'For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants.';
 }
