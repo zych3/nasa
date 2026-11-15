@@ -24,6 +24,32 @@ class FakeMapLayersRepository extends MapLayersRepository {
   @override
   Future<Map<String, dynamic>> demo() async => loadSample();
 
+  final gridRequests = <LatLng>[];
+  final _pendingGrid = <LatLng, List<Completer<Map<String, dynamic>>>>{};
+
+  /// Answer heat map requests at once with the saved grid, for tests that are
+  /// not about the heat map (its loading spinner would never settle).
+  bool answerGridAtOnce = false;
+
+  @override
+  Future<Map<String, dynamic>> grid(LatLng point, {bool refresh = false}) {
+    gridRequests.add(point);
+    if (answerGridAtOnce) return Future.value(loadGridSample());
+    final completer = Completer<Map<String, dynamic>>();
+    _pendingGrid.putIfAbsent(point, () => []).add(completer);
+    return completer.future;
+  }
+
+  @override
+  Future<Map<String, dynamic>> demoGrid() async => loadGridSample();
+
+  /// Answers the oldest open heat map request for [point].
+  void completeGrid(LatLng point, Map<String, dynamic> json) =>
+      _pendingGrid[point]!.removeAt(0).complete(json);
+
+  void failGrid(LatLng point, Object error) =>
+      _pendingGrid[point]!.removeAt(0).completeError(error);
+
   /// Answers the oldest open request for [point].
   void complete(LatLng point, Map<String, dynamic> json) =>
       _pending[point]!.removeAt(0).complete(json);

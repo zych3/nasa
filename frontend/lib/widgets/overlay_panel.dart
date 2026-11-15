@@ -153,6 +153,7 @@ class OverlayPanel extends StatelessWidget {
             layer: layer,
             overlayTitle: controller.selected.title(l10n),
             examplePlace: showNoFieldNotice || controller.isDemo,
+            heatmapShown: controller.heatmap != null,
             onEarlierMonth: controller.canShowEarlierMonth
                 ? () => controller.stepMonth(-1)
                 : null,
@@ -172,6 +173,7 @@ class _ValueCard extends StatelessWidget {
     required this.layer,
     required this.overlayTitle,
     required this.examplePlace,
+    this.heatmapShown = false,
     this.onEarlierMonth,
     this.onLaterMonth,
   });
@@ -183,6 +185,9 @@ class _ValueCard extends StatelessWidget {
 
   /// The value is not for the user's field (no field chosen, or demo data).
   final bool examplePlace;
+
+  /// The map shows a heat map of the area (explained under the value).
+  final bool heatmapShown;
 
   /// Show the month before / after; `null` = there is none.
   final VoidCallback? onEarlierMonth;
@@ -210,6 +215,7 @@ class _ValueCard extends StatelessWidget {
       if (layer.isEstimate) l10n.sourceEstimated,
       if (source != null) l10n.overlaysSource(source),
       layer.coverage(l10n),
+      if (heatmapShown) l10n.overlayHeatmapNote,
     ]);
 
     return Card(
@@ -278,6 +284,10 @@ class _ValueCard extends StatelessWidget {
             ],
             const SizedBox(height: 8),
             _IconText(icon: Icons.straighten, text: layer.coverage(l10n)),
+            if (heatmapShown) ...[
+              const SizedBox(height: 8),
+              _IconText(icon: Icons.blur_on, text: l10n.overlayHeatmapNote),
+            ],
           ],
         ),
       ),

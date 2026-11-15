@@ -135,5 +135,7 @@
   "overlayStepsRisk": "{step, select, s0{niski} s1{umiarkowany} s2{wysoki} other{bardzo wysoki}}",
   "readAloud": "Przeczytaj na głos",
   "readAloudStop": "Zatrzymaj czytanie",
-  "readAloudUnavailable": "Czytanie na głos nie działa na tym urządzeniu."
+  "readAloudUnavailable": "Czytanie na głos nie działa na tym urządzeniu.",
+  "overlaysHeatmapLoading": "Wczytuję mapę okolicy…",
+  "overlayHeatmapNote": "Kolory na mapie pokazują okolicę ok. 250 km wokół pola. Przejścia między kolorami są wygładzone."
 }

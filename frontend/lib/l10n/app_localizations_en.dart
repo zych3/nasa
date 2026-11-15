@@ -548,4 +548,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get readAloudUnavailable =>
       'Reading aloud does not work on this device.';
+
+  @override
+  String get overlaysHeatmapLoading => 'Loading the map of the area…';
+
+  @override
+  String get overlayHeatmapNote =>
+      'The colours on the map show the area of about 250 km around the field. The changes between colours are smoothed.';
 }

@@ -105,3 +105,20 @@ sztywno, wszystkie legendy EN bez polskich słów (test), PL = backend (test).
 
 Sprawdzone bez uwag: silnik mowy tworzony dopiero przy pierwszym użyciu (testy i ekrany bez czytania go nie
 uruchamiają), zatrzymanie po wyjściu z ekranu, błąd silnika → komunikat i powrót przycisku, brak tekstów na sztywno.
+
+## Recenzja #6 (`feat/heatmap`: heatmapa okolicy)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 41 | Ś | ✅ | `overlay_heatmap.dart` | Przy pełnym wygładzaniu komórka bez danych NASA była „łatana” wartościami sąsiadów (zgadywanie). Teraz w komórce bez danych mapa jest przezroczysta (test). |
+| 42 | Ś | ⏳ | backend `MapLayersService` | Zapytanie punktowe czeka do 60 s na SoilGrids, gdy ten nie odpowiada (dziś się zdarzyło); aplikacja poddaje się po 40 s i pokazuje błąd, choć dane NASA są gotowe. Siatka tego problemu nie ma (bez SoilGrids). Propozycja: krótszy limit dla SoilGrids w mapie warstw (np. 10 s) – gleba i tak jest opcjonalna. |
+| 43 | N | ⏳ | `overlay_map.dart` | Etykieta wartości stoi ok. 25 km na północ od pola (górna krawędź koła), na heatmapie też. Przy wybranym polu nie zasłania „Moje pole”; bez pola wygląda jak wartość dla Warszawy. Do rozważenia: etykieta tuż nad znacznikiem pola. |
+| 44 | N | 📝 | backend | Ostrzeżenie „Stres roślinny i ryzyko erozji to wskaźniki szacunkowe” wraca też z siatki, na której erozji nie ma – tekst backendu, nie zmieniałem. |
+
+Sprawdzone: wartość komórki pola = wartość karty dla każdej warstwy (test backendu i frontendu, oraz na żywo: lipiec
+2025, temperatura/opady/wilgotność), siatka 5×5 z NASA w ~5 s, potem z pamięci podręcznej, niedozwolona warstwa → 400,
+każdy kolor heatmapy jest kolorem stopnia legendy (test), heatmapa podąża za miesiącem i nakładką, gleba i erozja
+zostają kołem, błąd siatki → koło bez komunikatu o błędzie, wyścig starych odpowiedzi siatki (test), zrzuty ekranu
+w przeglądarce (wilgotność grudzień, opady lipiec).
+
+**Wysoki priorytet: brak.**

@@ -919,6 +919,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading aloud does not work on this device.'**
   String get readAloudUnavailable;
+
+  /// No description provided for @overlaysHeatmapLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading the map of the area…'**
+  String get overlaysHeatmapLoading;
+
+  /// No description provided for @overlayHeatmapNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The colours on the map show the area of about 250 km around the field. The changes between colours are smoothed.'**
+  String get overlayHeatmapNote;
 }
 
 class _AppLocalizationsDelegate

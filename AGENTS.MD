@@ -100,6 +100,12 @@ Change the contract only after agreeing with both frontend and backend owners.
   `overlayRegistry` + ARB keys (title and an `overlaySteps…` select message). Legend ranges are computed from the
   backend's thresholds; the Polish legend must equal the backend's labels (a test checks every monthly overlay).
   Other data shapes: subclass `MapOverlay` with its own `parse` (see `SoilQualityOverlay`).
+- Heat map: NASA overlays also read `GET /api/map-layers/grid` (5 × 5 NASA POWER cells, ~250 km; one request per
+  place, loaded next to the value, the card never waits for it). `MonthlyLayerOverlay.parseHeatmap` picks the shown
+  month; `heatmapPixels` (`lib/models/overlay_heatmap.dart`) blends values between cell centres and colours them with
+  the legend's own steps, so every colour on the map is a legend step with words and bars, and the field's cell has
+  the card's value. Until it loads, when it fails, and for overlays with `hasHeatmap == false` (soil, erosion: they
+  need the field's soil) the value's area is a circle. Saved grid: `assets/mock/map_layers_grid_sample.json`.
 - Values are drawn as areas of their real precision (~1 km soil, ~50 km NASA POWER), never as field-level data.
 
 ## Accessibility rules (non-negotiable)

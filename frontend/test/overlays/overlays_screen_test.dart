@@ -1,3 +1,4 @@
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
@@ -66,7 +67,7 @@ void main() {
 
   setUp(() {
     SharedPreferences.setMockInitialValues({});
-    repo = FakeMapLayersRepository();
+    repo = FakeMapLayersRepository()..answerGridAtOnce = true;
     store = SelectedPlotStore();
   });
 
@@ -141,6 +142,55 @@ void main() {
     expect(find.text(_pl.overlaysSource('NASA POWER (GWETROOT)')), findsOne);
     expect(find.text(_pl.sourceEstimated), findsNothing);
     expect(repo.requests, hasLength(1));
+  });
+
+  testWidgets('NASA overlays: heat map instead of the circle; soil keeps it', (
+    tester,
+  ) async {
+    repo.answerGridAtOnce = false;
+    await pumpScreen(tester);
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    repo.completeGrid(OverlaysScreen.examplePlace, loadGridSample());
+    await tester.pump();
+
+    expect(find.byType(CircleLayer), findsOneWidget);
+    expect(find.byType(OverlayImageLayer), findsNothing);
+
+    await chooseOverlay(tester, _pl, _pl.overlayMoistureTitle);
+    expect(find.byType(OverlayImageLayer), findsOneWidget);
+    expect(find.byType(CircleLayer), findsNothing);
+    // The value label stays on the map (never colour alone).
+    expect(find.text('umiarkowanie sucho (0,35–0,45)'), findsNWidgets(2));
+    await tester.scrollUntilVisible(find.text(_pl.overlayHeatmapNote), 100);
+    expect(find.text(_pl.overlayHeatmapNote), findsOneWidget);
+    expect(repo.gridRequests, [OverlaysScreen.examplePlace]);
+  });
+
+  testWidgets('while the heat map loads the map says so; on failure a circle', (
+    tester,
+  ) async {
+    repo.answerGridAtOnce = false;
+    await pumpScreen(tester);
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    await tester.pump();
+    // Soil has no heat map: nothing to wait for.
+    expect(find.text(_pl.overlaysHeatmapLoading), findsNothing);
+
+    // The spinner never settles, so the list is opened frame by frame.
+    await tester.tap(find.text(_pl.overlaysChange));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.ensureVisible(find.text(_pl.overlayMoistureTitle).last);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.text(_pl.overlayMoistureTitle).last);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text(_pl.overlaysHeatmapLoading), findsOneWidget);
+    expect(find.byType(CircleLayer), findsOneWidget);
+
+    repo.failGrid(OverlaysScreen.examplePlace, Exception('offline'));
+    await tester.pump();
+    expect(find.text(_pl.overlaysHeatmapLoading), findsNothing);
+    expect(find.byType(CircleLayer), findsOneWidget);
+    expect(find.text(_pl.overlayHeatmapNote), findsNothing);
   });
 
   testWidgets('reads the value card aloud', (tester) async {

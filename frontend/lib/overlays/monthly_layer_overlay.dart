@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart' show Color;
 
 import '../l10n/app_localizations.dart';
+import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
 import 'map_layers_json.dart';
 import 'map_overlay.dart';
@@ -108,6 +110,85 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
       coverage: _coverage,
       month: hasMonth ? date : null,
       monthIndex: hasMonth ? shown : null,
+    );
+  }
+
+  @override
+  bool get hasHeatmap => true;
+
+  /// The month of [layer] from the grid's own `dates` (matched by month, not
+  /// by index, so a grid with another period still lines up).
+  @override
+  OverlayHeatmap? parseHeatmap(Map<String, dynamic> grid, OverlayLayer layer) {
+    final month = layer.month;
+    final gridLayer = findLayer(grid, layerId);
+    if (month == null || gridLayer == null) return null;
+
+    final dates = grid['dates'];
+    final cells = grid['cells'];
+    final cellSize = grid['cellSize'];
+    final rows = grid['rows'];
+    final cols = grid['cols'];
+    final values = gridLayer['values'];
+    if (dates is! List ||
+        cells is! List ||
+        cellSize is! Map<String, dynamic> ||
+        cellSize['lat'] is! num ||
+        cellSize['lon'] is! num ||
+        rows is! int ||
+        cols is! int ||
+        rows < 1 ||
+        cols < 1 ||
+        values is! List ||
+        values.length != cells.length) {
+      throw FormatException('map-layers/grid: bad grid for "$layerId"');
+    }
+    final index = dates.indexOf(DateFormat('yyyy-MM').format(month));
+    if (index < 0) return null;
+
+    final cellLat = (cellSize['lat'] as num).toDouble();
+    final cellLon = (cellSize['lon'] as num).toDouble();
+    final byCell = List<double?>.filled(rows * cols, null);
+    LatLng? southWest;
+    for (var i = 0; i < cells.length; i++) {
+      final cell = cells[i];
+      final series = values[i];
+      if (cell is! Map<String, dynamic> ||
+          cell['row'] is! int ||
+          cell['col'] is! int ||
+          cell['lat'] is! num ||
+          cell['lon'] is! num ||
+          series is! List ||
+          series.length != dates.length) {
+        throw FormatException('map-layers/grid: bad cell $cell');
+      }
+      final row = cell['row'] as int;
+      final col = cell['col'] as int;
+      if (row < 0 || row >= rows || col < 0 || col >= cols) {
+        throw FormatException('map-layers/grid: cell outside the grid $cell');
+      }
+      final value = series[index];
+      if (value != null && value is! num) {
+        throw FormatException('map-layers/grid: bad value $value');
+      }
+      byCell[row * cols + col] = (value as num?)?.toDouble();
+      southWest ??= LatLng(
+        (cell['lat'] as num) - row * cellLat,
+        (cell['lon'] as num) - col * cellLon,
+      );
+    }
+    if (southWest == null) return null;
+
+    final stops = _readStops(gridLayer);
+    return OverlayHeatmap(
+      rows: rows,
+      cols: cols,
+      southWestCenter: southWest,
+      cellLat: cellLat,
+      cellLon: cellLon,
+      values: byCell,
+      maxes: [for (final s in stops) s.max],
+      colors: [for (final s in stops) s.color],
     );
   }
 

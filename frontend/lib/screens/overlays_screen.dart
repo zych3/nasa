@@ -7,7 +7,8 @@ import '../repositories/selected_plot_store.dart';
 import '../widgets/overlay_map.dart';
 import '../widgets/overlay_panel.dart';
 
-/// "Conditions" tab: map overlays (soil, ...) for the user's field.
+/// "Conditions" tab: map overlays (soil, ...) for the user's field, with a
+/// heat map of the area around it for the NASA overlays.
 ///
 /// The map is centred on the chosen field; without one it shows an example
 /// place and offers to choose the field. Data is loaded only once the tab is
@@ -92,6 +93,9 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
           center: _place,
           layer: _controller.layer,
           field: parcel,
+          heatmap: _controller.heatmap,
+          heatmapLoading:
+              _controller.isHeatmapLoading && _controller.layer != null,
         );
         OverlayPanel panel({required bool wide}) => OverlayPanel(
           controller: _controller,

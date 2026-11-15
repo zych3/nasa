@@ -251,4 +251,86 @@ void main() {
     expect(c.selected, c.overlays.first);
     c.dispose();
   });
+
+  group('heat map', () {
+    late OverlayController c;
+
+    setUp(() {
+      c = OverlayController(
+        repository: repo,
+        overlays: const [SoilMoistureOverlay(), SoilQualityOverlay()],
+      );
+    });
+
+    tearDown(() => c.dispose());
+
+    test('loads next to the value; the value does not wait for it', () async {
+      c.showPlace(_field);
+      expect(repo.gridRequests, [_field]);
+      expect(c.isHeatmapLoading, isTrue);
+
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+      expect(c.status, OverlayStatus.ready);
+      expect(c.heatmap, isNull);
+      expect(c.isHeatmapLoading, isTrue);
+
+      repo.completeGrid(_field, loadGridSample());
+      await pumpEventQueue();
+      expect(c.isHeatmapLoading, isFalse);
+      expect(
+        c.heatmap!.stepOf(c.heatmap!.valueAt(2, 2)!),
+        c.layer!.currentIndex,
+      );
+    });
+
+    test('follows the month and the overlay; soil has none', () async {
+      c.showPlace(_field);
+      repo.completeGrid(_field, loadGridSample());
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+      final december = c.heatmap!;
+
+      c.stepMonth(-5);
+      expect(c.layer!.month, DateTime(2025, 7));
+      expect(c.heatmap, isNot(same(december)));
+      expect(c.heatmap!.valueAt(2, 2), 0.37); // real moisture, July 2025
+
+      c.select(c.overlays[1]);
+      expect(c.heatmap, isNull);
+      expect(c.isHeatmapLoading, isFalse);
+      c.select(c.overlays[0]);
+      expect(c.heatmap, isNotNull);
+    });
+
+    test('a failed heat map leaves the value alone', () async {
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      repo.failGrid(_field, ApiException('down', statusCode: 502));
+      await pumpEventQueue();
+
+      expect(c.status, OverlayStatus.ready);
+      expect(c.heatmap, isNull);
+      expect(c.isHeatmapLoading, isFalse);
+    });
+
+    test('a late heat map for an old place is ignored', () async {
+      c.showPlace(_field);
+      c.showPlace(_other);
+      repo.completeGrid(_field, loadGridSample());
+      repo.complete(_other, _sampleAt(_other));
+      await pumpEventQueue();
+
+      expect(c.heatmap, isNull);
+      expect(c.isHeatmapLoading, isTrue);
+    });
+
+    test('demo data comes with the demo heat map', () async {
+      await c.showDemo();
+      await pumpEventQueue();
+
+      expect(c.isDemo, isTrue);
+      expect(c.heatmap, isNotNull);
+    });
+  });
 }

@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
+import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
 
 /// One overlay of the "Conditions" map (soil, soil moisture, ...).
@@ -10,7 +11,9 @@ import '../models/overlay_layer.dart';
 /// files, like every other text).
 ///
 /// All overlays read the same response of `GET /api/map-layers` (see
-/// `FieldShift/docs/map-layers.md`); it is fetched once per place.
+/// `FieldShift/docs/map-layers.md`); it is fetched once per place. Overlays
+/// with [hasHeatmap] also read `GET /api/map-layers/grid` to colour the area
+/// around the field.
 abstract class MapOverlay {
   const MapOverlay();
 
@@ -35,4 +38,15 @@ abstract class MapOverlay {
   /// [month] is an index into the response's `dates`; `null` = the overlay's
   /// default month. Overlays that do not change over time ignore it.
   OverlayLayer parse(Map<String, dynamic> json, {int? month});
+
+  /// Has a heat map of the area around the field (see [parseHeatmap]).
+  /// Without one the map shows the area the value is for as a circle.
+  bool get hasHeatmap => false;
+
+  /// Reads the heat map for the month [layer] shows from the decoded
+  /// `GET /api/map-layers/grid` response; `null` when the response has no
+  /// data for this overlay or that month. Pure, like [parse]; throws
+  /// [FormatException] when the response is broken.
+  OverlayHeatmap? parseHeatmap(Map<String, dynamic> grid, OverlayLayer layer) =>
+      null;
 }

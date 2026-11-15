@@ -358,5 +358,7 @@
   },
   "readAloud": "Read aloud",
   "readAloudStop": "Stop reading",
-  "readAloudUnavailable": "Reading aloud does not work on this device."
+  "readAloudUnavailable": "Reading aloud does not work on this device.",
+  "overlaysHeatmapLoading": "Loading the map of the area…",
+  "overlayHeatmapNote": "The colours on the map show the area of about 250 km around the field. The changes between colours are smoothed."
 }

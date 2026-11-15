@@ -5,25 +5,30 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
+import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
 import '../models/parcel.dart';
 import 'map_attribution.dart';
+import 'heatmap_image.dart';
 import 'map_pill.dart';
 import 'overlay_level_bars.dart';
 import 'single_world_crs.dart';
 
-/// Map of the "Conditions" screen: the area an overlay value applies to (a
-/// tinted circle with a label "icon + word" in it, never colour alone) and
-/// the outline of the user's field.
+/// Map of the "Conditions" screen: a heat map of the area around the field
+/// (or, for overlays without one and until it loads, the area the value
+/// applies to as a tinted circle), a label "icon + word" with the value
+/// (never colour alone) and the outline of the user's field.
 ///
-/// The camera fits the area whenever it changes, so the user sees how far the
-/// value reaches (about 1 km for soil, about 50 km for NASA weather data).
+/// The camera fits what is drawn whenever it changes: the whole heat map
+/// (about 250 km), or the circle (about 1 km for soil, 50 km for NASA data).
 class OverlayMap extends StatefulWidget {
   const OverlayMap({
     super.key,
     required this.center,
     this.layer,
     this.field,
+    this.heatmap,
+    this.heatmapLoading = false,
     this.initialZoom = 13,
   });
 
@@ -37,6 +42,13 @@ class OverlayMap extends StatefulWidget {
   /// The user's field (outline + "My field" label), if one is chosen.
   final Parcel? field;
 
+  /// Drawn instead of the circle when set (same overlay and month as
+  /// [layer]).
+  final OverlayHeatmap? heatmap;
+
+  /// Shows "Loading the map of the area…" on the map.
+  final bool heatmapLoading;
+
   @override
   State<OverlayMap> createState() => _OverlayMapState();
 }
@@ -49,15 +61,41 @@ class _OverlayMapState extends State<OverlayMap> {
 
   static const _maxLabelTextScale = 1.3;
 
+  HeatmapImageProvider? _image;
+
   @override
   void didUpdateWidget(OverlayMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final area = widget.layer?.area;
-    if (area != null && area != oldWidget.layer?.area) {
-      _controller.fitCamera(_fit(area));
-    } else if (area == null && widget.center != oldWidget.center) {
+    final fit = _fitPoints(widget);
+    if (fit != null && !_samePoints(fit, _fitPoints(oldWidget))) {
+      _controller.fitCamera(_fit(fit));
+    } else if (fit == null && widget.center != oldWidget.center) {
       _controller.move(widget.center, widget.initialZoom);
     }
+  }
+
+  /// What the camera shows: the heat map, else the circle.
+  static List<LatLng>? _fitPoints(OverlayMap map) {
+    final heatmap = map.heatmap;
+    if (heatmap != null) {
+      return [
+        LatLng(heatmap.south, heatmap.west),
+        LatLng(heatmap.north, heatmap.east),
+      ];
+    }
+    return map.layer?.area.boundingPoints;
+  }
+
+  static bool _samePoints(List<LatLng> a, List<LatLng>? b) =>
+      b != null &&
+      a.length == b.length &&
+      a.indexed.every((e) => e.$2 == b[e.$1]);
+
+  /// One image per heat map, kept while it is shown.
+  HeatmapImageProvider? _imageFor(OverlayHeatmap? heatmap) {
+    if (heatmap == null) return _image = null;
+    if (_image?.heatmap != heatmap) _image = HeatmapImageProvider(heatmap);
+    return _image;
   }
 
   @override
@@ -66,8 +104,8 @@ class _OverlayMapState extends State<OverlayMap> {
     super.dispose();
   }
 
-  CameraFit _fit(OverlayArea area) => CameraFit.coordinates(
-    coordinates: area.boundingPoints,
+  CameraFit _fit(List<LatLng> points) => CameraFit.coordinates(
+    coordinates: points,
     padding: const EdgeInsets.all(24),
   );
 
@@ -79,6 +117,9 @@ class _OverlayMapState extends State<OverlayMap> {
     final field = widget.field;
     final current = layer?.current;
     final color = current?.color ?? _noDataColor;
+    final heatmap = widget.heatmap;
+    final image = _imageFor(heatmap);
+    final fit = _fitPoints(widget);
 
     return FlutterMap(
       mapController: _controller,
@@ -86,14 +127,29 @@ class _OverlayMapState extends State<OverlayMap> {
         crs: const SingleWorldCrs(),
         initialCenter: widget.center,
         initialZoom: widget.initialZoom,
-        initialCameraFit: layer == null ? null : _fit(layer.area),
+        initialCameraFit: fit == null ? null : _fit(fit),
       ),
       children: [
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'hopito_field_shift',
         ),
-        if (layer != null)
+        if (heatmap != null && image != null)
+          OverlayImageLayer(
+            overlayImages: [
+              OverlayImage(
+                bounds: LatLngBounds(
+                  LatLng(heatmap.south, heatmap.west),
+                  LatLng(heatmap.north, heatmap.east),
+                ),
+                imageProvider: image,
+                // Smooths the edges between colours when scaled up.
+                filterQuality: FilterQuality.medium,
+                gaplessPlayback: true,
+              ),
+            ],
+          )
+        else if (layer != null)
           CircleLayer(
             circles: [
               CircleMarker(
@@ -167,6 +223,31 @@ class _OverlayMapState extends State<OverlayMap> {
             ],
           ),
         ),
+        if (widget.heatmapLoading)
+          // MapPill centres itself in the box it gets: a strip along the top.
+          Positioned(
+            top: 8,
+            left: 8,
+            right: 8,
+            height: 52,
+            child: IgnorePointer(
+              child: MediaQuery.withClampedTextScaling(
+                maxScaleFactor: _maxLabelTextScale,
+                child: MapPill(
+                  color: scheme.surface,
+                  bordered: true,
+                  text: l10n.overlaysHeatmapLoading,
+                  leading: (onColor) => SizedBox.square(
+                    dimension: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: onColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         const MapAttribution(),
       ],
     );

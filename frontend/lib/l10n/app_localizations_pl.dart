@@ -552,4 +552,11 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get readAloudUnavailable =>
       'Czytanie na głos nie działa na tym urządzeniu.';
+
+  @override
+  String get overlaysHeatmapLoading => 'Wczytuję mapę okolicy…';
+
+  @override
+  String get overlayHeatmapNote =>
+      'Kolory na mapie pokazują okolicę ok. 250 km wokół pola. Przejścia między kolorami są wygładzone.';
 }

@@ -2,6 +2,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../api/api_client.dart';
+import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
 import 'map_layers_repository.dart';
 import 'map_overlay.dart';
@@ -34,6 +35,10 @@ enum OverlayError {
 /// may change the state, so a slow answer for an old place never replaces a
 /// newer one. The response is parsed for the overlay chosen at the moment it
 /// arrives, so switching overlays while loading is safe.
+///
+/// The heat map data (`GET /api/map-layers/grid`) is loaded next to the value,
+/// on its own: the value card does not wait for it, and when it fails the map
+/// just keeps showing the area of the value as a circle.
 class OverlayController extends ChangeNotifier {
   OverlayController({required this._repository, List<MapOverlay>? overlays})
     : overlays = List.unmodifiable(overlays ?? overlayRegistry),
@@ -50,6 +55,9 @@ class OverlayController extends ChangeNotifier {
   OverlayError? _error;
   Map<String, dynamic>? _response;
   OverlayLayer? _layer;
+  Map<String, dynamic>? _grid;
+  bool _gridLoading = false;
+  OverlayHeatmap? _heatmap;
   int? _month;
   bool _isDemo = false;
   int _generation = 0;
@@ -69,6 +77,13 @@ class OverlayController extends ChangeNotifier {
 
   /// The shown data is the saved demo response, not data for [place].
   bool get isDemo => _isDemo;
+
+  /// Heat map of the area for the shown overlay and month; `null` while it
+  /// loads, when it failed, or when the overlay has none (soil, erosion).
+  OverlayHeatmap? get heatmap => _heatmap;
+
+  /// The heat map of the chosen overlay is still loading.
+  bool get isHeatmapLoading => _gridLoading && _selected.hasHeatmap;
 
   /// Number of months in the loaded response (0 before it is loaded).
   int get monthCount {
@@ -127,10 +142,14 @@ class OverlayController extends ChangeNotifier {
     _error = null;
     _response = null;
     _layer = null;
+    _grid = null;
+    _gridLoading = true;
+    _heatmap = null;
     _month = null;
     _isDemo = false;
     _notify();
 
+    _loadGrid(generation, place, demo: demo, refresh: refresh);
     try {
       final json = demo
           ? await _repository.demo()
@@ -152,6 +171,27 @@ class OverlayController extends ChangeNotifier {
     _notify();
   }
 
+  Future<void> _loadGrid(
+    int generation,
+    LatLng? place, {
+    required bool demo,
+    required bool refresh,
+  }) async {
+    Map<String, dynamic>? grid;
+    try {
+      grid = demo
+          ? await _repository.demoGrid()
+          : await _repository.grid(place!, refresh: refresh);
+    } catch (e) {
+      debugPrint('Heat map for $place failed: $e');
+    }
+    if (_disposed || generation != _generation) return;
+    _grid = grid;
+    _gridLoading = false;
+    _parseHeatmap();
+    _notify();
+  }
+
   void _parse() {
     try {
       _layer = _selected.parse(_response!, month: _month);
@@ -164,6 +204,21 @@ class OverlayController extends ChangeNotifier {
       _layer = null;
       _status = OverlayStatus.error;
       _error = OverlayError.badData;
+    }
+    _parseHeatmap();
+  }
+
+  /// Heat map for the shown overlay and month, once both responses are here.
+  void _parseHeatmap() {
+    final layer = _layer;
+    final grid = _grid;
+    _heatmap = null;
+    if (layer == null || grid == null || !_selected.hasHeatmap) return;
+    try {
+      _heatmap = _selected.parseHeatmap(grid, layer);
+    } catch (e) {
+      // Only the heat map is missing then; the value is still right.
+      debugPrint('Overlay "${_selected.id}" could not read the grid: $e');
     }
   }
 
