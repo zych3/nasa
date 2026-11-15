@@ -94,4 +94,57 @@ void main() {
     (json['static'] as Map<String, dynamic>)['soil'] = 'Lekka';
     expect(() => overlay.parse(json), throwsFormatException);
   });
+
+  group('Poland: parcel details (soil-agricultural map, land register)', () {
+    test('the complex of the parcel, from the soil map, no order', () {
+      final layer = overlay.parseParcel(loadParcelSample(), soilMapLegend)!;
+
+      expect(layer.current!.label(pl), 'kompleks żytni dobry');
+      expect(layer.current!.color, const Color(0xFFFEBE00));
+      expect(
+        layer.legend,
+        hasLength(3),
+        reason: 'the legend as the backend sends it',
+      );
+      expect(layer.ordered, isFalse);
+      expect(layer.isEstimate, isFalse);
+      expect(layer.tileLayer, 'soil-map');
+      expect(layer.source, startsWith('Mapa glebowo-rolnicza'));
+      expect(layer.area.center, const LatLng(52.2, 21.48));
+      expect(layer.area.radiusMeters, inInclusiveRange(150, 1000));
+      expect(layer.coverage(pl), pl.overlayCoverageParcel);
+    });
+
+    test('soil type, texture by depth, register classes and survey year', () {
+      final layer = overlay.parseParcel(loadParcelSample(), soilMapLegend)!;
+
+      expect(
+        [for (final d in layer.details) d.text(pl)],
+        [
+          'Typ gleby: gleby bielicowe i pseudobielicowe',
+          'Uziarnienie: piaski gliniaste lekkie; od 50–100 cm: gliny średnie',
+          'Klasy w ewidencji gruntów: IVb (orne średnie gorsze), IVa (orne średnie lepsze)',
+          'Badanie gleby z 1973 r.',
+        ],
+      );
+    });
+
+    test(
+      'without a legend (or a complex it lacks): the complex alone, grey',
+      () {
+        final layer = overlay.parseParcel(loadParcelSample(), const [])!;
+
+        expect(layer.legend, hasLength(1));
+        expect(layer.current!.label(pl), 'kompleks żytni dobry');
+      },
+    );
+
+    test('no soil map data: no parcel layer (the SoilGrids one is used)', () {
+      final details = loadParcelSample()
+        ..['soilMap'] = {'status': 'noData', 'data': null};
+
+      expect(overlay.parseParcel(details, soilMapLegend), isNull);
+      expect(overlay.usesParcelDetails, isTrue);
+    });
+  });
 }

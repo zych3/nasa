@@ -49,4 +49,20 @@ abstract class MapOverlay {
   /// [FormatException] when the response is broken.
   OverlayHeatmap? parseHeatmap(Map<String, dynamic> grid, OverlayLayer layer) =>
       null;
+
+  /// Reads [parseParcel]'s data (`GET /api/parcels/details`) when there is
+  /// some; [parse] is then the fallback (no parcel there, other country, the
+  /// source did not answer).
+  bool get usesParcelDetails => false;
+
+  /// This overlay from the decoded parcel details, with [legend] of its map
+  /// tile layer (code, name, colour; may be empty). Null when the details
+  /// have nothing for it. Pure, like [parse].
+  OverlayLayer? parseParcel(
+    Map<String, dynamic> details,
+    List<Map<String, dynamic>> legend,
+  ) => null;
+
+  /// Map tile layer whose legend [parseParcel] needs; null for none.
+  String? get parcelTileLayer => null;
 }

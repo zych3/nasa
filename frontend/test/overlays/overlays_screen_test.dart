@@ -236,6 +236,32 @@ void main() {
     );
   });
 
+  testWidgets('soil of a Polish parcel: soil map tiles and its details', (
+    tester,
+  ) async {
+    repo
+      ..parcelAnswer = loadParcelSample()
+      ..legend = soilMapLegend;
+    await pumpScreen(tester);
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    await tester.pump();
+
+    // On the map (label) and in the card.
+    expect(find.text('kompleks żytni dobry'), findsNWidgets(2));
+    expect(find.byType(CircleLayer), findsNothing);
+    final tiles = tester.widgetList<TileLayer>(find.byType(TileLayer));
+    expect(
+      tiles.map((t) => t.urlTemplate),
+      contains(endsWith('/api/map-tiles/soil-map/{z}/{x}/{y}.png')),
+    );
+    expect(
+      find.text('Typ gleby: gleby bielicowe i pseudobielicowe'),
+      findsOneWidget,
+    );
+    await tester.scrollUntilVisible(find.text(_pl.overlaysLegendHeading), 100);
+    expect(find.text(_pl.overlaysLegendHere), findsOneWidget);
+  });
+
   testWidgets('reads the value card aloud', (tester) async {
     final speaker = FakeSpeaker();
     await tester.pumpWidget(

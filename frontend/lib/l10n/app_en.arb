@@ -364,5 +364,17 @@
   "overlaysHeatmapZoomIn": "Zoom in to see the colours",
   "overlaysHeatmapCellSize": "NASA data: one value per about 50 km",
   "overlaysShowMyField": "Show my field",
-  "overlaysShowExamplePlace": "Show the example place"
+  "overlaysShowExamplePlace": "Show the example place",
+  "overlayCoverageParcel": "Data for the parcel from the soil-agricultural map (scale 1:5000). The colours on the map are its complexes.",
+  "overlaySoilType": "Soil type: {name}",
+  "@overlaySoilType": {"placeholders": {"name": {"type": "String"}}},
+  "overlaySoilTexture": "Texture: {layers}",
+  "@overlaySoilTexture": {"placeholders": {"layers": {"type": "String"}}},
+  "overlaySoilTextureDeeper": "from {depth}: {name}",
+  "@overlaySoilTextureDeeper": {"placeholders": {"depth": {"type": "String"}, "name": {"type": "String"}}},
+  "overlayLandClasses": "Land register classes: {classes}",
+  "@overlayLandClasses": {"placeholders": {"classes": {"type": "String"}}},
+  "overlaySoilSurveyed": "Soil survey from {year}.",
+  "@overlaySoilSurveyed": {"placeholders": {"year": {"type": "String"}}},
+  "overlaysSoilMapZoomIn": "Zoom in to see the soil map"
 }

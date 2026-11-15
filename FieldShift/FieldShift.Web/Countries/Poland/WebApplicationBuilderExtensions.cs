@@ -57,6 +57,18 @@ public static partial class WebApplicationBuilderExtensions
             c.Timeout = TimeSpan.FromSeconds(20);
             c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
         });
+        // The soil map WMS answers 503 now and then; the standard handler retries such answers.
+        builder.Services.AddHttpClient<IMapTileProvider, SoilMapTileProvider>(c =>
+            {
+                c.BaseAddress = new Uri(soilMapWmsUrl);
+                c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            })
+            .AddStandardResilienceHandler(o =>
+            {
+                o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(8);
+                o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(20);
+                o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(30);
+            });
         builder.Services.AddHttpClient<ITerrainProvider, GugikTerrainProvider>(c =>
         {
             c.BaseAddress = new Uri(nmtBaseUrl);

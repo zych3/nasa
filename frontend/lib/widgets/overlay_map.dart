@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../api/api_client.dart' show apiBaseUrl;
 import '../components/map_button.dart';
 import '../l10n/app_localizations.dart';
 import '../models/overlay_heatmap.dart';
@@ -90,7 +91,16 @@ class _OverlayMapState extends State<OverlayMap> {
   Timer? _moveEnd;
   static const _moveEndDelay = Duration(milliseconds: 400);
 
+  /// The camera is too far out for the layer's map tiles (they have no
+  /// picture there): the map says to zoom in.
+  bool _tilesTooFar = false;
+
   void _onPositionChanged(MapCamera camera, bool hasGesture) {
+    final minZoom = widget.layer?.tileMinZoom;
+    final tooFar = minZoom != null && camera.zoom < minZoom;
+    if (tooFar != _tilesTooFar && mounted) {
+      setState(() => _tilesTooFar = tooFar);
+    }
     if (widget.onVisibleAreaChanged == null) return;
     _moveEnd?.cancel();
     _moveEnd = Timer(_moveEndDelay, () {
@@ -161,6 +171,12 @@ class _OverlayMapState extends State<OverlayMap> {
           text: text,
           leading: leading,
         );
+    if (widget.layer?.tileLayer != null && _tilesTooFar) {
+      return pill(
+        l10n.overlaysSoilMapZoomIn,
+        (onColor) => Icon(Icons.zoom_in, size: 18, color: onColor),
+      );
+    }
     if (widget.heatmapTooFar) {
       return pill(
         l10n.overlaysHeatmapZoomIn,
@@ -216,7 +232,19 @@ class _OverlayMapState extends State<OverlayMap> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'hopito_field_shift',
         ),
-        if (heatmap != null && image != null)
+        if (layer?.tileLayer case final tiles?)
+          // Map tiles of the value's source (e.g. the soil map) through our
+          // backend, half see-through so the roads and places stay visible.
+          Opacity(
+            opacity: 0.65,
+            child: TileLayer(
+              urlTemplate: '$apiBaseUrl/api/map-tiles/$tiles/{z}/{x}/{y}.png',
+              userAgentPackageName: 'hopito_field_shift',
+              minZoom: layer!.tileMinZoom ?? 0,
+              maxNativeZoom: 19,
+            ),
+          )
+        else if (heatmap != null && image != null)
           OverlayImageLayer(
             overlayImages: [
               OverlayImage(
@@ -267,7 +295,11 @@ class _OverlayMapState extends State<OverlayMap> {
               // cover each other or the outline.
               if (layer != null)
                 Marker(
-                  point: layer.area.top,
+                  // On a detailed map (tiles) the value is for the very
+                  // point: the label stands on it, its pin pointing there.
+                  point: layer.tileLayer != null
+                      ? layer.area.center
+                      : layer.area.top,
                   width: 280,
                   height: 56,
                   alignment: Alignment.bottomCenter,
@@ -278,6 +310,8 @@ class _OverlayMapState extends State<OverlayMap> {
                       text: current?.label(l10n) ?? l10n.overlaysNoData,
                       leading: (onColor) => current == null
                           ? Icon(Icons.help_outline, size: 18, color: onColor)
+                          : !layer.ordered
+                          ? Icon(Icons.place, size: 18, color: onColor)
                           : OverlayLevelBars(
                               level: layer.currentIndex! + 1,
                               count: layer.legend.length,

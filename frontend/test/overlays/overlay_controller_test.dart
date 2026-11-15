@@ -253,6 +253,62 @@ void main() {
     c.dispose();
   });
 
+  group('soil from the parcel details', () {
+    late OverlayController c;
+
+    setUp(() {
+      c = OverlayController(
+        repository: repo,
+        overlays: const [SoilQualityOverlay(), SoilMoistureOverlay()],
+      );
+    });
+
+    tearDown(() => c.dispose());
+
+    test('Polish parcel: the soil map complex, not SoilGrids', () async {
+      repo
+        ..parcelAnswer = loadParcelSample()
+        ..legend = soilMapLegend;
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+
+      expect(repo.parcelRequests, [_field]);
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, 'soil-map');
+      expect(c.layer!.ordered, isFalse);
+
+      // Other overlays still use the map layers response.
+      c.select(c.overlays[1]);
+      expect(c.layer!.tileLayer, isNull);
+      expect(c.layer!.ordered, isTrue);
+    });
+
+    test('no parcel there: SoilGrids soil as before', () async {
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, isNull);
+      expect(c.layer!.source, 'ISRIC SoilGrids v2.0 (0–30 cm)');
+    });
+
+    test('NASA down but the parcel is known: soil still shows', () async {
+      repo.parcelAnswer = loadParcelSample();
+      c.showPlace(_field);
+      repo.fail(_field, ApiException('down', statusCode: 502));
+      await pumpEventQueue();
+
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, 'soil-map');
+
+      c.select(c.overlays[1]);
+      expect(c.status, OverlayStatus.error);
+      expect(c.error, OverlayError.server);
+    });
+  });
+
   group('heat map', () {
     late OverlayController c;
 

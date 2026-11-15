@@ -92,6 +92,22 @@ Data notes:
   suitability complexes; those come from the soil map (`soilMap.complexName`).
 - The soil map is mostly from surveys of the 1960s–70s; show `surveyedOn`.
 
+## Map tiles (`/api/map-tiles`)
+
+`GET /api/map-tiles/{layer}/{z}/{x}/{y}.png`: 256 px Web Mercator tiles of a data layer for the app's map, through
+our backend (the app never asks the source). `GET /api/map-tiles/{layer}/legend`: `[{ code, name, color }]`.
+
+| Layer | Source | Zooms | Cached |
+|---|---|---|---|
+| `soil-map` | Mapa glebowo-rolnicza WMS (GetMap, EPSG:3857), Poland only | 13–19 | 30 days in `tile_cache` (PostgreSQL) |
+
+Outside the provider's area, out of its zooms, or when the source fails (the WMS answers 503 now and then; the
+HTTP client retries), the answer is a transparent tile with `max-age=300`, so the map shows nothing there and asks
+again later. The legend colours are those of the WMS legend image (GetLegendGraphic); hatched areas (forest,
+built-up) have no single colour and are not in it.
+
+A new layer or country = an `IMapTileProvider` (layer id, zooms, `Covers`, legend) registered in DI.
+
 ## Adding a country
 
 1. Implement `ICountryProvider` (`GetFieldAtAsync`, `GetFieldByParcelIdAsync`): find the parcel, return a

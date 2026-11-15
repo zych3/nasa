@@ -23,6 +23,25 @@ public sealed class ProviderCacheEntry
     public DateTimeOffset ExpiresAt { get; set; }
 }
 
+/// <summary>One cached web map tile (PNG) of a map layer (<see cref="IMapTileProvider"/>).</summary>
+public sealed class TileCacheEntry
+{
+    /// <summary>Layer id, e.g. "soil-map".</summary>
+    public required string Layer { get; set; }
+
+    public int Z { get; set; }
+
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public required byte[] Png { get; set; }
+
+    public DateTimeOffset FetchedAt { get; set; }
+
+    public DateTimeOffset ExpiresAt { get; set; }
+}
+
 /// <summary>
 /// Field data cache in PostgreSQL (the same database as the prices, its own migrations: Migrations/FieldData,
 /// history table <see cref="MigrationsHistoryTable"/>).
@@ -32,6 +51,8 @@ public sealed class FieldDataDbContext(DbContextOptions<FieldDataDbContext> opti
     public const string MigrationsHistoryTable = "__field_data_migrations";
 
     public DbSet<ProviderCacheEntry> Entries => Set<ProviderCacheEntry>();
+
+    public DbSet<TileCacheEntry> Tiles => Set<TileCacheEntry>();
 
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
     public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
@@ -45,6 +66,20 @@ public sealed class FieldDataDbContext(DbContextOptions<FieldDataDbContext> opti
             e.Property(x => x.Provider).HasColumnName("provider").HasColumnType("text");
             e.Property(x => x.Key).HasColumnName("key").HasColumnType("text");
             e.Property(x => x.Payload).HasColumnName("payload").HasColumnType("jsonb");
+            e.Property(x => x.FetchedAt).HasColumnName("fetched_at");
+            e.Property(x => x.ExpiresAt).HasColumnName("expires_at");
+            e.HasIndex(x => x.ExpiresAt);
+        });
+
+        model.Entity<TileCacheEntry>(e =>
+        {
+            e.ToTable("tile_cache");
+            e.HasKey(x => new { x.Layer, x.Z, x.X, x.Y });
+            e.Property(x => x.Layer).HasColumnName("layer").HasColumnType("text");
+            e.Property(x => x.Z).HasColumnName("z");
+            e.Property(x => x.X).HasColumnName("x");
+            e.Property(x => x.Y).HasColumnName("y");
+            e.Property(x => x.Png).HasColumnName("png").HasColumnType("bytea");
             e.Property(x => x.FetchedAt).HasColumnName("fetched_at");
             e.Property(x => x.ExpiresAt).HasColumnName("expires_at");
             e.HasIndex(x => x.ExpiresAt);

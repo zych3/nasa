@@ -1,8 +1,10 @@
 namespace FieldShift.Web.Countries.Poland;
 
 /// <summary>
-/// Codes of the Polish soil-agricultural map (mapa glebowo-rolnicza, 1:5000) → names, copied from the map's legend
-/// ("Legenda do przestrzennej bazy danych glebowych", Geoportal Podlaskie). Unknown codes stay as they are.
+/// Codes of the Polish soil-agricultural map (mapa glebowo-rolnicza, 1:5000) → names, copied from the map's legends:
+/// "Legenda do przestrzennej bazy danych glebowych" (Geoportal Podlaskie) and the legend image of GUGiK's WMS
+/// (GetLegendGraphic), which has more subtypes ("…d" = deluvial) and writes ż / ł where the PDF has z / l.
+/// Unknown codes stay as they are.
 /// </summary>
 public static class SoilComplexes
 {
@@ -59,6 +61,28 @@ public static class SoilComplexes
         ["FG"] = "gleby aluwialne glejowe",
         ["R"] = "rędziny o słabo wykształconym profilu",
         ["Rb"] = "rędziny brunatne",
+        ["Ad"] = "gleby bielicowe właściwe i pseudobielicowe deluwialne",
+        ["Bd"] = "gleby brunatne deluwialne",
+        ["Bk"] = "gleby brunatne kwaśne",
+        ["Bkd"] = "gleby brunatne kwaśne deluwialne",
+        ["Bwd"] = "gleby brunatne wyługowane deluwialne",
+        ["Cd"] = "czarnoziemy właściwe deluwialne",
+        ["Czd"] = "czarnoziemy zdegradowane i gleby szare deluwialne",
+        ["Dd"] = "czarne ziemie właściwe deluwialne",
+        ["DG"] = "czarne ziemie glejowe",
+        ["DGd"] = "czarne ziemie glejowe deluwialne",
+        ["Dzd"] = "czarne ziemie zdegradowane i ziemie szare deluwialne",
+        ["DzG"] = "czarne ziemie zdegradowane i ziemie szare glejowe",
+        ["DzGd"] = "czarne ziemie zdegradowane i ziemie szare glejowe deluwialne",
+        ["Emt"] = "gleby mułowo-torfowe",
+        ["Etm"] = "gleby torfowo-mułowe",
+        ["Fd"] = "mady deluwialne",
+        ["FGd"] = "mady glejowe deluwialne",
+        ["Gd"] = "gleby glejowe deluwialne",
+        ["Md"] = "gleby murszowo-mineralne i murszowate deluwialne",
+        ["Rc"] = "rędziny próchniczne (czarnoziemne i szare)",
+        ["Rd"] = "rędziny deluwialne (namyte)",
+        ["Rg"] = "rędziny gipsowe (siarczanowe)",
     };
 
     /// <summary>Kinds and textures of soils (rodzaje i gatunki gleb) and other rocks.</summary>
@@ -97,6 +121,15 @@ public static class SoilComplexes
         ["wl"] = "wapno łąkowe",
         ["ga"] = "gytia",
         ["t"] = "skała organogeniczna (torf)",
+        ["żp"] = "żwiry piaszczyste",
+        ["żg"] = "żwiry gliniaste",
+        ["płz"] = "pyły zwykłe",
+        ["płi"] = "pyły ilaste",
+        ["pł"] = "gleby pyłowe",
+        ["g"] = "gleby gliniaste",
+        ["w"] = "skała wapienna",
+        ["d"] = "utwory deluwialne",
+        ["m"] = "mursz",
     };
 
     /// <summary>Rendzinas (soil types R, Rb) use l / s / c for their own textures.</summary>

@@ -567,4 +567,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlaysShowExamplePlace => 'Show the example place';
+
+  @override
+  String get overlayCoverageParcel =>
+      'Data for the parcel from the soil-agricultural map (scale 1:5000). The colours on the map are its complexes.';
+
+  @override
+  String overlaySoilType(String name) {
+    return 'Soil type: $name';
+  }
+
+  @override
+  String overlaySoilTexture(String layers) {
+    return 'Texture: $layers';
+  }
+
+  @override
+  String overlaySoilTextureDeeper(String depth, String name) {
+    return 'from $depth: $name';
+  }
+
+  @override
+  String overlayLandClasses(String classes) {
+    return 'Land register classes: $classes';
+  }
+
+  @override
+  String overlaySoilSurveyed(String year) {
+    return 'Soil survey from $year.';
+  }
+
+  @override
+  String get overlaysSoilMapZoomIn => 'Zoom in to see the soil map';
 }

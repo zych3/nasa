@@ -28,5 +28,6 @@ public static class FieldDataRegistration
         builder.Services.AddSingleton<IProviderCache, PostgresProviderCache>();
         builder.Services.AddSingleton<FieldDataCache>();
         builder.Services.AddScoped<ParcelDetailsService>();
+        builder.Services.AddScoped<MapTileService>();
     }
 }

@@ -66,6 +66,16 @@ class OverlayLegendItem {
   final L10nText label;
 }
 
+/// One more line of the value card, e.g. the soil type: an icon and a
+/// sentence (never the icon alone).
+@immutable
+class OverlayDetail {
+  const OverlayDetail({required this.icon, required this.text});
+
+  final IconData icon;
+  final L10nText text;
+}
+
 /// What one overlay shows for one place: the area, the scale and where the
 /// value falls on it. Built by `MapOverlay.parse` from the backend response.
 @immutable
@@ -79,6 +89,10 @@ class OverlayLayer {
     required this.coverage,
     this.month,
     this.monthIndex,
+    this.ordered = true,
+    this.details = const [],
+    this.tileLayer,
+    this.tileMinZoom,
   }) : assert(
          currentIndex == null ||
              (currentIndex >= 0 && currentIndex < legend.length),
@@ -108,6 +122,21 @@ class OverlayLayer {
 
   /// Index of [month] in the response's `dates`, for stepping through months.
   final int? monthIndex;
+
+  /// The legend is a scale from low to high (shown with level bars). False
+  /// for kinds that have no order, like soil suitability complexes (wheat,
+  /// rye, fodder): those show only their colour and word.
+  final bool ordered;
+
+  /// More lines for the value card, after the value.
+  final List<OverlayDetail> details;
+
+  /// Backend map tile layer (`/api/map-tiles/{tileLayer}/…`) the map draws
+  /// for this value instead of the circle, e.g. "soil-map".
+  final String? tileLayer;
+
+  /// Zoom from which [tileLayer] has a picture.
+  final double? tileMinZoom;
 
   OverlayLegendItem? get current =>
       currentIndex == null ? null : legend[currentIndex!];

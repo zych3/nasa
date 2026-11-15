@@ -62,6 +62,14 @@ class OverlayController extends ChangeNotifier {
   OverlayStatus _status = OverlayStatus.idle;
   OverlayError? _error;
   Map<String, dynamic>? _response;
+  OverlayError? _responseError;
+
+  /// `GET /api/parcels/details` of the place, for overlays that use it.
+  Map<String, dynamic>? _parcelDetails;
+  bool _parcelLoading = false;
+
+  /// Legends of map tile layers, by layer id.
+  final _legends = <String, List<Map<String, dynamic>>>{};
   OverlayLayer? _layer;
 
   /// Heat map blocks by their place: (0, 0) = the block around [place],
@@ -163,8 +171,8 @@ class OverlayController extends ChangeNotifier {
   void select(MapOverlay overlay) {
     if (overlay.id == _selected.id) return;
     _selected = overlay;
-    // While loading, the answer is parsed for this overlay when it arrives.
-    if (_response != null) _parse();
+    // While loading, the answers are parsed for this overlay as they arrive.
+    if (_status != OverlayStatus.idle) _parse();
     _notify();
   }
 
@@ -191,6 +199,9 @@ class OverlayController extends ChangeNotifier {
     _status = OverlayStatus.loading;
     _error = null;
     _response = null;
+    _responseError = null;
+    _parcelDetails = null;
+    _parcelLoading = false;
     _layer = null;
     _blocks.clear();
     _requested.clear();
@@ -208,6 +219,9 @@ class OverlayController extends ChangeNotifier {
 
     _requested.add((0, 0));
     _loadBlock(generation, (0, 0), place, demo: demo);
+    if (overlays.any((o) => o.usesParcelDetails)) {
+      _loadParcel(generation, place, demo: demo, refresh: refresh);
+    }
     try {
       final json = demo
           ? await _repository.demo()
@@ -219,13 +233,48 @@ class OverlayController extends ChangeNotifier {
     } catch (e) {
       if (_disposed || generation != _generation) return;
       debugPrint('Map layers for $place failed: $e');
-      _status = OverlayStatus.error;
-      _error = switch (e) {
+      _responseError = switch (e) {
         FormatException() => OverlayError.badData,
         ApiException() => OverlayError.server,
         _ => OverlayError.network,
       };
+      // Overlays with parcel details may still have something to show.
+      _parse();
     }
+    _notify();
+  }
+
+  /// Loads the parcel details and the legends of their map layers. Failing
+  /// (no parcel there, other country, backend down) just leaves the overlays
+  /// on their [MapOverlay.parse] data.
+  Future<void> _loadParcel(
+    int generation,
+    LatLng? place, {
+    required bool demo,
+    required bool refresh,
+  }) async {
+    _parcelLoading = true;
+    Map<String, dynamic>? details;
+    try {
+      details = demo
+          ? await _repository.demoParcelDetails()
+          : await _repository.parcelDetails(place!, refresh: refresh);
+    } catch (e) {
+      debugPrint('Parcel details for $place failed: $e');
+    }
+    for (final layer in overlays.map((o) => o.parcelTileLayer).nonNulls) {
+      if (_legends.containsKey(layer)) continue;
+      try {
+        _legends[layer] = await _repository.mapLegend(layer);
+      } catch (e) {
+        // Without a legend the value card still names the complex.
+        debugPrint('Legend of $layer failed: $e');
+      }
+    }
+    if (_disposed || generation != _generation) return;
+    _parcelDetails = details;
+    _parcelLoading = false;
+    _parse();
     _notify();
   }
 
@@ -298,20 +347,55 @@ class OverlayController extends ChangeNotifier {
     return wasTooFar != _tooFar || visibleChanged;
   }
 
+  /// The chosen overlay from what has arrived: parcel details first (for the
+  /// overlays that use them, waiting for them while they load), then the map
+  /// layers response; loading or error while neither is usable.
   void _parse() {
+    _layer = _parseLayer();
+    _parseHeatmap();
+  }
+
+  OverlayLayer? _parseLayer() {
+    if (_selected.usesParcelDetails) {
+      final details = _parcelDetails;
+      if (details != null) {
+        try {
+          final layer = _selected.parseParcel(
+            details,
+            _legends[_selected.parcelTileLayer] ?? const [],
+          );
+          if (layer != null) return _ready(layer);
+        } catch (e) {
+          debugPrint('Overlay "${_selected.id}" could not read the parcel: $e');
+        }
+      } else if (_parcelLoading) {
+        return _waiting(null);
+      }
+    }
+
+    final response = _response;
+    if (response == null) return _waiting(_responseError);
     try {
-      _layer = _selected.parse(_response!, month: _month);
-      _status = OverlayStatus.ready;
-      _error = null;
+      return _ready(_selected.parse(response, month: _month));
     } catch (e) {
       // Parsers throw FormatException; anything else is a broken response too
       // (or a parser bug, hence the log).
       debugPrint('Overlay "${_selected.id}" could not read the response: $e');
-      _layer = null;
-      _status = OverlayStatus.error;
-      _error = OverlayError.badData;
+      return _waiting(OverlayError.badData);
     }
-    _parseHeatmap();
+  }
+
+  OverlayLayer _ready(OverlayLayer layer) {
+    _status = OverlayStatus.ready;
+    _error = null;
+    return layer;
+  }
+
+  /// No layer yet: loading, or [error].
+  OverlayLayer? _waiting(OverlayError? error) {
+    _status = error == null ? OverlayStatus.loading : OverlayStatus.error;
+    _error = error;
+    return null;
   }
 
   /// Heat map for the shown overlay and month from the loaded blocks the

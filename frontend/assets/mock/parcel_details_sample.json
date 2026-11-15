@@ -1,0 +1,114 @@
+{
+ "countryCode": "PL",
+ "parcelId": "141205_2.0008.60",
+ "location": {
+  "lat": 52.2,
+  "lon": 21.48
+ },
+ "outlineAreaHa": 0.7456,
+ "landRegistry": {
+  "status": "ok",
+  "data": {
+   "source": "Ewidencja gruntów i budynków (starostwo powiatowe), przez Geoportal GUGiK",
+   "areaHa": 0.76,
+   "place": [
+    "mazowieckie",
+    "powiat miński",
+    "Dębe Wielkie",
+    "CHROŚLA"
+   ],
+   "classes": [
+    {
+     "code": "LzrRIVb",
+     "landUse": "grunty zadrzewione i zakrzewione na użytkach rolnych (grunty orne)",
+     "qualityClass": "IVb",
+     "qualityName": "orne średnie gorsze"
+    },
+    {
+     "code": "RIVb",
+     "landUse": "grunty orne",
+     "qualityClass": "IVb",
+     "qualityName": "orne średnie gorsze"
+    },
+    {
+     "code": "LzrRIVa",
+     "landUse": "grunty zadrzewione i zakrzewione na użytkach rolnych (grunty orne)",
+     "qualityClass": "IVa",
+     "qualityName": "orne średnie lepsze"
+    }
+   ],
+   "publishedOn": "2026-11-13"
+  },
+  "provider": "pl.egib.v1",
+  "fetchedAtUtc": "2026-11-15T09:59:46.586829+00:00",
+  "fromCache": true
+ },
+ "soilMap": {
+  "status": "ok",
+  "data": {
+   "source": "Mapa glebowo-rolnicza 1:5000 (PZGiK), przez Geoportal GUGiK",
+   "complexCode": "5",
+   "complexName": "kompleks żytni dobry",
+   "soilTypeCode": "A",
+   "soilTypeName": "gleby bielicowe i pseudobielicowe",
+   "texture": [
+    {
+     "code": "pgl",
+     "name": "piaski gliniaste lekkie",
+     "from": null
+    },
+    {
+     "code": "gs",
+     "name": "gliny średnie",
+     "from": "50–100 cm"
+    }
+   ],
+   "surveyedOn": "1973-01-01"
+  },
+  "provider": "pl.mgr.v1",
+  "fetchedAtUtc": "2026-11-15T09:59:46.618174+00:00",
+  "fromCache": true
+ },
+ "terrain": {
+  "status": "ok",
+  "data": {
+   "source": "Numeryczny model terenu GUGiK (siatka 1 m)",
+   "elevationMinM": 139.5,
+   "elevationMeanM": 140,
+   "elevationMaxM": 140.6,
+   "slopePct": 0.5,
+   "slopeClass": "płasko",
+   "samples": 150
+  },
+  "provider": "pl.nmt.v1",
+  "fetchedAtUtc": "2026-11-15T09:59:46.618894+00:00",
+  "fromCache": true
+ },
+ "soilProperties": {
+  "status": "ok",
+  "data": {
+   "source": "ISRIC SoilGrids v2.0, warstwa 0–30 cm (rozdzielczość 250 m)",
+   "description": "Skład i właściwości gleby oszacowane modelem; rolnik może je poprawić.",
+   "sandPct": 77.5,
+   "clayPct": 9,
+   "siltPct": 13.4,
+   "ph": 5.75,
+   "organicCarbonGkg": 15.3,
+   "nitrogenGkg": 1.99,
+   "cecCmolKg": 21.8,
+   "bulkDensityGcm3": 1.3,
+   "coarseFragmentsPct": 5.1,
+   "soilClass": "Lekka",
+   "phClass": "Lekko kwaśna",
+   "organicMatterClass": "Średnia",
+   "nitrogenClass": "Średnia",
+   "cecClass": "Wysoka",
+   "compactionClass": "Prawidłowa",
+   "stoneClass": "Średnia"
+  },
+  "provider": "soilgrids.v2",
+  "fetchedAtUtc": "2026-11-15T09:59:46.619627+00:00",
+  "fromCache": true
+ },
+ "generatedAtUtc": "2026-11-15T10:37:44.1479255+00:00"
+}

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/overlays/map_layers_repository.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -42,6 +43,31 @@ class FakeMapLayersRepository extends MapLayersRepository {
 
   @override
   Future<Map<String, dynamic>> demoGrid() async => loadGridSample();
+
+  /// Parcel details answer: null = no registered parcel (404, as outside
+  /// Poland), so overlays fall back to the map layers response.
+  Map<String, dynamic>? parcelAnswer;
+  final parcelRequests = <LatLng>[];
+
+  /// Legend of every map tile layer.
+  List<Map<String, dynamic>> legend = const [];
+
+  @override
+  Future<Map<String, dynamic>> parcelDetails(
+    LatLng point, {
+    bool refresh = false,
+  }) async {
+    parcelRequests.add(point);
+    final answer = parcelAnswer;
+    if (answer == null) throw ApiException('no parcel', statusCode: 404);
+    return answer;
+  }
+
+  @override
+  Future<Map<String, dynamic>> demoParcelDetails() async => loadParcelSample();
+
+  @override
+  Future<List<Map<String, dynamic>>> mapLegend(String layer) async => legend;
 
   /// Answers the oldest open heat map request for [point].
   void completeGrid(LatLng point, Map<String, dynamic> json) =>
