@@ -1,10 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../components/address_search_field.dart';
 import '../components/input/plotInput/plot_input.dart';
 import '../components/map_button.dart';
 import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
@@ -45,6 +47,27 @@ class _PlotPageState extends State<PlotPage> {
     }
   }
 
+  /// The user picked a full address from the hints: take the parcel there.
+  Future<void> _choosePoint(AddressSuggestion hint, String text) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _loading = true);
+    try {
+      final parcel = await _parcels.parcelAt(hint.point);
+      if (!mounted) return;
+      if (parcel != null) {
+        await widget.store.select(parcel.withAddress(text));
+      } else {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -62,17 +85,26 @@ class _PlotPageState extends State<PlotPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Header: plot name, area, location. Room on the right for the
-        // language button floating in the top corner.
+        // Address search with hints, at the very top. Room on the right for
+        // the language button floating in the top corner.
         Padding(
           padding: const EdgeInsetsDirectional.only(
             end: MapButton.reservedEnd - 16,
           ),
-          child: Card(
-            child: ListTile(
-              leading: const Icon(Icons.agriculture, size: 40),
-              title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
-              subtitle: Text(l10n.plotSummary('—', parcel?.address ?? '—')),
+          child: AddressSearchField(
+            onAddressChosen: _choosePoint,
+            onSearch: _findParcel,
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Header: plot name, area, location
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.agriculture, size: 40),
+            title: Text(
+              parcel?.address ?? '—',
+              style: theme.textTheme.titleLarge,
             ),
           ),
         ),
@@ -136,11 +168,13 @@ class _PlotPageState extends State<PlotPage> {
           const SizedBox(height: 24),
         ],
 
-        // Plot input form. No "Save" button until the plot can be saved
-        // somewhere (it used to clear the form without saving anything).
-        Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 8),
-        PlotInput(onFindParcel: _findParcel),
+        // Plot input form (left as-is)
+        // Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
+        // const SizedBox(height: 8),
+        // The address is typed in the search field at the top.
+        // No "Save" button until the plot can be saved somewhere (it used
+        // to clear the form without saving anything).
+        PlotInput(address: parcel?.address ?? ''),
         const SizedBox(height: 24),
 
         // Info cards

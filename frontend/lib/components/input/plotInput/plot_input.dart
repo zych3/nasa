@@ -6,11 +6,20 @@ import 'crop_multi_selector.dart';
 import 'plot_data.dart';
 
 class PlotInput extends StatefulWidget {
-  const PlotInput({super.key, this.onSubmitPlot, this.onFindParcel});
+  const PlotInput({
+    super.key,
+    this.onSubmitPlot,
+    this.onFindParcel,
+    this.address,
+  });
 
   /// Saves the plot. Without it there is no "Save" button: a button that
   /// clears what the user typed without saving it would lose their input.
   final void Function(PlotData)? onSubmitPlot;
+
+  /// Address typed elsewhere (e.g. the search field at the top of the page).
+  /// When given, this widget does not show its own address field.
+  final String? address;
 
   /// Called when the user searches for the parcel at the typed address.
   final void Function(String address)? onFindParcel;
@@ -30,7 +39,7 @@ class _PlotInputState extends State<PlotInput> {
   }
 
   void _handleSubmit(void Function(PlotData) onSubmitPlot) {
-    final address = _addressController.text.trim();
+    final address = (widget.address ?? _addressController.text).trim();
     if (address.isNotEmpty && _selectedCrops.isNotEmpty) {
       onSubmitPlot(
         PlotData(address: address, crops: List.from(_selectedCrops)),
@@ -53,11 +62,13 @@ class _PlotInputState extends State<PlotInput> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AddressInputField(
-            controller: _addressController,
-            onSearch: widget.onFindParcel,
-          ),
-          const SizedBox(height: 20),
+          if (widget.address == null) ...[
+            AddressInputField(
+              controller: _addressController,
+              onSearch: widget.onFindParcel,
+            ),
+            const SizedBox(height: 20),
+          ],
           CropMultiSelector(
             selectedCrops: _selectedCrops,
             onCropToggled: (crop, isSelected) {

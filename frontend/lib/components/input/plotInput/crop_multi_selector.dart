@@ -74,7 +74,8 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
       children: [
         Text(
           widget.label ?? l10n.selectCropsLabel,
-          style: Theme.of(context).textTheme.titleSmall,
+          style: Theme.of(context).textTheme.titleMedium
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         TapRegion(

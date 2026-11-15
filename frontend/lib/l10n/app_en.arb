@@ -601,5 +601,11 @@
       }
     }
   },
-  "overlayPlantStressTitle": "Plant stress"
+  "overlayPlantStressTitle": "Plant stress",
+  "addressSearchHint": "e.g. Wieliczka, Krakowska 1",
+  "addressSearchHelper": "Type the town, pick it from the list, then type the street and house number.",
+  "addressSuggestionsNone": "No matching address. Check the spelling, or put a comma after the town name.",
+  "addressKindPlace": "Town or village",
+  "addressKindStreet": "Street",
+  "addressKindAddress": "Address"
 }

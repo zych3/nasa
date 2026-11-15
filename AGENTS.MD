@@ -42,6 +42,8 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Parcels in the visible map area | `GET /api/parcels?bbox=...` |
 | Parcels nearest to a point (parcel at the point + parcels of nearest addresses) | `GET /api/parcels/nearby?lat=..&lon=..` |
 | Parcel details: land register classes, soil map, terrain, modelled soil (sections with status and source) | `GET /api/parcels/details?lat=..&lon=..`, `GET /api/parcels/{id}/details` |
+| Address hints while typing (`kind`: `place` / `street` / `address`; empty list for < 3 chars or no match) | `GET /api/parcels/suggest?q=...` |
+| Parcel at a point (e.g. a chosen address hint; 404 when none) | `GET /api/parcels/at?lat=..&lon=..` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |
 | Monthly map layers with legends for a date slider | `GET /api/map-layers?lat=...&lon=...&from=yyyy-MM&to=yyyy-MM&layers=...` |

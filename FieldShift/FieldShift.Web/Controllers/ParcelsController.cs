@@ -12,6 +12,7 @@ namespace FieldShift.Web.Controllers;
 public class ParcelsController(
     ICountryProvider country,
     ParcelDetailsService details,
+    IAddressSuggester suggester,
     ILogger<ParcelsController> logger) : ControllerBase
 {
     /// <summary>
@@ -63,6 +64,57 @@ public class ParcelsController(
         {
             logger.LogWarning(ex, "Parcel register lookup failed");
             return Problem("Parcel register did not answer.", statusCode: StatusCodes.Status502BadGateway);
+        }
+    }
+
+    private const int SuggestLimit = 8;
+    private const int SuggestMinLength = 3;
+
+    /// <summary>
+    /// Address hints while the user types (search-as-you-type). Empty list for short input
+    /// or when nothing matches; never an error, so typing is never interrupted.
+    /// </summary>
+    [HttpGet("suggest")]
+    public async Task<ActionResult<IReadOnlyList<AddressSuggestion>>> Suggest(
+        [FromQuery] string? q, CancellationToken ct)
+    {
+        var text = q?.Trim() ?? "";
+        if (text.Length < SuggestMinLength || text.Length > 200)
+        {
+            return Array.Empty<AddressSuggestion>();
+        }
+
+        return Ok(await suggester.SuggestAsync(text, SuggestLimit, ct));
+    }
+
+    /// <summary>The parcel at a point (e.g. a chosen address hint).</summary>
+    [HttpGet("at")]
+    public async Task<ActionResult<ParcelSearchResponse>> At([FromQuery] double? lat, [FromQuery] double? lon)
+    {
+        if (lat is not (>= -90 and <= 90) || lon is not (>= -180 and <= 180))
+        {
+            return Problem("Valid lat and lon are required.", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        try
+        {
+            var parcel = await country.GetParcelAsync(new GeocodeResult(null, null, null, lat.Value, lon.Value, null));
+            if (parcel is null)
+            {
+                return Problem("No parcel at this point.", statusCode: StatusCodes.Status404NotFound);
+            }
+
+            return new ParcelSearchResponse(parcel.Id, lat.Value, lon.Value, parcel.GeometryWkt);
+        }
+        catch (TaskCanceledException ex)
+        {
+            logger.LogWarning(ex, "Parcel lookup timed out");
+            return Problem("Upstream service timed out.", statusCode: StatusCodes.Status504GatewayTimeout);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogWarning(ex, "Parcel lookup failed");
+            return Problem("Upstream service error.", statusCode: StatusCodes.Status502BadGateway);
         }
     }
 

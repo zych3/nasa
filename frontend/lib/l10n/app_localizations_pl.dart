@@ -120,7 +120,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get plotAddressHint => 'Wpisz ulicę lub miejscowość';
 
   @override
-  String get selectCropsLabel => 'Uprawy na działce:';
+  String get selectCropsLabel => 'Ostatnie uprawy na działce:';
 
   @override
   String get searchCropsHint => 'Szukaj upraw...';
@@ -873,4 +873,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlayPlantStressTitle => 'Stres roślin';
+
+  @override
+  String get addressSearchHint => 'np. Wieliczka, Krakowska 1';
+
+  @override
+  String get addressSearchHelper =>
+      'Wpisz miejscowość, wybierz ją z listy, a potem wpisz ulicę i numer domu.';
+
+  @override
+  String get addressSuggestionsNone =>
+      'Nie znaleziono takiego adresu. Sprawdź pisownię albo postaw przecinek po nazwie miejscowości.';
+
+  @override
+  String get addressKindPlace => 'Miejscowość';
+
+  @override
+  String get addressKindStreet => 'Ulica';
+
+  @override
+  String get addressKindAddress => 'Adres';
 }
