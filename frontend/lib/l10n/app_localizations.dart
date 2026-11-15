@@ -116,12 +116,6 @@ abstract class AppLocalizations {
   /// **'My field'**
   String get navPlot;
 
-  /// No description provided for @navTrends.
-  ///
-  /// In en, this message translates to:
-  /// **'Popular crops'**
-  String get navTrends;
-
   /// No description provided for @changeLanguage.
   ///
   /// In en, this message translates to:
@@ -175,30 +169,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Temperature'**
   String get temperature;
-
-  /// No description provided for @trendsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Popular crops near you'**
-  String get trendsTitle;
-
-  /// No description provided for @trendsIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Crops that do well in your area right now. Tap a crop to learn more.'**
-  String get trendsIntro;
-
-  /// No description provided for @trendsLoadError.
-  ///
-  /// In en, this message translates to:
-  /// **'We could not load the crops. Check your internet and try again.'**
-  String get trendsLoadError;
-
-  /// No description provided for @trendsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No crop suggestions yet.'**
-  String get trendsEmpty;
 
   /// No description provided for @tryAgain.
   ///
@@ -295,12 +265,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'From your answer'**
   String get sourceUserAnswer;
-
-  /// No description provided for @demoDataNotice.
-  ///
-  /// In en, this message translates to:
-  /// **'Demo data: not real prices yet.'**
-  String get demoDataNotice;
 
   /// No description provided for @parcelNumber.
   ///

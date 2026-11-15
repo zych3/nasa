@@ -19,9 +19,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navPlot => 'My field';
 
   @override
-  String get navTrends => 'Popular crops';
-
-  @override
   String get changeLanguage => 'Change language';
 
   @override
@@ -49,20 +46,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get temperature => 'Temperature';
-
-  @override
-  String get trendsTitle => 'Popular crops near you';
-
-  @override
-  String get trendsIntro =>
-      'Crops that do well in your area right now. Tap a crop to learn more.';
-
-  @override
-  String get trendsLoadError =>
-      'We could not load the crops. Check your internet and try again.';
-
-  @override
-  String get trendsEmpty => 'No crop suggestions yet.';
 
   @override
   String get tryAgain => 'Try again';
@@ -117,9 +100,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sourceUserAnswer => 'From your answer';
-
-  @override
-  String get demoDataNotice => 'Demo data: not real prices yet.';
 
   @override
   String parcelNumber(String id) {

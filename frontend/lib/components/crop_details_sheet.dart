@@ -299,13 +299,21 @@ class _PriceHistoryView extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  dateFormat.format(points.first.date),
-                  style: theme.textTheme.bodyMedium,
+                // Long dates (English, large text) wrap instead of running
+                // off a narrow screen.
+                Flexible(
+                  child: Text(
+                    dateFormat.format(points.first.date),
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ),
-                Text(
-                  dateFormat.format(latest.date),
-                  style: theme.textTheme.bodyMedium,
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    dateFormat.format(latest.date),
+                    style: theme.textTheme.bodyMedium,
+                    textAlign: TextAlign.end,
+                  ),
                 ),
               ],
             ),
