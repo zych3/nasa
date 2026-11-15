@@ -9,7 +9,7 @@ We build a decision-support tool that uses NASA Earth observations plus local so
 farmer priorities to help farmers explore crop-rotation strategies that protect soil and adapt to a changing climate.
 
 **Core principle: the interface must be usable by people who are not comfortable with technology.**
-Simple, one question per screen, big touch targets, plain language, read-aloud, no jargon.
+Simple, one question per screen, big touch targets, plain language, no jargon.
 
 ## Architecture
 
@@ -138,7 +138,6 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One question per screen; always a back button and progress indicator.
 - Touch targets at least 48 px, preferably larger; text at least 18 px; support system text scaling.
 - High contrast. Never rely on colour alone: pair it with an icon and a word.
-- Every screen has a read-aloud button (`flutter_tts`).
 - Plain language, no jargon ("dry-spell risk", not "precipitation variability"). UI text in Polish and English via localization, not hard-coded in widgets.
 - Every external data value shows its source and confidence: measured by satellite / estimated / from your answer.
 - Friendly error messages and fallbacks; the app must still work with cached or demo data.

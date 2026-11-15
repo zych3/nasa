@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../components/rotation/plan_reading.dart';
 import '../components/rotation/plan_timeline.dart';
 import '../components/rotation/rating_row.dart';
 import '../components/rotation/rotation_details.dart';
@@ -13,7 +12,6 @@ import '../repositories/auth_store.dart';
 import '../repositories/crop_repository.dart';
 import '../repositories/local_plans_store.dart';
 import '../repositories/rotation_repository.dart';
-import '../widgets/read_aloud_button.dart';
 
 class RotationReportPage extends StatefulWidget {
   const RotationReportPage({
@@ -49,7 +47,6 @@ class _RotationReportPageState extends State<RotationReportPage> {
   List<Crop> _catalogue = const [];
 
   String? _goal;
-  RotationReport? _data;
 
   /// The plan the user picked in "More details" (null: the recommended one).
   RotationPlan? _choice;
@@ -64,21 +61,18 @@ class _RotationReportPageState extends State<RotationReportPage> {
     CropRepository().getCrops().then((c) {
       if (mounted) setState(() => _catalogue = c);
     });
-    final report = _repository.getReport(
+    return _repository.getReport(
       parcelId: widget.parcel.id,
       lat: widget.parcel.center.latitude,
       lon: widget.parcel.center.longitude,
       answers: widget.answers,
     );
-    report.then<void>((r) => _data = r, onError: (_) {});
-    return report;
   }
 
   void _retry() => setState(() {
     _goal = null;
     _choice = null;
     _saved.clear();
-    _data = null;
     _report = _load();
   });
 
@@ -130,37 +124,6 @@ class _RotationReportPageState extends State<RotationReportPage> {
 
   /// Leaves the planning and goes back to the start of the app.
   void _finish() => Navigator.of(context).popUntil((route) => route.isFirst);
-
-  /// Everything the report shows, in the order it shows it.
-  String _readAloud(AppLocalizations l10n) {
-    final report = _data;
-    if (report == null) return l10n.reportTitle;
-
-    final language = Localizations.localeOf(context).languageCode;
-    final locale = Localizations.localeOf(context).toString();
-    final names = _names(report, language);
-    final warnings = [
-      for (final w in report.warnings) warningText(l10n, w, (id) => names[id]),
-    ];
-    final plans = report.plansFor(_goal ?? report.mainGoal);
-    if (plans == null || !report.hasPlan) {
-      return sentencesForReading([l10n.reportNoPlan, ...warnings]);
-    }
-
-    final plan = _planFor(plans);
-    return sentencesForReading([
-      plans.goal == report.mainGoal ? l10n.reportMainTitle : l10n.reportSowNext,
-      ...planReadingSentences(l10n, locale, language, plan),
-      l10n.reportQualityTitle,
-      for (final key in _headline)
-        if (plan.score(key) != null && scoreLabel(l10n, key) != null)
-          l10n.readPair(
-            scoreLabel(l10n, key)!,
-            levelLabel(l10n, plan.score(key)!.level),
-          ),
-      ...warnings,
-    ]);
-  }
 
   Map<String, String> _names(RotationReport report, String language) {
     final names = <String, String>{
@@ -224,10 +187,6 @@ class _RotationReportPageState extends State<RotationReportPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(l10n.reportTitle),
-        actions: [
-          ReadAloudButton(text: () => _readAloud(l10n)),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SafeArea(
         child: FutureBuilder<RotationReport>(

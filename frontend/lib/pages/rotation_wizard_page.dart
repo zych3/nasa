@@ -9,7 +9,6 @@ import '../models/parcel.dart';
 import '../models/rotation_report.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/crop_repository.dart';
-import '../widgets/read_aloud_button.dart';
 import 'rotation_report_page.dart';
 
 class RotationWizardPage extends StatefulWidget {
@@ -43,72 +42,10 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
   final List<String> _excluded = [];
   bool _phInvalid = false;
 
-  List<Crop> _loadedCrops = const [];
-
-  @override
-  void initState() {
-    super.initState();
-    _cropList.then((c) => _loadedCrops = c, onError: (_) => const <Crop>[]);
-  }
-
   @override
   void dispose() {
     _ph.dispose();
     super.dispose();
-  }
-
-  /// Everything the current step shows, in the order it shows it.
-  String _readAloud(AppLocalizations l10n) {
-    final language = Localizations.localeOf(context).languageCode;
-    final step = l10n.wizardStep(_step + 1, _steps);
-
-    switch (_step) {
-      case 0:
-        String nameOf(String? id) {
-          for (final c in _loadedCrops) {
-            if (c.id == id) return c.nameFor(language);
-          }
-          return l10n.pastCropChoose;
-        }
-
-        final labels = [
-          l10n.pastCropLast,
-          l10n.pastCropBefore,
-          l10n.pastCropEarlier,
-        ];
-        return sentencesForReading([
-          step,
-          l10n.pastCropsTitle,
-          l10n.pastCropsHint,
-          for (var i = 0; i < _past.length; i++)
-            l10n.readPair(labels[i], nameOf(_past[i])),
-        ]);
-      case 1:
-        return sentencesForReading([
-          step,
-          l10n.goalTitle,
-          l10n.wizardOptional,
-          l10n.goalNoPreference,
-          for (final goal in _goals) ?_goalSentence(l10n, goal),
-        ]);
-      default:
-        return sentencesForReading([
-          step,
-          l10n.extrasTitle,
-          l10n.wizardOptional,
-          l10n.extrasLivestock,
-          l10n.extrasIrrigation,
-          l10n.extrasPhLabel,
-          l10n.extrasExcludedLabel,
-        ]);
-    }
-  }
-
-  String? _goalSentence(AppLocalizations l10n, String goal) {
-    final label = goalLabel(l10n, goal);
-    final hint = goalHint(l10n, goal);
-    if (label == null) return null;
-    return hint == null ? label : l10n.readPair(label, hint);
   }
 
   Future<void> _pickCrop(int slot, List<Crop> crops) async {
@@ -184,10 +121,6 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
             onPressed: _back,
           ),
           title: Text(l10n.rotationStart),
-          actions: [
-            ReadAloudButton(text: () => _readAloud(l10n)),
-            const SizedBox(width: 8),
-          ],
         ),
         body: SafeArea(
           child: Column(

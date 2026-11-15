@@ -6,7 +6,6 @@ import '../l10n/rotation_text.dart';
 import '../models/local_plan.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/local_plans_store.dart';
-import '../widgets/read_aloud_button.dart';
 import 'saved_plan_page.dart';
 
 /// "My plans": the rotation plans saved on this phone (and, when signed in,
@@ -103,20 +102,6 @@ class _MyPlansPageState extends State<MyPlansPage> {
         DateFormat.yMMMd(locale).format(item.createdAt.toLocal()),
       );
 
-  String _readAloud(AppLocalizations l10n) {
-    final language = Localizations.localeOf(context).languageCode;
-    final locale = Localizations.localeOf(context).toString();
-    if (_items.isEmpty) return l10n.myPlansEmpty;
-
-    return sentencesForReading([
-      l10n.myPlansTitle,
-      for (final item in _items) ...[
-        _info(l10n, locale, item),
-        item.plan.seasons.map((s) => s.crop.nameFor(language)).join(', '),
-      ],
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -130,10 +115,6 @@ class _MyPlansPageState extends State<MyPlansPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(l10n.myPlansTitle),
-        actions: [
-          ReadAloudButton(text: () => _readAloud(l10n)),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SafeArea(child: _body(context, l10n)),
     );

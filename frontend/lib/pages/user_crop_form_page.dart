@@ -8,7 +8,6 @@ import '../models/parcel.dart';
 import '../models/user_crop.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/user_crop_repository.dart';
-import '../widgets/read_aloud_button.dart';
 import 'location_picker_page.dart';
 import 'my_crops_page.dart';
 
@@ -178,21 +177,7 @@ class _UserCropFormPageState extends State<UserCropFormPage> {
         : placeText(context, null, point);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          ReadAloudButton(
-            text: () => sentencesForReading([
-              title,
-              l10n.myCropsPlace,
-              placeLabel,
-              l10n.myCropsCropLabel,
-              cropName ?? l10n.myCropsChooseCrop,
-            ]),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+      appBar: AppBar(title: Text(title)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),

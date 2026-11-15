@@ -6,7 +6,6 @@ import '../models/overlay_layer.dart';
 import '../overlays/overlay_controller.dart';
 import 'overlay_chooser.dart';
 import 'overlay_level_bars.dart';
-import 'read_aloud_button.dart';
 
 /// Side / bottom panel of the "Conditions" screen: choose an overlay, read
 /// its value for the place (word + level + source + how precise it is) and
@@ -205,20 +204,6 @@ class _ValueCard extends StatelessWidget {
         ? l10n.overlaysValueHeadingExample
         : l10n.overlaysValueHeading;
 
-    // Everything the card shows, in the order it shows it.
-    String readAloudText() => sentencesForReading([
-      overlayTitle,
-      heading,
-      if (month != null)
-        l10n.overlaysMonth(DateFormat.yMMMM(l10n.localeName).format(month)),
-      current?.label(l10n) ?? l10n.overlaysNoData,
-      for (final detail in layer.details) detail.text(l10n),
-      if (layer.isEstimate) l10n.sourceEstimated,
-      if (source != null) l10n.overlaysSource(source),
-      layer.coverage(l10n),
-      if (heatmapShown) l10n.overlayHeatmapNote,
-    ]);
-
     return Card(
       margin: EdgeInsets.zero,
       child: Padding(
@@ -231,8 +216,6 @@ class _ValueCard extends StatelessWidget {
                 Expanded(
                   child: Text(heading, style: theme.textTheme.titleMedium),
                 ),
-                const SizedBox(width: 8),
-                ReadAloudButton(text: readAloudText),
               ],
             ),
             if (month != null) ...[

@@ -9,7 +9,6 @@ import '../repositories/auth_store.dart';
 import '../repositories/crop_repository.dart';
 import '../repositories/selected_plot_store.dart';
 import '../repositories/user_crop_repository.dart';
-import '../widgets/read_aloud_button.dart';
 import 'user_crop_form_page.dart';
 
 /// "My crops": the signed-in user's saved crops with their places. Each one
@@ -139,19 +138,7 @@ class _MyCropsPageState extends State<MyCropsPage> {
     final error = _error;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.myCropsTitle),
-        actions: [
-          ReadAloudButton(
-            text: () => sentencesForReading([
-              l10n.myCropsTitle,
-              l10n.myCropsIntro,
-              if (items != null && items.isEmpty) l10n.myCropsEmpty,
-            ]),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.myCropsTitle)),
       body: SafeArea(
         child: error != null
             ? _Message(
