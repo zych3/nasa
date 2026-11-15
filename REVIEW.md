@@ -137,3 +137,21 @@ z błędem zostaje pusty, dane demo bez dociągania, łączenie bez szwów (test
 
 **Wysoki priorytet: brak.**
 
+## Recenzja #8 (`feat/parcel-data`: dane działki z Geoportalu, dostawcy, cache w PostgreSQL)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 48 | Ś | ✅ | `EgibLandClassProvider.cs` | Powiat poznański publikuje w integracji EGiB tylko numer i miejsce działki, bez powierzchni i klas – wcześniej sekcja była „ok” z pustą listą; teraz „noData” (test). |
+| 49 | Ś | 📝 | `LandClassCode.cs` | Nazwy klas bonitacyjnych (np. IVb „orne średnie gorsze”, łąki III „dobre”) wpisane z rozporządzenia o gleboznawczej klasyfikacji gruntów z pamięci, nie z dokumentu – do sprawdzenia z tekstem rozporządzenia. Kody kompleksów, typów i gatunków gleb są przepisane z legendy mapy glebowo-rolniczej (PDF Geoportalu Podlaskiego). |
+| 50 | N | ⏳ | `PostgresProviderCache.cs` | Wygasłe wiersze `provider_cache` nie są usuwane (są tylko nadpisywane przy kolejnym pytaniu). Przy wielu działkach warto dodać okresowe `DELETE … WHERE expires_at < now()` (indeks na `expires_at` już jest). |
+| 51 | N | ⏳ | `ParcelDetailsService.cs` | Wyszukanie działki w ULDK nie jest w cache – drugie zapytanie o tę samą działkę trwa ~0,7 s zamiast ~0,1 s. Wystarczy, bo ULDK jest szybkie. |
+| 52 | N | 📝 | `MapLayersService.cs` | SoilGrids w mapie warstw i profilu pola idzie teraz przez cache w PostgreSQL (180 dni): problem #42 (czekanie do 60 s) zostaje tylko przy pierwszym pytaniu o dany punkt. |
+
+Sprawdzone na żywo: działka 141205_2.0008.60 (Chrośla) – klasy RIVb/RIVa/LzrRIV, kompleks 5 „żytni dobry”, gleby
+bielicowe, pgl na gs od 50–100 cm, spadek 0,5 % („płasko”, 150 punktów NMT), SoilGrids „Lekka”; pierwsze zapytanie
+~10 s, drugie 0,7 s z cache (4 wiersze w `provider_cache`); po numerze działki to samo; punkt poza Polską → 404;
+złe współrzędne → 400; Kraków (zabudowa) → klasy B/Ba/Bi, „tereny zabudowane”, SoilGrids „noData”; baza
+niedostępna → zapytania działają bez cache (test).
+
+**Wysoki priorytet: brak.**
+
