@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import '../l10n/app_localizations.dart';
 import '../models/account.dart';
 import '../repositories/auth_store.dart';
-import '../widgets/read_aloud_button.dart';
 
 /// Sign in or create an account. Opened from "Account" ([AccountButton]);
 /// the app works without it. Closes itself once signed in. Same white
@@ -51,19 +50,7 @@ class _AuthPageState extends State<AuthPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.accountTitle),
-        actions: [
-          ReadAloudButton(
-            text: () => sentencesForReading([
-              l10n.authWelcome,
-              l10n.authTagline,
-              l10n.authReadAloudHelp,
-            ]),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.accountTitle)),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -98,7 +85,8 @@ class _AuthPageState extends State<AuthPage> {
                   SegmentedButton<bool>(
                     style: SegmentedButton.styleFrom(
                       minimumSize: const Size.fromHeight(56),
-                      textStyle: const TextStyle(fontSize: 18),
+                      textStyle: Theme.of(context).textTheme.labelLarge
+                          ?.copyWith(fontSize: 18),
                     ),
                     showSelectedIcon: false,
                     segments: [
@@ -133,7 +121,8 @@ class _AuthPageState extends State<AuthPage> {
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size.fromHeight(64),
-                      textStyle: const TextStyle(fontSize: 18),
+                      textStyle: Theme.of(context).textTheme.labelLarge
+                          ?.copyWith(fontSize: 18),
                     ),
                     onPressed: () => Navigator.of(context).maybePop(),
                     icon: const Icon(Icons.arrow_back),
@@ -447,7 +436,8 @@ class _TestLoginButtonState extends State<_TestLoginButton> {
         TextButton.icon(
           style: TextButton.styleFrom(
             minimumSize: const Size.fromHeight(56),
-            textStyle: const TextStyle(fontSize: 18),
+            textStyle: Theme.of(context).textTheme.labelLarge
+                ?.copyWith(fontSize: 18),
           ),
           onPressed: _busy ? null : _press,
           icon: _busy

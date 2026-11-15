@@ -173,15 +173,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie udało się znaleźć Twojej lokalizacji. Możesz przesunąć mapę do swojego pola ręcznie.';
 
   @override
-  String get nearbyParcelsSection => 'Działki w pobliżu';
-
-  @override
   String get parcelHere => 'Działka, na której jesteś';
-
-  @override
-  String distanceFromYou(String distance) {
-    return '$distance od Ciebie';
-  }
 
   @override
   String get myFieldMarker => 'Moje pole';
@@ -364,7 +356,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysErrorNetwork =>
-      'Nie udało się pobrać danych. Sprawdź internet i spróbuj ponownie.';
+      'Nie możemy połączyć się z serwerem aplikacji. Spróbuj ponownie za chwilę.';
 
   @override
   String get overlaysErrorServer =>
@@ -521,16 +513,6 @@ class AppLocalizationsPl extends AppLocalizations {
     });
     return '$_temp0';
   }
-
-  @override
-  String get readAloud => 'Przeczytaj na głos';
-
-  @override
-  String get readAloudStop => 'Zatrzymaj czytanie';
-
-  @override
-  String get readAloudUnavailable =>
-      'Czytanie na głos nie działa na tym urządzeniu.';
 
   @override
   String get overlaysHeatmapLoading => 'Wczytuję mapę okolicy…';
@@ -911,11 +893,6 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String readPair(String label, String value) {
-    return '$label: $value';
-  }
-
-  @override
   String planSow(String period) {
     return 'Siew: $period';
   }
@@ -924,6 +901,34 @@ class AppLocalizationsPl extends AppLocalizations {
   String planHarvestTime(String period) {
     return 'Zbiór: $period';
   }
+
+  @override
+  String calendarAddFor(String event) {
+    return 'Dodaj do kalendarza: $event';
+  }
+
+  @override
+  String calendarSowTitle(String crop) {
+    return 'Siew: $crop';
+  }
+
+  @override
+  String calendarHarvestTitle(String crop) {
+    return 'Zbiór: $crop';
+  }
+
+  @override
+  String calendarCoverTitle(String crop) {
+    return 'Siew poplonu: $crop';
+  }
+
+  @override
+  String get calendarNote =>
+      'Z Twojego planu zmianowania w Field Shift. Terminy są orientacyjne: wykonaj w tym oknie.';
+
+  @override
+  String get calendarFailed =>
+      'Nie udało się otworzyć kalendarza na tym urządzeniu.';
 
   @override
   String planPeriodOneMonth(String month, String year) {
@@ -1004,7 +1009,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String get reportPlanSaved => 'Plan zapisany';
 
   @override
-  String get reportSaveDone => 'Plan jest zapisany w Twoim profilu.';
+  String get reportSaveDone => 'Plan jest zapisany w tym telefonie.';
+
+  @override
+  String get reportSaveDoneAccount =>
+      'Plan jest zapisany w tym telefonie i na Twoim koncie.';
+
+  @override
+  String get reportDone => 'Gotowe';
 
   @override
   String get reportSaveFailed =>
@@ -1231,10 +1243,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get authTagline => 'Planuj uprawy z danymi satelitarnymi NASA.';
 
   @override
-  String get authReadAloudHelp =>
-      'Zaloguj się albo załóż konto. Aplikacja działa też bez konta.';
-
-  @override
   String get authLoginTab => 'Logowanie';
 
   @override
@@ -1340,6 +1348,227 @@ class AppLocalizationsPl extends AppLocalizations {
   String get accountSignIn => 'Zaloguj się lub załóż konto';
 
   @override
+  String get fieldDataNoField =>
+      'Wybierz swoje pole na mapie. Wtedy zobaczysz tu, co mówią o nim dane NASA i rejestry.';
+
+  @override
+  String get fieldDataLoading =>
+      'Pobieramy dane z NASA i rejestrów… Za pierwszym razem może to potrwać do 20 sekund.';
+
+  @override
+  String get fieldDataStepClimate =>
+      'Pogoda i wilgotność gleby w okolicy (NASA POWER)';
+
+  @override
+  String get fieldDataStepParcel =>
+      'Twoja działka: ewidencja gruntów, mapa gleb, ukształtowanie terenu';
+
+  @override
+  String get fieldDataStepDone => 'gotowe';
+
+  @override
+  String get fieldDataStepFailed => 'niedostępne';
+
+  @override
+  String get fieldDataStepLoading => 'pobieranie';
+
+  @override
+  String fieldConditionSentence(String title, String value) {
+    return '$title: $value';
+  }
+
+  @override
+  String fieldFactSentence(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get fieldWarningsHeading => 'Na co uważać';
+
+  @override
+  String get fieldConditionsHeading => 'W Twojej okolicy (dane NASA)';
+
+  @override
+  String get fieldShowOnMap => 'Pokaż na mapie Warunki';
+
+  @override
+  String get fieldFactsHeading => 'O Twojej działce';
+
+  @override
+  String get fieldFactsNone =>
+      'Nie znaleźliśmy danych z rejestrów dla tej działki. Dane NASA powyżej dotyczą okolicy.';
+
+  @override
+  String get fieldFactArea => 'Powierzchnia';
+
+  @override
+  String fieldFactAreaValue(String area) {
+    return '$area ha';
+  }
+
+  @override
+  String get fieldFactQualityClass => 'Klasa gleby (ewidencja gruntów)';
+
+  @override
+  String fieldFactSurveyed(String year) {
+    return 'badanie z $year r.';
+  }
+
+  @override
+  String get fieldFactSoilComplex => 'Kompleks glebowy (mapa gleb)';
+
+  @override
+  String get fieldFactSoilType => 'Typ gleby (mapa gleb)';
+
+  @override
+  String get fieldFactSlope => 'Nachylenie terenu';
+
+  @override
+  String fieldFactSlopeValue(String level, String slope) {
+    return '$level ($slope %)';
+  }
+
+  @override
+  String get fieldSlopeFlat => 'płasko';
+
+  @override
+  String get fieldSlopeGentle => 'łagodny spadek';
+
+  @override
+  String get fieldSlopeModerate => 'umiarkowany spadek';
+
+  @override
+  String get fieldSlopeSteep => 'stromo';
+
+  @override
+  String fieldFactElevation(String height) {
+    return '$height m n.p.m.';
+  }
+
+  @override
+  String get fieldFactPh => 'Odczyn gleby (pH)';
+
+  @override
+  String fieldFactPhValue(String level, String ph) {
+    return '$level (pH $ph)';
+  }
+
+  @override
+  String get fieldPhAcidic => 'kwaśna – warto rozważyć wapnowanie';
+
+  @override
+  String get fieldPhSlightlyAcidic => 'lekko kwaśna';
+
+  @override
+  String get fieldPhNeutral => 'obojętna';
+
+  @override
+  String get fieldPhAlkaline => 'zasadowa';
+
+  @override
+  String get fieldFactOrganic => 'Próchnica (węgiel organiczny)';
+
+  @override
+  String fieldFactOrganicValue(String value) {
+    return '$value g na kg gleby';
+  }
+
+  @override
+  String get fieldFactTexture => 'Skład gleby';
+
+  @override
+  String fieldFactTextureValue(String sand, String clay) {
+    return 'piasek $sand %, glina $clay %';
+  }
+
+  @override
+  String fieldDataStepSemantics(String source, String state) {
+    return '$source: $state';
+  }
+
+  @override
+  String get overlaysErrorSlow =>
+      'Dane NASA ładują się dłużej niż zwykle. Spróbuj ponownie – serwer dalej je pobiera, więc następna próba zwykle jest szybka.';
+
+  @override
+  String overlayStressCause(String cause) {
+    String _temp0 = intl.Intl.selectLogic(cause, {
+      'drought': 'Główna przyczyna: susza w strefie korzeni',
+      'heat': 'Główna przyczyna: upały',
+      'other': 'Rośliny są w małym stresie',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStressDrought(String points, String max) {
+    return 'Susza: $points z $max pkt';
+  }
+
+  @override
+  String overlayStressDroughtWith(String points, String max, String moisture) {
+    return 'Susza: $points z $max pkt (wilgotność gleby $moisture)';
+  }
+
+  @override
+  String overlayStressHeat(String points, String max) {
+    return 'Upał: $points z $max pkt';
+  }
+
+  @override
+  String overlayStressHeatWith(String points, String max, String days) {
+    return 'Upał: $points z $max pkt ($days dni powyżej 30 °C)';
+  }
+
+  @override
+  String get overlayStressNotDisease =>
+      'Ten szacunek mówi tylko o suszy i upale. Nie wykrywa chorób ani szkodników – zobacz warstwy „Pogoda dla grzybów” i „Ciepło dla szkodników”.';
+
+  @override
+  String get overlayFungalTitle => 'Pogoda dla grzybów';
+
+  @override
+  String overlayStepsFungal(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'rzadko',
+      's1': 'czasem',
+      's2': 'często',
+      'other': 'bardzo często',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFungalRule =>
+      'Liczone dni: ciepło (10–25 °C) i bardzo wilgotne powietrze (od 85 %) albo wilgotne (od 75 %) z deszczem.';
+
+  @override
+  String get overlayFungalNote =>
+      'Taka pogoda sprzyja chorobom grzybowym, np. zarazie ziemniaka, mączniakom i rdzom. To nie jest wykryta choroba – obejrzyj rośliny.';
+
+  @override
+  String get overlayPestTitle => 'Ciepło dla szkodników';
+
+  @override
+  String overlayStepsPest(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'owady w spoczynku',
+      's1': 'początek rozwoju owadów',
+      's2': 'szybki rozwój owadów',
+      'other': 'wiele pokoleń owadów',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayPestRule =>
+      'Ciepło od 1 stycznia (stopniodni powyżej 10 °C). Im więcej ciepła, tym szybciej rozwijają się owady.';
+
+  @override
+  String get overlayPestNote =>
+      'Np. stonka ziemniaczana czy omacnica prosowianka. To nie jest wykrycie szkodników – sprawdź pułapki i rośliny.';
+
+  @override
   String get myCropsTitle => 'Moje uprawy';
 
   @override
@@ -1442,6 +1671,567 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pickerConfirm => 'Wybierz to miejsce';
 
   @override
+  String get satTitle => 'Z satelitów NASA – na bieżąco';
+
+  @override
+  String get satSubtitle =>
+      'Zmierzone z kosmosu dla okolicy Twojego pola. Przy każdej wartości piszemy, jak duży obszar obejmuje.';
+
+  @override
+  String get satNoData => 'Brak danych z satelity dla tego miejsca';
+
+  @override
+  String get satNotConfigured =>
+      'Serwer nie ma klucza NASA Earthdata do tych danych';
+
+  @override
+  String get satUnavailable => 'Źródło chwilowo nie odpowiada';
+
+  @override
+  String satDate(String date) {
+    return 'Stan na $date';
+  }
+
+  @override
+  String get satRainTitle => 'Opady (NASA GPM IMERG)';
+
+  @override
+  String satRainValue(String week, String month) {
+    return '$week mm w 7 dni · $month mm w 30 dni';
+  }
+
+  @override
+  String satRainLastDay(String mm) {
+    return 'Ostatni dzień: $mm mm';
+  }
+
+  @override
+  String satRainDry(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dni',
+      many: '$days dni',
+      few: '$days dni',
+      one: '1 dzień',
+    );
+    return '$_temp0 bez deszczu z rzędu';
+  }
+
+  @override
+  String satRainHeavy(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      many: '$count dni',
+      few: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0 z ulewą (od 20 mm) w ciągu 30 dni';
+  }
+
+  @override
+  String get satAreaRain => 'jedna wartość na ok. 10 × 10 km';
+
+  @override
+  String get satSoilTitle => 'Wilgotność gleby przy korzeniach (NASA SMAP)';
+
+  @override
+  String get satSoilBelow => 'Suszej niż zwykle o tej porze roku';
+
+  @override
+  String get satSoilAbove => 'Wilgotniej niż zwykle o tej porze roku';
+
+  @override
+  String get satSoilNormal => 'Jak zwykle o tej porze roku';
+
+  @override
+  String get satSoilScale => 'Wilgotność gleby (0 = sucho, 1 = pełna wody)';
+
+  @override
+  String satSoilValueNormal(String value, String normal, int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'Teraz $value, zwykle $normal (średnia z $_temp0) · 0 = sucho, 1 = pełna wody';
+  }
+
+  @override
+  String satSoilValue(String value) {
+    return '$value (0 = sucho, 1 = pełna wody)';
+  }
+
+  @override
+  String satSoilTemp(String temp) {
+    return 'Temperatura gleby: $temp °C';
+  }
+
+  @override
+  String satSnow(String cm) {
+    return 'Śnieg: ok. $cm cm';
+  }
+
+  @override
+  String get satAreaSoil => 'jedna wartość na ok. 9 × 9 km';
+
+  @override
+  String get satNdviTitle => 'Zieleń roślin (NDVI, NASA MODIS)';
+
+  @override
+  String get satNdviBelow => 'Mniej zieleni niż zwykle o tej porze roku';
+
+  @override
+  String get satNdviAbove => 'Więcej zieleni niż zwykle o tej porze roku';
+
+  @override
+  String get satNdviNormal => 'Tyle zieleni co zwykle o tej porze roku';
+
+  @override
+  String get satNdviScale => 'Zieleń roślin';
+
+  @override
+  String satNdviValue(String value) {
+    return 'NDVI $value';
+  }
+
+  @override
+  String satNdviValueNormal(String value, String normal) {
+    return 'NDVI $value, zwykle $normal';
+  }
+
+  @override
+  String get satNdviCloudy =>
+      'Zdjęcie było częściowo zasłonięte chmurami lub śniegiem, więc ta wartość jest mniej pewna.';
+
+  @override
+  String get satNdviHelp =>
+      '0,2 to goła ziemia, 0,8 to gęsta zielona uprawa. Linia ciągła to ten rok, przerywana to zwykle.';
+
+  @override
+  String get satAreaNdvi =>
+      'jeden piksel ok. 250 × 250 m (ok. 6 ha), obejmuje też to, co obok pola';
+
+  @override
+  String get satLstTitle => 'Temperatura gruntu (NASA MODIS)';
+
+  @override
+  String satLstValue(String day, String night) {
+    return '$day °C w dzień, $night °C w nocy';
+  }
+
+  @override
+  String satLstDay(String day) {
+    return '$day °C w dzień';
+  }
+
+  @override
+  String satLstNight(String night) {
+    return '$night °C w nocy';
+  }
+
+  @override
+  String satLstNormal(String day, String night) {
+    return 'Zwykle $day °C w dzień, $night °C w nocy';
+  }
+
+  @override
+  String get satAreaLst => 'średnia z 8 dni, jeden piksel ok. 1 × 1 km';
+
+  @override
+  String get satEtTitle => 'Woda zużyta przez rośliny i glebę (NASA MODIS)';
+
+  @override
+  String get satEtBelow => 'Mniej niż zwykle – rośliny mogą mieć za mało wody';
+
+  @override
+  String get satEtAbove => 'Więcej niż zwykle';
+
+  @override
+  String get satEtNormal => 'Jak zwykle o tej porze roku';
+
+  @override
+  String satEtValue(String value) {
+    return '$value mm dziennie';
+  }
+
+  @override
+  String satEtValueNormal(String value, String normal) {
+    return '$value mm dziennie, zwykle $normal mm';
+  }
+
+  @override
+  String get satAreaEt => 'średnia z 8 dni, jeden piksel ok. 500 × 500 m';
+
+  @override
+  String get satWarnSoilDry => 'Gleba przy korzeniach suszej niż zwykle';
+
+  @override
+  String get satWarnFrozen => 'Wierzchnia warstwa gleby jest zamarznięta';
+
+  @override
+  String get satWarnGroundFrost =>
+      'Przymrozki przy gruncie (noce poniżej 0 °C)';
+
+  @override
+  String satWarnHeavyRain(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      many: '$count dni',
+      few: '$count dni',
+    );
+    return '$_temp0 z ulewą w ostatnim miesiącu – gleba może być zmywana';
+  }
+
+  @override
+  String satWarnDrySpell(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dni',
+      many: '$days dni',
+      few: '$days dni',
+    );
+    return '$_temp0 bez deszczu z rzędu';
+  }
+
+  @override
+  String get satWarnNdviLow =>
+      'Rośliny mniej zielone niż zwykle – warto obejrzeć pole';
+
+  @override
+  String get fieldDataStepRain => 'Opady z ostatnich dni (NASA GPM IMERG)';
+
+  @override
+  String get fieldDataStepSoil => 'Wilgotność i temperatura gleby (NASA SMAP)';
+
+  @override
+  String get fieldDataStepVegetation => 'Zieleń roślin z kosmosu (NASA MODIS)';
+
+  @override
+  String get fieldDataStepSurfaceTemp => 'Temperatura gruntu (NASA MODIS)';
+
+  @override
+  String get fieldDataStepEt => 'Woda zużyta przez rośliny (NASA MODIS)';
+
+  @override
+  String overlayQualityClass(String code) {
+    return 'Klasa $code';
+  }
+
+  @override
+  String overlayQualityClassNamed(String code, String name) {
+    return 'Klasa $code – $name';
+  }
+
+  @override
+  String get overlaySoilFromRegister =>
+      'Mapa glebowa nie ma danych dla tego miejsca, więc pokazujemy klasy gleby z ewidencji gruntów.';
+
+  @override
+  String get satDetailTitle => 'Teraz – ostatnie dni (satelity NASA)';
+
+  @override
+  String get satDetailSubtitle =>
+      'Dla okolicy Twojego pola. Niżej: miesiąc po miesiącu, strzałkami cofasz się w czasie.';
+
+  @override
+  String get satDetailLoading =>
+      'Wczytuję dokładniejsze dane z satelitów NASA…';
+
+  @override
+  String get indTitle => 'Co to oznacza dla Twojego pola';
+
+  @override
+  String get indSubtitle =>
+      'Szacunek z najnowszych danych satelitarnych NASA i danych działki. Przed decyzją obejrzyj pole.';
+
+  @override
+  String indicatorWarning(String title, String text) {
+    return '$title: $text';
+  }
+
+  @override
+  String get indLevelHigh => 'Wysokie';
+
+  @override
+  String get indLevelModerate => 'Umiarkowane';
+
+  @override
+  String get indLevelLow => 'Niskie';
+
+  @override
+  String indSources(String sources) {
+    return 'Szacunek · Dane: $sources';
+  }
+
+  @override
+  String get indMoistureTitle => 'Wilgotność gleby i prace polowe';
+
+  @override
+  String get indMoistureTooWet =>
+      'Gleba bardzo mokra – ciężki sprzęt może ją ugnieść';
+
+  @override
+  String get indMoistureDry => 'Za mało wody przy korzeniach';
+
+  @override
+  String get indMoistureOk => 'Wilgotność w normie – można pracować na polu';
+
+  @override
+  String get indMoistureUnknown => 'Wilgotność gleby';
+
+  @override
+  String get indStressTitle => 'Stres roślin teraz';
+
+  @override
+  String get indStressHigh =>
+      'Silny stres – rośliny mają za mało wody albo jest im za gorąco';
+
+  @override
+  String get indStressModerate => 'Lekki stres – warto obserwować';
+
+  @override
+  String get indStressLow => 'Rośliny nie są w stresie';
+
+  @override
+  String get indGroundTitle => 'Nagrzanie podłoża';
+
+  @override
+  String get indGroundFrozen => 'Wierzchnia warstwa gleby zamarznięta';
+
+  @override
+  String get indGroundCold => 'Zimna gleba – rośliny prawie nie rosną';
+
+  @override
+  String get indGroundCool =>
+      'Chłodna gleba – wolny wzrost, można siać zboża jare';
+
+  @override
+  String get indGroundWarm =>
+      'Ciepła gleba – można siać kukurydzę i rośliny ciepłolubne';
+
+  @override
+  String get indGroundUnknown => 'Temperatura podłoża';
+
+  @override
+  String get indErosionTitle => 'Ryzyko erozji (ostatnie 30 dni)';
+
+  @override
+  String get indErosionHigh => 'Deszcz może zmywać glebę';
+
+  @override
+  String get indErosionModerate => 'Gleba może być lekko zmywana';
+
+  @override
+  String get indErosionLow => 'Gleba nie jest zagrożona zmywaniem';
+
+  @override
+  String get indFungalTitle => 'Pogoda dla chorób grzybowych (14 dni)';
+
+  @override
+  String get indFungalHigh => 'Bardzo sprzyjająca – sprawdź rośliny';
+
+  @override
+  String get indFungalModerate => 'Sprzyjająca – obserwuj rośliny';
+
+  @override
+  String get indFungalLow => 'Mało sprzyjająca';
+
+  @override
+  String indRHeavyRainDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      many: '$count dni',
+      few: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0 z ulewą (od 20 mm)';
+  }
+
+  @override
+  String indRMaxDailyRain(String mm) {
+    return 'Największy opad w jeden dzień: $mm mm';
+  }
+
+  @override
+  String indRWetTopsoil(String value) {
+    return 'Wierzchnia warstwa nasiąknięta ($value z 1), woda spływa';
+  }
+
+  @override
+  String indRSlope(String pct) {
+    return 'Nachylenie działki: $pct %';
+  }
+
+  @override
+  String indRLightSoil(String pct) {
+    return 'Lekka gleba (piasek $pct %) łatwo się zmywa';
+  }
+
+  @override
+  String indRSparseCover(String value) {
+    return 'Mało roślin na polu (NDVI $value), gleba słabo osłonięta';
+  }
+
+  @override
+  String get indRNoErosionDrivers => 'Bez ulew';
+
+  @override
+  String indRRoots(String value) {
+    return 'Wilgotność przy korzeniach: $value (0 = sucho, 1 = pełna wody)';
+  }
+
+  @override
+  String indRDryRoots(String value, String normal) {
+    return 'Wilgotność przy korzeniach $value, zwykle $normal – suszej niż zwykle';
+  }
+
+  @override
+  String indRWetRoots(String value, String normal) {
+    return 'Wilgotność przy korzeniach $value, zwykle $normal – wilgotniej niż zwykle';
+  }
+
+  @override
+  String indRRootsAsUsual(String value, String normal) {
+    return 'Wilgotność przy korzeniach $value, zwykle $normal';
+  }
+
+  @override
+  String indRHotDays(String temp) {
+    return 'Grunt nagrzewa się w dzień do $temp °C';
+  }
+
+  @override
+  String indRLessGreen(String value, String normal) {
+    return 'Mniej zieleni niż zwykle (NDVI $value, zwykle $normal)';
+  }
+
+  @override
+  String indRLessWaterUse(String value, String normal) {
+    return 'Rośliny zużywają mniej wody niż zwykle ($value mm dziennie, zwykle $normal)';
+  }
+
+  @override
+  String indRDormant(String temp) {
+    return 'Gleba ma $temp °C – rośliny są w spoczynku zimowym';
+  }
+
+  @override
+  String get indRNoStress => 'Bez oznak suszy i upału';
+
+  @override
+  String indRSoilTemp(String temp) {
+    return 'Wierzchnia warstwa gleby: $temp °C';
+  }
+
+  @override
+  String indRWarming(String delta, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dni',
+      many: '$days dni',
+      few: '$days dni',
+      one: '1 dzień',
+    );
+    return 'Nagrzewa się: o $delta °C w $_temp0';
+  }
+
+  @override
+  String indRCooling(String delta, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dni',
+      many: '$days dni',
+      few: '$days dni',
+      one: '1 dzień',
+    );
+    return 'Ochładza się: o $delta °C w $_temp0';
+  }
+
+  @override
+  String indRSteady(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days dni',
+      many: '$days dni',
+      few: '$days dni',
+      one: '1 dnia',
+    );
+    return 'Bez większych zmian od $_temp0';
+  }
+
+  @override
+  String indRFrostNights(String temp) {
+    return 'Przymrozek przy gruncie: $temp °C w nocy';
+  }
+
+  @override
+  String indRVeryWetTopsoil(String value) {
+    return 'Wierzchnia warstwa prawie pełna wody ($value z 1)';
+  }
+
+  @override
+  String indRRainWeek(String mm) {
+    return 'Deszcz w 7 dni: $mm mm';
+  }
+
+  @override
+  String indRDryDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      many: '$count dni',
+      few: '$count dni',
+    );
+    return '$_temp0 bez deszczu z rzędu';
+  }
+
+  @override
+  String indRRainyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      many: '$count dni',
+      few: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0 z deszczem w ciągu 14 dni';
+  }
+
+  @override
+  String indRMildGround(String temp) {
+    return 'Grunt ma $temp °C (grzyby lubią 10–25 °C)';
+  }
+
+  @override
+  String get indAttention => 'Uwaga';
+
+  @override
+  String get indOk => 'W porządku';
+
+  @override
+  String get overlaySoilNotFarmland =>
+      'Według ewidencji gruntów to nie jest grunt rolny, więc nie ma klasy gleby.';
+
+  @override
+  String get fieldFactLandUse => 'Użytek gruntu (ewidencja)';
+
+  @override
   String get accountMyPlans => 'Moje plany';
 
   @override
@@ -1474,7 +2264,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get myPlansDeleteTitle => 'Usunąć ten plan?';
 
   @override
-  String get myPlansDeleteBody => 'Zostanie usunięty z Twojego profilu.';
+  String get myPlansDeleteBody =>
+      'Zostanie usunięty z tego telefonu i z Twojego konta.';
 
   @override
   String get myPlansDeleted => 'Plan usunięty.';
@@ -1482,4 +2273,85 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get myPlansDeleteFailed =>
       'Nie udało się usunąć planu. Spróbuj ponownie.';
+
+  @override
+  String get myParcelsTitle => 'Moje działki';
+
+  @override
+  String get myParcelsEmpty =>
+      'Nie masz jeszcze działek. Wybierz swoje pole na mapie i potwierdź, że jest Twoje.';
+
+  @override
+  String get myParcelsSwipeHint =>
+      'Dotknij działki, aby z nią pracować. Przesuń ją w prawo, aby usunąć.';
+
+  @override
+  String myParcelsSynced(String date) {
+    return 'Zsynchronizowano z kontem: $date';
+  }
+
+  @override
+  String get myParcelAskTitle => 'Czy to Twoja działka?';
+
+  @override
+  String myParcelAskBody(String name) {
+    return 'Czy $name to Twoja działka?';
+  }
+
+  @override
+  String get myParcelYes => 'Tak';
+
+  @override
+  String get myParcelNo => 'Nie';
+
+  @override
+  String get myParcelAdded => 'Działka dodana do Twoich działek.';
+
+  @override
+  String get myParcelRemoveTitle => 'Usunąć tę działkę?';
+
+  @override
+  String myParcelRemoveBody(String name) {
+    return '$name zostanie usunięta z Twoich działek.';
+  }
+
+  @override
+  String get myParcelRemoveYes => 'Usuń';
+
+  @override
+  String get myParcelRemoved => 'Działka usunięta.';
+
+  @override
+  String get settings => 'Ustawienia';
+
+  @override
+  String get settingsLanguage => 'Język';
+
+  @override
+  String get settingsDarkMode => 'Tryb ciemny';
+
+  @override
+  String get settingsDarkModeHint =>
+      'Przełącz między jasnym a ciemnym wyglądem aplikacji.';
+
+  @override
+  String get settingsFrostAlerts => 'Alerty o przymrozkach';
+
+  @override
+  String get settingsFrostAlertsHint =>
+      'Raz w tygodniu sprawdzimy prognozę pogody dla Twoich działek i ostrzeżemy, gdy zbliża się przymrozek.';
+
+  @override
+  String get frostAlertChannel => 'Alerty o przymrozkach';
+
+  @override
+  String get frostAlertTitleFrost => 'Zbliża się przymrozek';
+
+  @override
+  String get frostAlertTitleLight => 'Możliwy przymrozek przygruntowy';
+
+  @override
+  String frostAlertBody(String temp, String date) {
+    return 'Przy Twojej działce temperatura spadnie do $temp °C, dnia $date.';
+  }
 }

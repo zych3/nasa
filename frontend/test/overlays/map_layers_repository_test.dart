@@ -41,6 +41,8 @@ void main() {
     expect(calls.single.queryParameters, {
       'lat': '52.20000',
       'lon': '21.48000',
+      // Up to the last full month, not the backend's default (December).
+      ...MapLayersRepository.periodQuery(),
     });
   });
 

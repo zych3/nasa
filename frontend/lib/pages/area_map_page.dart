@@ -8,8 +8,10 @@ import 'package:material_ui/material_ui.dart';
 
 import '../components/map_button.dart';
 import '../components/map_search_bar.dart';
+import '../components/my_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
@@ -61,7 +63,13 @@ class _AreaMapPageState extends State<AreaMapPage> {
   static const _reloadDistanceMeters = 100.0;
 
   /// Keep the map responsive while browsing: forget the oldest parcels.
-  static const _maxParcels = 120;
+  static const _maxParcels = 300;
+
+  /// Load a bit beyond the screen edge, so nothing pops in while panning.
+  static const _screenLeeway = 1.3;
+  static const _minLoadRadius = 300;
+  static const _maxLoadRadius = 2000;
+  static const _loadLimit = 40;
 
   final _controller = MapController();
   final _repo = ParcelRepository();
@@ -71,6 +79,7 @@ class _AreaMapPageState extends State<AreaMapPage> {
   final Map<String, Parcel> _parcels = {};
   LatLng? _userPosition;
   LatLng? _lastLoadedCenter;
+  int _lastLoadedRadius = _minLoadRadius;
 
   /// Parcel under the mouse (from the map).
   Parcel? _hovered;
@@ -78,6 +87,9 @@ class _AreaMapPageState extends State<AreaMapPage> {
   /// Parcel found by the address search; highlighted until one is chosen.
   String? _foundId;
   bool _locating = false;
+
+  /// The address search is open: it gets the whole top bar.
+  bool _searchOpen = false;
   int _pendingLoads = 0;
   bool _zoomedIn = false;
   Timer? _debounce;
@@ -156,11 +168,18 @@ class _AreaMapPageState extends State<AreaMapPage> {
   Future<List<Parcel>> _loadAround(
     LatLng center, {
     bool aroundUser = false,
+    int radius = _minLoadRadius,
   }) async {
     _lastLoadedCenter = center;
+    _lastLoadedRadius = radius;
     setState(() => _pendingLoads++);
     try {
-      final found = await _repo.nearby(center.latitude, center.longitude);
+      final found = await _repo.nearby(
+        center.latitude,
+        center.longitude,
+        radiusMeters: radius,
+        limit: _loadLimit,
+      );
       if (!mounted) return found;
       setState(() {
         for (final p in found) {
@@ -192,9 +211,16 @@ class _AreaMapPageState extends State<AreaMapPage> {
     if (!zoomedIn) return;
     _debounce = Timer(const Duration(milliseconds: 700), () {
       final last = _lastLoadedCenter;
+      // From the centre to the screen corner, plus leeway.
+      final radius =
+          (_distance(camera.center, camera.visibleBounds.northEast) *
+                  _screenLeeway)
+              .clamp(_minLoadRadius, _maxLoadRadius)
+              .round();
       if (last == null ||
-          _distance(last, camera.center) > _reloadDistanceMeters) {
-        _loadAround(camera.center);
+          _distance(last, camera.center) > _reloadDistanceMeters ||
+          radius > _lastLoadedRadius * 1.1) {
+        _loadAround(camera.center, radius: radius);
       }
     });
   }
@@ -213,11 +239,22 @@ class _AreaMapPageState extends State<AreaMapPage> {
 
   /// Address search from the top bar: flies to the parcel and highlights it.
   /// The user still taps it to choose it. Returns `true` when found.
-  Future<bool> _searchAddress(String address) async {
+  Future<bool> _searchAddress(String address) =>
+      _goToParcel(() => _repo.searchByAddress(address));
+
+  /// A full address picked from the hints: the parcel at its point, shown
+  /// with the address as it was picked.
+  Future<bool> _goToHint(AddressSuggestion hint) => _goToParcel(() async {
+    final parcel = await _repo.parcelAt(hint.point);
+    return parcel?.withAddress(hint.fillText);
+  });
+
+  /// Looks up a parcel, moves the map there and highlights it.
+  Future<bool> _goToParcel(Future<Parcel?> Function() lookUp) async {
     final l10n = AppLocalizations.of(context);
     setState(() => _pendingLoads++);
     try {
-      final parcel = await _repo.searchByAddress(address);
+      final parcel = await lookUp();
       if (!mounted) return false;
       if (parcel == null) {
         _tell(l10n.parcelNotFound);
@@ -242,8 +279,13 @@ class _AreaMapPageState extends State<AreaMapPage> {
 
   Future<void> _choose(Parcel parcel) async {
     setState(() => _foundId = null);
-    await widget.store.select(parcel);
-    widget.onParcelChosen();
+    // "Is this your parcel?": only a yes makes it one of the user's.
+    final chosen = await offerMyParcel(
+      context,
+      parcel: parcel,
+      store: widget.store,
+    );
+    if (chosen && mounted) widget.onParcelChosen();
   }
 
   void _tell(String text) {
@@ -308,20 +350,33 @@ class _AreaMapPageState extends State<AreaMapPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                   child: Row(
+                    // Top: the search grows downwards with its hints.
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(child: MapSearchBar(onSearch: _searchAddress)),
-                      for (final action in widget.topBarActions) ...[
-                        const SizedBox(width: 8),
-                        MapButton(child: action),
-                      ],
-                      const SizedBox(width: 8),
-                      MapButton(
-                        child: IconButton(
-                          tooltip: l10n.locationMyPosition,
-                          onPressed: _locating ? null : _locate,
-                          icon: const Icon(Icons.my_location),
+                      Expanded(
+                        child: MapSearchBar(
+                          onSearch: _searchAddress,
+                          onAddressChosen: _goToHint,
+                          onOpenChanged: (open) =>
+                              setState(() => _searchOpen = open),
                         ),
                       ),
+                      // While typing, the search and its hints get the whole
+                      // width (small phones); the buttons come back after.
+                      if (!_searchOpen) ...[
+                        for (final action in widget.topBarActions) ...[
+                          const SizedBox(width: 8),
+                          MapButton(child: action),
+                        ],
+                        const SizedBox(width: 8),
+                        MapButton(
+                          child: IconButton(
+                            tooltip: l10n.locationMyPosition,
+                            onPressed: _locating ? null : _locate,
+                            icon: const Icon(Icons.my_location),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),

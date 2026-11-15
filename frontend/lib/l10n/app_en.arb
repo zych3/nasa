@@ -100,16 +100,7 @@
   "locationServiceOff": "Location is turned off on this device. Turn it on and try again.",
   "locationPermissionDenied": "We cannot see your location. You can still move the map by hand.",
   "locationFailed": "Could not find your location. You can move the map to your field by hand.",
-  "nearbyParcelsSection": "Parcels near you",
   "parcelHere": "Parcel where you are",
-  "distanceFromYou": "{distance} from you",
-  "@distanceFromYou": {
-    "placeholders": {
-      "distance": {
-        "type": "String"
-      }
-    }
-  },
   "myFieldMarker": "My field",
   "youAreHere": "You are here",
   "zoomInForParcels": "Zoom in to see parcels",
@@ -246,7 +237,7 @@
   "overlaysNoField": "No field is chosen yet. We show an example place.",
   "overlaysChooseField": "Choose my field on the map",
   "overlaysLoading": "Getting the data… The first time it can take up to 10 seconds.",
-  "overlaysErrorNetwork": "We could not get the data. Check your internet and try again.",
+  "overlaysErrorNetwork": "We cannot reach the app's server. Try again in a moment.",
   "overlaysErrorServer": "The data service is not working right now. Try again in a few minutes.",
   "overlaysErrorBadData": "The data we got is incomplete. Try again later.",
   "overlaysShowDemo": "Show example data",
@@ -350,9 +341,6 @@
       }
     }
   },
-  "readAloud": "Read aloud",
-  "readAloudStop": "Stop reading",
-  "readAloudUnavailable": "Reading aloud does not work on this device.",
   "overlaysHeatmapLoading": "Loading the map of the area…",
   "overlayHeatmapNote": "The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.",
   "overlaysHeatmapZoomIn": "Zoom in to see the colours",
@@ -592,11 +580,19 @@
   },
   "planHarvest": "Harvest quality",
   "readSeason": "{year}: {crop}",
-  "readPair": "{label}: {value}",
   "@readSeason": { "placeholders": { "year": { "type": "String" }, "crop": { "type": "String" } } },
-  "@readPair": { "placeholders": { "label": { "type": "String" }, "value": { "type": "String" } } },
   "planSow": "Sow: {period}",
   "planHarvestTime": "Harvest time: {period}",
+  "calendarAddFor": "Add to calendar: {event}",
+  "calendarSowTitle": "Sow: {crop}",
+  "calendarHarvestTitle": "Harvest: {crop}",
+  "calendarCoverTitle": "Sow cover crop: {crop}",
+  "calendarNote": "From your Field Shift rotation plan. The dates are approximate: do it within this window.",
+  "calendarFailed": "Could not open the calendar on this device.",
+  "@calendarAddFor": { "placeholders": { "event": { "type": "String" } } },
+  "@calendarSowTitle": { "placeholders": { "crop": { "type": "String" } } },
+  "@calendarHarvestTitle": { "placeholders": { "crop": { "type": "String" } } },
+  "@calendarCoverTitle": { "placeholders": { "crop": { "type": "String" } } },
   "planPeriodOneMonth": "{month} {year}",
   "planPeriodRange": "{from} – {to} {year}",
   "@planSow": { "placeholders": { "period": { "type": "String" } } },
@@ -634,7 +630,9 @@
   "detailsChoosePlan": "Choose this plan",
   "reportSavePlan": "Save this plan",
   "reportPlanSaved": "Plan saved",
-  "reportSaveDone": "The plan is saved in your profile.",
+  "reportSaveDone": "The plan is saved on this phone.",
+  "reportSaveDoneAccount": "The plan is saved on this phone and in your account.",
+  "reportDone": "Done",
   "reportSaveFailed": "Could not save the plan. Please try again.",
   "reportSaveTooMany": "You have too many saved plans. Delete one first.",
   "reportSaveSessionExpired": "Your sign-in expired. Please sign in again.",
@@ -788,7 +786,6 @@
   "addressKindAddress": "Address",
   "authWelcome": "Welcome to FieldShift",
   "authTagline": "Plan your crops with NASA satellite data.",
-  "authReadAloudHelp": "Sign in or create an account. The app also works without an account.",
   "authLoginTab": "Sign in",
   "authRegisterTab": "Create account",
   "authUsernameLabel": "Login",
@@ -867,6 +864,214 @@
   "accountGuest": "You are using the app without an account.",
   "accountSignOut": "Sign out",
   "accountSignIn": "Sign in or create an account",
+  "fieldDataNoField": "Choose your field on the map. Then you will see here what NASA data and the registers say about it.",
+  "fieldDataLoading": "Getting data from NASA and the registers… The first time this can take up to 20 seconds.",
+  "fieldDataStepClimate": "Weather and soil moisture in the area (NASA POWER)",
+  "fieldDataStepParcel": "Your parcel: land register, soil map, terrain",
+  "fieldDataStepDone": "ready",
+  "fieldDataStepFailed": "not available",
+  "fieldDataStepLoading": "loading",
+  "fieldConditionSentence": "{title}: {value}",
+  "@fieldConditionSentence": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactSentence": "{label}: {value}",
+  "@fieldFactSentence": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldWarningsHeading": "Watch out",
+  "fieldConditionsHeading": "In your area (NASA data)",
+  "fieldShowOnMap": "Show on the Conditions map",
+  "fieldFactsHeading": "About your parcel",
+  "fieldFactsNone": "We found no register data for this parcel. The NASA data above still applies to the area.",
+  "fieldFactArea": "Area",
+  "fieldFactAreaValue": "{area} ha",
+  "@fieldFactAreaValue": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactQualityClass": "Soil quality class (land register)",
+  "fieldFactSurveyed": "surveyed in {year}",
+  "@fieldFactSurveyed": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactSoilComplex": "Soil complex (soil map)",
+  "fieldFactSoilType": "Soil type (soil map)",
+  "fieldFactSlope": "Slope",
+  "fieldFactSlopeValue": "{level} ({slope} %)",
+  "@fieldFactSlopeValue": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "slope": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldSlopeFlat": "flat",
+  "fieldSlopeGentle": "gentle slope",
+  "fieldSlopeModerate": "moderate slope",
+  "fieldSlopeSteep": "steep",
+  "fieldFactElevation": "{height} m above sea level",
+  "@fieldFactElevation": {
+    "placeholders": {
+      "height": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactPh": "Soil reaction (pH)",
+  "fieldFactPhValue": "{level} (pH {ph})",
+  "@fieldFactPhValue": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      },
+      "ph": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldPhAcidic": "acidic – liming may help",
+  "fieldPhSlightlyAcidic": "slightly acidic",
+  "fieldPhNeutral": "neutral",
+  "fieldPhAlkaline": "alkaline",
+  "fieldFactOrganic": "Organic matter (organic carbon)",
+  "fieldFactOrganicValue": "{value} g per kg of soil",
+  "@fieldFactOrganicValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldFactTexture": "Soil make-up",
+  "fieldFactTextureValue": "sand {sand} %, clay {clay} %",
+  "@fieldFactTextureValue": {
+    "placeholders": {
+      "sand": {
+        "type": "String"
+      },
+      "clay": {
+        "type": "String"
+      }
+    }
+  },
+  "fieldDataStepSemantics": "{source}: {state}",
+  "@fieldDataStepSemantics": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "state": {
+        "type": "String"
+      }
+    }
+  },
+  "overlaysErrorSlow": "The NASA data is taking longer than usual. Try again: the server keeps loading it, so the next try is usually quick.",
+  "overlayStressCause": "{cause, select, drought{Main cause: drought in the root zone} heat{Main cause: hot days} other{Plants are under little stress}}",
+  "@overlayStressCause": {
+    "placeholders": {
+      "cause": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressDrought": "Drought: {points} of {max} points",
+  "@overlayStressDrought": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressDroughtWith": "Drought: {points} of {max} points (soil moisture {moisture})",
+  "@overlayStressDroughtWith": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "moisture": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressHeat": "Heat: {points} of {max} points",
+  "@overlayStressHeat": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressHeatWith": "Heat: {points} of {max} points ({days} days above 30 °C)",
+  "@overlayStressHeatWith": {
+    "placeholders": {
+      "points": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayStressNotDisease": "This estimate is about drought and heat only. It does not detect diseases or pests: see the “Fungal weather” and “Pest warmth” layers.",
+  "overlayFungalTitle": "Fungal weather",
+  "overlayStepsFungal": "{step, select, s0{rarely} s1{sometimes} s2{often} other{very often}}",
+  "@overlayStepsFungal": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayFungalRule": "Counted days: mild (10–25 °C) and very humid air (85 % or more), or humid air (75 % or more) with rain.",
+  "overlayFungalNote": "Such weather helps fungal diseases such as late blight, mildews and rusts. This is not a detected disease: check your plants.",
+  "overlayPestTitle": "Pest warmth",
+  "overlayStepsPest": "{step, select, s0{insects dormant} s1{insects starting to develop} s2{insects developing fast} other{many insect generations}}",
+  "@overlayStepsPest": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayPestRule": "Warmth since 1 January (degree-days above 10 °C). The more warmth, the faster insects develop.",
+  "overlayPestNote": "For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants.",
   "myCropsTitle": "My crops",
   "myCropsIntro": "Your crops and where they grow. Later the app will check whether they are at risk; it checks only the active ones.",
   "myCropsEmpty": "You have no saved crops yet. Press \"Add a crop\" and point the place on the map.",
@@ -908,6 +1113,505 @@
   "pickerHelp": "Move the map, or tap it, so that the pin shows where the crop grows. Zoom in to point it more exactly.",
   "pickerPin": "Pin: the chosen place",
   "pickerConfirm": "Choose this place",
+  "satTitle": "From NASA satellites – recent",
+  "satSubtitle": "Measured from space for the area of your field. Each value says how big an area it covers.",
+  "satNoData": "No satellite data for this place",
+  "satNotConfigured": "The server has no NASA Earthdata key for this data",
+  "satUnavailable": "The source is not answering right now",
+  "satDate": "As of {date}",
+  "@satDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "satRainTitle": "Rain (NASA GPM IMERG)",
+  "satRainValue": "{week} mm in 7 days · {month} mm in 30 days",
+  "@satRainValue": {
+    "placeholders": {
+      "week": {
+        "type": "String"
+      },
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "satRainLastDay": "Last day: {mm} mm",
+  "@satRainLastDay": {
+    "placeholders": {
+      "mm": {
+        "type": "String"
+      }
+    }
+  },
+  "satRainDry": "{days, plural, =1{1 day without rain} other{{days} days without rain}} in a row",
+  "@satRainDry": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "satRainHeavy": "{count, plural, =1{1 day} other{{count} days}} with heavy rain (20 mm or more) in 30 days",
+  "@satRainHeavy": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "satAreaRain": "one value for about 10 × 10 km",
+  "satSoilTitle": "Soil moisture at root depth (NASA SMAP)",
+  "satSoilBelow": "Drier than usual at this time of year",
+  "satSoilAbove": "Wetter than usual at this time of year",
+  "satSoilNormal": "As usual at this time of year",
+  "satSoilScale": "Soil moisture (0 = dry, 1 = saturated)",
+  "satSoilValueNormal": "{value} now, usually {normal} (average of {years, plural, =1{1 year} other{{years} years}}) · 0 = dry, 1 = saturated",
+  "@satSoilValueNormal": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      },
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "satSoilValue": "{value} (0 = dry, 1 = saturated)",
+  "@satSoilValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "satSoilTemp": "Soil temperature: {temp} °C",
+  "@satSoilTemp": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "satSnow": "Snow: about {cm} cm",
+  "@satSnow": {
+    "placeholders": {
+      "cm": {
+        "type": "String"
+      }
+    }
+  },
+  "satAreaSoil": "one value for about 9 × 9 km",
+  "satNdviTitle": "Plant greenness (NDVI, NASA MODIS)",
+  "satNdviBelow": "Less green than usual at this time of year",
+  "satNdviAbove": "Greener than usual at this time of year",
+  "satNdviNormal": "As green as usual at this time of year",
+  "satNdviScale": "Plant greenness",
+  "satNdviValue": "NDVI {value}",
+  "@satNdviValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "satNdviValueNormal": "NDVI {value}, usually {normal}",
+  "@satNdviValueNormal": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "satNdviCloudy": "The picture was partly covered by clouds or snow, so this value is less certain.",
+  "satNdviHelp": "0.2 means bare soil, 0.8 a dense green crop. The line is this year, the dashes the usual.",
+  "satAreaNdvi": "one pixel about 250 × 250 m (about 6 ha), also covers what is next to the field",
+  "satLstTitle": "Ground temperature (NASA MODIS)",
+  "satLstValue": "{day} °C by day, {night} °C at night",
+  "@satLstValue": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "night": {
+        "type": "String"
+      }
+    }
+  },
+  "satLstDay": "{day} °C by day",
+  "@satLstDay": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      }
+    }
+  },
+  "satLstNight": "{night} °C at night",
+  "@satLstNight": {
+    "placeholders": {
+      "night": {
+        "type": "String"
+      }
+    }
+  },
+  "satLstNormal": "Usually {day} °C by day, {night} °C at night",
+  "@satLstNormal": {
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "night": {
+        "type": "String"
+      }
+    }
+  },
+  "satAreaLst": "8-day average, one pixel about 1 × 1 km",
+  "satEtTitle": "Water used by plants and soil (NASA MODIS)",
+  "satEtBelow": "Less than usual – plants may be short of water",
+  "satEtAbove": "More than usual",
+  "satEtNormal": "As usual at this time of year",
+  "satEtValue": "{value} mm per day",
+  "@satEtValue": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "satEtValueNormal": "{value} mm per day, usually {normal} mm",
+  "@satEtValueNormal": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "satAreaEt": "8-day average, one pixel about 500 × 500 m",
+  "satWarnSoilDry": "Soil at root depth is drier than usual",
+  "satWarnFrozen": "The top soil is frozen",
+  "satWarnGroundFrost": "Frost at ground level (nights below 0 °C)",
+  "satWarnHeavyRain": "{count} days with heavy rain in the last month – soil may be washed away",
+  "@satWarnHeavyRain": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "satWarnDrySpell": "{days} days in a row without rain",
+  "@satWarnDrySpell": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "satWarnNdviLow": "Plants are less green than usual – worth checking the field",
+  "fieldDataStepRain": "Rain in recent days (NASA GPM IMERG)",
+  "fieldDataStepSoil": "Soil moisture and temperature (NASA SMAP)",
+  "fieldDataStepVegetation": "Plant greenness from space (NASA MODIS)",
+  "fieldDataStepSurfaceTemp": "Ground temperature (NASA MODIS)",
+  "fieldDataStepEt": "Water used by plants (NASA MODIS)",
+  "overlayQualityClass": "Class {code}",
+  "overlayQualityClassNamed": "Class {code} – {name}",
+  "overlaySoilFromRegister": "The soil map has no data for this place, so the soil quality classes from the land register are shown.",
+  "@overlayQualityClass": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "@overlayQualityClassNamed": {
+    "placeholders": {
+      "code": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "satDetailTitle": "Now – last days (NASA satellites)",
+  "satDetailSubtitle": "For the area of your field. Below: month by month, use the arrows to go back in time.",
+  "satDetailLoading": "Loading more detail from NASA satellites…",
+  "indTitle": "What it means for your field",
+  "indSubtitle": "Estimated from the newest NASA satellite data and your parcel's data. Check the field before you decide.",
+  "indicatorWarning": "{title}: {text}",
+  "@indicatorWarning": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "indLevelHigh": "High",
+  "indLevelModerate": "Moderate",
+  "indLevelLow": "Low",
+  "indSources": "Estimate · Data: {sources}",
+  "@indSources": {
+    "placeholders": {
+      "sources": {
+        "type": "String"
+      }
+    }
+  },
+  "indMoistureTitle": "Soil moisture and field work",
+  "indMoistureTooWet": "Soil very wet – heavy machines may compact it",
+  "indMoistureDry": "Too little water at the roots",
+  "indMoistureOk": "Moisture is fine – field work is possible",
+  "indMoistureUnknown": "Soil moisture",
+  "indStressTitle": "Plant stress now",
+  "indStressHigh": "Strong stress – plants are short of water or too hot",
+  "indStressModerate": "Some stress – worth keeping an eye on",
+  "indStressLow": "Plants are not under stress",
+  "indGroundTitle": "Ground warmth",
+  "indGroundFrozen": "Top soil is frozen",
+  "indGroundCold": "Cold soil – plants hardly grow",
+  "indGroundCool": "Cool soil – slow growth, warm enough to sow spring cereals",
+  "indGroundWarm": "Warm soil – warm enough to sow maize and warmth-loving crops",
+  "indGroundUnknown": "Ground temperature",
+  "indErosionTitle": "Erosion risk (last 30 days)",
+  "indErosionHigh": "Rain may wash soil away",
+  "indErosionModerate": "Soil may be washed away a little",
+  "indErosionLow": "Soil is not at risk of being washed away",
+  "indFungalTitle": "Weather for fungal diseases (14 days)",
+  "indFungalHigh": "Very favourable – check your plants",
+  "indFungalModerate": "Favourable – keep an eye on your plants",
+  "indFungalLow": "Not favourable",
+  "indRHeavyRainDays": "{count, plural, =1{1 day} other{{count} days}} with heavy rain (20 mm or more)",
+  "@indRHeavyRainDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indRMaxDailyRain": "Heaviest rain in a day: {mm} mm",
+  "@indRMaxDailyRain": {
+    "placeholders": {
+      "mm": {
+        "type": "String"
+      }
+    }
+  },
+  "indRWetTopsoil": "Top soil soaked ({value} of 1), water runs off",
+  "@indRWetTopsoil": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "indRSlope": "Slope of the parcel: {pct} %",
+  "@indRSlope": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "indRLightSoil": "Light soil (sand {pct} %) washes away easily",
+  "@indRLightSoil": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "indRSparseCover": "Few plants on the field (NDVI {value}), soil poorly covered",
+  "@indRSparseCover": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "indRNoErosionDrivers": "No heavy rain",
+  "indRRoots": "Moisture at the roots: {value} (0 = dry, 1 = saturated)",
+  "@indRRoots": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "indRDryRoots": "Moisture at the roots {value}, usually {normal} – drier than usual",
+  "@indRDryRoots": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "indRWetRoots": "Moisture at the roots {value}, usually {normal} – wetter than usual",
+  "@indRWetRoots": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "indRRootsAsUsual": "Moisture at the roots {value}, usually {normal}",
+  "@indRRootsAsUsual": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "indRHotDays": "Ground heats up to {temp} °C by day",
+  "@indRHotDays": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "indRLessGreen": "Less green than usual (NDVI {value}, usually {normal})",
+  "@indRLessGreen": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "indRLessWaterUse": "Plants use less water than usual ({value} mm a day, usually {normal})",
+  "@indRLessWaterUse": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "normal": {
+        "type": "String"
+      }
+    }
+  },
+  "indRDormant": "Soil at {temp} °C – plants are resting for winter",
+  "@indRDormant": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "indRNoStress": "No signs of drought or heat",
+  "indRSoilTemp": "Top soil: {temp} °C",
+  "@indRSoilTemp": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "indRWarming": "Warming up: {delta} °C more in {days, plural, =1{1 day} other{{days} days}}",
+  "@indRWarming": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "indRCooling": "Cooling down: {delta} °C less in {days, plural, =1{1 day} other{{days} days}}",
+  "@indRCooling": {
+    "placeholders": {
+      "delta": {
+        "type": "String"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "indRSteady": "About the same for {days, plural, =1{1 day} other{{days} days}}",
+  "@indRSteady": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "indRFrostNights": "Frost at ground level: {temp} °C at night",
+  "@indRFrostNights": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "indRVeryWetTopsoil": "Top layer nearly saturated ({value} of 1)",
+  "@indRVeryWetTopsoil": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "indRRainWeek": "Rain in 7 days: {mm} mm",
+  "@indRRainWeek": {
+    "placeholders": {
+      "mm": {
+        "type": "String"
+      }
+    }
+  },
+  "indRDryDays": "{count} days in a row without rain",
+  "@indRDryDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indRRainyDays": "{count, plural, =1{1 rainy day} other{{count} rainy days}} in 14 days",
+  "@indRRainyDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indRMildGround": "Ground at {temp} °C (fungi like 10–25 °C)",
+  "@indRMildGround": {
+    "placeholders": {
+      "temp": {
+        "type": "String"
+      }
+    }
+  },
+  "indAttention": "Watch out",
+  "indOk": "Fine",
+  "overlaySoilNotFarmland": "By the land register this is not farmland, so it has no soil quality class.",
+  "fieldFactLandUse": "Land use (land register)",
   "accountMyPlans": "My plans",
   "myPlansTitle": "My plans",
   "myPlansEmpty": "You have no saved plans yet. Open a report and choose Save this plan.",
@@ -917,9 +1621,36 @@
   "myPlansDelete": "Delete",
   "myPlansCancel": "Cancel",
   "myPlansDeleteTitle": "Delete this plan?",
-  "myPlansDeleteBody": "It will be removed from your profile.",
+  "myPlansDeleteBody": "It will be removed from this phone and from your account.",
   "myPlansDeleted": "Plan deleted.",
   "myPlansDeleteFailed": "Could not delete the plan. Please try again.",
   "@myPlansItemInfo": { "placeholders": { "goal": { "type": "String" }, "date": { "type": "String" } } },
-  "@myPlansSavedOn": { "placeholders": { "date": { "type": "String" } } }
+  "@myPlansSavedOn": { "placeholders": { "date": { "type": "String" } } },
+  "myParcelsTitle": "My parcels",
+  "myParcelsEmpty": "You have no parcels yet. Choose your field on the map and confirm it is yours.",
+  "myParcelsSwipeHint": "Tap a parcel to work on it. Swipe it to the right to remove it.",
+  "myParcelsSynced": "Synced with your account: {date}",
+  "myParcelAskTitle": "Is this your parcel?",
+  "myParcelAskBody": "Is {name} your parcel?",
+  "myParcelYes": "Yes",
+  "myParcelNo": "No",
+  "myParcelAdded": "Parcel added to your parcels.",
+  "myParcelRemoveTitle": "Remove this parcel?",
+  "myParcelRemoveBody": "{name} will be removed from your parcels.",
+  "myParcelRemoveYes": "Remove",
+  "myParcelRemoved": "Parcel removed.",
+  "@myParcelsSynced": { "placeholders": { "date": { "type": "String" } } },
+  "@myParcelAskBody": { "placeholders": { "name": { "type": "String" } } },
+  "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } },
+  "settings": "Settings",
+  "settingsLanguage": "Language",
+  "settingsDarkMode": "Dark mode",
+  "settingsDarkModeHint": "Switch between the light and the dark look of the app.",
+  "settingsFrostAlerts": "Frost alerts",
+  "settingsFrostAlertsHint": "Once a week we check the weather forecast for your plots and warn you if frost is coming.",
+  "frostAlertChannel": "Frost alerts",
+  "frostAlertTitleFrost": "Frost expected",
+  "frostAlertTitleLight": "Possible ground frost",
+  "frostAlertBody": "Near your plot, the lowest temperature will be {temp} °C on {date}.",
+  "@frostAlertBody": { "placeholders": { "temp": { "type": "String" }, "date": { "type": "String" } } }
 }

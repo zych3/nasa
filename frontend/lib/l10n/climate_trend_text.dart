@@ -129,7 +129,7 @@ List<String> climateFootnotes(AppLocalizations l10n, ClimateTrends trends) => [
 
 /// Everything the climate section shows, in the order it shows it; empty
 /// when the section shows nothing.
-List<String> climateReadingSentences(
+List<String> climateSectionTexts(
   AppLocalizations l10n,
   String locale,
   ClimateTrends? trends,

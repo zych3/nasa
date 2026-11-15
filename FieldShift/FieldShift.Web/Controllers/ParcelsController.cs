@@ -89,7 +89,8 @@ public class ParcelsController(
 
     /// <summary>The parcel at a point (e.g. a chosen address hint).</summary>
     [HttpGet("at")]
-    public async Task<ActionResult<ParcelSearchResponse>> At([FromQuery] double? lat, [FromQuery] double? lon)
+    public async Task<ActionResult<ParcelSearchResponse>> At([FromQuery] double? lat, [FromQuery] double? lon,
+        [FromQuery] int? radius = null, [FromQuery] int? limit = null)
     {
         if (lat is not (>= -90 and <= 90) || lon is not (>= -180 and <= 180))
         {
@@ -156,6 +157,8 @@ public class ParcelsController(
 
     private const int NearbyAddressLimit = 8;
     private const int NearbyRadiusMeters = 300;
+    private const int NearbyMaxAddressLimit = 40;
+    private const int NearbyMaxRadiusMeters = 2000;
 
     /// <summary>
     /// Parcels around a point: the parcel at the point itself plus the parcels of the
@@ -163,7 +166,8 @@ public class ParcelsController(
     /// </summary>
     [HttpGet("nearby")]
     public async Task<ActionResult<IReadOnlyList<NearbyParcelResponse>>> Nearby(
-        [FromQuery] double? lat, [FromQuery] double? lon)
+        [FromQuery] double? lat, [FromQuery] double? lon,
+        [FromQuery] int? radius = null, [FromQuery] int? limit = null)
     {
         if (lat is not (>= -90 and <= 90) || lon is not (>= -180 and <= 180))
         {
@@ -173,7 +177,10 @@ public class ParcelsController(
         IReadOnlyList<GeocodeResult> addresses;
         try
         {
-            addresses = await country.GetNearbyAddressesAsync(lat.Value, lon.Value, NearbyAddressLimit, NearbyRadiusMeters);
+            addresses = await country.GetNearbyAddressesAsync(
+                lat.Value, lon.Value,
+                Math.Clamp(limit ?? NearbyAddressLimit, 1, NearbyMaxAddressLimit),
+                Math.Clamp(radius ?? NearbyRadiusMeters, 1, NearbyMaxRadiusMeters));
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {

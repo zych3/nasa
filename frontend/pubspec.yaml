@@ -44,9 +44,11 @@ dependencies:
   latlong2: ^0.10.1
   geolocator: ^14.1.2
   shared_preferences: ^2.5.6
-  flutter_tts: ^4.2.5
   forui: ^0.28.0
   forui_lucide: ^0.28.0
+  flutter_local_notifications: ^23.0.2
+  workmanager: ^0.10.10
+  add_2_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:

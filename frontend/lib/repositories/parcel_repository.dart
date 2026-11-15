@@ -58,10 +58,23 @@ class ParcelRepository {
 
   /// Parcels around a point, nearest first. The first one (distance 0, no
   /// address) is usually the parcel at the point itself.
-  Future<List<Parcel>> nearby(double latitude, double longitude) async {
+  ///
+  /// [radiusMeters] and [limit] widen the search (the server has defaults and
+  /// caps both).
+  Future<List<Parcel>> nearby(
+    double latitude,
+    double longitude, {
+    int? radiusMeters,
+    int? limit,
+  }) async {
     final json = await _api.getJson(
       '/api/parcels/nearby',
-      query: {'lat': '$latitude', 'lon': '$longitude'},
+      query: {
+        'lat': '$latitude',
+        'lon': '$longitude',
+        if (radiusMeters != null) 'radius': '$radiusMeters',
+        if (limit != null) 'limit': '$limit',
+      },
     );
     return [
       for (final item in json as List<dynamic>)

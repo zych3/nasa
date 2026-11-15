@@ -5,11 +5,11 @@ import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/components/account_button.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/account.dart';
-import 'package:hopito_field_shift/models/saved_plan.dart';
 import 'package:hopito_field_shift/pages/my_plans_page.dart';
 import 'package:hopito_field_shift/pages/saved_plan_page.dart';
 import 'package:hopito_field_shift/repositories/auth_repository.dart';
 import 'package:hopito_field_shift/repositories/auth_store.dart';
+import 'package:hopito_field_shift/repositories/local_plans_store.dart';
 import 'package:hopito_field_shift/repositories/saved_plans_repository.dart';
 import 'package:hopito_field_shift/repositories/selected_plot_store.dart';
 import 'package:http/http.dart' as http;
@@ -50,29 +50,6 @@ Map<String, dynamic> _saved(String id, String crop, String createdAt) => {
   'plan': _plan(crop),
 };
 
-class _FakeRepo extends SavedPlansRepository {
-  _FakeRepo(this.items);
-
-  List<SavedPlan> items;
-  Object? listError;
-  Object? deleteError;
-  final deleted = <String>[];
-  int listCalls = 0;
-
-  @override
-  Future<List<SavedPlan>> list(String authToken) async {
-    listCalls++;
-    if (listError != null) throw listError!;
-    return items;
-  }
-
-  @override
-  Future<void> delete(String authToken, String id) async {
-    if (deleteError != null) throw deleteError!;
-    deleted.add(id);
-  }
-}
-
 class _FakeAuth implements AuthRepository {
   @override
   Future<AccountSession> testLogin() async => const AccountSession(
@@ -106,11 +83,6 @@ Future<AuthStore> _signedIn() async {
   return store;
 }
 
-List<SavedPlan> _two() => [
-  SavedPlan.fromJson(_saved('a', 'Oats', '2026-11-15T10:00:00Z')),
-  SavedPlan.fromJson(_saved('b', 'Rye', '2026-11-14T10:00:00Z')),
-];
-
 Widget _app(Widget home) => MaterialApp(
   locale: const Locale('en'),
   supportedLocales: AppLocalizations.supportedLocales,
@@ -121,17 +93,55 @@ Widget _app(Widget home) => MaterialApp(
   home: home,
 );
 
-Future<void> _openPage(
-  WidgetTester tester,
-  _FakeRepo repo,
-  AuthStore store,
-) async {
+/// A store holding [crops] as plans saved on the phone (newest first), with
+/// a backend that records what is deleted from the account.
+Future<LocalPlansStore> _store(
+  List<String> crops, {
+  List<String>? deleted,
+  AuthStore? auth,
+}) async {
+  SharedPreferences.setMockInitialValues({
+    'local_plans': jsonEncode([
+      for (var i = 0; i < crops.length; i++)
+        {
+          'id': 'l$i',
+          if (auth != null) 'serverId': 's$i',
+          'createdAt': '2026-11-${15 - i}T10:00:00Z',
+          'goal': 'balanced',
+          'lat': 52.4,
+          'lon': 21.1,
+          'plan': _plan(crops[i]),
+        },
+    ]),
+  });
+  final store = LocalPlansStore(
+    apiClient: ApiClient(
+      baseUrl: 'http://api',
+      httpClient: MockClient((request) async {
+        if (request.method == 'DELETE') {
+          deleted?.add(request.url.pathSegments.last);
+          return http.Response('', 204);
+        }
+        return http.Response(
+          jsonEncode([
+            if (auth != null)
+              for (var i = 0; i < crops.length; i++)
+                _saved('s$i', crops[i], '2026-11-${15 - i}T10:00:00Z'),
+          ]),
+          200,
+        );
+      }),
+    ),
+  );
+  await store.load();
+  return store;
+}
+
+Future<void> _openPage(WidgetTester tester, LocalPlansStore store) async {
   tester.view.physicalSize = const Size(800, 1600);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  await tester.pumpWidget(
-    _app(MyPlansPage(authStore: store, repository: repo)),
-  );
+  await tester.pumpWidget(_app(MyPlansPage(plans: store)));
   await tester.pumpAndSettle();
 }
 
@@ -194,10 +204,10 @@ void main() {
   });
 
   group('My plans page', () {
-    testWidgets('lists the saved plans with their crops and date', (
+    testWidgets('lists the plans on the phone, without any account', (
       tester,
     ) async {
-      await _openPage(tester, _FakeRepo(_two()), await _signedIn());
+      await _openPage(tester, await _store(['Oats', 'Rye']));
 
       expect(find.text('Oats'), findsOneWidget);
       expect(find.text('Rye'), findsOneWidget);
@@ -206,7 +216,7 @@ void main() {
     });
 
     testWidgets('says so when nothing is saved yet', (tester) async {
-      await _openPage(tester, _FakeRepo([]), await _signedIn());
+      await _openPage(tester, await _store([]));
 
       expect(
         find.text(
@@ -216,37 +226,10 @@ void main() {
       );
     });
 
-    testWidgets('a failed load can be retried', (tester) async {
-      final repo = _FakeRepo(_two())..listError = Exception('down');
-      await _openPage(tester, repo, await _signedIn());
-      expect(find.text('Could not load your plans.'), findsOneWidget);
-
-      repo.listError = null;
-      await tester.tap(find.text('Try again'));
-      await tester.pumpAndSettle();
-
-      expect(repo.listCalls, 2);
-      expect(find.text('Oats'), findsOneWidget);
-    });
-
-    testWidgets('an expired sign-in signs the user out', (tester) async {
-      final repo = _FakeRepo([])
-        ..listError = ApiException('x', statusCode: 401);
-      final store = await _signedIn();
-      await _openPage(tester, repo, store);
-
-      expect(
-        find.text('Your sign-in expired. Please sign in again.'),
-        findsOne,
-      );
-      expect(store.status, AuthStatus.guest);
-    });
-
     testWidgets('deleting asks first and then removes the plan', (
       tester,
     ) async {
-      final repo = _FakeRepo(_two());
-      await _openPage(tester, repo, await _signedIn());
+      await _openPage(tester, await _store(['Oats', 'Rye']));
 
       await tester.tap(find.byTooltip('Delete').first);
       await tester.pumpAndSettle();
@@ -254,59 +237,42 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
       await tester.pumpAndSettle();
 
-      expect(repo.deleted, ['a']);
       expect(find.text('Oats'), findsNothing);
       expect(find.text('Rye'), findsOneWidget);
       expect(find.text('Plan deleted.'), findsOneWidget);
     });
 
     testWidgets('cancelling the question keeps the plan', (tester) async {
-      final repo = _FakeRepo(_two());
-      await _openPage(tester, repo, await _signedIn());
+      await _openPage(tester, await _store(['Oats']));
 
-      await tester.tap(find.byTooltip('Delete').first);
+      await tester.tap(find.byTooltip('Delete'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
 
-      expect(repo.deleted, isEmpty);
       expect(find.text('Oats'), findsOneWidget);
     });
 
-    testWidgets('a failed delete keeps the plan and says so', (tester) async {
-      final repo = _FakeRepo(_two())..deleteError = Exception('down');
-      await _openPage(tester, repo, await _signedIn());
-
-      await tester.tap(find.byTooltip('Delete').first);
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Oats'), findsOneWidget);
-      expect(
-        find.text('Could not delete the plan. Please try again.'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('a plan that is already gone counts as deleted', (
+    testWidgets('a plan copied to the account is deleted there too', (
       tester,
     ) async {
-      final repo = _FakeRepo(_two())
-        ..deleteError = ApiException('x', statusCode: 404);
-      await _openPage(tester, repo, await _signedIn());
+      final deleted = <String>[];
+      final auth = await _signedIn();
+      final store = await _store(['Oats'], deleted: deleted, auth: auth)
+        ..attach(auth);
+      await _openPage(tester, store);
 
-      await tester.tap(find.byTooltip('Delete').first);
+      await tester.tap(find.byTooltip('Delete'));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
       await tester.pumpAndSettle();
 
+      expect(deleted, contains('s0'));
       expect(find.text('Oats'), findsNothing);
-      expect(find.text('Plan deleted.'), findsOneWidget);
     });
 
     testWidgets('tapping a plan opens it with its rating bars', (tester) async {
-      await _openPage(tester, _FakeRepo(_two()), await _signedIn());
+      await _openPage(tester, await _store(['Oats', 'Rye']));
 
       await tester.tap(find.text('Oats'));
       await tester.pumpAndSettle();
@@ -343,10 +309,13 @@ void main() {
       expect(find.byType(MyPlansPage), findsOneWidget);
     });
 
-    testWidgets('a guest has no My plans button', (tester) async {
+    testWidgets('a guest can open My plans too', (tester) async {
       await openSheet(tester, AuthStore(repository: _FakeAuth()));
 
-      expect(find.text('My plans'), findsNothing);
+      await tester.tap(find.widgetWithText(FilledButton, 'My plans'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(MyPlansPage), findsOneWidget);
     });
   });
 }

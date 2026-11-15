@@ -1,13 +1,10 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../api/api_client.dart';
 import '../components/rotation/climate_trends_section.dart';
-import '../components/rotation/plan_reading.dart';
 import '../components/rotation/plan_timeline.dart';
 import '../components/rotation/rating_row.dart';
 import '../components/rotation/rotation_details.dart';
 import '../l10n/app_localizations.dart';
-import '../l10n/climate_trend_text.dart';
 import '../l10n/rotation_text.dart';
 import '../models/climate_trends.dart';
 import '../models/crop.dart';
@@ -16,9 +13,8 @@ import '../models/rotation_report.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/climate_trends_repository.dart';
 import '../repositories/crop_repository.dart';
+import '../repositories/local_plans_store.dart';
 import '../repositories/rotation_repository.dart';
-import '../widgets/read_aloud_button.dart';
-import 'auth_page.dart';
 
 class RotationReportPage extends StatefulWidget {
   const RotationReportPage({
@@ -27,16 +23,21 @@ class RotationReportPage extends StatefulWidget {
     required this.answers,
     required this.authStore,
     this.repository,
+    this.plans,
     this.climateRepository,
   });
 
   final Parcel parcel;
   final RotationAnswers answers;
 
-  /// Saving a plan needs an account; without one the sign-in page opens first.
+  /// Saving never needs an account; it only decides where the plan is kept
+  /// (the phone, and the account too when signed in).
   final AuthStore authStore;
 
   final RotationRepository? repository;
+
+  /// Where saved plans go (the app's own by default).
+  final LocalPlansStore? plans;
 
   /// Long-term climate changes shown under the plan.
   final ClimateTrendsRepository? climateRepository;
@@ -48,21 +49,20 @@ class RotationReportPage extends StatefulWidget {
 class _RotationReportPageState extends State<RotationReportPage> {
   late final RotationRepository _repository =
       widget.repository ?? RotationRepository();
+  late final LocalPlansStore _plans = widget.plans ?? LocalPlansStore.shared;
   late Future<RotationReport> _report = _load();
   List<Crop> _catalogue = const [];
 
   /// Loaded once, next to the plan: the plan never waits for it, and a
   /// failure only leaves the climate section out.
   late final Future<ClimateTrends?> _climate;
-  ClimateTrends? _climateData;
 
   String? _goal;
-  RotationReport? _data;
 
   /// The plan the user picked in "More details" (null: the recommended one).
   RotationPlan? _choice;
 
-  /// Plans already saved to the profile, so the button says so.
+  /// Plans already saved, so the button says so.
   final Set<RotationPlan> _saved = {};
   bool _saving = false;
 
@@ -76,29 +76,25 @@ class _RotationReportPageState extends State<RotationReportPage> {
           parcelId: widget.parcel.id,
           lat: widget.parcel.center.latitude,
           lon: widget.parcel.center.longitude,
-        )
-        .then((trends) => _climateData = trends);
+        );
   }
 
   Future<RotationReport> _load() {
     CropRepository().getCrops().then((c) {
       if (mounted) setState(() => _catalogue = c);
     });
-    final report = _repository.getReport(
+    return _repository.getReport(
       parcelId: widget.parcel.id,
       lat: widget.parcel.center.latitude,
       lon: widget.parcel.center.longitude,
       answers: widget.answers,
     );
-    report.then<void>((r) => _data = r, onError: (_) {});
-    return report;
   }
 
   void _retry() => setState(() {
     _goal = null;
     _choice = null;
     _saved.clear();
-    _data = null;
     _report = _load();
   });
 
@@ -113,25 +109,20 @@ class _RotationReportPageState extends State<RotationReportPage> {
     return plans.best;
   }
 
-  /// Keeps [plan] in the user's profile; signs in first when needed.
+  /// Keeps [plan] on the phone; with an account it is copied there too.
+  /// Never asks the user to sign in.
   Future<void> _save(GoalPlans plans, RotationPlan plan) async {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
-    final auth = widget.authStore;
+    final signedIn = widget.authStore.status == AuthStatus.signedIn;
 
     void say(String text) => messenger
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text(text)));
 
-    if (auth.status != AuthStatus.signedIn) {
-      await AuthPage.open(context, auth);
-      if (!mounted || auth.status != AuthStatus.signedIn) return;
-    }
-
     setState(() => _saving = true);
     try {
-      await _repository.savePlan(
-        authToken: auth.token!,
+      final kept = await _plans.add(
         parcelId: widget.parcel.id,
         lat: widget.parcel.center.latitude,
         lon: widget.parcel.center.longitude,
@@ -140,16 +131,11 @@ class _RotationReportPageState extends State<RotationReportPage> {
         answers: widget.answers,
       );
       if (!mounted) return;
-      setState(() => _saved.add(plan));
-      say(l10n.reportSaveDone);
-    } on ApiException catch (e) {
-      if (e.statusCode == 401) {
-        await auth.signOut();
-        say(l10n.reportSaveSessionExpired);
-      } else if (e.code == 'too_many_plans') {
-        say(l10n.reportSaveTooMany);
+      if (kept) {
+        setState(() => _saved.add(plan));
+        say(signedIn ? l10n.reportSaveDoneAccount : l10n.reportSaveDone);
       } else {
-        say(l10n.reportSaveFailed);
+        say(l10n.reportSaveTooMany);
       }
     } catch (_) {
       say(l10n.reportSaveFailed);
@@ -158,37 +144,8 @@ class _RotationReportPageState extends State<RotationReportPage> {
     }
   }
 
-  /// Everything the report shows, in the order it shows it.
-  String _readAloud(AppLocalizations l10n) {
-    final report = _data;
-    if (report == null) return l10n.reportTitle;
-
-    final language = Localizations.localeOf(context).languageCode;
-    final locale = Localizations.localeOf(context).toString();
-    final names = _names(report, language);
-    final warnings = [
-      for (final w in report.warnings) warningText(l10n, w, (id) => names[id]),
-    ];
-    final plans = report.plansFor(_goal ?? report.mainGoal);
-    if (plans == null || !report.hasPlan) {
-      return sentencesForReading([l10n.reportNoPlan, ...warnings]);
-    }
-
-    final plan = _planFor(plans);
-    return sentencesForReading([
-      plans.goal == report.mainGoal ? l10n.reportMainTitle : l10n.reportSowNext,
-      ...planReadingSentences(l10n, locale, language, plan),
-      l10n.reportQualityTitle,
-      for (final key in _headline)
-        if (plan.score(key) != null && scoreLabel(l10n, key) != null)
-          l10n.readPair(
-            scoreLabel(l10n, key)!,
-            levelLabel(l10n, plan.score(key)!.level),
-          ),
-      ...warnings,
-      ...climateReadingSentences(l10n, locale, _climateData),
-    ]);
-  }
+  /// Leaves the planning and goes back to the start of the app.
+  void _finish() => Navigator.of(context).popUntil((route) => route.isFirst);
 
   Map<String, String> _names(RotationReport report, String language) {
     final names = <String, String>{
@@ -252,10 +209,6 @@ class _RotationReportPageState extends State<RotationReportPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(l10n.reportTitle),
-        actions: [
-          ReadAloudButton(text: () => _readAloud(l10n)),
-          const SizedBox(width: 8),
-        ],
       ),
       body: SafeArea(
         child: FutureBuilder<RotationReport>(
@@ -301,7 +254,8 @@ class _RotationReportPageState extends State<RotationReportPage> {
               FilledButton(
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(200, 56),
-                  textStyle: const TextStyle(fontSize: 20),
+                  textStyle: Theme.of(context).textTheme.labelLarge
+                      ?.copyWith(fontSize: 20),
                 ),
                 onPressed: onRetry,
                 child: Text(AppLocalizations.of(context).tryAgain),
@@ -478,11 +432,23 @@ class _RotationReportPageState extends State<RotationReportPage> {
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             minimumSize: const Size.fromHeight(56),
-            textStyle: const TextStyle(fontSize: 18),
+            textStyle: Theme.of(context).textTheme.labelLarge
+                ?.copyWith(fontSize: 18),
           ),
           icon: const Icon(Icons.info_outline),
           label: Text(l10n.moreDetails),
           onPressed: () => _showDetails(report, plans.goal, plan, names),
+        ),
+        const SizedBox(height: 12),
+        // Always there: planning can end without saving anything.
+        OutlinedButton.icon(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            textStyle: const TextStyle(fontSize: 18),
+          ),
+          icon: const Icon(Icons.check),
+          label: Text(l10n.reportDone),
+          onPressed: _finish,
         ),
         const SizedBox(height: 16),
         ClimateTrendsSection(future: _climate),

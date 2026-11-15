@@ -374,23 +374,11 @@ abstract class AppLocalizations {
   /// **'Could not find your location. You can move the map to your field by hand.'**
   String get locationFailed;
 
-  /// No description provided for @nearbyParcelsSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Parcels near you'**
-  String get nearbyParcelsSection;
-
   /// No description provided for @parcelHere.
   ///
   /// In en, this message translates to:
   /// **'Parcel where you are'**
   String get parcelHere;
-
-  /// No description provided for @distanceFromYou.
-  ///
-  /// In en, this message translates to:
-  /// **'{distance} from you'**
-  String distanceFromYou(String distance);
 
   /// No description provided for @myFieldMarker.
   ///
@@ -683,7 +671,7 @@ abstract class AppLocalizations {
   /// No description provided for @overlaysErrorNetwork.
   ///
   /// In en, this message translates to:
-  /// **'We could not get the data. Check your internet and try again.'**
+  /// **'We cannot reach the app\'s server. Try again in a moment.'**
   String get overlaysErrorNetwork;
 
   /// No description provided for @overlaysErrorServer.
@@ -865,24 +853,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{step, select, s0{low} s1{moderate} s2{high} other{very high}}'**
   String overlayStepsRisk(String step);
-
-  /// No description provided for @readAloud.
-  ///
-  /// In en, this message translates to:
-  /// **'Read aloud'**
-  String get readAloud;
-
-  /// No description provided for @readAloudStop.
-  ///
-  /// In en, this message translates to:
-  /// **'Stop reading'**
-  String get readAloudStop;
-
-  /// No description provided for @readAloudUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading aloud does not work on this device.'**
-  String get readAloudUnavailable;
 
   /// No description provided for @overlaysHeatmapLoading.
   ///
@@ -1473,12 +1443,6 @@ abstract class AppLocalizations {
   /// **'{year}: {crop}'**
   String readSeason(String year, String crop);
 
-  /// No description provided for @readPair.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}: {value}'**
-  String readPair(String label, String value);
-
   /// No description provided for @planSow.
   ///
   /// In en, this message translates to:
@@ -1490,6 +1454,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Harvest time: {period}'**
   String planHarvestTime(String period);
+
+  /// No description provided for @calendarAddFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to calendar: {event}'**
+  String calendarAddFor(String event);
+
+  /// No description provided for @calendarSowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow: {crop}'**
+  String calendarSowTitle(String crop);
+
+  /// No description provided for @calendarHarvestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest: {crop}'**
+  String calendarHarvestTitle(String crop);
+
+  /// No description provided for @calendarCoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow cover crop: {crop}'**
+  String calendarCoverTitle(String crop);
+
+  /// No description provided for @calendarNote.
+  ///
+  /// In en, this message translates to:
+  /// **'From your Field Shift rotation plan. The dates are approximate: do it within this window.'**
+  String get calendarNote;
+
+  /// No description provided for @calendarFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the calendar on this device.'**
+  String get calendarFailed;
 
   /// No description provided for @planPeriodOneMonth.
   ///
@@ -1632,8 +1632,20 @@ abstract class AppLocalizations {
   /// No description provided for @reportSaveDone.
   ///
   /// In en, this message translates to:
-  /// **'The plan is saved in your profile.'**
+  /// **'The plan is saved on this phone.'**
   String get reportSaveDone;
+
+  /// No description provided for @reportSaveDoneAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan is saved on this phone and in your account.'**
+  String get reportSaveDoneAccount;
+
+  /// No description provided for @reportDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get reportDone;
 
   /// No description provided for @reportSaveFailed.
   ///
@@ -1965,12 +1977,6 @@ abstract class AppLocalizations {
   /// **'Plan your crops with NASA satellite data.'**
   String get authTagline;
 
-  /// No description provided for @authReadAloudHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in or create an account. The app also works without an account.'**
-  String get authReadAloudHelp;
-
   /// No description provided for @authLoginTab.
   ///
   /// In en, this message translates to:
@@ -2150,6 +2156,324 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in or create an account'**
   String get accountSignIn;
+
+  /// No description provided for @fieldDataNoField.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your field on the map. Then you will see here what NASA data and the registers say about it.'**
+  String get fieldDataNoField;
+
+  /// No description provided for @fieldDataLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting data from NASA and the registers… The first time this can take up to 20 seconds.'**
+  String get fieldDataLoading;
+
+  /// No description provided for @fieldDataStepClimate.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather and soil moisture in the area (NASA POWER)'**
+  String get fieldDataStepClimate;
+
+  /// No description provided for @fieldDataStepParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your parcel: land register, soil map, terrain'**
+  String get fieldDataStepParcel;
+
+  /// No description provided for @fieldDataStepDone.
+  ///
+  /// In en, this message translates to:
+  /// **'ready'**
+  String get fieldDataStepDone;
+
+  /// No description provided for @fieldDataStepFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'not available'**
+  String get fieldDataStepFailed;
+
+  /// No description provided for @fieldDataStepLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'loading'**
+  String get fieldDataStepLoading;
+
+  /// No description provided for @fieldConditionSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: {value}'**
+  String fieldConditionSentence(String title, String value);
+
+  /// No description provided for @fieldFactSentence.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String fieldFactSentence(String label, String value);
+
+  /// No description provided for @fieldWarningsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch out'**
+  String get fieldWarningsHeading;
+
+  /// No description provided for @fieldConditionsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'In your area (NASA data)'**
+  String get fieldConditionsHeading;
+
+  /// No description provided for @fieldShowOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Show on the Conditions map'**
+  String get fieldShowOnMap;
+
+  /// No description provided for @fieldFactsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'About your parcel'**
+  String get fieldFactsHeading;
+
+  /// No description provided for @fieldFactsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'We found no register data for this parcel. The NASA data above still applies to the area.'**
+  String get fieldFactsNone;
+
+  /// No description provided for @fieldFactArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get fieldFactArea;
+
+  /// No description provided for @fieldFactAreaValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{area} ha'**
+  String fieldFactAreaValue(String area);
+
+  /// No description provided for @fieldFactQualityClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil quality class (land register)'**
+  String get fieldFactQualityClass;
+
+  /// No description provided for @fieldFactSurveyed.
+  ///
+  /// In en, this message translates to:
+  /// **'surveyed in {year}'**
+  String fieldFactSurveyed(String year);
+
+  /// No description provided for @fieldFactSoilComplex.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil complex (soil map)'**
+  String get fieldFactSoilComplex;
+
+  /// No description provided for @fieldFactSoilType.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil type (soil map)'**
+  String get fieldFactSoilType;
+
+  /// No description provided for @fieldFactSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope'**
+  String get fieldFactSlope;
+
+  /// No description provided for @fieldFactSlopeValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} ({slope} %)'**
+  String fieldFactSlopeValue(String level, String slope);
+
+  /// No description provided for @fieldSlopeFlat.
+  ///
+  /// In en, this message translates to:
+  /// **'flat'**
+  String get fieldSlopeFlat;
+
+  /// No description provided for @fieldSlopeGentle.
+  ///
+  /// In en, this message translates to:
+  /// **'gentle slope'**
+  String get fieldSlopeGentle;
+
+  /// No description provided for @fieldSlopeModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'moderate slope'**
+  String get fieldSlopeModerate;
+
+  /// No description provided for @fieldSlopeSteep.
+  ///
+  /// In en, this message translates to:
+  /// **'steep'**
+  String get fieldSlopeSteep;
+
+  /// No description provided for @fieldFactElevation.
+  ///
+  /// In en, this message translates to:
+  /// **'{height} m above sea level'**
+  String fieldFactElevation(String height);
+
+  /// No description provided for @fieldFactPh.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil reaction (pH)'**
+  String get fieldFactPh;
+
+  /// No description provided for @fieldFactPhValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} (pH {ph})'**
+  String fieldFactPhValue(String level, String ph);
+
+  /// No description provided for @fieldPhAcidic.
+  ///
+  /// In en, this message translates to:
+  /// **'acidic – liming may help'**
+  String get fieldPhAcidic;
+
+  /// No description provided for @fieldPhSlightlyAcidic.
+  ///
+  /// In en, this message translates to:
+  /// **'slightly acidic'**
+  String get fieldPhSlightlyAcidic;
+
+  /// No description provided for @fieldPhNeutral.
+  ///
+  /// In en, this message translates to:
+  /// **'neutral'**
+  String get fieldPhNeutral;
+
+  /// No description provided for @fieldPhAlkaline.
+  ///
+  /// In en, this message translates to:
+  /// **'alkaline'**
+  String get fieldPhAlkaline;
+
+  /// No description provided for @fieldFactOrganic.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic matter (organic carbon)'**
+  String get fieldFactOrganic;
+
+  /// No description provided for @fieldFactOrganicValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} g per kg of soil'**
+  String fieldFactOrganicValue(String value);
+
+  /// No description provided for @fieldFactTexture.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil make-up'**
+  String get fieldFactTexture;
+
+  /// No description provided for @fieldFactTextureValue.
+  ///
+  /// In en, this message translates to:
+  /// **'sand {sand} %, clay {clay} %'**
+  String fieldFactTextureValue(String sand, String clay);
+
+  /// No description provided for @fieldDataStepSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{source}: {state}'**
+  String fieldDataStepSemantics(String source, String state);
+
+  /// No description provided for @overlaysErrorSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'The NASA data is taking longer than usual. Try again: the server keeps loading it, so the next try is usually quick.'**
+  String get overlaysErrorSlow;
+
+  /// No description provided for @overlayStressCause.
+  ///
+  /// In en, this message translates to:
+  /// **'{cause, select, drought{Main cause: drought in the root zone} heat{Main cause: hot days} other{Plants are under little stress}}'**
+  String overlayStressCause(String cause);
+
+  /// No description provided for @overlayStressDrought.
+  ///
+  /// In en, this message translates to:
+  /// **'Drought: {points} of {max} points'**
+  String overlayStressDrought(String points, String max);
+
+  /// No description provided for @overlayStressDroughtWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Drought: {points} of {max} points (soil moisture {moisture})'**
+  String overlayStressDroughtWith(String points, String max, String moisture);
+
+  /// No description provided for @overlayStressHeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat: {points} of {max} points'**
+  String overlayStressHeat(String points, String max);
+
+  /// No description provided for @overlayStressHeatWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat: {points} of {max} points ({days} days above 30 °C)'**
+  String overlayStressHeatWith(String points, String max, String days);
+
+  /// No description provided for @overlayStressNotDisease.
+  ///
+  /// In en, this message translates to:
+  /// **'This estimate is about drought and heat only. It does not detect diseases or pests: see the “Fungal weather” and “Pest warmth” layers.'**
+  String get overlayStressNotDisease;
+
+  /// No description provided for @overlayFungalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fungal weather'**
+  String get overlayFungalTitle;
+
+  /// No description provided for @overlayStepsFungal.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{rarely} s1{sometimes} s2{often} other{very often}}'**
+  String overlayStepsFungal(String step);
+
+  /// No description provided for @overlayFungalRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Counted days: mild (10–25 °C) and very humid air (85 % or more), or humid air (75 % or more) with rain.'**
+  String get overlayFungalRule;
+
+  /// No description provided for @overlayFungalNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Such weather helps fungal diseases such as late blight, mildews and rusts. This is not a detected disease: check your plants.'**
+  String get overlayFungalNote;
+
+  /// No description provided for @overlayPestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pest warmth'**
+  String get overlayPestTitle;
+
+  /// No description provided for @overlayStepsPest.
+  ///
+  /// In en, this message translates to:
+  /// **'{step, select, s0{insects dormant} s1{insects starting to develop} s2{insects developing fast} other{many insect generations}}'**
+  String overlayStepsPest(String step);
+
+  /// No description provided for @overlayPestRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Warmth since 1 January (degree-days above 10 °C). The more warmth, the faster insects develop.'**
+  String get overlayPestRule;
+
+  /// No description provided for @overlayPestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants.'**
+  String get overlayPestNote;
 
   /// No description provided for @myCropsTitle.
   ///
@@ -2337,6 +2661,738 @@ abstract class AppLocalizations {
   /// **'Choose this place'**
   String get pickerConfirm;
 
+  /// No description provided for @satTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'From NASA satellites – recent'**
+  String get satTitle;
+
+  /// No description provided for @satSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measured from space for the area of your field. Each value says how big an area it covers.'**
+  String get satSubtitle;
+
+  /// No description provided for @satNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No satellite data for this place'**
+  String get satNoData;
+
+  /// No description provided for @satNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'The server has no NASA Earthdata key for this data'**
+  String get satNotConfigured;
+
+  /// No description provided for @satUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The source is not answering right now'**
+  String get satUnavailable;
+
+  /// No description provided for @satDate.
+  ///
+  /// In en, this message translates to:
+  /// **'As of {date}'**
+  String satDate(String date);
+
+  /// No description provided for @satRainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain (NASA GPM IMERG)'**
+  String get satRainTitle;
+
+  /// No description provided for @satRainValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{week} mm in 7 days · {month} mm in 30 days'**
+  String satRainValue(String week, String month);
+
+  /// No description provided for @satRainLastDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Last day: {mm} mm'**
+  String satRainLastDay(String mm);
+
+  /// No description provided for @satRainDry.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 day without rain} other{{days} days without rain}} in a row'**
+  String satRainDry(int days);
+
+  /// No description provided for @satRainHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}} with heavy rain (20 mm or more) in 30 days'**
+  String satRainHeavy(int count);
+
+  /// No description provided for @satAreaRain.
+  ///
+  /// In en, this message translates to:
+  /// **'one value for about 10 × 10 km'**
+  String get satAreaRain;
+
+  /// No description provided for @satSoilTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture at root depth (NASA SMAP)'**
+  String get satSoilTitle;
+
+  /// No description provided for @satSoilBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Drier than usual at this time of year'**
+  String get satSoilBelow;
+
+  /// No description provided for @satSoilAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Wetter than usual at this time of year'**
+  String get satSoilAbove;
+
+  /// No description provided for @satSoilNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'As usual at this time of year'**
+  String get satSoilNormal;
+
+  /// No description provided for @satSoilScale.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture (0 = dry, 1 = saturated)'**
+  String get satSoilScale;
+
+  /// No description provided for @satSoilValueNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} now, usually {normal} (average of {years, plural, =1{1 year} other{{years} years}}) · 0 = dry, 1 = saturated'**
+  String satSoilValueNormal(String value, String normal, int years);
+
+  /// No description provided for @satSoilValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} (0 = dry, 1 = saturated)'**
+  String satSoilValue(String value);
+
+  /// No description provided for @satSoilTemp.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil temperature: {temp} °C'**
+  String satSoilTemp(String temp);
+
+  /// No description provided for @satSnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Snow: about {cm} cm'**
+  String satSnow(String cm);
+
+  /// No description provided for @satAreaSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'one value for about 9 × 9 km'**
+  String get satAreaSoil;
+
+  /// No description provided for @satNdviTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant greenness (NDVI, NASA MODIS)'**
+  String get satNdviTitle;
+
+  /// No description provided for @satNdviBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Less green than usual at this time of year'**
+  String get satNdviBelow;
+
+  /// No description provided for @satNdviAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'Greener than usual at this time of year'**
+  String get satNdviAbove;
+
+  /// No description provided for @satNdviNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'As green as usual at this time of year'**
+  String get satNdviNormal;
+
+  /// No description provided for @satNdviScale.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant greenness'**
+  String get satNdviScale;
+
+  /// No description provided for @satNdviValue.
+  ///
+  /// In en, this message translates to:
+  /// **'NDVI {value}'**
+  String satNdviValue(String value);
+
+  /// No description provided for @satNdviValueNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'NDVI {value}, usually {normal}'**
+  String satNdviValueNormal(String value, String normal);
+
+  /// No description provided for @satNdviCloudy.
+  ///
+  /// In en, this message translates to:
+  /// **'The picture was partly covered by clouds or snow, so this value is less certain.'**
+  String get satNdviCloudy;
+
+  /// No description provided for @satNdviHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'0.2 means bare soil, 0.8 a dense green crop. The line is this year, the dashes the usual.'**
+  String get satNdviHelp;
+
+  /// No description provided for @satAreaNdvi.
+  ///
+  /// In en, this message translates to:
+  /// **'one pixel about 250 × 250 m (about 6 ha), also covers what is next to the field'**
+  String get satAreaNdvi;
+
+  /// No description provided for @satLstTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground temperature (NASA MODIS)'**
+  String get satLstTitle;
+
+  /// No description provided for @satLstValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} °C by day, {night} °C at night'**
+  String satLstValue(String day, String night);
+
+  /// No description provided for @satLstDay.
+  ///
+  /// In en, this message translates to:
+  /// **'{day} °C by day'**
+  String satLstDay(String day);
+
+  /// No description provided for @satLstNight.
+  ///
+  /// In en, this message translates to:
+  /// **'{night} °C at night'**
+  String satLstNight(String night);
+
+  /// No description provided for @satLstNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'Usually {day} °C by day, {night} °C at night'**
+  String satLstNormal(String day, String night);
+
+  /// No description provided for @satAreaLst.
+  ///
+  /// In en, this message translates to:
+  /// **'8-day average, one pixel about 1 × 1 km'**
+  String get satAreaLst;
+
+  /// No description provided for @satEtTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water used by plants and soil (NASA MODIS)'**
+  String get satEtTitle;
+
+  /// No description provided for @satEtBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'Less than usual – plants may be short of water'**
+  String get satEtBelow;
+
+  /// No description provided for @satEtAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'More than usual'**
+  String get satEtAbove;
+
+  /// No description provided for @satEtNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'As usual at this time of year'**
+  String get satEtNormal;
+
+  /// No description provided for @satEtValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} mm per day'**
+  String satEtValue(String value);
+
+  /// No description provided for @satEtValueNormal.
+  ///
+  /// In en, this message translates to:
+  /// **'{value} mm per day, usually {normal} mm'**
+  String satEtValueNormal(String value, String normal);
+
+  /// No description provided for @satAreaEt.
+  ///
+  /// In en, this message translates to:
+  /// **'8-day average, one pixel about 500 × 500 m'**
+  String get satAreaEt;
+
+  /// No description provided for @satWarnSoilDry.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil at root depth is drier than usual'**
+  String get satWarnSoilDry;
+
+  /// No description provided for @satWarnFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'The top soil is frozen'**
+  String get satWarnFrozen;
+
+  /// No description provided for @satWarnGroundFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost at ground level (nights below 0 °C)'**
+  String get satWarnGroundFrost;
+
+  /// No description provided for @satWarnHeavyRain.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days with heavy rain in the last month – soil may be washed away'**
+  String satWarnHeavyRain(int count);
+
+  /// No description provided for @satWarnDrySpell.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days in a row without rain'**
+  String satWarnDrySpell(int days);
+
+  /// No description provided for @satWarnNdviLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Plants are less green than usual – worth checking the field'**
+  String get satWarnNdviLow;
+
+  /// No description provided for @fieldDataStepRain.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain in recent days (NASA GPM IMERG)'**
+  String get fieldDataStepRain;
+
+  /// No description provided for @fieldDataStepSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture and temperature (NASA SMAP)'**
+  String get fieldDataStepSoil;
+
+  /// No description provided for @fieldDataStepVegetation.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant greenness from space (NASA MODIS)'**
+  String get fieldDataStepVegetation;
+
+  /// No description provided for @fieldDataStepSurfaceTemp.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground temperature (NASA MODIS)'**
+  String get fieldDataStepSurfaceTemp;
+
+  /// No description provided for @fieldDataStepEt.
+  ///
+  /// In en, this message translates to:
+  /// **'Water used by plants (NASA MODIS)'**
+  String get fieldDataStepEt;
+
+  /// No description provided for @overlayQualityClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Class {code}'**
+  String overlayQualityClass(String code);
+
+  /// No description provided for @overlayQualityClassNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'Class {code} – {name}'**
+  String overlayQualityClassNamed(String code, String name);
+
+  /// No description provided for @overlaySoilFromRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'The soil map has no data for this place, so the soil quality classes from the land register are shown.'**
+  String get overlaySoilFromRegister;
+
+  /// No description provided for @satDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Now – last days (NASA satellites)'**
+  String get satDetailTitle;
+
+  /// No description provided for @satDetailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'For the area of your field. Below: month by month, use the arrows to go back in time.'**
+  String get satDetailSubtitle;
+
+  /// No description provided for @satDetailLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more detail from NASA satellites…'**
+  String get satDetailLoading;
+
+  /// No description provided for @indTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it means for your field'**
+  String get indTitle;
+
+  /// No description provided for @indSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated from the newest NASA satellite data and your parcel\'s data. Check the field before you decide.'**
+  String get indSubtitle;
+
+  /// No description provided for @indicatorWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'{title}: {text}'**
+  String indicatorWarning(String title, String text);
+
+  /// No description provided for @indLevelHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get indLevelHigh;
+
+  /// No description provided for @indLevelModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get indLevelModerate;
+
+  /// No description provided for @indLevelLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get indLevelLow;
+
+  /// No description provided for @indSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimate · Data: {sources}'**
+  String indSources(String sources);
+
+  /// No description provided for @indMoistureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture and field work'**
+  String get indMoistureTitle;
+
+  /// No description provided for @indMoistureTooWet.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil very wet – heavy machines may compact it'**
+  String get indMoistureTooWet;
+
+  /// No description provided for @indMoistureDry.
+  ///
+  /// In en, this message translates to:
+  /// **'Too little water at the roots'**
+  String get indMoistureDry;
+
+  /// No description provided for @indMoistureOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Moisture is fine – field work is possible'**
+  String get indMoistureOk;
+
+  /// No description provided for @indMoistureUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil moisture'**
+  String get indMoistureUnknown;
+
+  /// No description provided for @indStressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plant stress now'**
+  String get indStressTitle;
+
+  /// No description provided for @indStressHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong stress – plants are short of water or too hot'**
+  String get indStressHigh;
+
+  /// No description provided for @indStressModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Some stress – worth keeping an eye on'**
+  String get indStressModerate;
+
+  /// No description provided for @indStressLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Plants are not under stress'**
+  String get indStressLow;
+
+  /// No description provided for @indGroundTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground warmth'**
+  String get indGroundTitle;
+
+  /// No description provided for @indGroundFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'Top soil is frozen'**
+  String get indGroundFrozen;
+
+  /// No description provided for @indGroundCold.
+  ///
+  /// In en, this message translates to:
+  /// **'Cold soil – plants hardly grow'**
+  String get indGroundCold;
+
+  /// No description provided for @indGroundCool.
+  ///
+  /// In en, this message translates to:
+  /// **'Cool soil – slow growth, warm enough to sow spring cereals'**
+  String get indGroundCool;
+
+  /// No description provided for @indGroundWarm.
+  ///
+  /// In en, this message translates to:
+  /// **'Warm soil – warm enough to sow maize and warmth-loving crops'**
+  String get indGroundWarm;
+
+  /// No description provided for @indGroundUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground temperature'**
+  String get indGroundUnknown;
+
+  /// No description provided for @indErosionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Erosion risk (last 30 days)'**
+  String get indErosionTitle;
+
+  /// No description provided for @indErosionHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain may wash soil away'**
+  String get indErosionHigh;
+
+  /// No description provided for @indErosionModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil may be washed away a little'**
+  String get indErosionModerate;
+
+  /// No description provided for @indErosionLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil is not at risk of being washed away'**
+  String get indErosionLow;
+
+  /// No description provided for @indFungalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather for fungal diseases (14 days)'**
+  String get indFungalTitle;
+
+  /// No description provided for @indFungalHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Very favourable – check your plants'**
+  String get indFungalHigh;
+
+  /// No description provided for @indFungalModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourable – keep an eye on your plants'**
+  String get indFungalModerate;
+
+  /// No description provided for @indFungalLow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not favourable'**
+  String get indFungalLow;
+
+  /// No description provided for @indRHeavyRainDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}} with heavy rain (20 mm or more)'**
+  String indRHeavyRainDays(int count);
+
+  /// No description provided for @indRMaxDailyRain.
+  ///
+  /// In en, this message translates to:
+  /// **'Heaviest rain in a day: {mm} mm'**
+  String indRMaxDailyRain(String mm);
+
+  /// No description provided for @indRWetTopsoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Top soil soaked ({value} of 1), water runs off'**
+  String indRWetTopsoil(String value);
+
+  /// No description provided for @indRSlope.
+  ///
+  /// In en, this message translates to:
+  /// **'Slope of the parcel: {pct} %'**
+  String indRSlope(String pct);
+
+  /// No description provided for @indRLightSoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Light soil (sand {pct} %) washes away easily'**
+  String indRLightSoil(String pct);
+
+  /// No description provided for @indRSparseCover.
+  ///
+  /// In en, this message translates to:
+  /// **'Few plants on the field (NDVI {value}), soil poorly covered'**
+  String indRSparseCover(String value);
+
+  /// No description provided for @indRNoErosionDrivers.
+  ///
+  /// In en, this message translates to:
+  /// **'No heavy rain'**
+  String get indRNoErosionDrivers;
+
+  /// No description provided for @indRRoots.
+  ///
+  /// In en, this message translates to:
+  /// **'Moisture at the roots: {value} (0 = dry, 1 = saturated)'**
+  String indRRoots(String value);
+
+  /// No description provided for @indRDryRoots.
+  ///
+  /// In en, this message translates to:
+  /// **'Moisture at the roots {value}, usually {normal} – drier than usual'**
+  String indRDryRoots(String value, String normal);
+
+  /// No description provided for @indRWetRoots.
+  ///
+  /// In en, this message translates to:
+  /// **'Moisture at the roots {value}, usually {normal} – wetter than usual'**
+  String indRWetRoots(String value, String normal);
+
+  /// No description provided for @indRRootsAsUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'Moisture at the roots {value}, usually {normal}'**
+  String indRRootsAsUsual(String value, String normal);
+
+  /// No description provided for @indRHotDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground heats up to {temp} °C by day'**
+  String indRHotDays(String temp);
+
+  /// No description provided for @indRLessGreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Less green than usual (NDVI {value}, usually {normal})'**
+  String indRLessGreen(String value, String normal);
+
+  /// No description provided for @indRLessWaterUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Plants use less water than usual ({value} mm a day, usually {normal})'**
+  String indRLessWaterUse(String value, String normal);
+
+  /// No description provided for @indRDormant.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil at {temp} °C – plants are resting for winter'**
+  String indRDormant(String temp);
+
+  /// No description provided for @indRNoStress.
+  ///
+  /// In en, this message translates to:
+  /// **'No signs of drought or heat'**
+  String get indRNoStress;
+
+  /// No description provided for @indRSoilTemp.
+  ///
+  /// In en, this message translates to:
+  /// **'Top soil: {temp} °C'**
+  String indRSoilTemp(String temp);
+
+  /// No description provided for @indRWarming.
+  ///
+  /// In en, this message translates to:
+  /// **'Warming up: {delta} °C more in {days, plural, =1{1 day} other{{days} days}}'**
+  String indRWarming(String delta, int days);
+
+  /// No description provided for @indRCooling.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooling down: {delta} °C less in {days, plural, =1{1 day} other{{days} days}}'**
+  String indRCooling(String delta, int days);
+
+  /// No description provided for @indRSteady.
+  ///
+  /// In en, this message translates to:
+  /// **'About the same for {days, plural, =1{1 day} other{{days} days}}'**
+  String indRSteady(int days);
+
+  /// No description provided for @indRFrostNights.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost at ground level: {temp} °C at night'**
+  String indRFrostNights(String temp);
+
+  /// No description provided for @indRVeryWetTopsoil.
+  ///
+  /// In en, this message translates to:
+  /// **'Top layer nearly saturated ({value} of 1)'**
+  String indRVeryWetTopsoil(String value);
+
+  /// No description provided for @indRRainWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Rain in 7 days: {mm} mm'**
+  String indRRainWeek(String mm);
+
+  /// No description provided for @indRDryDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days in a row without rain'**
+  String indRDryDays(int count);
+
+  /// No description provided for @indRRainyDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 rainy day} other{{count} rainy days}} in 14 days'**
+  String indRRainyDays(int count);
+
+  /// No description provided for @indRMildGround.
+  ///
+  /// In en, this message translates to:
+  /// **'Ground at {temp} °C (fungi like 10–25 °C)'**
+  String indRMildGround(String temp);
+
+  /// No description provided for @indAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch out'**
+  String get indAttention;
+
+  /// No description provided for @indOk.
+  ///
+  /// In en, this message translates to:
+  /// **'Fine'**
+  String get indOk;
+
+  /// No description provided for @overlaySoilNotFarmland.
+  ///
+  /// In en, this message translates to:
+  /// **'By the land register this is not farmland, so it has no soil quality class.'**
+  String get overlaySoilNotFarmland;
+
+  /// No description provided for @fieldFactLandUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Land use (land register)'**
+  String get fieldFactLandUse;
+
   /// No description provided for @accountMyPlans.
   ///
   /// In en, this message translates to:
@@ -2394,7 +3450,7 @@ abstract class AppLocalizations {
   /// No description provided for @myPlansDeleteBody.
   ///
   /// In en, this message translates to:
-  /// **'It will be removed from your profile.'**
+  /// **'It will be removed from this phone and from your account.'**
   String get myPlansDeleteBody;
 
   /// No description provided for @myPlansDeleted.
@@ -2408,6 +3464,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the plan. Please try again.'**
   String get myPlansDeleteFailed;
+
+  /// No description provided for @myParcelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My parcels'**
+  String get myParcelsTitle;
+
+  /// No description provided for @myParcelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no parcels yet. Choose your field on the map and confirm it is yours.'**
+  String get myParcelsEmpty;
+
+  /// No description provided for @myParcelsSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a parcel to work on it. Swipe it to the right to remove it.'**
+  String get myParcelsSwipeHint;
+
+  /// No description provided for @myParcelsSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced with your account: {date}'**
+  String myParcelsSynced(String date);
+
+  /// No description provided for @myParcelAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your parcel?'**
+  String get myParcelAskTitle;
+
+  /// No description provided for @myParcelAskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Is {name} your parcel?'**
+  String myParcelAskBody(String name);
+
+  /// No description provided for @myParcelYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get myParcelYes;
+
+  /// No description provided for @myParcelNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get myParcelNo;
+
+  /// No description provided for @myParcelAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel added to your parcels.'**
+  String get myParcelAdded;
+
+  /// No description provided for @myParcelRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this parcel?'**
+  String get myParcelRemoveTitle;
+
+  /// No description provided for @myParcelRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will be removed from your parcels.'**
+  String myParcelRemoveBody(String name);
+
+  /// No description provided for @myParcelRemoveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get myParcelRemoveYes;
+
+  /// No description provided for @myParcelRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel removed.'**
+  String get myParcelRemoved;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between the light and the dark look of the app.'**
+  String get settingsDarkModeHint;
+
+  /// No description provided for @settingsFrostAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get settingsFrostAlerts;
+
+  /// No description provided for @settingsFrostAlertsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a week we check the weather forecast for your plots and warn you if frost is coming.'**
+  String get settingsFrostAlertsHint;
+
+  /// No description provided for @frostAlertChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get frostAlertChannel;
+
+  /// No description provided for @frostAlertTitleFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost expected'**
+  String get frostAlertTitleFrost;
+
+  /// No description provided for @frostAlertTitleLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible ground frost'**
+  String get frostAlertTitleLight;
+
+  /// No description provided for @frostAlertBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Near your plot, the lowest temperature will be {temp} °C on {date}.'**
+  String frostAlertBody(String temp, String date);
 }
 
 class _AppLocalizationsDelegate

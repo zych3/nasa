@@ -3,7 +3,6 @@ import 'package:material_ui/material_ui.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/climate_trend_text.dart';
 import '../../models/climate_trends.dart';
-import '../../widgets/read_aloud_button.dart';
 
 /// "How the climate in your area is changing": the last section of the
 /// rotation report.
@@ -50,26 +49,19 @@ class ClimateTrendsSection extends StatelessWidget {
         }
 
         final trends = snapshot.data;
-        final sentences = climateReadingSentences(l10n, locale, trends);
-        if (trends == null || sentences.isEmpty) return const SizedBox.shrink();
+        if (trends == null ||
+            climateSectionTexts(l10n, locale, trends).isEmpty) {
+          return const SizedBox.shrink();
+        }
         final shown = climateTrendsToShow(l10n, locale, trends);
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Divider(height: 32),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.climateSectionTitle,
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                ReadAloudButton(text: () => sentencesForReading(sentences)),
-              ],
+            Text(
+              l10n.climateSectionTitle,
+              style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             if (shown.isEmpty)

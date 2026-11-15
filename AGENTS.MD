@@ -9,7 +9,7 @@ We build a decision-support tool that uses NASA Earth observations plus local so
 farmer priorities to help farmers explore crop-rotation strategies that protect soil and adapt to a changing climate.
 
 **Core principle: the interface must be usable by people who are not comfortable with technology.**
-Simple, one question per screen, big touch targets, plain language, read-aloud, no jargon.
+Simple, one question per screen, big touch targets, plain language, no jargon.
 
 ## Architecture
 
@@ -23,7 +23,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 - **Frontend:** Flutter (Dart), in `frontend/`. Targets: web, Android (Linux desktop only for local dev).
 - **Backend:** .NET. Owns data fetching, caching, scoring and the API contract.
 - **Database:** PostgreSQL (`db/Dockerfile`), used as the crop price cache through EF Core (`PricesDbContext`). Price endpoints answer from the database; the source API (GUS) is only called when the stored prices are stale (`Prices:StaleAfterHours`, default 24). If GUS is down, the stored prices are served. The schema is the EF migrations in `FieldShift/FieldShift.Web/Migrations`; the backend applies them itself. Change the schema only by editing the entities and running `dotnet ef migrations add <Name>`, never by hand in SQL.
-- **Accounts:** login (username, no e-mail) + password. Users and login sessions in the same PostgreSQL (`Accounts/AccountsDbContext.cs`, tables `users`, `user_sessions`, `saved_plans`, own migrations: `Migrations/Accounts`; connection `ConnectionStrings:Accounts`, falling back to `Prices`). Passwords are hashed with ASP.NET Core Identity's `PasswordHasher`; login returns a random token, only its SHA-256 is stored, valid `Accounts:SessionDays` (default 30). Mark endpoints that need a user with `[Authorize]` and read the id from the `NameIdentifier` claim; all other endpoints stay public. `Accounts:TestLogin` enables `POST /api/auth/test-login` (shared `test` account); the app shows its button in debug builds or with `--dart-define=TEST_LOGIN=true`. Saved rotation plans (`saved_plans`, one row per plan the user kept) hang off `users`; crop alerts will too.
+- **Accounts:** login (username, no e-mail) + password. Users and login sessions in the same PostgreSQL (`Accounts/AccountsDbContext.cs`, tables `users`, `user_sessions`, `saved_plans`, own migrations: `Migrations/Accounts`; connection `ConnectionStrings:Accounts`, falling back to `Prices`). Passwords are hashed with ASP.NET Core Identity's `PasswordHasher`; login returns a random token, only its SHA-256 is stored, valid `Accounts:SessionDays` (default 30). Mark endpoints that need a user with `[Authorize]` and read the id from the `NameIdentifier` claim; all other endpoints stay public. `Accounts:TestLogin` enables `POST /api/auth/test-login` (shared `test` account); the app shows its button in debug builds or with `--dart-define=TEST_LOGIN=true`. "My parcels" (`saved_parcels`) is a backup of the list the phone keeps (`MyParcelsStore`): the app sends its list, for each parcel the newer change wins; the active parcel is never synced. Saved rotation plans (`saved_plans`, one row per plan the user kept) hang off `users`; crop alerts will too. An account is never required to save a plan: plans live on the phone (`LocalPlansStore`, shared_preferences) and, when signed in, are also copied to `saved_plans`. On sign-in the phone and the account are merged (same goal, place and crops = one plan; plans deleted from the account elsewhere leave the phone; deletes the server missed are retried).
 - **Field data providers:** each kind of data (land register, soil map, terrain, soil properties) has its own interface in `FieldShift/FieldShift.Web/FieldData/ProviderContracts.cs`; each country registers its implementations (Poland: `Countries/Poland/`). Services pick the first provider whose `Supports` says yes and ask it through `FieldDataCache`, which keeps answers in the PostgreSQL table `provider_cache` (own migrations: `Migrations/FieldData`). A new country = new providers, no change in the services. See `FieldShift/docs/parcel-details.md`.
 - **Decider:** start as plain rule-based scoring behind an interface (`IDecider`). An ONNX model is optional and only if time and data allow.
 - The frontend never talks to NASA or other data sources directly; it only calls our backend.
@@ -55,12 +55,14 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
 | Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |
+| NASA satellites at a field, one part per call so each shows when ready (`rain`: GPM IMERG daily ~10 km; `soil`: SMAP L4 moisture / soil temperature 9 km with a normal from earlier years; `vegetation`: MODIS NDVI 250 m with this season vs normal; `surface-temperature`: MODIS LST 1 km; `evapotranspiration`: MODIS ET 500 m). Every part has `status` (`ok`, `noData`, `unavailable`, `notConfigured`), `source` and codes (`level`: `below` / `normal` / `above`) | `GET /api/satellite/{part}?lat=..&lon=..`, all parts: `GET /api/satellite?lat=..&lon=..` |
 | Create an account (body: `username` 3–32 letters/digits/`._-`, `password` ≥ 8 chars; answer: `token`, `expiresAt`, `user` {`id`, `username`, `createdAt`}; errors: ProblemDetails with `code`: `invalid_username`, `password_too_short`, `password_too_long`, 409 `username_taken`, 503 `database_unavailable`) | `POST /api/auth/register` |
 | Log in (same body and answer; 401 `invalid_credentials`) | `POST /api/auth/login` |
 | Testing only: log in to the shared `test` account without a password (404 unless `Accounts:TestLogin` is true: Development, docker compose) | `POST /api/auth/test-login` |
 | The logged-in user / end the session (header `Authorization: Bearer <token>`; 401 without a valid one) | `GET /api/auth/me`, `POST /api/auth/logout` |
 | "My crops": the logged-in user's crops at their places, for a later risk check (Bearer token required, 401 without; each user sees only their own). List (newest first) / one / add (body: `cropId` from `/api/crops`, `latitude`, `longitude` required; `parcelId`, `label` ≤ 200, `isActive` default true; 201) / change (only sent fields: `cropId`, new place as `latitude` + `longitude` together, `parcelId` ("" removes it), `label` ("" removes it), `isActive`). Errors: `code` `invalid_crop`, `invalid_location`, `label_too_long`, `too_many_crops` (max 100), 404 `not_found` | `GET /api/my-crops`, `GET /api/my-crops/{id}`, `POST /api/my-crops`, `PATCH /api/my-crops/{id}` |
 | Keep a rotation plan in the logged-in user's profile (body: `lat`, `lon`, `goal`, `plan` = the plan object as `POST /api/recommendations` returned it (needs a `cycle` array, max 64 KB); `parcelId`, `answers` optional; max 100 per user; errors: ProblemDetails `code`: `invalid_location`, `invalid_goal`, `invalid_plan`, `invalid_answers`, `too_many_plans`, 503 `database_unavailable`; 401 without a valid token) | `POST /api/me/plans` |
+| Sync the logged-in user's "My parcels" (body: `items` = everything the device has: `parcelId`, `parcel` (the app's parcel object, not needed for a removal), `updatedAt` (set by the app), `deleted`; answer: `syncedAt` and the merged `items`. The newer `updatedAt` of each parcel wins, removals are kept 90 days so other devices remove the parcel too; max 100 parcels, 300 items; errors: ProblemDetails `code`: `invalid_parcels`, `too_many_parcels`, 503 `database_unavailable`; 401 without a valid token) | `POST /api/me/parcels/sync` |
 | The logged-in user's saved plans, newest first (`limit` default 20, max 100) / remove one (204, 404 when it is not theirs) | `GET /api/me/plans`, `DELETE /api/me/plans/{id}` |
 
 Keep this table and the example JSON in `frontend/assets/mock/` in sync with the backend.
@@ -80,6 +82,17 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One widget per file, file names in `snake_case`, classes in `PascalCase`.
 - Use **relative imports** inside `lib/`.
 - Screens call a repository, never `ApiClient` directly. The repository returns mock data from `assets/mock/` when `useMock` is true, otherwise calls the backend.
+- Look: **forui** (`lib/app/app_theme.dart`: calm "paper and forest" palette, Inter, touch sizes, light/dark like
+  the phone). `main.dart` puts an `FTheme` above every route (`MaterialApp.builder`) and derives the Material theme
+  from it, so forui widgets (`FCard`, `FButton`, `FAlert`, `FBadge`, ...) and Material widgets match. Do not remove
+  that `FTheme`: forui widgets crash without it. Widget tests that show forui widgets need the same wrapper (see
+  `test/widget_test.dart`). Button styles: set sizes on a theme text style (`textTheme.labelLarge?.copyWith(...)`),
+  not `TextStyle(fontSize: ...)`, or the label loses the app font.
+- NASA Earthdata (IMERG, SMAP): the backend reads the user token from `Earthdata__Token` (Docker: `EARTHDATA_TOKEN` in
+  the git-ignored `.env`; `dotnet run`: `dotnet user-secrets set "Earthdata:Token" ...`). Never commit it or paste it
+  in chats. Without it those parts answer `notConfigured` and the rest still works. The token expires after 60 days.
+  The Earthdata app "NASA GESDISC DATA ARCHIVE" must be approved once (IMERG). MODIS comes from ORNL DAAC without a
+  login. Values read from NASA are kept in PostgreSQL (`provider_cache`).
 - Keep state management simple (`setState` or `provider`). Do not add heavy architecture.
 - Backend base URL is a single constant. Remember: `localhost` for desktop/web, `10.0.2.2` for the Android emulator, the computer's LAN IP for a real phone.
 - Run `dart format .` and `flutter analyze` before committing.
@@ -138,7 +151,6 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One question per screen; always a back button and progress indicator.
 - Touch targets at least 48 px, preferably larger; text at least 18 px; support system text scaling.
 - High contrast. Never rely on colour alone: pair it with an icon and a word.
-- Every screen has a read-aloud button (`flutter_tts`).
 - Plain language, no jargon ("dry-spell risk", not "precipitation variability"). UI text in Polish and English via localization, not hard-coded in widgets.
 - Every external data value shows its source and confidence: measured by satellite / estimated / from your answer.
 - Friendly error messages and fallbacks; the app must still work with cached or demo data.

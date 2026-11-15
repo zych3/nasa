@@ -19,12 +19,9 @@ import 'package:hopito_field_shift/repositories/auth_repository.dart';
 import 'package:hopito_field_shift/repositories/auth_store.dart';
 import 'package:hopito_field_shift/repositories/climate_trends_repository.dart';
 import 'package:hopito_field_shift/repositories/rotation_repository.dart';
-import 'package:hopito_field_shift/widgets/read_aloud_button.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'fake_speaker.dart';
 
 /// The saved real response the app ships (parcel 141205_2.0008.60).
 Map<String, dynamic> _savedJson() => jsonDecode(
@@ -151,14 +148,13 @@ class _NoAuth implements AuthRepository {
   Future<void> logout(String token) async {}
 }
 
-Future<FakeSpeaker> _open(
+Future<void> _open(
   WidgetTester tester,
   Future<ClimateTrends?> climate, {
   Size size = const Size(800, 4000),
   double textScale = 1,
   bool settle = true,
 }) async {
-  final speaker = FakeSpeaker();
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -173,7 +169,7 @@ Future<FakeSpeaker> _open(
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context)
             .copyWith(textScaler: TextScaler.linear(textScale)),
-        child: SpeakerScope(speaker: speaker, child: child!),
+        child: child!,
       ),
       home: RotationReportPage(
         parcel: const Parcel(id: 'p1', center: LatLng(52.4, 21.1), ring: []),
@@ -190,7 +186,6 @@ Future<FakeSpeaker> _open(
     await tester.pump();
     await tester.pump();
   }
-  return speaker;
 }
 
 void main() {
@@ -304,12 +299,12 @@ void main() {
       );
       expect(climateTrendsToShow(en, 'en', unknown), isEmpty);
       // Nothing to say and no "no clear trends" verdict: the section is silent.
-      expect(climateReadingSentences(en, 'en', unknown), isEmpty);
+      expect(climateSectionTexts(en, 'en', unknown), isEmpty);
     });
 
     test('nothing is said about the future', () {
       for (final l10n in [en, pl]) {
-        final all = climateReadingSentences(
+        final all = climateSectionTexts(
           l10n,
           l10n.localeName,
           ClimateTrends.fromJson(_savedJson()),
@@ -384,11 +379,9 @@ void main() {
   });
 
   group('report page', () {
-    testWidgets('shows the saved trends under the plan and reads them aloud', (
-      tester,
-    ) async {
+    testWidgets('shows the saved trends under the plan', (tester) async {
       final saved = ClimateTrends.fromJson(_savedJson());
-      final speaker = await _open(tester, Future.value(saved));
+      await _open(tester, Future.value(saved));
 
       expect(find.text('Oats'), findsWidgets);
       expect(find.text(en.climateSectionTitle), findsOneWidget);
@@ -409,29 +402,11 @@ void main() {
         find.byIcon(Icons.trending_up),
         findsNWidgets(saved.trends.length),
       );
-
-      await tester.tap(
-        find.descendant(
-          of: find.byType(ClimateTrendsSection),
-          matching: find.byTooltip(en.readAloud),
-        ),
+      // The section is the last thing in the report, below the plan's buttons.
+      expect(
+        tester.getTopLeft(find.byType(ClimateTrendsSection)).dy,
+        greaterThan(tester.getTopLeft(find.text(en.reportDone)).dy),
       );
-      await tester.pump();
-      final read = speaker.spoken.single.$1;
-      expect(read, startsWith('${en.climateSectionTitle}.'));
-      expect(read, contains(en.climateHotDaysUp));
-      expect(read, contains(en.climateNoteRegional('50')));
-
-      // The page button reads the plan and then the climate section.
-      await tester.tap(
-        find.descendant(
-          of: find.byType(AppBar),
-          matching: find.byTooltip(en.readAloud),
-        ),
-      );
-      await tester.pump();
-      expect(speaker.spoken.last.$1, contains(en.reportQualityTitle));
-      expect(speaker.spoken.last.$1, contains(en.climateSectionTitle));
     });
 
     testWidgets('trends that cannot be loaded leave the plan untouched', (
@@ -535,7 +510,7 @@ void main() {
           builder: (context, child) => MediaQuery(
             data: MediaQuery.of(context)
                 .copyWith(textScaler: const TextScaler.linear(2)),
-            child: SpeakerScope(speaker: FakeSpeaker(), child: child!),
+            child: child!,
           ),
           home: Scaffold(
             body: SingleChildScrollView(
