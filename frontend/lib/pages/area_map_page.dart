@@ -62,7 +62,13 @@ class _AreaMapPageState extends State<AreaMapPage> {
   static const _reloadDistanceMeters = 100.0;
 
   /// Keep the map responsive while browsing: forget the oldest parcels.
-  static const _maxParcels = 120;
+  static const _maxParcels = 300;
+
+  /// Load a bit beyond the screen edge, so nothing pops in while panning.
+  static const _screenLeeway = 1.3;
+  static const _minLoadRadius = 300;
+  static const _maxLoadRadius = 2000;
+  static const _loadLimit = 40;
 
   final _controller = MapController();
   final _repo = ParcelRepository();
@@ -72,6 +78,7 @@ class _AreaMapPageState extends State<AreaMapPage> {
   final Map<String, Parcel> _parcels = {};
   LatLng? _userPosition;
   LatLng? _lastLoadedCenter;
+  int _lastLoadedRadius = _minLoadRadius;
 
   /// Parcel under the mouse (from the map).
   Parcel? _hovered;
@@ -157,11 +164,18 @@ class _AreaMapPageState extends State<AreaMapPage> {
   Future<List<Parcel>> _loadAround(
     LatLng center, {
     bool aroundUser = false,
+    int radius = _minLoadRadius,
   }) async {
     _lastLoadedCenter = center;
+    _lastLoadedRadius = radius;
     setState(() => _pendingLoads++);
     try {
-      final found = await _repo.nearby(center.latitude, center.longitude);
+      final found = await _repo.nearby(
+        center.latitude,
+        center.longitude,
+        radiusMeters: radius,
+        limit: _loadLimit,
+      );
       if (!mounted) return found;
       setState(() {
         for (final p in found) {
@@ -193,9 +207,16 @@ class _AreaMapPageState extends State<AreaMapPage> {
     if (!zoomedIn) return;
     _debounce = Timer(const Duration(milliseconds: 700), () {
       final last = _lastLoadedCenter;
+      // From the centre to the screen corner, plus leeway.
+      final radius =
+          (_distance(camera.center, camera.visibleBounds.northEast) *
+                  _screenLeeway)
+              .clamp(_minLoadRadius, _maxLoadRadius)
+              .round();
       if (last == null ||
-          _distance(last, camera.center) > _reloadDistanceMeters) {
-        _loadAround(camera.center);
+          _distance(last, camera.center) > _reloadDistanceMeters ||
+          radius > _lastLoadedRadius * 1.1) {
+        _loadAround(camera.center, radius: radius);
       }
     });
   }

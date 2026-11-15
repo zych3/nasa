@@ -512,16 +512,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get readAloud => 'Read aloud';
-
-  @override
-  String get readAloudStop => 'Stop reading';
-
-  @override
-  String get readAloudUnavailable =>
-      'Reading aloud does not work on this device.';
-
-  @override
   String get overlaysHeatmapLoading => 'Loading the map of the area…';
 
   @override
@@ -714,11 +704,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String readSeason(String year, String crop) {
     return '$year: $crop';
-  }
-
-  @override
-  String readPair(String label, String value) {
-    return '$label: $value';
   }
 
   @override
@@ -1043,10 +1028,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authTagline => 'Plan your crops with NASA satellite data.';
 
   @override
-  String get authReadAloudHelp =>
-      'Sign in or create an account. The app also works without an account.';
-
-  @override
   String get authLoginTab => 'Sign in';
 
   @override
@@ -1342,4 +1323,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myParcelRemoved => 'Parcel removed.';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsFrostAlerts => 'Frost alerts';
+
+  @override
+  String get settingsFrostAlertsHint =>
+      'Once a week we check the weather forecast for your plots and warn you if frost is coming.';
+
+  @override
+  String get frostAlertChannel => 'Frost alerts';
+
+  @override
+  String get frostAlertTitleFrost => 'Frost expected';
+
+  @override
+  String get frostAlertTitleLight => 'Possible ground frost';
+
+  @override
+  String frostAlertBody(String temp, String date) {
+    return 'Near your plot, the lowest temperature will be $temp °C on $date.';
+  }
 }

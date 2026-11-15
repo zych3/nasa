@@ -854,24 +854,6 @@ abstract class AppLocalizations {
   /// **'{step, select, s0{low} s1{moderate} s2{high} other{very high}}'**
   String overlayStepsRisk(String step);
 
-  /// No description provided for @readAloud.
-  ///
-  /// In en, this message translates to:
-  /// **'Read aloud'**
-  String get readAloud;
-
-  /// No description provided for @readAloudStop.
-  ///
-  /// In en, this message translates to:
-  /// **'Stop reading'**
-  String get readAloudStop;
-
-  /// No description provided for @readAloudUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Reading aloud does not work on this device.'**
-  String get readAloudUnavailable;
-
   /// No description provided for @overlaysHeatmapLoading.
   ///
   /// In en, this message translates to:
@@ -1201,12 +1183,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{year}: {crop}'**
   String readSeason(String year, String crop);
-
-  /// No description provided for @readPair.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}: {value}'**
-  String readPair(String label, String value);
 
   /// No description provided for @planSow.
   ///
@@ -1705,12 +1681,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan your crops with NASA satellite data.'**
   String get authTagline;
-
-  /// No description provided for @authReadAloudHelp.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in or create an account. The app also works without an account.'**
-  String get authReadAloudHelp;
 
   /// No description provided for @authLoginTab.
   ///
@@ -2227,6 +2197,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Parcel removed.'**
   String get myParcelRemoved;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsFrostAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get settingsFrostAlerts;
+
+  /// No description provided for @settingsFrostAlertsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Once a week we check the weather forecast for your plots and warn you if frost is coming.'**
+  String get settingsFrostAlertsHint;
+
+  /// No description provided for @frostAlertChannel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost alerts'**
+  String get frostAlertChannel;
+
+  /// No description provided for @frostAlertTitleFrost.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost expected'**
+  String get frostAlertTitleFrost;
+
+  /// No description provided for @frostAlertTitleLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Possible ground frost'**
+  String get frostAlertTitleLight;
+
+  /// No description provided for @frostAlertBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Near your plot, the lowest temperature will be {temp} °C on {date}.'**
+  String frostAlertBody(String temp, String date);
 }
 
 class _AppLocalizationsDelegate

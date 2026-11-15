@@ -1,30 +1,47 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
-import '../l10n/language_options.dart';
+import '../pages/settings_page.dart';
+import '../repositories/settings_store.dart';
 
-/// Flag of the current language. Tapping it switches to the next language
-/// from [switchableLocales].
-class LanguageFlagButton extends StatelessWidget {
-  const LanguageFlagButton({
+/// Gear that opens the settings (language, frost alerts).
+class SettingsButton extends StatelessWidget {
+  const SettingsButton({
     super.key,
-    required this.locale,
+    required this.settings,
     required this.onLocaleChanged,
   });
 
-  final Locale locale;
+  final SettingsStore settings;
   final ValueChanged<Locale> onLocaleChanged;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      tooltip: AppLocalizations.of(context).changeLanguage,
+      tooltip: AppLocalizations.of(context).settings,
       iconSize: 32,
       constraints: const BoxConstraints(minWidth: 56, minHeight: 56),
-      onPressed: () => onLocaleChanged(nextSwitchableLocale(locale)),
-      icon: _Flag(languageCode: locale.languageCode),
+      onPressed: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => SettingsPage(
+            settings: settings,
+            onLocaleChanged: onLocaleChanged,
+          ),
+        ),
+      ),
+      icon: const Icon(Icons.settings),
     );
   }
+}
+
+/// Small flag of a language, for the language list in the settings.
+class LanguageFlag extends StatelessWidget {
+  const LanguageFlag({super.key, required this.languageCode});
+
+  final String languageCode;
+
+  @override
+  Widget build(BuildContext context) => _Flag(languageCode: languageCode);
 }
 
 class _Flag extends StatelessWidget {

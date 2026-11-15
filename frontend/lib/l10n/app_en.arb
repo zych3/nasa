@@ -341,9 +341,6 @@
       }
     }
   },
-  "readAloud": "Read aloud",
-  "readAloudStop": "Stop reading",
-  "readAloudUnavailable": "Reading aloud does not work on this device.",
   "overlaysHeatmapLoading": "Loading the map of the area…",
   "overlayHeatmapNote": "The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.",
   "overlaysHeatmapZoomIn": "Zoom in to see the colours",
@@ -461,9 +458,7 @@
   },
   "planHarvest": "Harvest quality",
   "readSeason": "{year}: {crop}",
-  "readPair": "{label}: {value}",
   "@readSeason": { "placeholders": { "year": { "type": "String" }, "crop": { "type": "String" } } },
-  "@readPair": { "placeholders": { "label": { "type": "String" }, "value": { "type": "String" } } },
   "planSow": "Sow: {period}",
   "planHarvestTime": "Harvest time: {period}",
   "planPeriodOneMonth": "{month} {year}",
@@ -659,7 +654,6 @@
   "addressKindAddress": "Address",
   "authWelcome": "Welcome to FieldShift",
   "authTagline": "Plan your crops with NASA satellite data.",
-  "authReadAloudHelp": "Sign in or create an account. The app also works without an account.",
   "authLoginTab": "Sign in",
   "authRegisterTab": "Create account",
   "authUsernameLabel": "Login",
@@ -808,5 +802,14 @@
   "myParcelRemoved": "Parcel removed.",
   "@myParcelsSynced": { "placeholders": { "date": { "type": "String" } } },
   "@myParcelAskBody": { "placeholders": { "name": { "type": "String" } } },
-  "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } }
+  "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } },
+  "settings": "Settings",
+  "settingsLanguage": "Language",
+  "settingsFrostAlerts": "Frost alerts",
+  "settingsFrostAlertsHint": "Once a week we check the weather forecast for your plots and warn you if frost is coming.",
+  "frostAlertChannel": "Frost alerts",
+  "frostAlertTitleFrost": "Frost expected",
+  "frostAlertTitleLight": "Possible ground frost",
+  "frostAlertBody": "Near your plot, the lowest temperature will be {temp} °C on {date}.",
+  "@frostAlertBody": { "placeholders": { "temp": { "type": "String" }, "date": { "type": "String" } } }
 }

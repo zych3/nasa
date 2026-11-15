@@ -515,16 +515,6 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get readAloud => 'Przeczytaj na głos';
-
-  @override
-  String get readAloudStop => 'Zatrzymaj czytanie';
-
-  @override
-  String get readAloudUnavailable =>
-      'Czytanie na głos nie działa na tym urządzeniu.';
-
-  @override
   String get overlaysHeatmapLoading => 'Wczytuję mapę okolicy…';
 
   @override
@@ -721,11 +711,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String readSeason(String year, String crop) {
     return '$year: $crop';
-  }
-
-  @override
-  String readPair(String label, String value) {
-    return '$label: $value';
   }
 
   @override
@@ -1051,10 +1036,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get authTagline => 'Planuj uprawy z danymi satelitarnymi NASA.';
 
   @override
-  String get authReadAloudHelp =>
-      'Zaloguj się albo załóż konto. Aplikacja działa też bez konta.';
-
-  @override
   String get authLoginTab => 'Logowanie';
 
   @override
@@ -1350,4 +1331,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get myParcelRemoved => 'Działka usunięta.';
+
+  @override
+  String get settings => 'Ustawienia';
+
+  @override
+  String get settingsLanguage => 'Język';
+
+  @override
+  String get settingsFrostAlerts => 'Alerty o przymrozkach';
+
+  @override
+  String get settingsFrostAlertsHint =>
+      'Raz w tygodniu sprawdzimy prognozę pogody dla Twoich działek i ostrzeżemy, gdy zbliża się przymrozek.';
+
+  @override
+  String get frostAlertChannel => 'Alerty o przymrozkach';
+
+  @override
+  String get frostAlertTitleFrost => 'Zbliża się przymrozek';
+
+  @override
+  String get frostAlertTitleLight => 'Możliwy przymrozek przygruntowy';
+
+  @override
+  String frostAlertBody(String temp, String date) {
+    return 'Przy Twojej działce temperatura spadnie do $temp °C, dnia $date.';
+  }
 }
