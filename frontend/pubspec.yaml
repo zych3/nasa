@@ -47,6 +47,7 @@ dependencies:
   flutter_tts: ^4.2.5
   forui: ^0.28.0
   forui_lucide: ^0.28.0
+  add_2_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:

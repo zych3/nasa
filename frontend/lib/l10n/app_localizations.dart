@@ -1232,6 +1232,42 @@ abstract class AppLocalizations {
   /// **'Harvest time: {period}'**
   String planHarvestTime(String period);
 
+  /// No description provided for @calendarAddFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to calendar: {event}'**
+  String calendarAddFor(String event);
+
+  /// No description provided for @calendarSowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow: {crop}'**
+  String calendarSowTitle(String crop);
+
+  /// No description provided for @calendarHarvestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest: {crop}'**
+  String calendarHarvestTitle(String crop);
+
+  /// No description provided for @calendarCoverTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow cover crop: {crop}'**
+  String calendarCoverTitle(String crop);
+
+  /// No description provided for @calendarNote.
+  ///
+  /// In en, this message translates to:
+  /// **'From your Field Shift rotation plan. The dates are approximate: do it within this window.'**
+  String get calendarNote;
+
+  /// No description provided for @calendarFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the calendar on this device.'**
+  String get calendarFailed;
+
   /// No description provided for @planPeriodOneMonth.
   ///
   /// In en, this message translates to:
