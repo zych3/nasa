@@ -565,4 +565,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysHeatmapCellSize => 'Dane NASA: jedna wartość na ok. 50 km';
+
+  @override
+  String get overlaysShowMyField => 'Pokaż moje pole';
+
+  @override
+  String get overlaysShowExamplePlace => 'Pokaż przykładowe miejsce';
 }

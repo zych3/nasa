@@ -139,5 +139,7 @@
   "overlaysHeatmapLoading": "Wczytuję mapę okolicy…",
   "overlayHeatmapNote": "Kolory na mapie to dane NASA dla okolicy pola; po przesunięciu mapy doczytują się kolejne. Przejścia między kolorami są wygładzone.",
   "overlaysHeatmapZoomIn": "Przybliż mapę, aby zobaczyć kolory",
-  "overlaysHeatmapCellSize": "Dane NASA: jedna wartość na ok. 50 km"
+  "overlaysHeatmapCellSize": "Dane NASA: jedna wartość na ok. 50 km",
+  "overlaysShowMyField": "Pokaż moje pole",
+  "overlaysShowExamplePlace": "Pokaż przykładowe miejsce"
 }

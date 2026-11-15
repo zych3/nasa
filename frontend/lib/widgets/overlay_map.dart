@@ -21,9 +21,9 @@ import 'single_world_crs.dart';
 /// applies to as a tinted circle), a label "icon + word" with the value
 /// (never colour alone) and the outline of the user's field.
 ///
-/// The camera fits what is drawn whenever it changes: the heat map block
-/// around the field (about 250 km), or the circle (about 1 km for soil, 50 km
-/// for NASA data). When the user stops moving the map, [onVisibleAreaChanged]
+/// The camera fits what is drawn whenever it changes: the field with about
+/// 50 km of heat map around it, or the circle (about 1 km for soil, 50 km for
+/// NASA data); the button in the bottom corner brings it back there. When the user stops moving the map, [onVisibleAreaChanged]
 /// says what is visible, so more of the heat map can be loaded.
 ///
 /// A strip along the top says what the heat map is doing: loading, hidden
@@ -35,7 +35,7 @@ class OverlayMap extends StatefulWidget {
     this.layer,
     this.field,
     this.heatmap,
-    this.heatmapHome,
+    this.heatmapFocus,
     this.heatmapLoading = false,
     this.heatmapTooFar = false,
     this.onVisibleAreaChanged,
@@ -56,9 +56,9 @@ class OverlayMap extends StatefulWidget {
   /// [layer]).
   final OverlayHeatmap? heatmap;
 
-  /// Where the camera goes for a heat map: the block around the field. It
-  /// stays the same while more blocks load, so the map does not jump.
-  final LatLngBounds? heatmapHome;
+  /// Where the camera goes for a heat map: the field with about 50 km around
+  /// it. It stays the same while more blocks load, so the map does not jump.
+  final LatLngBounds? heatmapFocus;
 
   /// Shows "Loading the map of the area…" on the map.
   final bool heatmapLoading;
@@ -109,11 +109,22 @@ class _OverlayMapState extends State<OverlayMap> {
     }
   }
 
-  /// What the camera shows: the heat map's home block, else the circle.
+  /// What the camera shows: the field with the heat map around it, else the
+  /// circle.
   static List<LatLng>? _fitPoints(OverlayMap map) {
-    final home = map.heatmapHome;
-    if (home != null) return [home.southWest, home.northEast];
+    final focus = map.heatmapFocus;
+    if (focus != null) return [focus.southWest, focus.northEast];
     return map.layer?.area.boundingPoints;
+  }
+
+  /// Back to the field (or the example place) after the user moved the map.
+  void _showField() {
+    final fit = _fitPoints(widget);
+    if (fit != null) {
+      _controller.fitCamera(_fit(fit));
+    } else {
+      _controller.move(widget.center, widget.initialZoom);
+    }
   }
 
   static bool _samePoints(List<LatLng> a, List<LatLng>? b) =>
@@ -310,6 +321,21 @@ class _OverlayMapState extends State<OverlayMap> {
             ),
           ),
         const MapAttribution(),
+        // Bottom left (the attribution is bottom right), drawn over it so it
+        // can always be tapped.
+        PositionedDirectional(
+          start: MapButton.margin,
+          bottom: MapButton.margin,
+          child: MapButton(
+            child: IconButton(
+              tooltip: field != null
+                  ? l10n.overlaysShowMyField
+                  : l10n.overlaysShowExamplePlace,
+              onPressed: _showField,
+              icon: const Icon(Icons.center_focus_strong),
+            ),
+          ),
+        ),
       ],
     );
   }

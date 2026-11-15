@@ -217,6 +217,25 @@ void main() {
     expect(find.text(_pl.overlaysHeatmapCellSize), findsNothing);
   });
 
+  testWidgets('a big button brings the map back to the field', (tester) async {
+    await pumpScreen(tester);
+    repo.complete(OverlaysScreen.examplePlace, loadSample());
+    await tester.pump();
+
+    // No field chosen yet: it goes back to the example place.
+    expect(find.byTooltip(_pl.overlaysShowExamplePlace), findsOneWidget);
+    await tester.tap(find.byTooltip(_pl.overlaysShowExamplePlace));
+    await tester.pump();
+
+    await store.select(_parcel);
+    await tester.pump();
+    expect(find.byTooltip(_pl.overlaysShowMyField), findsOneWidget);
+    expect(
+      tester.getSize(find.byTooltip(_pl.overlaysShowMyField)).width,
+      greaterThanOrEqualTo(48),
+    );
+  });
+
   testWidgets('reads the value card aloud', (tester) async {
     final speaker = FakeSpeaker();
     await tester.pumpWidget(

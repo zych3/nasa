@@ -943,6 +943,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NASA data: one value per about 50 km'**
   String get overlaysHeatmapCellSize;
+
+  /// No description provided for @overlaysShowMyField.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my field'**
+  String get overlaysShowMyField;
+
+  /// No description provided for @overlaysShowExamplePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the example place'**
+  String get overlaysShowExamplePlace;
 }
 
 class _AppLocalizationsDelegate

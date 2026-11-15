@@ -362,5 +362,7 @@
   "overlaysHeatmapLoading": "Loading the map of the area…",
   "overlayHeatmapNote": "The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.",
   "overlaysHeatmapZoomIn": "Zoom in to see the colours",
-  "overlaysHeatmapCellSize": "NASA data: one value per about 50 km"
+  "overlaysHeatmapCellSize": "NASA data: one value per about 50 km",
+  "overlaysShowMyField": "Show my field",
+  "overlaysShowExamplePlace": "Show the example place"
 }

@@ -80,7 +80,7 @@ class OverlayController extends ChangeNotifier {
   Set<(int, int)>? _visibleBlocks;
   bool _tooFar = false;
   OverlayHeatmap? _heatmap;
-  LatLngBounds? _heatmapHome;
+  LatLngBounds? _heatmapFocus;
   int? _month;
   bool _isDemo = false;
   int _generation = 0;
@@ -113,10 +113,12 @@ class OverlayController extends ChangeNotifier {
   /// ([isHeatmapTooFar]) or when the overlay has none (soil, erosion).
   OverlayHeatmap? get heatmap => _tooFar ? null : _heatmap;
 
-  /// The block around [place]: where the camera goes to show the heat map.
-  /// Stays the same while more blocks come in and while the heat map is
-  /// hidden for being too far, so the map does not jump.
-  LatLngBounds? get heatmapHome => _heatmapHome;
+  /// Where the camera goes to show the heat map: the field (or the shown
+  /// place) in the middle, one NASA cell (about 50 km) around it on each side,
+  /// so the field is easy to find and the colours around it are visible. Stays
+  /// the same while more blocks come in and while the heat map is hidden for
+  /// being too far, so the map does not jump.
+  LatLngBounds? get heatmapFocus => _heatmapFocus;
 
   /// Heat map blocks of the chosen overlay are still loading.
   bool get isHeatmapLoading =>
@@ -199,7 +201,7 @@ class OverlayController extends ChangeNotifier {
     _visibleBlocks = null;
     _tooFar = false;
     _heatmap = null;
-    _heatmapHome = null;
+    _heatmapFocus = null;
     _month = null;
     _isDemo = false;
     _notify();
@@ -318,7 +320,7 @@ class OverlayController extends ChangeNotifier {
   void _parseHeatmap() {
     final layer = _layer;
     _heatmap = null;
-    _heatmapHome = null;
+    _heatmapFocus = null;
     if (layer == null || !_selected.hasHeatmap) return;
     final visible = _visibleBlocks;
     final parts = <OverlayHeatmap>[];
@@ -330,9 +332,16 @@ class OverlayController extends ChangeNotifier {
         if (part == null) continue;
         parts.add(part);
         if (isHome) {
-          _heatmapHome = LatLngBounds(
-            LatLng(part.south, part.west),
-            LatLng(part.north, part.east),
+          final center = _place ?? layer.area.center;
+          _heatmapFocus = LatLngBounds(
+            LatLng(
+              center.latitude - part.cellLat,
+              center.longitude - part.cellLon,
+            ),
+            LatLng(
+              center.latitude + part.cellLat,
+              center.longitude + part.cellLon,
+            ),
           );
         }
       } catch (e) {
