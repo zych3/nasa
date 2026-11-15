@@ -393,7 +393,6 @@
   "satTitle": "Z satelitów NASA – na bieżąco",
   "satSubtitle": "Zmierzone z kosmosu dla okolicy Twojego pola. Przy każdej wartości piszemy, jak duży obszar obejmuje.",
   "satNoData": "Brak danych z satelity dla tego miejsca",
-  "satNotConfigured": "Serwer nie ma klucza NASA Earthdata do tych danych",
   "satUnavailable": "Źródło chwilowo nie odpowiada",
   "satDate": "Stan na {date}",
   "satRainTitle": "Opady (NASA GPM IMERG)",

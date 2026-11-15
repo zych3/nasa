@@ -1542,10 +1542,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get satNoData => 'Brak danych z satelity dla tego miejsca';
 
   @override
-  String get satNotConfigured =>
-      'Serwer nie ma klucza NASA Earthdata do tych danych';
-
-  @override
   String get satUnavailable => 'Źródło chwilowo nie odpowiada';
 
   @override

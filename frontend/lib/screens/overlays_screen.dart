@@ -100,6 +100,7 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
           heatmapLoading:
               _controller.isHeatmapLoading && _controller.layer != null,
           heatmapTooFar: _controller.isHeatmapTooFar,
+          heatmapBlockSize: _controller.heatmapBlockSize,
           onVisibleAreaChanged: _controller.showArea,
         );
         OverlayPanel panel({required bool wide}) => OverlayPanel(

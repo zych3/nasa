@@ -131,6 +131,21 @@ class OverlayController extends ChangeNotifier {
   /// the heat map is hidden instead of loading half a continent.
   static const maxVisibleBlocks = 9;
 
+  /// Size of one block in degrees (north–south, east–west): 5 × 5 NASA POWER
+  /// cells of 0.5° × 0.625°. Used until the first block says its own size.
+  static const defaultBlockSize = (lat: 2.5, lon: 3.125);
+
+  /// Size of one heat map block in degrees, for the shown overlay; `null`
+  /// when it has no heat map. The map uses it to keep its minimum zoom from
+  /// showing more than [maxVisibleBlocks] blocks (see `OverlayMap.minZoomFor`).
+  ({double lat, double lon})? get heatmapBlockSize {
+    if (!_selected.hasHeatmap) return null;
+    final grid = _blockGrid;
+    return grid == null
+        ? defaultBlockSize
+        : (lat: grid.height, lon: grid.width);
+  }
+
   /// Blocks loaded at the same time (each one is 25 NASA POWER requests).
   static const maxBlocksLoading = 2;
 
