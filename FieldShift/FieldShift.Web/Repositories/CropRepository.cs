@@ -6,16 +6,14 @@ namespace FieldShift.Web.Repositories;
 
 public interface ICropRepository
 {
-    /// <param name="prices">Crops that have stored prices, from <see cref="IPriceHistoryRepository"/>.</param>
-    IReadOnlyList<Crop> GetAll(IReadOnlyDictionary<CropId, PriceSeriesSummary> prices);
+    IReadOnlyList<Crop> GetAll();
 
-    Crop? GetById(CropId id, IReadOnlyDictionary<CropId, PriceSeriesSummary> prices);
+    Crop? GetById(CropId id);
 }
 
 /// <summary>
 /// One crop in the catalogue and where its facts come from. Only identifiers live here; all values are
-/// fetched from Wikidata and Eurostat (<see cref="CropDataRefreshService"/>), read from FAO ECOCROP,
-/// or, for prices, read from the database.
+/// fetched from Wikidata and Eurostat (<see cref="CropDataRefreshService"/>) or read from FAO ECOCROP.
 /// </summary>
 public sealed record CropDefinition(
     CropId Id,
@@ -29,7 +27,7 @@ public sealed record CropDefinition(
 /// <summary>Most widely grown field crops in Poland, plus buckwheat (used by the frontend mock).</summary>
 public static class CropCatalog
 {
-    /// <summary>Note codes; the frontend translates them (lib/l10n/crop_note_text.dart).</summary>
+    /// <summary>Note codes sent in <c>productionNoteCode</c>.</summary>
     public const string AllSweetLupins = "all_sweet_lupins";
     public const string GrainMaizeOnly = "grain_maize_only";
     public const string NoEurostatFigure = "no_eurostat_figure";
@@ -84,18 +82,15 @@ public sealed class InMemoryCropRepository : ICropRepository
         }
     }
 
-    public IReadOnlyList<Crop> GetAll(IReadOnlyDictionary<CropId, PriceSeriesSummary> prices) =>
-        CropCatalog.All.Select(d => Build(d, prices)).ToList();
+    public IReadOnlyList<Crop> GetAll() => CropCatalog.All.Select(Build).ToList();
 
-    public Crop? GetById(CropId id, IReadOnlyDictionary<CropId, PriceSeriesSummary> prices) =>
-        CropCatalog.ById.TryGetValue(id, out var d) ? Build(d, prices) : null;
+    public Crop? GetById(CropId id) => CropCatalog.ById.TryGetValue(id, out var d) ? Build(d) : null;
 
-    private Crop Build(CropDefinition d, IReadOnlyDictionary<CropId, PriceSeriesSummary> priceSummaries)
+    private Crop Build(CropDefinition d)
     {
         var snapshot = _store.Current;
         var wiki = snapshot.Wikidata.GetValueOrDefault(d.WikidataId);
         var production = d.EurostatCode is null ? null : snapshot.Production.GetValueOrDefault(d.EurostatCode);
-        var prices = priceSummaries.GetValueOrDefault(d.Id);
 
         var wikipedia = new Dictionary<string, string>();
         if (wiki?.WikipediaUrlPl is { } pl) wikipedia["pl"] = pl;
@@ -110,9 +105,7 @@ public sealed class InMemoryCropRepository : ICropRepository
             d.WikidataId,
             production,
             _traits.GetValueOrDefault(d.ScientificName),
-            HasPrices: prices is { PointCount: > 0 },
             ProductionNoteCode: d.ProductionNoteCode,
-            PriceNoteCode: prices?.NoteCode,
             SupportsRotation: Recommendations.CropIdMap.ToEngine(d.Id.Value) is not null);
     }
 

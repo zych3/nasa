@@ -32,8 +32,8 @@ public sealed record WikidataInfo(
     string? WikipediaUrlEn);
 
 /// <summary>
-/// One crop in <c>GET /api/crops</c>. Prices are on <c>GET /api/crops/{id}/prices</c>.
-/// Note codes (e.g. "all_sweet_lupins") are translated by the frontend, never sent as display text.
+/// One crop in <c>GET /api/crops</c>.
+/// Note codes (e.g. "all_sweet_lupins") are codes, never display text.
 /// <c>SupportsRotation</c> is true when the rotation engine has data for the crop (see <c>POST /api/recommendations</c>).
 /// </summary>
 public sealed record Crop(
@@ -45,7 +45,5 @@ public sealed record Crop(
     string? WikidataId,
     CropProduction? Production,
     CropTraits? Traits,
-    bool HasPrices,
     string? ProductionNoteCode,
-    string? PriceNoteCode,
     bool SupportsRotation = false);

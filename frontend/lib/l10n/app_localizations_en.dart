@@ -57,42 +57,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreDetails => 'More details';
 
   @override
-  String priceChange(String percent, int months) {
-    return '$percent% price in $months months';
-  }
-
-  @override
-  String get trendUp => 'Price going up';
-
-  @override
-  String get trendDown => 'Price going down';
-
-  @override
-  String get trendFlat => 'Price steady';
-
-  @override
-  String get whyGrowSection => 'Why grow it';
-
-  @override
-  String get cropDataSection => 'About the crop';
-
-  @override
-  String get weatherSection => 'Weather in your area';
-
-  @override
-  String get priceSection => 'Price';
-
-  @override
-  String priceNow(String price, String currency, String unit) {
-    return '$price $currency per $unit';
-  }
-
-  @override
-  String priceHistory(int months) {
-    return 'Price over the last $months months';
-  }
-
-  @override
   String get sourceSatellite => 'Measured by satellite';
 
   @override
@@ -193,102 +157,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not load parcels here. Check your connection and try again.';
 
   @override
-  String get priceNoData => 'No data';
-
-  @override
-  String get priceNoDataDetails => 'No public price list exists for this crop.';
-
-  @override
-  String priceLatest(String date) {
-    return 'Latest price: $date';
-  }
-
-  @override
-  String priceHistoryMonthly(int count) {
-    return 'Monthly prices, last $count';
-  }
-
-  @override
-  String priceHistoryYearly(int count) {
-    return 'Yearly prices, last $count';
-  }
-
-  @override
-  String priceChartLabel(
-    String from,
-    String to,
-    String min,
-    String max,
-    String currency,
-  ) {
-    return 'Price chart from $from to $to, lowest $min, highest $max $currency';
-  }
-
-  @override
-  String get sourceOfficial => 'Official statistics';
-
-  @override
-  String get noteOnePriceAllWheat =>
-      'GUS publishes one price for all wheat, winter and spring.';
-
-  @override
-  String get noteOnePriceAllRye => 'GUS publishes one price for all rye.';
-
-  @override
-  String get noteOnePriceAllBarley =>
-      'GUS publishes one price for all barley, winter and spring.';
-
-  @override
-  String get noteGrainMaizePrice => 'Price of maize grain.';
-
-  @override
-  String get noteYearlyOnly => 'GUS publishes this price only once a year.';
-
-  @override
-  String get noteGrainMaizeOnly =>
-      'Area and yield are for grain maize only, not silage maize.';
-
-  @override
-  String get noteAllSweetLupins =>
-      'Eurostat gives one figure for all sweet lupins.';
-
-  @override
-  String get noteNoEurostatFigure =>
-      'Eurostat has no separate figures for this crop.';
-
-  @override
-  String factAreaPoland(String year) {
-    return 'Area in Poland ($year)';
-  }
-
-  @override
-  String factYieldPoland(String year) {
-    return 'Average yield in Poland ($year)';
-  }
-
-  @override
-  String get factGrowingTime => 'Time from sowing to harvest';
-
-  @override
-  String get factRainfall => 'Best rainfall in the growing season';
-
-  @override
-  String get factTemperature => 'Best temperature';
-
-  @override
-  String get factSoilPh => 'Best soil pH';
-
-  @override
-  String valueHectares(String value) {
-    return '$value ha';
-  }
-
-  @override
-  String valueTonnesPerHectare(String value) {
-    return '$value t/ha';
-  }
-
-  @override
   String valueDays(String range) {
     return '$range days';
   }
@@ -302,12 +170,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String valueCelsius(String range) {
     return '$range °C';
   }
-
-  @override
-  String get sourceCropDatabase => 'Crop database';
-
-  @override
-  String get cropDataMissing => 'No data';
 
   @override
   String get cropListLoadError => 'We could not load the crops.';

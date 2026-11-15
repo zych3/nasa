@@ -31,7 +31,7 @@ class ApiClient {
     : _http = httpClient ?? http.Client();
 
   /// One client for the whole app, used by the repositories by default, so
-  /// requests share connections (each price badge used to open its own).
+  /// requests share connections.
   static final ApiClient shared = ApiClient();
 
   final http.Client _http;

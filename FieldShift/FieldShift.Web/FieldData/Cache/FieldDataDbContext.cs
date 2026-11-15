@@ -55,7 +55,7 @@ public sealed class FieldDataDbContext(DbContextOptions<FieldDataDbContext> opti
     public DbSet<TileCacheEntry> Tiles => Set<TileCacheEntry>();
 
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
-    public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
+    public static bool IsDatabaseFailure(Exception e) => DatabaseErrors.IsDatabaseFailure(e);
 
     protected override void OnModelCreating(ModelBuilder model)
     {
@@ -87,7 +87,7 @@ public sealed class FieldDataDbContext(DbContextOptions<FieldDataDbContext> opti
     }
 }
 
-/// <summary>Applies the field data migrations once, on first use (like <see cref="PricesSchema"/>).</summary>
+/// <summary>Applies the field data migrations once, on first use.</summary>
 public sealed class FieldDataSchema(IDbContextFactory<FieldDataDbContext> factory)
 {
     private readonly SemaphoreSlim _lock = new(1, 1);

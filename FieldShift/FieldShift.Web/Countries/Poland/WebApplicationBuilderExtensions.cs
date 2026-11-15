@@ -1,5 +1,4 @@
-﻿using FieldShift.Web.Countries.Prices;
-using FieldShift.Web.FieldData;
+﻿using FieldShift.Web.FieldData;
 
 namespace FieldShift.Web.Countries.Poland;
 
@@ -101,25 +100,12 @@ public static partial class WebApplicationBuilderExtensions
         });
     }
 
-    /// <summary>Real crop data: GUS prices, Eurostat area/yield, Wikidata photos; saved and refreshed daily.</summary>
+    /// <summary>Real crop data: Eurostat area/yield, Wikidata photos; saved and refreshed daily.</summary>
     private static void AddCropData(WebApplicationBuilder builder)
     {
-        var gusBaseUrl = Required(builder, "Poland:GusBdlBaseUrl");
-        // Optional free key (https://api.stat.gov.pl/Home/BdlApi) raises the limit of 100 requests / 15 min.
-        var gusApiKey = builder.Configuration.GetValue<string>("Poland:GusBdlApiKey");
         var eurostatBaseUrl = Required(builder, "CropData:EurostatBaseUrl");
         var wikidataSparqlUrl = Required(builder, "CropData:WikidataSparqlUrl");
 
-        builder.Services.AddHttpClient<IPriceProvider, GusBdlPriceProvider>(c =>
-        {
-            c.BaseAddress = new Uri(gusBaseUrl);
-            c.Timeout = TimeSpan.FromSeconds(30);
-            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-            if (!string.IsNullOrWhiteSpace(gusApiKey))
-            {
-                c.DefaultRequestHeaders.Add("X-ClientId", gusApiKey);
-            }
-        });
         builder.Services.AddHttpClient<EurostatYieldProvider>(c =>
         {
             c.BaseAddress = new Uri(eurostatBaseUrl);

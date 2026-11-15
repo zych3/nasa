@@ -7,57 +7,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace TestProject1;
 
-/// <summary>Parsing of saved (shortened) responses from GUS BDL, Eurostat and Wikidata. No network.</summary>
+/// <summary>Parsing of saved (shortened) responses from Eurostat and Wikidata. No network.</summary>
 public class CropDataParsingTests
 {
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement;
-
-    [Theory]
-    [InlineData("ziarno zbóż (bez siewnego) - pszenżyto za 1dt", "pszenżyto")]
-    [InlineData("ziarno zbóż (bez siewnego) - żyto za 1dt", "żyto")]
-    [InlineData("ziarno zbóż (bez siewnego) - pszenica za 1 dt", "pszenica")]
-    [InlineData("ziemniaki za 1 dt", "ziemniaki")]
-    public void GusProductName_TakesNameBetweenDashAndZa(string n2, string expected) =>
-        Assert.Equal(expected, GusBdlPriceProvider.ProductName(n2));
-
-    [Fact]
-    public void GusVariables_KeepOnlyCalendarMonths()
-    {
-        var root = Json("""
-            {"results":[
-              {"id":218207,"n1":"styczeń","n2":"ziarno zbóż (bez siewnego) - pszenica za 1 dt"},
-              {"id":218210,"n1":"1 kwartał","n2":"ziarno zbóż (bez siewnego) - pszenica za 1 dt"},
-              {"id":218217,"n1":"wrzesień","n2":"ziarno zbóż (bez siewnego) - pszenica za 1 dt"}
-            ]}
-            """);
-
-        var vars = GusBdlPriceProvider.ParseMonthlyVariables(root).ToList();
-
-        Assert.Equal(
-            [new(218207, "pszenica", 1), new GusBdlPriceProvider.MonthlyVariable(218217, "pszenica", 9)],
-            vars);
-    }
-
-    [Fact]
-    public void GusValues_ConvertToPerTonneAndKeepLatest()
-    {
-        var root = Json("""
-            {"results":[{"id":218207,"values":[
-              {"year":"2024","val":85.37,"attrId":1},
-              {"year":"2025","val":91.52,"attrId":1},
-              {"year":"2026","val":74.91,"attrId":1},
-              {"year":"2027","val":null,"attrId":0}
-            ]}]}
-            """);
-
-        var values = GusBdlPriceProvider.ParseValues(root)[218207];
-        var prices = GusBdlPriceProvider.LatestPerTonne(values.Select(v => (new DateOnly(v.Year, 1, 1), v.Value)), 2);
-
-        Assert.Equal(3, values.Count);
-        Assert.Equal(
-            [new(new DateOnly(2025, 1, 1), 915.20m), new CropPrice(new DateOnly(2026, 1, 1), 749.10m)],
-            prices);
-    }
 
     [Fact]
     public void Eurostat_TakesLatestYearPerMeasure()

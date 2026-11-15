@@ -146,7 +146,7 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
     public DbSet<SavedParcel> SavedParcels => Set<SavedParcel>();
 
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
-    public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
+    public static bool IsDatabaseFailure(Exception e) => DatabaseErrors.IsDatabaseFailure(e);
 
     protected override void OnModelCreating(ModelBuilder model)
     {

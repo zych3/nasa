@@ -49,10 +49,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "one_price_all_wheat"
+      "productionNoteCode": null
     },
     {
       "id": "maize",
@@ -102,10 +100,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": "grain_maize_only",
-      "priceNoteCode": "grain_maize_price"
+      "productionNoteCode": "grain_maize_only"
     },
     {
       "id": "triticale",
@@ -129,10 +125,8 @@
         "sourceName": "Eurostat apro_cpsh1: crop production in EU standard humidity"
       },
       "traits": null,
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "rapeseed",
@@ -182,10 +176,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "yearly_only"
+      "productionNoteCode": null
     },
     {
       "id": "rye",
@@ -235,10 +227,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "one_price_all_rye"
+      "productionNoteCode": null
     },
     {
       "id": "oats",
@@ -288,10 +278,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "winter_barley",
@@ -341,10 +329,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "one_price_all_barley"
+      "productionNoteCode": null
     },
     {
       "id": "spring_barley",
@@ -394,10 +380,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "one_price_all_barley"
+      "productionNoteCode": null
     },
     {
       "id": "sugar_beet",
@@ -447,10 +431,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": "yearly_only"
+      "productionNoteCode": null
     },
     {
       "id": "narrow_leaf_lupin",
@@ -500,10 +482,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": true,
-      "productionNoteCode": "all_sweet_lupins",
-      "priceNoteCode": null
+      "productionNoteCode": "all_sweet_lupins"
     },
     {
       "id": "potato",
@@ -553,10 +533,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": true,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "field_pea",
@@ -606,10 +584,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": true,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "soybean",
@@ -659,10 +635,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": false,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "sunflower",
@@ -712,10 +686,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": false,
-      "productionNoteCode": null,
-      "priceNoteCode": null
+      "productionNoteCode": null
     },
     {
       "id": "white_lupin",
@@ -765,10 +737,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": false,
-      "productionNoteCode": "all_sweet_lupins",
-      "priceNoteCode": null
+      "productionNoteCode": "all_sweet_lupins"
     },
     {
       "id": "buckwheat",
@@ -811,10 +781,8 @@
         },
         "sourceName": "FAO ECOCROP"
       },
-      "hasPrices": false,
       "supportsRotation": false,
-      "productionNoteCode": "no_eurostat_figure",
-      "priceNoteCode": null
+      "productionNoteCode": "no_eurostat_figure"
     }
   ]
 }

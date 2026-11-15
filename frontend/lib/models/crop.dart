@@ -77,14 +77,12 @@ class Crop {
     required this.id,
     required this.names,
     required this.scientificName,
-    required this.hasPrices,
     this.supportsRotation = false,
     this.imageUrl,
     this.wikipediaUrls = const {},
     this.production,
     this.traits,
     this.productionNoteCode,
-    this.priceNoteCode,
   });
 
   final String id;
@@ -98,13 +96,11 @@ class Crop {
   final Map<String, String> wikipediaUrls;
   final CropProduction? production;
   final CropTraits? traits;
-  final bool hasPrices;
 
   final bool supportsRotation;
 
-  /// Codes translated by `cropNoteText`, never shown as-is.
+  /// Code from the backend, never shown as-is.
   final String? productionNoteCode;
-  final String? priceNoteCode;
 
   /// Name in [languageCode], falling back to English.
   String nameFor(String languageCode) =>
@@ -128,10 +124,8 @@ class Crop {
           ? null
           : CropProduction.fromJson(production),
       traits: traits == null ? null : CropTraits.fromJson(traits),
-      hasPrices: json['hasPrices'] as bool? ?? false,
       supportsRotation: json['supportsRotation'] as bool? ?? false,
       productionNoteCode: json['productionNoteCode'] as String?,
-      priceNoteCode: json['priceNoteCode'] as String?,
     );
   }
 }

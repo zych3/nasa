@@ -2,13 +2,11 @@ using System.Text.Json;
 using FieldShift.Web.Countries.Poland;
 using FieldShift.Web.Data;
 using FieldShift.Web.Repositories;
-using FieldShift.Web.Services;
 
 namespace FieldShift.Web.Countries;
 
 /// <summary>
 /// Crop facts fetched from Wikidata and Eurostat, saved to <c>Data/crop-data.json</c>.
-/// Prices are not here: they live in PostgreSQL (<see cref="IPriceHistoryRepository"/>).
 /// </summary>
 public sealed record CropDataSnapshot(
     DateTimeOffset? FetchedAt,
@@ -68,13 +66,11 @@ public sealed class CropDataStore
 
 /// <summary>
 /// Refreshes crop data from Eurostat (area, yield) and Wikidata (photos, links) at startup and then
-/// once a day; a source that fails keeps its previously saved values. Also keeps the prices in the
-/// database fresh, so requests rarely have to wait for GUS.
+/// once a day; a source that fails keeps its previously saved values.
 /// </summary>
 public sealed class CropDataRefreshService(
     IServiceScopeFactory scopes,
     CropDataStore store,
-    PricesSchema schema,
     TimeProvider time,
     ILogger<CropDataRefreshService> log) : BackgroundService
 {
@@ -84,8 +80,6 @@ public sealed class CropDataRefreshService(
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        await SyncPricesAsync(ct);
-
         // Skip the startup refresh when the saved data is fresh and complete.
         var saved = store.Current;
         if (saved.FetchedAt is { } fetched && time.GetUtcNow() - fetched is var age && age < Interval
@@ -154,26 +148,6 @@ public sealed class CropDataRefreshService(
         else
         {
             log.LogWarning("No crop data source answered; serving saved data from {FetchedAt}", old.FetchedAt);
-        }
-
-        await SyncPricesAsync(ct);
-    }
-
-    /// <summary>
-    /// Applies pending EF migrations, then refreshes the prices in the database when they are stale.
-    /// Never throws for a database outage.
-    /// </summary>
-    private async Task SyncPricesAsync(CancellationToken ct)
-    {
-        try
-        {
-            await schema.EnsureAppliedAsync(ct);
-            using var scope = scopes.CreateScope();
-            await scope.ServiceProvider.GetRequiredService<CropPriceService>().EnsureFreshAsync(ct);
-        }
-        catch (Exception e) when (PricesDbContext.IsDatabaseFailure(e))
-        {
-            log.LogWarning(e, "Price database is not available; prices were not refreshed");
         }
     }
 }

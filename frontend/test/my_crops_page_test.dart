@@ -68,7 +68,6 @@ class _FakeCrops implements CropRepository {
       'name': {'pl': 'Pszenica', 'en': 'Wheat'},
       'scientificName': 'Triticum aestivum',
       'wikipediaUrl': <String, dynamic>{},
-      'hasPrices': false,
     }),
   ];
 

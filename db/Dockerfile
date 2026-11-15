@@ -1,4 +1,4 @@
-# PostgreSQL for the FieldShift price cache.
+# PostgreSQL for the FieldShift backend (accounts, field data cache).
 #
 # The image only creates the database and its user. The tables are created by the backend:
 # it applies its EF Core migrations (FieldShift/FieldShift.Web/Migrations) when it starts.

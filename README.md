@@ -33,7 +33,7 @@ FieldShift/
   FieldShift.Web/          .NET backend: API, data fetching and cache, accounts
   FieldShift.Prediction/   recommendation engine (season simulation and rotation search)
   *.Tests/                 tests
-db/         PostgreSQL (price and data cache, accounts, saved plans)
+db/         PostgreSQL (data cache, accounts, saved plans)
 ```
 
 The frontend only talks to our backend. It never goes to NASA or anywhere else on its own, that's what the backend is for.
