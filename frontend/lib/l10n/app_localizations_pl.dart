@@ -1923,6 +1923,40 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String overlaySoilComplex(String code) {
+    String _temp0 = intl.Intl.selectLogic(code, {
+      'c1': 'kompleks pszenny bardzo dobry',
+      'c2': 'kompleks pszenny dobry',
+      'c3': 'kompleks pszenny wadliwy',
+      'c4': 'kompleks żytni bardzo dobry (pszenno-żytni)',
+      'c5': 'kompleks żytni dobry',
+      'c6': 'kompleks żytni słaby',
+      'c7': 'kompleks żytni bardzo słaby (żytnio-łubinowy)',
+      'c8': 'kompleks zbożowo-pastewny mocny',
+      'c9': 'kompleks zbożowo-pastewny słaby',
+      'c10': 'kompleks pszenny górski',
+      'c11': 'kompleks zbożowy górski',
+      'c12': 'kompleks owsiano-ziemniaczany górski',
+      'c13': 'kompleks owsiano-pastewny górski',
+      'c14': 'gleby orne przeznaczone pod użytki zielone',
+      'c1z': 'użytki zielone bardzo dobre i dobre',
+      'c2z': 'użytki zielone średnie',
+      'c3z': 'użytki zielone słabe i bardzo słabe',
+      'cRN': 'gleby rolniczo nieprzydatne (nadające się pod zalesienie)',
+      'cLs': 'lasy',
+      'cTz': 'tereny zabudowane',
+      'cW': 'wody',
+      'cWN': 'wody nieużytki i bagna',
+      'cN': 'nieużytki rolnicze',
+      'cGO': 'grunty orne',
+      'cTUZ': 'trwałe użytki zielone',
+      'cTnk': 'tereny nieklasyfikowane',
+      'other': '',
+    });
+    return '$_temp0';
+  }
+
+  @override
   String overlayQualityClassNamed(String code, String name) {
     return 'Klasa $code – $name';
   }

@@ -2997,6 +2997,12 @@ abstract class AppLocalizations {
   /// **'Class {code}'**
   String overlayQualityClass(String code);
 
+  /// Name of a soil-agricultural map complex by its code (c1, c2, ..., c1z, cLs, ...). Empty for a code not listed: the app then shows the name the server sent (Polish).
+  ///
+  /// In en, this message translates to:
+  /// **'{code, select, c1{Very good wheat complex} c2{Good wheat complex} c3{Defective wheat complex} c4{Very good rye complex (wheat-rye)} c5{Good rye complex} c6{Poor rye complex} c7{Very poor rye complex (rye-lupin)} c8{Strong cereal-fodder complex} c9{Poor cereal-fodder complex} c10{Mountain wheat complex} c11{Mountain cereal complex} c12{Mountain oat-potato complex} c13{Mountain oat-fodder complex} c14{Arable soils for grassland} c1z{Very good and good grassland} c2z{Medium grassland} c3z{Poor and very poor grassland} cRN{Soils unfit for farming (suitable for afforestation)} cLs{Forests} cTz{Built-up areas} cW{Water} cWN{Water, wasteland and marsh} cN{Agricultural wasteland} cGO{Arable land} cTUZ{Permanent grassland} cTnk{Unclassified areas} other{}}'**
+  String overlaySoilComplex(String code);
+
   /// No description provided for @overlayQualityClassNamed.
   ///
   /// In en, this message translates to:
