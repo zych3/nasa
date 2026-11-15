@@ -23,6 +23,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 - **Frontend:** Flutter (Dart), in `frontend/`. Targets: web, Android (Linux desktop only for local dev).
 - **Backend:** .NET. Owns data fetching, caching, scoring and the API contract.
 - **Database:** PostgreSQL (`db/Dockerfile`), used as the crop price cache through EF Core (`PricesDbContext`). Price endpoints answer from the database; the source API (GUS) is only called when the stored prices are stale (`Prices:StaleAfterHours`, default 24). If GUS is down, the stored prices are served. The schema is the EF migrations in `FieldShift/FieldShift.Web/Migrations`; the backend applies them itself. Change the schema only by editing the entities and running `dotnet ef migrations add <Name>`, never by hand in SQL.
+- **Accounts:** login (username, no e-mail) + password. Users and login sessions in the same PostgreSQL (`Accounts/AccountsDbContext.cs`, tables `users`, `user_sessions`, own migrations: `Migrations/Accounts`; connection `ConnectionStrings:Accounts`, falling back to `Prices`). Passwords are hashed with ASP.NET Core Identity's `PasswordHasher`; login returns a random token, only its SHA-256 is stored, valid `Accounts:SessionDays` (default 30). Mark endpoints that need a user with `[Authorize]` and read the id from the `NameIdentifier` claim; all other endpoints stay public. `Accounts:TestLogin` enables `POST /api/auth/test-login` (shared `test` account); the app shows its button in debug builds or with `--dart-define=TEST_LOGIN=true`. Saved rotation queries and crop alerts will hang off `users`.
 - **Field data providers:** each kind of data (land register, soil map, terrain, soil properties) has its own interface in `FieldShift/FieldShift.Web/FieldData/ProviderContracts.cs`; each country registers its implementations (Poland: `Countries/Poland/`). Services pick the first provider whose `Supports` says yes and ask it through `FieldDataCache`, which keeps answers in the PostgreSQL table `provider_cache` (own migrations: `Migrations/FieldData`). A new country = new providers, no change in the services. See `FieldShift/docs/parcel-details.md`.
 - **Decider:** start as plain rule-based scoring behind an interface (`IDecider`). An ONNX model is optional and only if time and data allow.
 - The frontend never talks to NASA or other data sources directly; it only calls our backend.
@@ -53,9 +54,10 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
 | Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |
-| Create an account and sign in (body: `email`, `password` ≥ 8 chars, `name` optional; answer: `token`, `expiresAt`, `user`; errors as `{"code": ...}`: 400 `invalid_email` / `password_too_short`, 409 `email_taken`, 503 `database_unavailable`) | `POST /api/auth/register` |
-| Sign in (body: `email`, `password`; 401 `invalid_credentials`) | `POST /api/auth/login` |
-| Signed-in user / end this device's session (header `Authorization: Bearer <token>`) | `GET /api/auth/me`, `POST /api/auth/logout` |
+| Create an account (body: `username` 3–32 letters/digits/`._-`, `password` ≥ 8 chars; answer: `token`, `expiresAt`, `user` {`id`, `username`, `createdAt`}; errors: ProblemDetails with `code`: `invalid_username`, `password_too_short`, `password_too_long`, 409 `username_taken`, 503 `database_unavailable`) | `POST /api/auth/register` |
+| Log in (same body and answer; 401 `invalid_credentials`) | `POST /api/auth/login` |
+| Testing only: log in to the shared `test` account without a password (404 unless `Accounts:TestLogin` is true: Development, docker compose) | `POST /api/auth/test-login` |
+| The logged-in user / end the session (header `Authorization: Bearer <token>`; 401 without a valid one) | `GET /api/auth/me`, `POST /api/auth/logout` |
 
 Keep this table and the example JSON in `frontend/assets/mock/` in sync with the backend.
 Change the contract only after agreeing with both frontend and backend owners.
@@ -74,13 +76,6 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One widget per file, file names in `snake_case`, classes in `PascalCase`.
 - Use **relative imports** inside `lib/`.
 - Screens call a repository, never `ApiClient` directly. The repository returns mock data from `assets/mock/` when `useMock` is true, otherwise calls the backend.
-- Look: **forui** (`lib/app/app_theme.dart`: green field palette, touch sizes, light/dark like the phone). `main.dart` puts
-  an `FTheme` above every route and derives the Material theme from it, so new widgets can be forui (`FButton`, `FCard`,
-  `FTextField`, ...) or Material and still match. Widget tests that show forui widgets need the same `FTheme` wrapper
-  (see `test/widget_test.dart`).
-- Accounts: the first screen is sign-in / sign-up (`pages/auth_page.dart`) with "continue without an account", so the
-  app never depends on the server to open. `AuthStore` keeps the token on the device; passwords are hashed on the
-  backend (`FieldShift.Web/Accounts/`, tables `user_accounts` and `user_sessions`, migrations `Migrations/Accounts`).
 - Keep state management simple (`setState` or `provider`). Do not add heavy architecture.
 - Backend base URL is a single constant. Remember: `localhost` for desktop/web, `10.0.2.2` for the Android emulator, the computer's LAN IP for a real phone.
 - Run `dart format .` and `flutter analyze` before committing.

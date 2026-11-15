@@ -894,7 +894,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authReadAloudHelp =>
-      'Sign in, create an account, or continue without an account.';
+      'Sign in or create an account. The app also works without an account.';
 
   @override
   String get authLoginTab => 'Sign in';
@@ -903,19 +903,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRegisterTab => 'Create account';
 
   @override
-  String get authNameLabel => 'Your name (optional)';
+  String get authUsernameLabel => 'Login';
 
   @override
-  String get authNameHint => 'e.g. Jan';
+  String get authUsernameHint => 'e.g. jan_kowalski';
 
   @override
-  String get authEmailLabel => 'E-mail address';
+  String authUsernameRule(int min, int max) {
+    return '$min to $max letters or digits, without spaces.';
+  }
 
   @override
-  String get authEmailHint => 'e.g. jan@example.com';
+  String authErrorInvalidUsername(int min, int max) {
+    return 'The login must have $min to $max letters or digits, without spaces. You can use . _ -';
+  }
+
+  @override
+  String get authErrorUsernameEmpty => 'Enter your login.';
+
+  @override
+  String get authErrorUsernameTaken =>
+      'This login is already taken. Choose another one or sign in.';
+
+  @override
+  String authErrorPasswordTooLong(int count) {
+    return 'The password can have at most $count characters.';
+  }
+
+  @override
+  String get authErrorInvalidCredentials => 'Wrong login or password.';
+
+  @override
+  String get authTestLoginButton => 'Test sign-in (no account needed)';
+
+  @override
+  String get authTestLoginNote =>
+      'For testing only: signs in to the shared test account.';
+
+  @override
+  String accountSignedInAs(String username) {
+    return 'Signed in as $username';
+  }
 
   @override
   String get authPasswordLabel => 'Password';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
 
   @override
   String authPasswordRule(int count) {
@@ -929,14 +966,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authRegisterButton => 'Create account';
 
   @override
-  String get authGuestButton => 'Continue without an account';
+  String get authGuestButton => 'Back to the app without an account';
 
   @override
-  String get authGuestNote => 'You can create an account later.';
-
-  @override
-  String get authErrorInvalidEmail =>
-      'Enter a correct e-mail address, e.g. jan@example.com.';
+  String get authGuestNote => 'The app also works without an account.';
 
   @override
   String get authErrorPasswordEmpty => 'Enter your password.';
@@ -945,13 +978,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String authErrorPasswordTooShort(int count) {
     return 'The password must have at least $count characters.';
   }
-
-  @override
-  String get authErrorEmailTaken =>
-      'There is already an account with this e-mail. Sign in instead.';
-
-  @override
-  String get authErrorInvalidCredentials => 'Wrong e-mail or password.';
 
   @override
   String get authErrorServer =>
@@ -969,11 +995,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountGuest => 'You are using the app without an account.';
-
-  @override
-  String accountSignedInAs(String email) {
-    return 'Signed in as $email';
-  }
 
   @override
   String get accountSignOut => 'Sign out';

@@ -1,18 +1,18 @@
 /// The signed-in user (`/api/auth/me`, or the `user` of a sign-in answer).
 class AccountUser {
-  const AccountUser({required this.id, required this.email, this.name});
+  const AccountUser({required this.id, required this.username});
 
   final String id;
-  final String email;
-  final String? name;
+
+  /// Login, lower case (the backend stores it that way).
+  final String username;
 
   factory AccountUser.fromJson(Map<String, dynamic> json) => AccountUser(
     id: json['id'] as String,
-    email: json['email'] as String,
-    name: json['name'] as String?,
+    username: json['username'] as String,
   );
 
-  Map<String, dynamic> toJson() => {'id': id, 'email': email, 'name': ?name};
+  Map<String, dynamic> toJson() => {'id': id, 'username': username};
 }
 
 /// A successful sign-in or sign-up: the token for later calls and the user.
@@ -28,20 +28,38 @@ class AccountSession {
   );
 }
 
+/// Login and password rules, the same as the backend's (`AccountService`).
+abstract final class AccountRules {
+  static const minUsernameLength = 3;
+  static const maxUsernameLength = 32;
+  static const minPasswordLength = 8;
+  static const maxPasswordLength = 128;
+
+  /// Letters (also Polish), digits, `.`, `_` and `-`, no spaces.
+  static final _usernamePattern = RegExp(r'^[\p{L}\p{N}._-]+$', unicode: true);
+
+  static bool isValidUsername(String username) =>
+      username.length >= minUsernameLength &&
+      username.length <= maxUsernameLength &&
+      _usernamePattern.hasMatch(username);
+}
+
 /// Why signing in or up failed. The backend sends codes; [AuthError.fromCode]
 /// maps them, and the screen picks the words for each.
 enum AuthError {
-  invalidEmail,
+  invalidUsername,
   passwordTooShort,
-  emailTaken,
+  passwordTooLong,
+  usernameTaken,
   invalidCredentials,
   serverUnavailable,
   noConnection;
 
   static AuthError fromCode(String? code, int? statusCode) => switch (code) {
-    'invalid_email' => invalidEmail,
+    'invalid_username' => invalidUsername,
     'password_too_short' => passwordTooShort,
-    'email_taken' => emailTaken,
+    'password_too_long' => passwordTooLong,
+    'username_taken' => usernameTaken,
     'invalid_credentials' => invalidCredentials,
     _ => statusCode == 401 ? invalidCredentials : serverUnavailable,
   };

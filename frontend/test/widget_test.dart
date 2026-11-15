@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'package:hopito_field_shift/app/app_theme.dart';
 import 'package:hopito_field_shift/components/app_nav_bar.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/l10n/crop_note_text.dart';
@@ -13,11 +11,8 @@ Widget _app(Locale locale, Widget body, {Widget? bottom}) => MaterialApp(
   supportedLocales: AppLocalizations.supportedLocales,
   localizationsDelegates: const [
     AppLocalizations.delegate,
-    FLocalizations.delegate,
     ...GlobalMaterialLocalizations.delegates,
   ],
-  theme: AppTheme.material(AppTheme.light),
-  builder: (context, child) => FTheme(data: AppTheme.light, child: child!),
   home: Scaffold(body: body, bottomNavigationBar: bottom),
 );
 

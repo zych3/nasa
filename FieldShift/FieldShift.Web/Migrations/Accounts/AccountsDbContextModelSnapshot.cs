@@ -22,7 +22,7 @@ namespace FieldShift.Web.Migrations.Accounts
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FieldShift.Web.Accounts.UserAccount", b =>
+            modelBuilder.Entity("FieldShift.Web.Accounts.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -33,32 +33,28 @@ namespace FieldShift.Web.Migrations.Accounts
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("user_accounts", (string)null);
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("FieldShift.Web.Accounts.UserSession", b =>
                 {
                     b.Property<string>("TokenHash")
-                        .HasColumnType("text")
+                        .HasColumnType("char(64)")
                         .HasColumnName("token_hash");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -75,6 +71,8 @@ namespace FieldShift.Web.Migrations.Accounts
 
                     b.HasKey("TokenHash");
 
+                    b.HasIndex("ExpiresAt");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("user_sessions", (string)null);
@@ -82,11 +80,18 @@ namespace FieldShift.Web.Migrations.Accounts
 
             modelBuilder.Entity("FieldShift.Web.Accounts.UserSession", b =>
                 {
-                    b.HasOne("FieldShift.Web.Accounts.UserAccount", null)
-                        .WithMany()
+                    b.HasOne("FieldShift.Web.Accounts.User", "User")
+                        .WithMany("Sessions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FieldShift.Web.Accounts.User", b =>
+                {
+                    b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618
         }

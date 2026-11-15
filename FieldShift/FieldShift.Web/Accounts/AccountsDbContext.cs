@@ -3,30 +3,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FieldShift.Web.Accounts;
 
-/// <summary>A user account. The e-mail is stored lower-case and is unique.</summary>
-public sealed class UserAccount
+/// <summary>One registered user (table <c>users</c>).</summary>
+public sealed class User
 {
     public Guid Id { get; set; }
 
-    public required string Email { get; set; }
+    /// <summary>Login name, stored trimmed and lower case; unique.</summary>
+    public required string Username { get; set; }
 
-    /// <summary>Name shown in the app (optional).</summary>
-    public string? Name { get; set; }
-
-    /// <summary>ASP.NET Core Identity password hash (PBKDF2, salted).</summary>
+    /// <summary>ASP.NET Core Identity password hash (PBKDF2, salted); never the password itself.</summary>
     public required string PasswordHash { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
+
+    public List<UserSession> Sessions { get; } = [];
 }
 
 /// <summary>
-/// A signed-in device. Only the SHA-256 of the token is stored, so a leaked table does not let anyone sign in.
+/// One logged-in device (table <c>user_sessions</c>). The client keeps the token; only its SHA-256 hash is stored,
+/// so a leaked database does not let anyone log in. Logout deletes the row.
 /// </summary>
 public sealed class UserSession
 {
+    /// <summary>SHA-256 of the token, hex.</summary>
     public required string TokenHash { get; set; }
 
     public Guid UserId { get; set; }
+
+    public User? User { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
 
@@ -34,14 +38,15 @@ public sealed class UserSession
 }
 
 /// <summary>
-/// User accounts in PostgreSQL (the same database as the prices, its own migrations: Migrations/Accounts,
-/// history table <see cref="MigrationsHistoryTable"/>).
+/// Users and their sessions in PostgreSQL (the same database as the prices, own migrations: Migrations/Accounts,
+/// history table <see cref="MigrationsHistoryTable"/>). Saved rotation queries and crop alerts will hang off
+/// <see cref="User"/>.
 /// </summary>
 public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> options) : DbContext(options)
 {
     public const string MigrationsHistoryTable = "__accounts_migrations";
 
-    public DbSet<UserAccount> Users => Set<UserAccount>();
+    public DbSet<User> Users => Set<User>();
 
     public DbSet<UserSession> Sessions => Set<UserSession>();
 
@@ -50,33 +55,37 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
 
     protected override void OnModelCreating(ModelBuilder model)
     {
-        model.Entity<UserAccount>(e =>
+        model.Entity<User>(e =>
         {
-            e.ToTable("user_accounts");
-            e.HasKey(x => x.Id);
-            e.Property(x => x.Id).HasColumnName("id");
-            e.Property(x => x.Email).HasColumnName("email").HasColumnType("text");
-            e.Property(x => x.Name).HasColumnName("name").HasColumnType("text");
-            e.Property(x => x.PasswordHash).HasColumnName("password_hash").HasColumnType("text");
-            e.Property(x => x.CreatedAt).HasColumnName("created_at");
-            e.HasIndex(x => x.Email).IsUnique();
+            e.ToTable("users");
+            e.HasKey(u => u.Id);
+            e.Property(u => u.Id).HasColumnName("id");
+            e.Property(u => u.Username).HasColumnName("username").HasColumnType("text");
+            e.Property(u => u.PasswordHash).HasColumnName("password_hash").HasColumnType("text");
+            e.Property(u => u.CreatedAt).HasColumnName("created_at");
+            e.HasIndex(u => u.Username).IsUnique();
         });
 
         model.Entity<UserSession>(e =>
         {
             e.ToTable("user_sessions");
-            e.HasKey(x => x.TokenHash);
-            e.Property(x => x.TokenHash).HasColumnName("token_hash").HasColumnType("text");
-            e.Property(x => x.UserId).HasColumnName("user_id");
-            e.Property(x => x.CreatedAt).HasColumnName("created_at");
-            e.Property(x => x.ExpiresAt).HasColumnName("expires_at");
-            e.HasOne<UserAccount>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => x.UserId);
+            e.HasKey(s => s.TokenHash);
+            e.Property(s => s.TokenHash).HasColumnName("token_hash").HasColumnType("char(64)");
+            e.Property(s => s.UserId).HasColumnName("user_id");
+            e.Property(s => s.CreatedAt).HasColumnName("created_at");
+            e.Property(s => s.ExpiresAt).HasColumnName("expires_at");
+            e.HasOne(s => s.User).WithMany(u => u.Sessions).HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(s => s.UserId);
+            e.HasIndex(s => s.ExpiresAt);
         });
     }
 }
 
-/// <summary>Applies the account migrations once, on first use (like <see cref="PricesSchema"/>).</summary>
+/// <summary>
+/// Applies the accounts migrations once per process, before the first use (same pattern as the other schemas).
+/// A failed attempt (database down) is retried on the next call.
+/// </summary>
 public sealed class AccountsSchema(IDbContextFactory<AccountsDbContext> factory)
 {
     private readonly SemaphoreSlim _lock = new(1, 1);

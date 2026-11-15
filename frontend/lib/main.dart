@@ -1,7 +1,5 @@
-import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'app/app_theme.dart';
 import 'components/account_button.dart';
 import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
@@ -9,7 +7,6 @@ import 'components/map_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
 import 'pages/area_map_page.dart';
-import 'pages/auth_page.dart';
 import 'pages/plot_page.dart';
 import 'repositories/auth_store.dart';
 import 'repositories/selected_plot_store.dart';
@@ -51,38 +48,17 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
       // ones for package:flutter/material instead.
       localizationsDelegates: const [
         AppLocalizations.delegate,
-        FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
-      // forui look (green field palette), light or dark like the phone. The
-      // Material theme is derived from it so both kinds of widgets match.
-      theme: AppTheme.material(AppTheme.light),
-      darkTheme: AppTheme.material(AppTheme.dark),
-      builder: (context, child) => FTheme(
-        data: AppTheme.of(Theme.of(context).brightness),
-        child: child!,
-      ),
       // No SafeArea here: the map runs edge to edge and keeps its own
       // controls clear of the notch; the other tabs add their own.
-      home: ListenableBuilder(
-        listenable: widget.authStore,
-        builder: (context, _) {
-          void onLocaleChanged(Locale locale) =>
-              setState(() => _locale = locale);
-          if (widget.authStore.status == AuthStatus.signedOut) {
-            return AuthPage(
-              store: widget.authStore,
-              locale: _locale,
-              onLocaleChanged: onLocaleChanged,
-            );
-          }
-          return MyScaffold(
-            plotStore: widget.plotStore,
-            authStore: widget.authStore,
-            locale: _locale,
-            onLocaleChanged: onLocaleChanged,
-          );
-        },
+      // The app opens straight away, without an account; signing in is
+      // offered under "Account" on the map.
+      home: MyScaffold(
+        plotStore: widget.plotStore,
+        authStore: widget.authStore,
+        locale: _locale,
+        onLocaleChanged: (locale) => setState(() => _locale = locale),
       ),
     );
   }

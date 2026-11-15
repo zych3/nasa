@@ -902,7 +902,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get authReadAloudHelp =>
-      'Zaloguj się, załóż konto albo kontynuuj bez konta.';
+      'Zaloguj się albo załóż konto. Aplikacja działa też bez konta.';
 
   @override
   String get authLoginTab => 'Logowanie';
@@ -911,19 +911,56 @@ class AppLocalizationsPl extends AppLocalizations {
   String get authRegisterTab => 'Rejestracja';
 
   @override
-  String get authNameLabel => 'Imię (nieobowiązkowe)';
+  String get authUsernameLabel => 'Login';
 
   @override
-  String get authNameHint => 'np. Jan';
+  String get authUsernameHint => 'np. jan_kowalski';
 
   @override
-  String get authEmailLabel => 'Adres e-mail';
+  String authUsernameRule(int min, int max) {
+    return 'Od $min do $max liter lub cyfr, bez spacji.';
+  }
 
   @override
-  String get authEmailHint => 'np. jan@poczta.pl';
+  String authErrorInvalidUsername(int min, int max) {
+    return 'Login musi mieć od $min do $max liter lub cyfr, bez spacji. Można użyć . _ -';
+  }
+
+  @override
+  String get authErrorUsernameEmpty => 'Wpisz login.';
+
+  @override
+  String get authErrorUsernameTaken =>
+      'Ten login jest już zajęty. Wybierz inny albo zaloguj się.';
+
+  @override
+  String authErrorPasswordTooLong(int count) {
+    return 'Hasło może mieć najwyżej $count znaków.';
+  }
+
+  @override
+  String get authErrorInvalidCredentials => 'Zły login lub hasło.';
+
+  @override
+  String get authTestLoginButton => 'Zaloguj testowo (bez konta)';
+
+  @override
+  String get authTestLoginNote =>
+      'Tylko do testów: logowanie na wspólne konto testowe.';
+
+  @override
+  String accountSignedInAs(String username) {
+    return 'Zalogowano jako $username';
+  }
 
   @override
   String get authPasswordLabel => 'Hasło';
+
+  @override
+  String get authShowPassword => 'Pokaż hasło';
+
+  @override
+  String get authHidePassword => 'Ukryj hasło';
 
   @override
   String authPasswordRule(int count) {
@@ -937,14 +974,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get authRegisterButton => 'Załóż konto';
 
   @override
-  String get authGuestButton => 'Kontynuuj bez konta';
+  String get authGuestButton => 'Wróć do aplikacji bez konta';
 
   @override
-  String get authGuestNote => 'Konto możesz założyć później.';
-
-  @override
-  String get authErrorInvalidEmail =>
-      'Wpisz poprawny adres e-mail, np. jan@poczta.pl.';
+  String get authGuestNote => 'Aplikacja działa też bez konta.';
 
   @override
   String get authErrorPasswordEmpty => 'Wpisz hasło.';
@@ -953,13 +986,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String authErrorPasswordTooShort(int count) {
     return 'Hasło musi mieć co najmniej $count znaków.';
   }
-
-  @override
-  String get authErrorEmailTaken =>
-      'Konto z tym adresem e-mail już istnieje. Zaloguj się.';
-
-  @override
-  String get authErrorInvalidCredentials => 'Zły adres e-mail lub hasło.';
 
   @override
   String get authErrorServer => 'Serwer teraz nie działa. Spróbuj za chwilę.';
@@ -976,11 +1002,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountGuest => 'Korzystasz z aplikacji bez konta.';
-
-  @override
-  String accountSignedInAs(String email) {
-    return 'Zalogowano jako $email';
-  }
 
   @override
   String get accountSignOut => 'Wyloguj się';

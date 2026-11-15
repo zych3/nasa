@@ -17,7 +17,7 @@ class ApiException implements Exception {
   final String message;
   final int? statusCode;
 
-  /// Error code from the body (`{"code": "email_taken"}`), when the backend
+  /// Error code from the body (`{"code": "username_taken"}`), when the backend
   /// sent one. The app maps codes to its own words; never show it raw.
   final String? code;
 

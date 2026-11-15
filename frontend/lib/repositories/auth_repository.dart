@@ -13,25 +13,29 @@ class AuthRepository {
   static const _timeout = Duration(seconds: 15);
 
   Future<AccountSession> register({
-    required String email,
+    required String username,
     required String password,
-    String? name,
   }) => _session(
     () => _api.postJson('/api/auth/register', {
-      'email': email,
+      'username': username,
       'password': password,
-      'name': ?name,
     }, timeout: _timeout),
   );
 
   Future<AccountSession> login({
-    required String email,
+    required String username,
     required String password,
   }) => _session(
     () => _api.postJson('/api/auth/login', {
-      'email': email,
+      'username': username,
       'password': password,
     }, timeout: _timeout),
+  );
+
+  /// Testing only: a session for the shared "test" account, no password.
+  /// The backend answers 404 when test sign-in is switched off.
+  Future<AccountSession> testLogin() => _session(
+    () => _api.postJson('/api/auth/test-login', const {}, timeout: _timeout),
   );
 
   /// The user of [token]. Throws [AuthException] with

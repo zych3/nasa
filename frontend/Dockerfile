@@ -17,7 +17,9 @@ COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
 COPY . .
 ARG API_BASE_URL=http://localhost:5066
-RUN flutter build web --release --dart-define=API_BASE_URL=$API_BASE_URL
+# true = show the "test sign-in" button (the backend needs Accounts:TestLogin).
+ARG TEST_LOGIN=false
+RUN flutter build web --release --dart-define=API_BASE_URL=$API_BASE_URL --dart-define=TEST_LOGIN=$TEST_LOGIN
 
 FROM nginx:1.27-alpine
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

@@ -1,114 +1,154 @@
-import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../components/language_flag_button.dart';
 import '../l10n/app_localizations.dart';
 import '../models/account.dart';
 import '../repositories/auth_store.dart';
 import '../widgets/read_aloud_button.dart';
 
-/// First screen: sign in, create an account, or go on without one.
-/// Two tabs (one task each), big fields and buttons, read-aloud and the
-/// language flag at the top.
-class AuthPage extends StatelessWidget {
-  const AuthPage({
-    super.key,
-    required this.store,
-    required this.locale,
-    required this.onLocaleChanged,
-  });
+/// Sign in or create an account. Opened from "Account" ([AccountButton]);
+/// the app works without it. Closes itself once signed in. Same white
+/// Material look as the rest of the app: one task at a time (switch at the
+/// top), big fields and buttons, back button and read-aloud in the bar.
+class AuthPage extends StatefulWidget {
+  const AuthPage({super.key, required this.store});
 
   final AuthStore store;
-  final Locale locale;
-  final ValueChanged<Locale> onLocaleChanged;
+
+  /// Opens the page on top of the app.
+  static Future<void> open(BuildContext context, AuthStore store) =>
+      Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => AuthPage(store: store)));
+
+  @override
+  State<AuthPage> createState() => _AuthPageState();
+}
+
+class _AuthPageState extends State<AuthPage> {
+  bool _register = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.store.addListener(_closeWhenSignedIn);
+  }
+
+  @override
+  void dispose() {
+    widget.store.removeListener(_closeWhenSignedIn);
+    super.dispose();
+  }
+
+  void _closeWhenSignedIn() {
+    if (widget.store.status == AuthStatus.signedIn && mounted) {
+      Navigator.of(context).maybePop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    final colors = theme.colors;
-    final type = theme.typography;
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: colors.background,
+      appBar: AppBar(
+        title: Text(l10n.accountTitle),
+        actions: [
+          ReadAloudButton(
+            text: () => sentencesForReading([
+              l10n.authWelcome,
+              l10n.authTagline,
+              l10n.authReadAloudHelp,
+            ]),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 460),
+              constraints: const BoxConstraints(maxWidth: 480),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      ReadAloudButton(
-                        text: () => sentencesForReading([
-                          l10n.authWelcome,
-                          l10n.authTagline,
-                          l10n.authReadAloudHelp,
-                        ]),
-                      ),
-                      const Spacer(),
-                      LanguageFlagButton(
-                        locale: locale,
-                        onLocaleChanged: onLocaleChanged,
-                      ),
-                    ],
+                  const SizedBox(height: 8),
+                  Icon(
+                    Icons.agriculture,
+                    size: 64,
+                    color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(height: 16),
-                  const _Logo(),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 12),
                   Semantics(
                     header: true,
                     child: Text(
                       l10n.authWelcome,
                       textAlign: TextAlign.center,
-                      style: type.display.xl3.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.5,
-                        color: colors.foreground,
-                      ),
+                      style: theme.textTheme.headlineMedium,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     l10n.authTagline,
                     textAlign: TextAlign.center,
-                    style: type.body.md.copyWith(color: colors.mutedForeground),
+                    style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
                   ),
-                  const SizedBox(height: 28),
-                  FCard(
+                  const SizedBox(height: 24),
+                  SegmentedButton<bool>(
+                    style: SegmentedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(56),
+                      textStyle: const TextStyle(fontSize: 18),
+                    ),
+                    showSelectedIcon: false,
+                    segments: [
+                      ButtonSegment(
+                        value: false,
+                        icon: const Icon(Icons.login),
+                        label: Text(l10n.authLoginTab),
+                      ),
+                      ButtonSegment(
+                        value: true,
+                        icon: const Icon(Icons.person_add_alt_1),
+                        label: Text(l10n.authRegisterTab),
+                      ),
+                    ],
+                    selected: {_register},
+                    onSelectionChanged: (s) =>
+                        setState(() => _register = s.first),
+                  ),
+                  const SizedBox(height: 16),
+                  Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: FTabs(
-                        children: [
-                          FTabEntry(
-                            label: Text(l10n.authLoginTab),
-                            child: _AuthForm(store: store, register: false),
-                          ),
-                          FTabEntry(
-                            label: Text(l10n.authRegisterTab),
-                            child: _AuthForm(store: store, register: true),
-                          ),
-                        ],
+                      // Own key per form: switching clears what was typed.
+                      child: _AuthForm(
+                        key: ValueKey(_register),
+                        store: widget.store,
+                        register: _register,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  FButton(
-                    variant: FButtonVariant.outline,
-                    size: FButtonSizeVariant.lg,
-                    onPress: store.continueAsGuest,
-                    prefix: const Icon(FLucideIcons.arrowRight),
-                    child: _ButtonText(l10n.authGuestButton),
+                  const SizedBox(height: 24),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(64),
+                      textStyle: const TextStyle(fontSize: 18),
+                    ),
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: const Icon(Icons.arrow_back),
+                    label: _ButtonText(l10n.authGuestButton),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     l10n.authGuestNote,
                     textAlign: TextAlign.center,
-                    style: type.body.sm.copyWith(color: colors.mutedForeground),
+                    style: theme.textTheme.bodyLarge,
                   ),
+                  if (testLoginAvailable) ...[
+                    const SizedBox(height: 24),
+                    _TestLoginButton(store: widget.store),
+                  ],
                 ],
               ),
             ),
@@ -119,40 +159,9 @@ class AuthPage extends StatelessWidget {
   }
 }
 
-class _Logo extends StatelessWidget {
-  const _Logo();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.theme.colors;
-    return Center(
-      child: Container(
-        width: 84,
-        height: 84,
-        decoration: BoxDecoration(
-          color: colors.primary,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: colors.primary.withValues(alpha: 0.25),
-              blurRadius: 24,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Icon(
-          FLucideIcons.sprout,
-          size: 44,
-          color: colors.primaryForeground,
-        ),
-      ),
-    );
-  }
-}
-
 /// Sign-in form ([register] false) or sign-up form ([register] true).
 class _AuthForm extends StatefulWidget {
-  const _AuthForm({required this.store, required this.register});
+  const _AuthForm({super.key, required this.store, required this.register});
 
   final AuthStore store;
   final bool register;
@@ -162,57 +171,61 @@ class _AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<_AuthForm> {
-  static const _minPasswordLength = 8;
-
-  final _name = TextEditingController();
-  final _email = TextEditingController();
+  final _username = TextEditingController();
   final _password = TextEditingController();
   bool _busy = false;
+  bool _showPassword = false;
   AuthError? _error;
 
   /// Problem found before sending (shown under the field).
-  String? _emailProblem;
+  String? _usernameProblem;
   String? _passwordProblem;
 
   @override
   void dispose() {
-    _name.dispose();
-    _email.dispose();
+    _username.dispose();
     _password.dispose();
     super.dispose();
   }
 
   bool _validate(AppLocalizations l10n) {
-    final email = _email.text.trim();
+    final username = _username.text.trim();
     final password = _password.text;
-    final emailOk = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email);
     setState(() {
-      _emailProblem = emailOk ? null : l10n.authErrorInvalidEmail;
+      // Signing in only needs something typed; the server says if it is wrong.
+      _usernameProblem = username.isEmpty
+          ? l10n.authErrorUsernameEmpty
+          : widget.register && !AccountRules.isValidUsername(username)
+          ? _invalidUsername(l10n)
+          : null;
       _passwordProblem = password.isEmpty
           ? l10n.authErrorPasswordEmpty
-          : widget.register && password.length < _minPasswordLength
-          ? l10n.authErrorPasswordTooShort(_minPasswordLength)
+          : widget.register && password.length < AccountRules.minPasswordLength
+          ? l10n.authErrorPasswordTooShort(AccountRules.minPasswordLength)
+          : password.length > AccountRules.maxPasswordLength
+          ? l10n.authErrorPasswordTooLong(AccountRules.maxPasswordLength)
           : null;
       _error = null;
     });
-    return _emailProblem == null && _passwordProblem == null;
+    return _usernameProblem == null && _passwordProblem == null;
   }
+
+  static String _invalidUsername(AppLocalizations l10n) =>
+      l10n.authErrorInvalidUsername(
+        AccountRules.minUsernameLength,
+        AccountRules.maxUsernameLength,
+      );
 
   Future<void> _submit() async {
     final l10n = AppLocalizations.of(context);
     if (_busy || !_validate(l10n)) return;
     setState(() => _busy = true);
     try {
-      final email = _email.text.trim();
+      final username = _username.text.trim();
       if (widget.register) {
-        final name = _name.text.trim();
-        await widget.store.register(
-          email,
-          _password.text,
-          name.isEmpty ? null : name,
-        );
+        await widget.store.register(username, _password.text);
       } else {
-        await widget.store.login(email, _password.text);
+        await widget.store.login(username, _password.text);
       }
     } on AuthException catch (e) {
       if (mounted) setState(() => _error = e.error);
@@ -222,11 +235,14 @@ class _AuthFormState extends State<_AuthForm> {
   }
 
   String _errorText(AppLocalizations l10n, AuthError error) => switch (error) {
-    AuthError.invalidEmail => l10n.authErrorInvalidEmail,
+    AuthError.invalidUsername => _invalidUsername(l10n),
     AuthError.passwordTooShort => l10n.authErrorPasswordTooShort(
-      _minPasswordLength,
+      AccountRules.minPasswordLength,
     ),
-    AuthError.emailTaken => l10n.authErrorEmailTaken,
+    AuthError.passwordTooLong => l10n.authErrorPasswordTooLong(
+      AccountRules.maxPasswordLength,
+    ),
+    AuthError.usernameTaken => l10n.authErrorUsernameTaken,
     AuthError.invalidCredentials => l10n.authErrorInvalidCredentials,
     AuthError.serverUnavailable => l10n.authErrorServer,
     AuthError.noConnection => l10n.authErrorNoConnection,
@@ -235,103 +251,234 @@ class _AuthFormState extends State<_AuthForm> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colors = context.theme.colors;
+    final theme = Theme.of(context);
     final error = _error;
-
-    Widget? problem(String? text) =>
-        text == null ? null : Text(text, style: TextStyle(color: colors.error));
+    const fieldText = TextStyle(fontSize: 18);
 
     return AutofillGroup(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (widget.register) ...[
-              FTextField(
-                control: FTextFieldControl.managed(controller: _name),
-                size: FTextFieldSizeVariant.lg,
-                label: Text(l10n.authNameLabel),
-                hint: l10n.authNameHint,
-                textCapitalization: TextCapitalization.words,
-                textInputAction: TextInputAction.next,
-                autofillHints: const [AutofillHints.name],
-              ),
-              const SizedBox(height: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _username,
+            style: fieldText,
+            autocorrect: false,
+            enableSuggestions: false,
+            textInputAction: TextInputAction.next,
+            autofillHints: [
+              widget.register
+                  ? AutofillHints.newUsername
+                  : AutofillHints.username,
             ],
-            FTextField.email(
-              control: FTextFieldControl.managed(controller: _email),
-              size: FTextFieldSizeVariant.lg,
-              label: Text(l10n.authEmailLabel),
-              hint: l10n.authEmailHint,
-              error: problem(_emailProblem),
-              autofillHints: const [AutofillHints.email],
-            ),
-            const SizedBox(height: 16),
-            FTextField.password(
-              control: FTextFieldControl.managed(controller: _password),
-              size: FTextFieldSizeVariant.lg,
-              label: Text(l10n.authPasswordLabel),
-              description: widget.register
-                  ? Text(l10n.authPasswordRule(_minPasswordLength))
-                  : null,
-              error: problem(_passwordProblem),
-              textInputAction: TextInputAction.done,
-              onSubmit: (_) => _submit(),
-              autofillHints: [
-                widget.register
-                    ? AutofillHints.newPassword
-                    : AutofillHints.password,
-              ],
-            ),
-            if (error != null) ...[
-              const SizedBox(height: 16),
-              FAlert(
-                variant: FAlertVariant.destructive,
-                icon: const Icon(FLucideIcons.circleAlert),
-                title: Text(_errorText(l10n, error)),
-                subtitle:
-                    error == AuthError.noConnection ||
-                        error == AuthError.serverUnavailable
-                    ? Text(l10n.authErrorTryGuest)
-                    : null,
-              ),
-            ],
-            const SizedBox(height: 20),
-            FButton(
-              size: FButtonSizeVariant.lg,
-              onPress: _busy ? null : _submit,
-              prefix: _busy
-                  ? const SizedBox.square(
-                      dimension: 20,
-                      child: FCircularProgress(),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.person_outline),
+              labelText: l10n.authUsernameLabel,
+              hintText: l10n.authUsernameHint,
+              helperText: widget.register
+                  ? l10n.authUsernameRule(
+                      AccountRules.minUsernameLength,
+                      AccountRules.maxUsernameLength,
                     )
-                  : Icon(
-                      widget.register
-                          ? FLucideIcons.userPlus
-                          : FLucideIcons.logIn,
-                    ),
-              child: _ButtonText(
-                widget.register
-                    ? l10n.authRegisterButton
-                    : l10n.authLoginButton,
+                  : null,
+              helperMaxLines: 2,
+              errorText: _usernameProblem,
+              errorMaxLines: 3,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _password,
+            style: fieldText,
+            obscureText: !_showPassword,
+            autocorrect: false,
+            enableSuggestions: false,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _submit(),
+            autofillHints: [
+              widget.register
+                  ? AutofillHints.newPassword
+                  : AutofillHints.password,
+            ],
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              prefixIcon: const Icon(Icons.lock_outline),
+              labelText: l10n.authPasswordLabel,
+              helperText: widget.register
+                  ? l10n.authPasswordRule(AccountRules.minPasswordLength)
+                  : null,
+              errorText: _passwordProblem,
+              errorMaxLines: 3,
+              suffixIcon: IconButton(
+                tooltip: _showPassword
+                    ? l10n.authHidePassword
+                    : l10n.authShowPassword,
+                onPressed: () => setState(() => _showPassword = !_showPassword),
+                icon: Icon(
+                  _showPassword ? Icons.visibility_off : Icons.visibility,
+                ),
               ),
+            ),
+          ),
+          if (error != null) ...[
+            const SizedBox(height: 16),
+            _ErrorBox(
+              text: _errorText(l10n, error),
+              hint:
+                  error == AuthError.noConnection ||
+                      error == AuthError.serverUnavailable
+                  ? l10n.authErrorTryGuest
+                  : null,
             ),
           ],
+          const SizedBox(height: 20),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(64),
+              textStyle: theme.textTheme.titleMedium?.copyWith(fontSize: 18),
+            ),
+            onPressed: _busy ? null : _submit,
+            icon: _busy
+                ? const SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Icon(widget.register ? Icons.person_add_alt_1 : Icons.login),
+            label: _ButtonText(
+              widget.register ? l10n.authRegisterButton : l10n.authLoginButton,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Error under the form: icon and words, not only colour.
+class _ErrorBox extends StatelessWidget {
+  const _ErrorBox({required this.text, this.hint});
+
+  final String text;
+  final String? hint;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Semantics(
+      liveRegion: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colors.errorContainer,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.error_outline, color: colors.onErrorContainer),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        fontSize: 18,
+                        color: colors.onErrorContainer,
+                      ),
+                    ),
+                    if (hint case final hint?)
+                      Text(
+                        hint,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: colors.onErrorContainer,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+/// Testing only (see [testLoginAvailable]): signs in to the shared test
+/// account without typing anything.
+class _TestLoginButton extends StatefulWidget {
+  const _TestLoginButton({required this.store});
+
+  final AuthStore store;
+
+  @override
+  State<_TestLoginButton> createState() => _TestLoginButtonState();
+}
+
+class _TestLoginButtonState extends State<_TestLoginButton> {
+  bool _busy = false;
+  bool _failed = false;
+
+  Future<void> _press() async {
+    setState(() {
+      _busy = true;
+      _failed = false;
+    });
+    try {
+      await widget.store.testLogin();
+    } on AuthException {
+      if (mounted) setState(() => _failed = true);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextButton.icon(
+          style: TextButton.styleFrom(
+            minimumSize: const Size.fromHeight(56),
+            textStyle: const TextStyle(fontSize: 18),
+          ),
+          onPressed: _busy ? null : _press,
+          icon: _busy
+              ? const SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.science_outlined),
+          label: _ButtonText(l10n.authTestLoginButton),
+        ),
+        if (_failed)
+          _ErrorBox(text: l10n.authErrorServer)
+        else
+          Text(
+            l10n.authTestLoginNote,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium,
+          ),
+      ],
+    );
+  }
+}
+
 /// Button label that wraps onto a second line instead of overflowing when
-/// the phone's text is set large.
+/// the phone's text is set large (the `.icon` buttons already make it
+/// flexible).
 class _ButtonText extends StatelessWidget {
   const _ButtonText(this.text);
 
   final String text;
 
   @override
-  Widget build(BuildContext context) =>
-      Flexible(child: Text(text, textAlign: TextAlign.center));
+  Widget build(BuildContext context) => Text(text, textAlign: TextAlign.center);
 }

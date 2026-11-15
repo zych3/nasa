@@ -29,6 +29,8 @@ services:
       ConnectionStrings__Prices: "Host=db;Port=5432;Database=fieldshift;Username=fieldshift;Password=fieldshift"
       # Optional: GUS BDL API key from the host environment or a .env file.
       Poland__GusBdlApiKey: ${GUS_BDL_API_KEY:-}
+      # POST /api/auth/test-login (shared "test" account, no password). Local stack only.
+      Accounts__TestLogin: ${TEST_LOGIN:-true}
     ports:
       - "${BACKEND_PORT:-5066}:8080"
     depends_on:
@@ -42,6 +44,8 @@ services:
       args:
         # The browser calls the backend directly, so this is the host-side address.
         API_BASE_URL: http://localhost:${BACKEND_PORT:-5066}
+        # "Test sign-in" button; matches Accounts__TestLogin of the backend.
+        TEST_LOGIN: ${TEST_LOGIN:-true}
     ports:
       - "${FRONTEND_PORT:-8080}:80"
     depends_on:

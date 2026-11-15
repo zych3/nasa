@@ -1493,7 +1493,7 @@ abstract class AppLocalizations {
   /// No description provided for @authReadAloudHelp.
   ///
   /// In en, this message translates to:
-  /// **'Sign in, create an account, or continue without an account.'**
+  /// **'Sign in or create an account. The app also works without an account.'**
   String get authReadAloudHelp;
 
   /// No description provided for @authLoginTab.
@@ -1508,35 +1508,89 @@ abstract class AppLocalizations {
   /// **'Create account'**
   String get authRegisterTab;
 
-  /// No description provided for @authNameLabel.
+  /// No description provided for @authUsernameLabel.
   ///
   /// In en, this message translates to:
-  /// **'Your name (optional)'**
-  String get authNameLabel;
+  /// **'Login'**
+  String get authUsernameLabel;
 
-  /// No description provided for @authNameHint.
+  /// No description provided for @authUsernameHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Jan'**
-  String get authNameHint;
+  /// **'e.g. jan_kowalski'**
+  String get authUsernameHint;
 
-  /// No description provided for @authEmailLabel.
+  /// No description provided for @authUsernameRule.
   ///
   /// In en, this message translates to:
-  /// **'E-mail address'**
-  String get authEmailLabel;
+  /// **'{min} to {max} letters or digits, without spaces.'**
+  String authUsernameRule(int min, int max);
 
-  /// No description provided for @authEmailHint.
+  /// No description provided for @authErrorInvalidUsername.
   ///
   /// In en, this message translates to:
-  /// **'e.g. jan@example.com'**
-  String get authEmailHint;
+  /// **'The login must have {min} to {max} letters or digits, without spaces. You can use . _ -'**
+  String authErrorInvalidUsername(int min, int max);
+
+  /// No description provided for @authErrorUsernameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your login.'**
+  String get authErrorUsernameEmpty;
+
+  /// No description provided for @authErrorUsernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'This login is already taken. Choose another one or sign in.'**
+  String get authErrorUsernameTaken;
+
+  /// No description provided for @authErrorPasswordTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'The password can have at most {count} characters.'**
+  String authErrorPasswordTooLong(int count);
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong login or password.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authTestLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Test sign-in (no account needed)'**
+  String get authTestLoginButton;
+
+  /// No description provided for @authTestLoginNote.
+  ///
+  /// In en, this message translates to:
+  /// **'For testing only: signs in to the shared test account.'**
+  String get authTestLoginNote;
+
+  /// No description provided for @accountSignedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {username}'**
+  String accountSignedInAs(String username);
 
   /// No description provided for @authPasswordLabel.
   ///
   /// In en, this message translates to:
   /// **'Password'**
   String get authPasswordLabel;
+
+  /// No description provided for @authShowPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get authShowPassword;
+
+  /// No description provided for @authHidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get authHidePassword;
 
   /// No description provided for @authPasswordRule.
   ///
@@ -1559,20 +1613,14 @@ abstract class AppLocalizations {
   /// No description provided for @authGuestButton.
   ///
   /// In en, this message translates to:
-  /// **'Continue without an account'**
+  /// **'Back to the app without an account'**
   String get authGuestButton;
 
   /// No description provided for @authGuestNote.
   ///
   /// In en, this message translates to:
-  /// **'You can create an account later.'**
+  /// **'The app also works without an account.'**
   String get authGuestNote;
-
-  /// No description provided for @authErrorInvalidEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter a correct e-mail address, e.g. jan@example.com.'**
-  String get authErrorInvalidEmail;
 
   /// No description provided for @authErrorPasswordEmpty.
   ///
@@ -1585,18 +1633,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The password must have at least {count} characters.'**
   String authErrorPasswordTooShort(int count);
-
-  /// No description provided for @authErrorEmailTaken.
-  ///
-  /// In en, this message translates to:
-  /// **'There is already an account with this e-mail. Sign in instead.'**
-  String get authErrorEmailTaken;
-
-  /// No description provided for @authErrorInvalidCredentials.
-  ///
-  /// In en, this message translates to:
-  /// **'Wrong e-mail or password.'**
-  String get authErrorInvalidCredentials;
 
   /// No description provided for @authErrorServer.
   ///
@@ -1627,12 +1663,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You are using the app without an account.'**
   String get accountGuest;
-
-  /// No description provided for @accountSignedInAs.
-  ///
-  /// In en, this message translates to:
-  /// **'Signed in as {email}'**
-  String accountSignedInAs(String email);
 
   /// No description provided for @accountSignOut.
   ///
