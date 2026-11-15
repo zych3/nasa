@@ -22,7 +22,9 @@ input order, culture or the clock (the clock only stamps `GeneratedAtUtc`).
 3. **Climate** (`Climate`): daily weather per year, ET0 (Hargreaves-Samani when not supplied).
 4. **Screening** (`Survival`): for every crop and every climate year, a survival score from texture, heat, winterkill
    and a water bucket (FAO-56). The crop's score is the mean of the worst 20 % of years (CVaR). Crops below the lowest
-   strategy floor are dropped, with a reason.
+   strategy floor are dropped, with a reason. With `survival.recencyHalfLifeYears` set, newer years weigh more in the
+   mean and the CVaR (the tail is the same share of years, taken by weight). This is only less reliance on old weather,
+   not a climate forecast: there is no trend or projection.
 5. **History** (`Simulation/HistorySeeder`): past seasons are run through the simulator to get the starting soil.
 6. **Search** (`Search`): depth-first search over rotations, then pruned and ranked per strategy (see below).
 7. **Catch crops and actions** (`Search/CatchCropAndActionOptimizer`): hill climbing on the chosen plans.
@@ -64,6 +66,8 @@ Alternatives must differ in crop set by at least `minAlternativeJaccardDistance`
 | `constraints` | group shares and other hard-rule parameters |
 | `search` | `unrollCycles`, `maxTransitionYears`, `bridgeCropsPerStart`, `topKPerStrategy`, `alternativesPerStrategy`, `minAlternativeJaccardDistance`, `localSearchPasses` |
 | `pedotransfer`, `phBuffer`, `soil` | soil physics constants |
+| `survival.recencyHalfLifeYears` | newer climate years count more in a crop's mean survival and CVaR (weight = 0.5 ^ (years before the latest / half-life)); leave it out for equal weights. Shipped: 6 |
+| `interactions` | `maxMultiplier`: cap for the combined factor of all state-interaction rules on one target (default 3) |
 | `explain` | how many causes a reason lists |
 | `report` | `minPredecessorAgreement` for the predecessor report |
 
@@ -83,6 +87,30 @@ Alternatives must differ in crop set by at least `minAlternativeJaccardDistance`
 A new state variable goes into `stateVars.json`; if it needs an end-of-season link, add a `transforms` entry.
 No agronomy lives in code: an architecture test fails if a crop name appears in the engine's source.
 
+## State interactions ("when A is high, B is stronger")
+
+`Data/stateInteractions.json` (optional) holds hand-written rules. They are separate from `interactions.json`, which
+is the previous-crop → next-crop override list.
+
+```json
+{ "id": "highN_eyespot",
+  "when":   { "var": "residualN", "curve": [[60, 0], [150, 1]] },
+  "target": { "kind": "effect", "var": "pathogen:eyespot", "op": "load" },
+  "multiplier": 1.5, "crops": "tag:cereal", "source": "EST", "confidence": "expert_estimate" }
+```
+
+- The trigger is a state variable at the **start** of the season (the inherited soil), mapped to 0..1 by the curve.
+  The factor is `1 + (multiplier - 1) × trigger`. A multiplier below 1 weakens.
+- `kind: "effect"` scales the amount of the owner's Add/Load effect on `var` (`op` limits it to one of the two).
+  `kind: "response"` scales the **loss** `1 - curve` of the crop's response to `var`, so the result stays in 0..1.
+- `crops` limits the rule to matching crops (the crop that owns the effect, or the crop that responds).
+- Rules on the same target multiply; the product is capped at `interactions.maxMultiplier`.
+- A rule that changes something adds a `Reason` of kind `StateInteraction`, code `interaction.rule.<id>`, value = the
+  factor. The Web layer forwards `interaction.*` codes; the app shows nothing for a code it has no text for yet.
+- The validator rejects unknown variables, multipliers outside `(0, maxMultiplier]`, bad `op`s and duplicate ids,
+  and warns when no matching crop has the effect or response (the rule would never fire).
+- The shipped rules are expert estimates and need agronomic review, like `crops.json`.
+
 ## Reports
 
 `PredecessorMatrixReport.Build(env)` scores every crop after every other crop from a neutral soil, writes a CSV
@@ -94,6 +122,8 @@ agronomists, not a gate.
 ## Known limits
 
 - Agronomic values in `crops.json` and `stateVars.json` are mostly expert estimates (`confidence`).
+- Climate is a sample of past years (NASA POWER 2014 onwards, about 12 years). There is no trend, projection or
+  climate-change scenario; recency weighting only shifts weight to newer years.
 - Cycles are unrolled 4 times: a close approximation of steady state, not a proof.
 - With a crop history, transitions are limited to short bridges (`bridgeCropsPerStart`) to keep the search fast.
 - `PreferredCrops` and `Priorities` from the farmer are not used yet.

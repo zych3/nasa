@@ -424,13 +424,12 @@
   "wizardShowPlan": "Show my plan",
   "wizardOptional": "Optional",
   "pastCropsTitle": "What did you grow here lately?",
-  "pastCropsHint": "Start with the last harvest. Each extra year makes the advice better.",
+  "pastCropsHint": "Start with the last harvest. Each extra year makes the advice better. Planting here for the first time? Just continue.",
   "pastCropLast": "Last season",
   "pastCropBefore": "Season before",
   "pastCropEarlier": "Two seasons ago",
   "pastCropChoose": "Choose a crop",
   "pastCropClear": "Clear",
-  "pastCropRequired": "Choose at least the last crop to continue.",
   "goalTitle": "What matters most to you?",
   "goalNoPreference": "No preference",
   "goalBalanced": "A bit of everything",
@@ -469,8 +468,71 @@
       }
     }
   },
-  "planHarvest": "Harvest",
-  "harvestStars": "Harvest rating: {stars} out of {total} stars",
+  "planHarvest": "Harvest quality",
+  "readSeason": "{year}: {crop}",
+  "readPair": "{label}: {value}",
+  "@readSeason": {
+    "placeholders": {
+      "year": {
+        "type": "String"
+      },
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@readPair": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "planSow": "Sow: {period}",
+  "planHarvestTime": "Harvest time: {period}",
+  "planPeriodOneMonth": "{month} {year}",
+  "planPeriodRange": "{from} – {to} {year}",
+  "@planSow": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "@planHarvestTime": {
+    "placeholders": {
+      "period": {
+        "type": "String"
+      }
+    }
+  },
+  "@planPeriodOneMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "@planPeriodRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      },
+      "year": {
+        "type": "String"
+      }
+    }
+  },
+  "harvestStars": "Harvest quality: {stars} out of {total} stars",
   "@harvestStars": {
     "placeholders": {
       "stars": {
@@ -495,6 +557,25 @@
   "scoreStructure": "Loose, healthy soil",
   "detailsAlternatives": "Other plans for this goal",
   "detailsOption": "Option {number}",
+  "detailsPlansHeading": "Plans for this goal",
+  "detailsRecommended": "Recommended plan",
+  "detailsShownNow": "Shown on the report now",
+  "detailsChoosePlan": "Choose this plan",
+  "reportSavePlan": "Save this plan",
+  "reportPlanSaved": "Plan saved",
+  "reportSaveDone": "The plan is saved in your profile.",
+  "reportSaveFailed": "Could not save the plan. Please try again.",
+  "reportSaveTooMany": "You have too many saved plans. Delete one first.",
+  "reportSaveSessionExpired": "Your sign-in expired. Please sign in again.",
+  "reportChosenOption": "You are looking at option {number}, not the recommended plan.",
+  "reportBackToBest": "Show recommended",
+  "@reportChosenOption": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "@detailsOption": {
     "placeholders": {
       "number": {
@@ -511,7 +592,21 @@
   "inputSoil": "Soil",
   "inputHistory": "Your past crops",
   "inputFarmer": "Your other answers",
-  "warnSoilEstimated": "We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.",
+  "warnSoilUnavailable": "We could not get soil data for this field (the soil service did not answer), so we assumed typical Polish soil. Try again later. A soil test (pH) makes the advice better.",
+  "warnSoilNoData": "There is no soil data for this exact spot (it may be built-up land, water or forest), so we assumed typical Polish soil. A soil test (pH) makes the advice better.",
+  "warnSoilPartial": "Some soil data is missing ({values}), so we filled the gaps with typical Polish values. A soil test (pH) makes the advice better.",
+  "@warnSoilPartial": {
+    "placeholders": {
+      "values": {
+        "type": "String"
+      }
+    }
+  },
+  "soilValueSand": "sand",
+  "soilValueClay": "clay",
+  "soilValueSilt": "silt",
+  "soilValuePh": "acidity (pH)",
+  "soilValueCarbon": "organic matter",
   "warnFewCropsFit": "Too few crops on our list suit this field (its soil, the weather or the crops you left out), so we cannot build a full rotation.",
   "warnGoalUnavailable": "We found no plan for “{goal}”, so we show another one.",
   "@warnGoalUnavailable": {
@@ -538,6 +633,102 @@
   "reasonCoverUp": "{crop} protects the soil over winter.",
   "reasonCompactionUp": "{crop} packs the soil.",
   "reasonCompactionDown": "{crop} loosens the soil.",
+  "reasonRuleHighNEyespot": "{crop}: a lot of nitrogen left in the soil makes eyespot disease build up faster.",
+  "reasonRuleCompactionAphanomyces": "{crop}: packed soil makes root rot hit harder.",
+  "reasonRuleLowPhLegumeN": "{crop}: acid soil means it leaves less nitrogen behind.",
+  "reasonRuleLowPhClubroot": "{crop}: acid soil makes clubroot hurt the yield more.",
+  "reasonRuleAcidLegumeFusarium": "{crop}: acid soil makes fusarium wilt hit harder.",
+  "reasonRuleHighNFusarium": "{crop}: a lot of nitrogen in the soil raises the risk of fusarium.",
+  "reasonRuleCompactionPotatoNematode": "{crop}: packed soil makes potato nematodes cost more yield.",
+  "reasonRuleCompactionRhizoctonia": "{crop}: packed soil makes rhizoctonia (root rot) hit harder.",
+  "reasonRuleCompactionCerealFusarium": "{crop}: packed soil makes fusarium hit harder.",
+  "reasonRuleVolunteersClubroot": "{crop}: leftover rapeseed plants keep clubroot alive.",
+  "reasonRuleHighNLegumeFixation": "{crop}: with plenty of nitrogen already in the soil, it fixes and leaves less.",
+  "reasonRuleAlkalineTakeAll": "{crop}: alkaline soil makes take-all (a cereal root disease) worse.",
+  "@reasonRuleLowPhClubroot": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleAcidLegumeFusarium": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleHighNFusarium": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleCompactionPotatoNematode": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleCompactionRhizoctonia": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleCompactionCerealFusarium": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleVolunteersClubroot": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleHighNLegumeFixation": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleAlkalineTakeAll": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleHighNEyespot": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleCompactionAphanomyces": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
+  "@reasonRuleLowPhLegumeN": {
+    "placeholders": {
+      "crop": {
+        "type": "String"
+      }
+    }
+  },
   "@reasonHumusUp": {
     "placeholders": {
       "crop": {
@@ -1437,6 +1628,35 @@
   "indOk": "Fine",
   "overlaySoilNotFarmland": "By the land register this is not farmland, so it has no soil quality class.",
   "fieldFactLandUse": "Land use (land register)",
+  "accountMyPlans": "My plans",
+  "myPlansTitle": "My plans",
+  "myPlansEmpty": "You have no saved plans yet. Open a report and choose Save this plan.",
+  "myPlansLoadError": "Could not load your plans.",
+  "myPlansItemInfo": "{goal} · saved {date}",
+  "myPlansSavedOn": "Saved {date}",
+  "myPlansDelete": "Delete",
+  "myPlansCancel": "Cancel",
+  "myPlansDeleteTitle": "Delete this plan?",
+  "myPlansDeleteBody": "It will be removed from your profile.",
+  "myPlansDeleted": "Plan deleted.",
+  "myPlansDeleteFailed": "Could not delete the plan. Please try again.",
+  "@myPlansItemInfo": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@myPlansSavedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "overlayContextUsual": "As usual for this month (average of {years} years: {mean})",
   "@overlayContextUsual": {
     "placeholders": {

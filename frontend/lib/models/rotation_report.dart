@@ -65,7 +65,12 @@ class RotationPlan {
     required this.scores,
     required this.reasons,
     required this.isFeasible,
+    this.raw = const {},
   });
+
+  /// The plan as the backend sent it, kept so it can be saved to the profile
+  /// exactly as it was shown.
+  final Map<String, dynamic> raw;
 
   final List<PlanSeason> transition;
   final List<PlanSeason> cycle;
@@ -90,6 +95,7 @@ class RotationPlan {
     scores: _list(json['scores'], PlanScore.fromJson),
     reasons: _list(json['reasons'], PlanReason.fromJson),
     isFeasible: json['isFeasible'] as bool? ?? true,
+    raw: json,
   );
 }
 
@@ -116,13 +122,36 @@ class PlanSeason {
   );
 }
 
+class DayRange {
+  const DayRange({required this.from, required this.to});
+
+  final int from;
+  final int to;
+
+  static DayRange? tryParse(Object? json) => json is Map<String, dynamic>
+      ? DayRange(from: json['from'] as int, to: json['to'] as int)
+      : null;
+}
+
 class PlanCrop {
-  const PlanCrop({required this.id, required this.names, this.catalogId});
+  const PlanCrop({
+    required this.id,
+    required this.names,
+    this.catalogId,
+    this.sow,
+    this.harvest,
+    this.sownPreviousYear = false,
+  });
 
   final String id;
   final Map<String, String> names;
 
   final String? catalogId;
+
+  final DayRange? sow;
+  final DayRange? harvest;
+
+  final bool sownPreviousYear;
 
   String nameFor(String languageCode) =>
       names[languageCode] ?? names['en'] ?? id;
@@ -135,6 +164,9 @@ class PlanCrop {
         e.key: e.value as String,
     },
     catalogId: json['catalogId'] as String?,
+    sow: DayRange.tryParse(json['sow']),
+    harvest: DayRange.tryParse(json['harvest']),
+    sownPreviousYear: json['sownPreviousYear'] as bool? ?? false,
   );
 }
 

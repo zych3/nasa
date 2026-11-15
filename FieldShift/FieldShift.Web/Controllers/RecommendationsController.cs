@@ -34,9 +34,9 @@ public class RecommendationsController(RecommendationProvider provider) : Contro
             return Bad("'lon' is required and must be between -180 and 180.");
         }
 
-        if (request.PastCrops is not { Count: > 0 and <= MaxPastCrops })
+        if (request.PastCrops is { Count: > MaxPastCrops })
         {
-            return Bad($"'pastCrops' is required: 1 to {MaxPastCrops} crop ids, most recent first.");
+            return Bad($"'pastCrops' can hold at most {MaxPastCrops} crop ids, most recent first.");
         }
 
         var goal = request.Goal ?? RecommendationProvider.Balanced;

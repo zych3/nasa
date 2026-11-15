@@ -1,6 +1,6 @@
 namespace FieldShift.Web.DTOs;
 
-/// <summary>What the farmer tells us. Only <see cref="Lat"/>, <see cref="Lon"/> and <see cref="PastCrops"/> are required.</summary>
+/// <summary>What the farmer tells us. Only <see cref="Lat"/> and <see cref="Lon"/> are required.</summary>
 public sealed record RecommendationRequest
 {
     /// <summary>Parcel the answer is for (echoed back); the location comes from <see cref="Lat"/>/<see cref="Lon"/>.</summary>
@@ -9,7 +9,7 @@ public sealed record RecommendationRequest
     public double? Lat { get; init; }
     public double? Lon { get; init; }
 
-    /// <summary>Crops grown on the plot in earlier years, most recent first (at least one). Crop ids from <c>GET /api/crops</c>.</summary>
+    /// <summary>Crops grown on the plot in earlier years, most recent first (up to 10; empty or missing when nothing was grown before). Crop ids from <c>GET /api/crops</c>.</summary>
     public IReadOnlyList<string>? PastCrops { get; init; }
 
     /// <summary>Optional goal: "balanced" (default), "soil_health" or "safe_harvest".</summary>
@@ -93,7 +93,17 @@ public sealed record CropRef
 
     /// <summary>Id in the crop catalogue (<c>GET /api/crops</c>) when the crop is there, so the frontend can show its photo.</summary>
     public string? CatalogId { get; init; }
+
+    /// <summary>When to sow, as days of the year (1-366). Winter crops are sown the year before harvest: see <see cref="SownPreviousYear"/>.</summary>
+    public required DayRange Sow { get; init; }
+
+    /// <summary>When the crop is harvested, as days of the year (1-366), in the harvest year.</summary>
+    public required DayRange Harvest { get; init; }
+
+    public required bool SownPreviousYear { get; init; }
 }
+
+public sealed record DayRange(int From, int To);
 
 public sealed record RatingDto
 {
@@ -123,7 +133,9 @@ public sealed record PlanReasonDto
 
 public sealed record RecommendationWarning
 {
-    /// <summary>"soil_estimated", "crop_not_supported", "no_plan_for_goal" (no plan for that goal, subject = goal)
+    /// <summary>Soil: "soil_unavailable" (SoilGrids request failed), "soil_no_data" (nothing for this spot) or "soil_partial"
+    /// (some values missing; subject = comma-separated "sand", "clay", "silt", "ph", "soc"); in all three typical Polish values fill the gaps.
+    /// Also "few_crops_fit", "crop_not_supported", "no_plan_for_goal" (no plan for that goal, subject = goal)
     /// or "goal_unavailable" (the asked-for goal has no plan, so <c>mainGoal</c> is another one; subject = asked goal).</summary>
     public required string Code { get; init; }
 

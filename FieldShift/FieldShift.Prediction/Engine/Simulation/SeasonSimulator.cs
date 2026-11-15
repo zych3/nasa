@@ -92,6 +92,23 @@ public static class SeasonSimulator
             var r = compiled.Response;
             var value = soil[compiled.Slot];
             var curve = r.Curve.Evaluate(value);
+            if (curve < 1 && env.ResponseInteractions.Length > 0)
+            {
+                var applied = reasons is null ? null : new List<(CompiledInteraction Rule, double Factor)>();
+                var factor = StateInteractions.Combined(
+                    env.ResponseInteractions, crop, compiled.Slot, null, soil, env.Settings.Interactions.MaxMultiplier, applied);
+                var loss = 1 - curve;
+                if (applied is not null)
+                {
+                    var running = 1.0;
+                    foreach (var (rule, f) in applied)
+                    {
+                        reasons!.Add(StateInteractions.ToReason(rule, f, ctx.SeasonIndex, crop, -loss * running * (f - 1), "the response"));
+                        running *= f;
+                    }
+                }
+                curve = Math.Clamp(1 - loss * factor, 0.0, 1.0);
+            }
             var scaled = r.Weight == 1.0 ? curve : Math.Pow(curve, r.Weight);
 
             double delta;
@@ -159,15 +176,41 @@ public static class SeasonSimulator
         if (sorted.Length > 0)
         {
             var worst = SurvivalAggregator.WorstCount(sorted.Length, env.Settings.Survival.CvarFraction);
-            double sum = 0, worstSum = 0;
-            for (var i = 0; i < sorted.Length; i++)
+            if (stats.SortedWeights is { } weights)
             {
-                var v = Math.Clamp(sorted[i] * survivalMultiplier + survivalDelta, 0.0, 1.0);
-                sum += v;
-                if (i < worst) worstSum += v;
+                // Recency weighting (same rule as SurvivalAggregator.WeightedCvar): the worst tail is a share of the
+                // total weight, filled from the lowest score up. The transform above is monotone, so the order holds.
+                double total = 0;
+                for (var i = 0; i < weights.Length; i++) total += weights[i];
+                var target = SurvivalAggregator.TailMass(sorted.Length, env.Settings.Survival.CvarFraction, total);
+
+                double weightedSum = 0, taken = 0, tailSum = 0;
+                for (var i = 0; i < sorted.Length; i++)
+                {
+                    var v = Math.Clamp(sorted[i] * survivalMultiplier + survivalDelta, 0.0, 1.0);
+                    weightedSum += weights[i] * v;
+                    var take = Math.Min(weights[i], target - taken);
+                    if (take > 1e-12)
+                    {
+                        tailSum += take * v;
+                        taken += take;
+                    }
+                }
+                mean = weightedSum / total;
+                cvar = tailSum / taken;
             }
-            mean = sum / sorted.Length;
-            cvar = worstSum / worst;
+            else
+            {
+                double sum = 0, worstSum = 0;
+                for (var i = 0; i < sorted.Length; i++)
+                {
+                    var v = Math.Clamp(sorted[i] * survivalMultiplier + survivalDelta, 0.0, 1.0);
+                    sum += v;
+                    if (i < worst) worstSum += v;
+                }
+                mean = sum / sorted.Length;
+                cvar = worstSum / worst;
+            }
         }
 
         IReadOnlyList<double> perYear = reasons is not null
@@ -192,6 +235,7 @@ public static class SeasonSimulator
         private readonly double[] _loads;
         private readonly StateVariableRegistry _registry;
         private readonly CropId _mainCrop;
+        private readonly SoilState _inherited;
         private readonly bool _collect;
         private List<(StateVarId Var, Contribution Contribution)>? _loadContributions;
 
@@ -201,6 +245,7 @@ public static class SeasonSimulator
             _env = ctx.Env;
             _registry = _env.Kb.StateVariables;
             _mainCrop = ctx.Season.MainCrop;
+            _inherited = state.Soil;
             _collect = ctx.CollectReasons;
             Ledger = state.Ledger;
             _work = state.Soil.ToArray();
@@ -264,10 +309,32 @@ public static class SeasonSimulator
                     if (normal > 0) amount *= (_ctx.NRateKgHa ?? normal) / normal;
                 }
                 if (e.Op is EffectOp.Add or EffectOp.Load)
+                {
                     amount *= _ctx.Certainty * multiplier;
+                    if (_env.EffectInteractions.Length > 0)
+                        amount = ApplyInteractions(e, owner, amount);
+                }
 
                 Apply(e, amount, owner.Id);
             }
+        }
+
+        private double ApplyInteractions(CompiledEffect e, Crop owner, double amount)
+        {
+            var applied = _collect ? new List<(CompiledInteraction Rule, double Factor)>() : null;
+            var factor = StateInteractions.Combined(
+                _env.EffectInteractions, owner, e.Slot, e.Op, _inherited, _env.Settings.Interactions.MaxMultiplier, applied);
+
+            if (applied is not null)
+            {
+                var running = 1.0;
+                foreach (var (rule, f) in applied)
+                {
+                    Reasons!.Add(StateInteractions.ToReason(rule, f, _ctx.SeasonIndex, owner, amount * running * (f - 1), "the effect"));
+                    running *= f;
+                }
+            }
+            return amount * factor;
         }
 
         private void Apply(CompiledEffect e, double amount, CropId cause)

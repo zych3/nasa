@@ -19,6 +19,38 @@ public sealed class User
     public List<UserSession> Sessions { get; } = [];
 
     public List<UserCrop> Crops { get; } = [];
+
+    public List<SavedPlan> SavedPlans { get; } = [];
+}
+
+/// <summary>
+/// A rotation plan the user chose to keep (table <c>saved_plans</c>): the plan exactly as the recommendations
+/// endpoint returned it, plus the answers it was made from, so it can be shown again without recalculating.
+/// </summary>
+public sealed class SavedPlan
+{
+    public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
+
+    public User? User { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+
+    public string? ParcelId { get; set; }
+
+    public double Lat { get; set; }
+
+    public double Lon { get; set; }
+
+    /// <summary>"balanced", "soil_health" or "safe_harvest".</summary>
+    public required string Goal { get; set; }
+
+    /// <summary>The chosen plan (one element of <c>recommendations[].best</c> or <c>.alternatives</c>), as JSON.</summary>
+    public required string PlanJson { get; set; }
+
+    /// <summary>What the farmer answered (past crops, exclusions, ...), as JSON; null when not sent.</summary>
+    public string? AnswersJson { get; set; }
 }
 
 /// <summary>
@@ -85,6 +117,8 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
 
     public DbSet<UserCrop> Crops => Set<UserCrop>();
 
+    public DbSet<SavedPlan> SavedPlans => Set<SavedPlan>();
+
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
     public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
 
@@ -134,6 +168,24 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
             e.HasIndex(c => c.UserId);
             // Later: the risk check reads all active entries.
             e.HasIndex(c => c.IsActive);
+        });
+
+        model.Entity<SavedPlan>(e =>
+        {
+            e.ToTable("saved_plans");
+            e.HasKey(p => p.Id);
+            e.Property(p => p.Id).HasColumnName("id");
+            e.Property(p => p.UserId).HasColumnName("user_id");
+            e.Property(p => p.CreatedAt).HasColumnName("created_at");
+            e.Property(p => p.ParcelId).HasColumnName("parcel_id").HasColumnType("text");
+            e.Property(p => p.Lat).HasColumnName("lat");
+            e.Property(p => p.Lon).HasColumnName("lon");
+            e.Property(p => p.Goal).HasColumnName("goal").HasColumnType("text");
+            e.Property(p => p.PlanJson).HasColumnName("plan").HasColumnType("jsonb");
+            e.Property(p => p.AnswersJson).HasColumnName("answers").HasColumnType("jsonb");
+            e.HasOne(p => p.User).WithMany(u => u.SavedPlans).HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(p => new { p.UserId, p.CreatedAt });
         });
     }
 }

@@ -619,7 +619,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pastCropsHint =>
-      'Zacznij od ostatniego zbioru. Każdy dodatkowy rok poprawia poradę.';
+      'Zacznij od ostatniego zbioru. Każdy dodatkowy rok poprawia poradę. Uprawiasz tu coś pierwszy raz? Po prostu przejdź dalej.';
 
   @override
   String get pastCropLast => 'Ostatni sezon';
@@ -635,10 +635,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pastCropClear => 'Wyczyść';
-
-  @override
-  String get pastCropRequired =>
-      'Aby przejść dalej, wybierz co najmniej ostatnią uprawę.';
 
   @override
   String get goalTitle => 'Co jest dla Ciebie najważniejsze?';
@@ -728,11 +724,41 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get planHarvest => 'Plon';
+  String get planHarvest => 'Jakość plonu';
+
+  @override
+  String readSeason(String year, String crop) {
+    return '$year: $crop';
+  }
+
+  @override
+  String readPair(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String planSow(String period) {
+    return 'Siew: $period';
+  }
+
+  @override
+  String planHarvestTime(String period) {
+    return 'Zbiór: $period';
+  }
+
+  @override
+  String planPeriodOneMonth(String month, String year) {
+    return '$month $year';
+  }
+
+  @override
+  String planPeriodRange(String from, String to, String year) {
+    return '$from – $to $year';
+  }
 
   @override
   String harvestStars(String stars, int total) {
-    return 'Ocena plonu: $stars na $total gwiazdek';
+    return 'Jakość plonu: $stars na $total gwiazdek';
   }
 
   @override
@@ -781,6 +807,47 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get detailsPlansHeading => 'Plany dla tego celu';
+
+  @override
+  String get detailsRecommended => 'Plan polecany';
+
+  @override
+  String get detailsShownNow => 'Pokazany teraz w raporcie';
+
+  @override
+  String get detailsChoosePlan => 'Wybierz ten plan';
+
+  @override
+  String get reportSavePlan => 'Zapisz ten plan';
+
+  @override
+  String get reportPlanSaved => 'Plan zapisany';
+
+  @override
+  String get reportSaveDone => 'Plan jest zapisany w Twoim profilu.';
+
+  @override
+  String get reportSaveFailed =>
+      'Nie udało się zapisać planu. Spróbuj ponownie.';
+
+  @override
+  String get reportSaveTooMany =>
+      'Masz za dużo zapisanych planów. Usuń któryś.';
+
+  @override
+  String get reportSaveSessionExpired =>
+      'Logowanie wygasło. Zaloguj się ponownie.';
+
+  @override
+  String reportChosenOption(int number) {
+    return 'Oglądasz wariant $number, a nie plan polecany.';
+  }
+
+  @override
+  String get reportBackToBest => 'Pokaż polecany';
+
+  @override
   String get detailsOtherGoals => 'Plany pod kątem innych celów';
 
   @override
@@ -809,8 +876,32 @@ class AppLocalizationsPl extends AppLocalizations {
   String get inputFarmer => 'Twoje pozostałe odpowiedzi';
 
   @override
-  String get warnSoilEstimated =>
-      'Nie udało się odczytać gleby tego pola, więc przyjęliśmy typową polską glebę. Badanie gleby (pH) poprawi poradę.';
+  String get warnSoilUnavailable =>
+      'Nie udało się pobrać danych o glebie tego pola (usługa nie odpowiedziała), więc przyjęliśmy typową polską glebę. Spróbuj ponownie później. Badanie gleby (pH) poprawi poradę.';
+
+  @override
+  String get warnSoilNoData =>
+      'Dla tego miejsca nie ma danych o glebie (to może być zabudowa, woda lub las), więc przyjęliśmy typową polską glebę. Badanie gleby (pH) poprawi poradę.';
+
+  @override
+  String warnSoilPartial(String values) {
+    return 'Brakuje części danych o glebie ($values), więc uzupełniliśmy je typowymi polskimi wartościami. Badanie gleby (pH) poprawi poradę.';
+  }
+
+  @override
+  String get soilValueSand => 'piasek';
+
+  @override
+  String get soilValueClay => 'ił';
+
+  @override
+  String get soilValueSilt => 'pył';
+
+  @override
+  String get soilValuePh => 'odczyn (pH)';
+
+  @override
+  String get soilValueCarbon => 'próchnica';
 
   @override
   String get warnFewCropsFit =>
@@ -869,6 +960,66 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String reasonCompactionDown(String crop) {
     return '$crop spulchnia glebę.';
+  }
+
+  @override
+  String reasonRuleHighNEyespot(String crop) {
+    return '$crop: dużo azotu w glebie nasila łamliwość źdźbła zbóż.';
+  }
+
+  @override
+  String reasonRuleCompactionAphanomyces(String crop) {
+    return '$crop: zbita gleba nasila zgniliznę korzeni.';
+  }
+
+  @override
+  String reasonRuleLowPhLegumeN(String crop) {
+    return '$crop: na kwaśnej glebie zostawia mniej azotu dla następnej uprawy.';
+  }
+
+  @override
+  String reasonRuleLowPhClubroot(String crop) {
+    return '$crop: kwaśna gleba nasila straty od kiły kapusty.';
+  }
+
+  @override
+  String reasonRuleAcidLegumeFusarium(String crop) {
+    return '$crop: kwaśna gleba nasila fuzariozę.';
+  }
+
+  @override
+  String reasonRuleHighNFusarium(String crop) {
+    return '$crop: dużo azotu w glebie zwiększa ryzyko fuzariozy.';
+  }
+
+  @override
+  String reasonRuleCompactionPotatoNematode(String crop) {
+    return '$crop: zbita gleba nasila straty od mątwika ziemniaczanego.';
+  }
+
+  @override
+  String reasonRuleCompactionRhizoctonia(String crop) {
+    return '$crop: zbita gleba nasila rizoktoniozę (zgniliznę korzeni).';
+  }
+
+  @override
+  String reasonRuleCompactionCerealFusarium(String crop) {
+    return '$crop: zbita gleba nasila fuzariozę.';
+  }
+
+  @override
+  String reasonRuleVolunteersClubroot(String crop) {
+    return '$crop: samosiewy rzepaku podtrzymują kiłę kapusty.';
+  }
+
+  @override
+  String reasonRuleHighNLegumeFixation(String crop) {
+    return '$crop: przy dużej ilości azotu w glebie wiąże i zostawia go mniej.';
+  }
+
+  @override
+  String reasonRuleAlkalineTakeAll(String crop) {
+    return '$crop: zasadowa gleba nasila zgorzel podstawy źdźbła.';
   }
 
   @override
@@ -1892,6 +2043,48 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fieldFactLandUse => 'Użytek gruntu (ewidencja)';
+
+  @override
+  String get accountMyPlans => 'Moje plany';
+
+  @override
+  String get myPlansTitle => 'Moje plany';
+
+  @override
+  String get myPlansEmpty =>
+      'Nie masz jeszcze zapisanych planów. Otwórz raport i wybierz Zapisz ten plan.';
+
+  @override
+  String get myPlansLoadError => 'Nie udało się wczytać Twoich planów.';
+
+  @override
+  String myPlansItemInfo(String goal, String date) {
+    return '$goal · zapisano $date';
+  }
+
+  @override
+  String myPlansSavedOn(String date) {
+    return 'Zapisano $date';
+  }
+
+  @override
+  String get myPlansDelete => 'Usuń';
+
+  @override
+  String get myPlansCancel => 'Anuluj';
+
+  @override
+  String get myPlansDeleteTitle => 'Usunąć ten plan?';
+
+  @override
+  String get myPlansDeleteBody => 'Zostanie usunięty z Twojego profilu.';
+
+  @override
+  String get myPlansDeleted => 'Plan usunięty.';
+
+  @override
+  String get myPlansDeleteFailed =>
+      'Nie udało się usunąć planu. Spróbuj ponownie.';
 
   @override
   String overlayContextUsual(String mean, int years) {

@@ -7,6 +7,7 @@ import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
 import '../overlays/field_conditions_controller.dart';
 import '../overlays/map_layers_repository.dart';
+import '../repositories/auth_store.dart';
 import '../repositories/selected_plot_store.dart';
 import '../widgets/field_conditions_section.dart';
 import 'rotation_wizard_page.dart';
@@ -18,11 +19,15 @@ class PlotPage extends StatefulWidget {
   const PlotPage({
     super.key,
     required this.store,
+    required this.authStore,
     this.repository,
     this.onShowConditions,
   });
 
   final SelectedPlotStore store;
+
+  /// Saving a rotation plan needs an account; passed on to the planner.
+  final AuthStore authStore;
 
   /// NASA and parcel data; share the "Conditions" tab's one so both use the
   /// same cache (one request per place).
@@ -167,7 +172,10 @@ class _PlotPageState extends State<PlotPage> {
                   ? null
                   : () => Navigator.of(context).push(
                       MaterialPageRoute<void>(
-                        builder: (_) => RotationWizardPage(parcel: parcel),
+                        builder: (_) => RotationWizardPage(
+                          parcel: parcel,
+                          authStore: widget.authStore,
+                        ),
                       ),
                     ),
               prefix: const Icon(FLucideIcons.refreshCcw),

@@ -111,6 +111,25 @@ class ApiClient {
     return _decode('PATCH', path, response);
   }
 
+  /// DELETE [path]. Throws [ApiException] for a status other than 2xx.
+  Future<void> delete(
+    String path, {
+    String? authToken,
+    Duration timeout = defaultTimeout,
+  }) async {
+    final response = await _http
+        .delete(
+          Uri.parse('$baseUrl$path'),
+          headers: {
+            'Accept': 'application/json',
+            if (authToken != null) 'Authorization': 'Bearer $authToken',
+          },
+        )
+        .timeout(timeout);
+
+    _decode('DELETE', path, response);
+  }
+
   /// The decoded body of a 2xx answer (`null` when empty, e.g. 204).
   /// Otherwise throws [ApiException] with the body's error `code`, if any.
   static dynamic _decode(String method, String path, http.Response response) {

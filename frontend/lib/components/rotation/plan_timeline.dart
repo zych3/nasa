@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../l10n/rotation_text.dart';
 import '../../models/rotation_report.dart';
 import 'star_rating.dart';
 
@@ -9,11 +10,29 @@ class PlanTimeline extends StatelessWidget {
 
   final RotationPlan plan;
 
+  Widget _dateRow(ThemeData theme, IconData icon, String text) => Padding(
+    padding: const EdgeInsets.only(top: 6),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 22),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            text,
+            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+          ),
+        ),
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final language = Localizations.localeOf(context).languageCode;
+    final locale = Localizations.localeOf(context).toString();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,8 +62,32 @@ class PlanTimeline extends StatelessWidget {
                             fontSize: 22,
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        Wrap(
+                          spacing: 8,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Text(
+                              '${l10n.planHarvest}:',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontSize: 18,
+                              ),
+                            ),
+                            StarRating(value: season.harvest.value),
+                          ],
+                        ),
+                        if (seasonSowText(l10n, locale, season)
+                            case final text?)
+                          _dateRow(theme, Icons.grain, text),
+                        if (seasonHarvestText(l10n, locale, season)
+                            case final text?)
+                          _dateRow(theme, Icons.agriculture, text),
                         if (season.catchCrop != null) ...[
-                          const SizedBox(height: 4),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 12),
+                            child: Divider(height: 1),
+                          ),
+                          const SizedBox(height: 12),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -62,21 +105,10 @@ class PlanTimeline extends StatelessWidget {
                               ),
                             ],
                           ),
+                          if (catchSowText(l10n, locale, season)
+                              case final text?)
+                            _dateRow(theme, Icons.grain, text),
                         ],
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          children: [
-                            Text(
-                              '${l10n.planHarvest}:',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                fontSize: 18,
-                              ),
-                            ),
-                            StarRating(value: season.harvest.value),
-                          ],
-                        ),
                       ],
                     ),
                   ),

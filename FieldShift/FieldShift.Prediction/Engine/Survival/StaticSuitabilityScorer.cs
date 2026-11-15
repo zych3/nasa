@@ -23,6 +23,9 @@ public static class StaticSuitabilityScorer
         var snowMissing = false;
         var noWinterData = false;
 
+        var halfLife = settings.Survival.RecencyHalfLifeYears;
+        var latestYear = climate.Years.Count == 0 ? 0 : climate.Years.Max();
+
         foreach (var year in years)
         {
             var season = SeasonCalendar.Build(crop, year, settings);
@@ -46,7 +49,9 @@ public static class StaticSuitabilityScorer
                 : settings.Survival.WaterStressToScore.Evaluate(balance.StressIndex);
 
             var factors = new SurvivalFactors(texture, heat, winter, water, balance.StressIndex, heatDays);
-            rows.Add(new YearSurvival(year, SurvivalAggregator.Combine(factors.Applicable, settings.Survival.Aggregator), factors));
+            var weight = halfLife is { } h ? SurvivalAggregator.RecencyWeight(year, latestYear, h) : 1.0;
+            rows.Add(new YearSurvival(
+                year, SurvivalAggregator.Combine(factors.Applicable, settings.Survival.Aggregator), factors, weight));
         }
 
         if (snowMissing)
@@ -59,8 +64,12 @@ public static class StaticSuitabilityScorer
             reasons.Add(Note("screening.noClimate", crop, "No climate year could be evaluated for this crop."));
 
         var scores = rows.Select(r => r.Score).ToList();
-        return new CropStaticSurvival(crop.Id, rows,
-            SurvivalAggregator.Mean(scores), SurvivalAggregator.Cvar(scores, settings.Survival.CvarFraction), reasons);
+        var weights = rows.Select(r => r.Weight).ToList();
+        var (mean, cvar) = halfLife is null
+            ? (SurvivalAggregator.Mean(scores), SurvivalAggregator.Cvar(scores, settings.Survival.CvarFraction))
+            : (SurvivalAggregator.WeightedMean(scores, weights),
+                SurvivalAggregator.WeightedCvar(scores, weights, settings.Survival.CvarFraction));
+        return new CropStaticSurvival(crop.Id, rows, mean, cvar, reasons);
     }
 
     private static double? TextureFactor(Crop crop, PlotFeatures f, EngineSettings settings)

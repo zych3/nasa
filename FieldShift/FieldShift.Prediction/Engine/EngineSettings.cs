@@ -16,6 +16,14 @@ public sealed record EngineSettings
     public required SoilSettings Soil { get; init; }
     public required ExplainSettings Explain { get; init; }
     public required ReportSettings Report { get; init; }
+
+    public InteractionSettings Interactions { get; init; } = new();
+}
+
+public sealed record InteractionSettings
+{
+    /// <summary>Upper bound for the combined factor of all rules acting on one effect or response.</summary>
+    public double MaxMultiplier { get; init; } = 3.0;
 }
 
 public sealed record ExplainSettings
@@ -56,6 +64,12 @@ public sealed record SurvivalSettings
     public required Curve WaterStressToScore { get; init; }
 
     public required NumericInterval HeatDaysFallbackWindowFraction { get; init; }
+
+    /// <summary>
+    /// Newer climate years count more: a year's weight is 0.5 ^ (years before the latest / half-life). Null means all
+    /// years count the same. This is not a forecast, only less reliance on old weather.
+    /// </summary>
+    public double? RecencyHalfLifeYears { get; init; }
 }
 
 public sealed record TransformSettings

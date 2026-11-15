@@ -22,6 +22,54 @@ namespace FieldShift.Web.Migrations.Accounts
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FieldShift.Web.Accounts.SavedPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AnswersJson")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("answers");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Goal")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("goal");
+
+                    b.Property<double>("Lat")
+                        .HasColumnType("double precision")
+                        .HasColumnName("lat");
+
+                    b.Property<double>("Lon")
+                        .HasColumnType("double precision")
+                        .HasColumnName("lon");
+
+                    b.Property<string>("ParcelId")
+                        .HasColumnType("text")
+                        .HasColumnName("parcel_id");
+
+                    b.Property<string>("PlanJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("plan");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "CreatedAt");
+
+                    b.ToTable("saved_plans", (string)null);
+                });
+
             modelBuilder.Entity("FieldShift.Web.Accounts.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -131,6 +179,17 @@ namespace FieldShift.Web.Migrations.Accounts
                     b.ToTable("user_sessions", (string)null);
                 });
 
+            modelBuilder.Entity("FieldShift.Web.Accounts.SavedPlan", b =>
+                {
+                    b.HasOne("FieldShift.Web.Accounts.User", "User")
+                        .WithMany("SavedPlans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FieldShift.Web.Accounts.UserCrop", b =>
                 {
                     b.HasOne("FieldShift.Web.Accounts.User", "User")
@@ -156,6 +215,8 @@ namespace FieldShift.Web.Migrations.Accounts
             modelBuilder.Entity("FieldShift.Web.Accounts.User", b =>
                 {
                     b.Navigation("Crops");
+
+                    b.Navigation("SavedPlans");
 
                     b.Navigation("Sessions");
                 });

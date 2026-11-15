@@ -8,15 +8,18 @@ public sealed class CropKnowledgeBase
     public IReadOnlyDictionary<ActionId, ManagementActionDefinition> Actions { get; }
     public IReadOnlyList<InteractionOverride> Interactions { get; }
     public IReadOnlyDictionary<StrategyId, Strategy> Strategies { get; }
- 
+    public IReadOnlyList<StateInteraction> StateInteractions { get; }
+
     public CropKnowledgeBase(
         string version,
         StateVariableRegistry stateVariables,
         IEnumerable<Crop> crops,
         IEnumerable<ManagementActionDefinition> actions,
         IEnumerable<InteractionOverride> interactions,
-        IEnumerable<Strategy> strategies)
+        IEnumerable<Strategy> strategies,
+        IEnumerable<StateInteraction>? stateInteractions = null)
     {
+        StateInteractions = (stateInteractions ?? []).ToList();
         Version = version;
         StateVariables = stateVariables;
         Crops = ToUniqueDictionary(crops, c => c.Id, "crop");

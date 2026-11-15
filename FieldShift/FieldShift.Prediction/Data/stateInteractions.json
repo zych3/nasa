@@ -1,0 +1,122 @@
+[
+  {
+    "id": "highN_eyespot",
+    "when": { "var": "residualN", "curve": [[60, 0], [150, 1]] },
+    "target": { "kind": "effect", "var": "pathogen:eyespot", "op": "load" },
+    "multiplier": 1.5,
+    "crops": "tag:cereal",
+    "source": "EST",
+    "confidence": "expert_estimate",
+    "note": "Plenty of mineral N left by the previous crop gives a denser early canopy, which favours eyespot build-up in cereals. Eyespot incidence rose 2-3 fold at 160 lb N/acre vs no N in a winter-wheat study (Smiley 1996, WSU)."
+  },
+  {
+    "id": "compaction_aphanomyces",
+    "when": { "var": "compaction", "curve": [[0.2, 0], [0.7, 1]] },
+    "target": { "kind": "response", "var": "pathogen:aphanomyces" },
+    "multiplier": 1.5,
+    "crops": "tag:legume",
+    "source": "EST",
+    "confidence": "expert_estimate",
+    "note": "Compacted, poorly drained soil favours Aphanomyces root rot, so the same inoculum costs more yield."
+  },
+  {
+    "id": "lowPh_legumeN",
+    "when": { "var": "ph", "curve": [[5.0, 1], [6.0, 0]] },
+    "target": { "kind": "effect", "var": "residualN", "op": "add" },
+    "multiplier": 0.6,
+    "crops": "tag:legume",
+    "source": "EST",
+    "confidence": "expert_estimate",
+    "note": "Acid soil weakens nodulation, so legumes leave less nitrogen behind."
+  },
+  {
+    "id": "lowPhAmplifiesClubrootLoss",
+    "when": { "var": "ph", "curve": [[3.5, 1], [5.0, 1], [6.0, 0.7], [6.8, 0.3], [7.2, 0], [8.5, 0]] },
+    "target": { "kind": "response", "var": "pathogen:clubroot" },
+    "multiplier": 2.5,
+    "crops": "family:Brassicaceae",
+    "source": "hwang2022_lime_canola",
+    "confidence": "high",
+    "note": "Raising pH from 5.2-5.5 to 7.2 reduced clubroot severity by 34-36% and increased canola seed yield by 70-98% (Hwang et al. 2022). Severity alone implies about 1.5x; 2.5x reflects the yield gain. Review if clubroot losses look too large."
+  },
+  {
+    "id": "acidSoilWorsensLegumeFusarium",
+    "when": { "var": "ph", "curve": [[3.5, 1], [5.0, 0.8], [6.0, 0.4], [6.8, 0], [8.5, 0]] },
+    "target": { "kind": "response", "var": "pathogen:legume_fusarium" },
+    "multiplier": 1.4,
+    "crops": "tag:legume",
+    "source": "smiley_wsu_acid_root_disease",
+    "confidence": "expert_estimate",
+    "note": "Fusarium wilt of legumes is suppressed by alkaline soils and nitrate nutrition (Smiley, WSU review). No Central European effect size found, so a conservative 1.4x below pH 6."
+  },
+  {
+    "id": "highNBoostsCerealFusarium",
+    "when": { "var": "residualN", "curve": [[0, 0], [80, 0.3], [160, 0.7], [240, 1], [400, 1]] },
+    "target": { "kind": "effect", "var": "pathogen:fusarium_cereal", "op": "load" },
+    "multiplier": 1.6,
+    "crops": "tag:cereal",
+    "source": "nature2026_n_fusarium_review",
+    "confidence": "medium",
+    "note": "A systematic review of 1771 observations found N fertilisation raised the Fusarium isolate percentage by 61.6% (lnRR 0.48); severity and DON responses were context-dependent. Multiplier 1 + 0.616 x trigger, rounded to 1.6."
+  },
+  {
+    "id": "compactionAmplifiesPotatoCystNematodeLoss",
+    "when": { "var": "compaction", "curve": [[-1, 0], [0, 0], [0.3, 0.4], [0.6, 0.8], [1, 1]] },
+    "target": { "kind": "response", "var": "nematode:potato_cyst" },
+    "multiplier": 1.4,
+    "crops": "crop:potato",
+    "source": "schans1995_compaction_nematode",
+    "confidence": "high",
+    "note": "In potato, high nematode density and compaction each cut tuber yield by about 27% and the effects were additive (Schans 1995). Nematode-only loss 27% + compaction 27% x (1 - 0.27) = about 46.7%, so about 1.4x at severe compaction."
+  },
+  {
+    "id": "compactionAmplifiesRhizoctoniaLoss",
+    "when": { "var": "compaction", "curve": [[-1, 0], [0, 0], [0.3, 0.4], [0.6, 0.8], [1, 1]] },
+    "target": { "kind": "response", "var": "pathogen:rhizoctonia" },
+    "multiplier": 1.3,
+    "crops": "tag:rootCrop",
+    "source": "hamza2005_compaction_review",
+    "confidence": "expert_estimate",
+    "note": "Compaction reduces drainage and aeration and is reported to aggravate root diseases; the review gives the direction, not a Rhizoctonia-specific size, so a conservative 1.3x at severe compaction. Applies to root crops only (potato, sugar beet)."
+  },
+  {
+    "id": "compactionAmplifiesCerealFusariumLoss",
+    "when": { "var": "compaction", "curve": [[-1, 0], [0, 0], [0.3, 0.4], [0.6, 0.8], [1, 1]] },
+    "target": { "kind": "response", "var": "pathogen:fusarium_cereal" },
+    "multiplier": 1.3,
+    "crops": "tag:cereal",
+    "source": "sare_compaction_ch15",
+    "confidence": "expert_estimate",
+    "note": "Dense, poorly aerated soils are reported to be more susceptible to Fusarium and other fungal root diseases (SARE); direction only, so the loss multiplier is limited to 1.3."
+  },
+  {
+    "id": "rapeseedVolunteersBoostClubroot",
+    "when": { "var": "volunteers:rapeseed", "curve": [[0, 0], [0.1, 0.2], [0.3, 0.6], [0.5, 1], [1, 1]] },
+    "target": { "kind": "effect", "var": "pathogen:clubroot", "op": "load" },
+    "multiplier": 1.3,
+    "crops": "family:Brassicaceae",
+    "source": "gcirc_volunteer_clubroot",
+    "confidence": "expert_estimate",
+    "note": "Volunteer oilseed rape can carry Plasmodiophora brassicae resting spores between crops (green bridge). Direction established, size not, so +30% clubroot load at high volunteer density."
+  },
+  {
+    "id": "highResidualNSuppressesLegumeNFixation",
+    "when": { "var": "residualN", "curve": [[0, 0], [40, 0.2], [80, 0.5], [120, 0.8], [200, 1], [400, 1]] },
+    "target": { "kind": "effect", "var": "residualN", "op": "add" },
+    "multiplier": 0.6,
+    "crops": "tag:legume",
+    "source": "legume_rotation_n_uptake",
+    "confidence": "expert_estimate",
+    "note": "Mineral N suppresses nodulation and N fixation, so a legume leaves less net N when the soil already holds plenty. Inhibition not quantified in the cited work; conservative 40% cut above 120 kg residual N/ha."
+  },
+  {
+    "id": "alkalinePhAmplifiesTakeAllLoss",
+    "when": { "var": "ph", "curve": [[3.5, 0], [5.5, 0], [6.6, 0.3], [7.2, 0.8], [7.8, 1], [8.5, 1]] },
+    "target": { "kind": "response", "var": "pathogen:take_all" },
+    "multiplier": 1.4,
+    "crops": "tag:cereal",
+    "source": "smiley_wsu_acid_root_disease",
+    "confidence": "medium",
+    "note": "Take-all is more severe in alkaline than acid soil and greatly reduced when rhizosphere pH is below 6.6 (Smiley, WSU). The review gives the threshold, not a yield-loss ratio, so a conservative 1.4x above pH 7.2."
+  }
+]
