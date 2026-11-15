@@ -1,26 +1,37 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'app/app_theme.dart';
+import 'components/account_button.dart';
 import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
 import 'components/map_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
 import 'pages/area_map_page.dart';
+import 'pages/auth_page.dart';
 import 'pages/plot_page.dart';
+import 'repositories/auth_store.dart';
 import 'repositories/selected_plot_store.dart';
 import 'screens/overlays_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final plotStore = SelectedPlotStore();
-  await plotStore.load();
-  runApp(FieldShiftApp(plotStore: plotStore));
+  final authStore = AuthStore();
+  await Future.wait([plotStore.load(), authStore.load()]);
+  runApp(FieldShiftApp(plotStore: plotStore, authStore: authStore));
 }
 
 class FieldShiftApp extends StatefulWidget {
-  const FieldShiftApp({super.key, required this.plotStore});
+  const FieldShiftApp({
+    super.key,
+    required this.plotStore,
+    required this.authStore,
+  });
 
   final SelectedPlotStore plotStore;
+  final AuthStore authStore;
 
   @override
   State<FieldShiftApp> createState() => _FieldShiftAppState();
@@ -40,14 +51,38 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
       // ones for package:flutter/material instead.
       localizationsDelegates: const [
         AppLocalizations.delegate,
+        FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
+      // forui look (green field palette), light or dark like the phone. The
+      // Material theme is derived from it so both kinds of widgets match.
+      theme: AppTheme.material(AppTheme.light),
+      darkTheme: AppTheme.material(AppTheme.dark),
+      builder: (context, child) => FTheme(
+        data: AppTheme.of(Theme.of(context).brightness),
+        child: child!,
+      ),
       // No SafeArea here: the map runs edge to edge and keeps its own
       // controls clear of the notch; the other tabs add their own.
-      home: MyScaffold(
-        plotStore: widget.plotStore,
-        locale: _locale,
-        onLocaleChanged: (locale) => setState(() => _locale = locale),
+      home: ListenableBuilder(
+        listenable: widget.authStore,
+        builder: (context, _) {
+          void onLocaleChanged(Locale locale) =>
+              setState(() => _locale = locale);
+          if (widget.authStore.status == AuthStatus.signedOut) {
+            return AuthPage(
+              store: widget.authStore,
+              locale: _locale,
+              onLocaleChanged: onLocaleChanged,
+            );
+          }
+          return MyScaffold(
+            plotStore: widget.plotStore,
+            authStore: widget.authStore,
+            locale: _locale,
+            onLocaleChanged: onLocaleChanged,
+          );
+        },
       ),
     );
   }
@@ -57,11 +92,13 @@ class MyScaffold extends StatefulWidget {
   const MyScaffold({
     super.key,
     required this.plotStore,
+    required this.authStore,
     required this.locale,
     required this.onLocaleChanged,
   });
 
   final SelectedPlotStore plotStore;
+  final AuthStore authStore;
   final Locale locale;
   final ValueChanged<Locale> onLocaleChanged;
 
@@ -88,7 +125,10 @@ class _MyScaffoldState extends State<MyScaffold> {
           // Full height: the flag sits in the map's own top bar.
           AreaMapPage(
             store: widget.plotStore,
-            topBarAction: flag,
+            topBarActions: [
+              AccountButton(store: widget.authStore),
+              flag,
+            ],
             onParcelChosen: () => setState(() => _selectedIndex = 1),
           ),
           _TabWithFlag(

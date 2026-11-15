@@ -607,5 +607,54 @@
   "addressSuggestionsNone": "No matching address. Check the spelling, or put a comma after the town name.",
   "addressKindPlace": "Town or village",
   "addressKindStreet": "Street",
-  "addressKindAddress": "Address"
+  "addressKindAddress": "Address",
+  "authWelcome": "Welcome to FieldShift",
+  "authTagline": "Plan your crops with NASA satellite data.",
+  "authReadAloudHelp": "Sign in, create an account, or continue without an account.",
+  "authLoginTab": "Sign in",
+  "authRegisterTab": "Create account",
+  "authNameLabel": "Your name (optional)",
+  "authNameHint": "e.g. Jan",
+  "authEmailLabel": "E-mail address",
+  "authEmailHint": "e.g. jan@example.com",
+  "authPasswordLabel": "Password",
+  "authPasswordRule": "At least {count} characters.",
+  "@authPasswordRule": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authLoginButton": "Sign in",
+  "authRegisterButton": "Create account",
+  "authGuestButton": "Continue without an account",
+  "authGuestNote": "You can create an account later.",
+  "authErrorInvalidEmail": "Enter a correct e-mail address, e.g. jan@example.com.",
+  "authErrorPasswordEmpty": "Enter your password.",
+  "authErrorPasswordTooShort": "The password must have at least {count} characters.",
+  "@authErrorPasswordTooShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorEmailTaken": "There is already an account with this e-mail. Sign in instead.",
+  "authErrorInvalidCredentials": "Wrong e-mail or password.",
+  "authErrorServer": "The server is not working right now. Try again in a moment.",
+  "authErrorNoConnection": "No connection to the server. Check the internet.",
+  "authErrorTryGuest": "You can also continue without an account.",
+  "accountTitle": "Account",
+  "accountGuest": "You are using the app without an account.",
+  "accountSignedInAs": "Signed in as {email}",
+  "@accountSignedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountSignOut": "Sign out",
+  "accountSignIn": "Sign in or create an account"
 }

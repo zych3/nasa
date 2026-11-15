@@ -53,6 +53,9 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
 | Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |
+| Create an account and sign in (body: `email`, `password` ≥ 8 chars, `name` optional; answer: `token`, `expiresAt`, `user`; errors as `{"code": ...}`: 400 `invalid_email` / `password_too_short`, 409 `email_taken`, 503 `database_unavailable`) | `POST /api/auth/register` |
+| Sign in (body: `email`, `password`; 401 `invalid_credentials`) | `POST /api/auth/login` |
+| Signed-in user / end this device's session (header `Authorization: Bearer <token>`) | `GET /api/auth/me`, `POST /api/auth/logout` |
 
 Keep this table and the example JSON in `frontend/assets/mock/` in sync with the backend.
 Change the contract only after agreeing with both frontend and backend owners.
@@ -71,6 +74,13 @@ Change the contract only after agreeing with both frontend and backend owners.
 - One widget per file, file names in `snake_case`, classes in `PascalCase`.
 - Use **relative imports** inside `lib/`.
 - Screens call a repository, never `ApiClient` directly. The repository returns mock data from `assets/mock/` when `useMock` is true, otherwise calls the backend.
+- Look: **forui** (`lib/app/app_theme.dart`: green field palette, touch sizes, light/dark like the phone). `main.dart` puts
+  an `FTheme` above every route and derives the Material theme from it, so new widgets can be forui (`FButton`, `FCard`,
+  `FTextField`, ...) or Material and still match. Widget tests that show forui widgets need the same `FTheme` wrapper
+  (see `test/widget_test.dart`).
+- Accounts: the first screen is sign-in / sign-up (`pages/auth_page.dart`) with "continue without an account", so the
+  app never depends on the server to open. `AuthStore` keeps the token on the device; passwords are hashed on the
+  backend (`FieldShift.Web/Accounts/`, tables `user_accounts` and `user_sessions`, migrations `Migrations/Accounts`).
 - Keep state management simple (`setState` or `provider`). Do not add heavy architecture.
 - Backend base URL is a single constant. Remember: `localhost` for desktop/web, `10.0.2.2` for the Android emulator, the computer's LAN IP for a real phone.
 - Run `dart format .` and `flutter analyze` before committing.

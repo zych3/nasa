@@ -893,4 +893,98 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get addressKindAddress => 'Adres';
+
+  @override
+  String get authWelcome => 'Witaj w FieldShift';
+
+  @override
+  String get authTagline => 'Planuj uprawy z danymi satelitarnymi NASA.';
+
+  @override
+  String get authReadAloudHelp =>
+      'Zaloguj się, załóż konto albo kontynuuj bez konta.';
+
+  @override
+  String get authLoginTab => 'Logowanie';
+
+  @override
+  String get authRegisterTab => 'Rejestracja';
+
+  @override
+  String get authNameLabel => 'Imię (nieobowiązkowe)';
+
+  @override
+  String get authNameHint => 'np. Jan';
+
+  @override
+  String get authEmailLabel => 'Adres e-mail';
+
+  @override
+  String get authEmailHint => 'np. jan@poczta.pl';
+
+  @override
+  String get authPasswordLabel => 'Hasło';
+
+  @override
+  String authPasswordRule(int count) {
+    return 'Co najmniej $count znaków.';
+  }
+
+  @override
+  String get authLoginButton => 'Zaloguj się';
+
+  @override
+  String get authRegisterButton => 'Załóż konto';
+
+  @override
+  String get authGuestButton => 'Kontynuuj bez konta';
+
+  @override
+  String get authGuestNote => 'Konto możesz założyć później.';
+
+  @override
+  String get authErrorInvalidEmail =>
+      'Wpisz poprawny adres e-mail, np. jan@poczta.pl.';
+
+  @override
+  String get authErrorPasswordEmpty => 'Wpisz hasło.';
+
+  @override
+  String authErrorPasswordTooShort(int count) {
+    return 'Hasło musi mieć co najmniej $count znaków.';
+  }
+
+  @override
+  String get authErrorEmailTaken =>
+      'Konto z tym adresem e-mail już istnieje. Zaloguj się.';
+
+  @override
+  String get authErrorInvalidCredentials => 'Zły adres e-mail lub hasło.';
+
+  @override
+  String get authErrorServer => 'Serwer teraz nie działa. Spróbuj za chwilę.';
+
+  @override
+  String get authErrorNoConnection =>
+      'Brak połączenia z serwerem. Sprawdź internet.';
+
+  @override
+  String get authErrorTryGuest => 'Możesz też kontynuować bez konta.';
+
+  @override
+  String get accountTitle => 'Konto';
+
+  @override
+  String get accountGuest => 'Korzystasz z aplikacji bez konta.';
+
+  @override
+  String accountSignedInAs(String email) {
+    return 'Zalogowano jako $email';
+  }
+
+  @override
+  String get accountSignOut => 'Wyloguj się';
+
+  @override
+  String get accountSignIn => 'Zaloguj się lub załóż konto';
 }

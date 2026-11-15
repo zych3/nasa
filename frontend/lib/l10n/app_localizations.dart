@@ -1477,6 +1477,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Address'**
   String get addressKindAddress;
+
+  /// No description provided for @authWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to FieldShift'**
+  String get authWelcome;
+
+  /// No description provided for @authTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your crops with NASA satellite data.'**
+  String get authTagline;
+
+  /// No description provided for @authReadAloudHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in, create an account, or continue without an account.'**
+  String get authReadAloudHelp;
+
+  /// No description provided for @authLoginTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authLoginTab;
+
+  /// No description provided for @authRegisterTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get authRegisterTab;
+
+  /// No description provided for @authNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name (optional)'**
+  String get authNameLabel;
+
+  /// No description provided for @authNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Jan'**
+  String get authNameHint;
+
+  /// No description provided for @authEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'E-mail address'**
+  String get authEmailLabel;
+
+  /// No description provided for @authEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. jan@example.com'**
+  String get authEmailHint;
+
+  /// No description provided for @authPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get authPasswordLabel;
+
+  /// No description provided for @authPasswordRule.
+  ///
+  /// In en, this message translates to:
+  /// **'At least {count} characters.'**
+  String authPasswordRule(int count);
+
+  /// No description provided for @authLoginButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get authLoginButton;
+
+  /// No description provided for @authRegisterButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get authRegisterButton;
+
+  /// No description provided for @authGuestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue without an account'**
+  String get authGuestButton;
+
+  /// No description provided for @authGuestNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can create an account later.'**
+  String get authGuestNote;
+
+  /// No description provided for @authErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a correct e-mail address, e.g. jan@example.com.'**
+  String get authErrorInvalidEmail;
+
+  /// No description provided for @authErrorPasswordEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password.'**
+  String get authErrorPasswordEmpty;
+
+  /// No description provided for @authErrorPasswordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'The password must have at least {count} characters.'**
+  String authErrorPasswordTooShort(int count);
+
+  /// No description provided for @authErrorEmailTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'There is already an account with this e-mail. Sign in instead.'**
+  String get authErrorEmailTaken;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong e-mail or password.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is not working right now. Try again in a moment.'**
+  String get authErrorServer;
+
+  /// No description provided for @authErrorNoConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection to the server. Check the internet.'**
+  String get authErrorNoConnection;
+
+  /// No description provided for @authErrorTryGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'You can also continue without an account.'**
+  String get authErrorTryGuest;
+
+  /// No description provided for @accountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get accountTitle;
+
+  /// No description provided for @accountGuest.
+  ///
+  /// In en, this message translates to:
+  /// **'You are using the app without an account.'**
+  String get accountGuest;
+
+  /// No description provided for @accountSignedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {email}'**
+  String accountSignedInAs(String email);
+
+  /// No description provided for @accountSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get accountSignOut;
+
+  /// No description provided for @accountSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in or create an account'**
+  String get accountSignIn;
 }
 
 class _AppLocalizationsDelegate

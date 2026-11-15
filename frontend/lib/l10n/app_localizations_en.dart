@@ -885,4 +885,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addressKindAddress => 'Address';
+
+  @override
+  String get authWelcome => 'Welcome to FieldShift';
+
+  @override
+  String get authTagline => 'Plan your crops with NASA satellite data.';
+
+  @override
+  String get authReadAloudHelp =>
+      'Sign in, create an account, or continue without an account.';
+
+  @override
+  String get authLoginTab => 'Sign in';
+
+  @override
+  String get authRegisterTab => 'Create account';
+
+  @override
+  String get authNameLabel => 'Your name (optional)';
+
+  @override
+  String get authNameHint => 'e.g. Jan';
+
+  @override
+  String get authEmailLabel => 'E-mail address';
+
+  @override
+  String get authEmailHint => 'e.g. jan@example.com';
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String authPasswordRule(int count) {
+    return 'At least $count characters.';
+  }
+
+  @override
+  String get authLoginButton => 'Sign in';
+
+  @override
+  String get authRegisterButton => 'Create account';
+
+  @override
+  String get authGuestButton => 'Continue without an account';
+
+  @override
+  String get authGuestNote => 'You can create an account later.';
+
+  @override
+  String get authErrorInvalidEmail =>
+      'Enter a correct e-mail address, e.g. jan@example.com.';
+
+  @override
+  String get authErrorPasswordEmpty => 'Enter your password.';
+
+  @override
+  String authErrorPasswordTooShort(int count) {
+    return 'The password must have at least $count characters.';
+  }
+
+  @override
+  String get authErrorEmailTaken =>
+      'There is already an account with this e-mail. Sign in instead.';
+
+  @override
+  String get authErrorInvalidCredentials => 'Wrong e-mail or password.';
+
+  @override
+  String get authErrorServer =>
+      'The server is not working right now. Try again in a moment.';
+
+  @override
+  String get authErrorNoConnection =>
+      'No connection to the server. Check the internet.';
+
+  @override
+  String get authErrorTryGuest => 'You can also continue without an account.';
+
+  @override
+  String get accountTitle => 'Account';
+
+  @override
+  String get accountGuest => 'You are using the app without an account.';
+
+  @override
+  String accountSignedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountSignIn => 'Sign in or create an account';
 }

@@ -13,9 +13,13 @@ const String apiBaseUrl = String.fromEnvironment(
 );
 
 class ApiException implements Exception {
-  ApiException(this.message, {this.statusCode});
+  ApiException(this.message, {this.statusCode, this.code});
   final String message;
   final int? statusCode;
+
+  /// Error code from the body (`{"code": "email_taken"}`), when the backend
+  /// sent one. The app maps codes to its own words; never show it raw.
+  final String? code;
 
   @override
   String toString() => 'ApiException: $message';
@@ -42,6 +46,7 @@ class ApiClient {
     String path, {
     Map<String, String>? query,
     String? languageCode,
+    String? authToken,
     Duration timeout = defaultTimeout,
   }) async {
     final uri = Uri.parse('$baseUrl$path').replace(queryParameters: query);
@@ -51,17 +56,12 @@ class ApiClient {
           headers: {
             'Accept': 'application/json',
             'Accept-Language': ?languageCode,
+            if (authToken != null) 'Authorization': 'Bearer $authToken',
           },
         )
         .timeout(timeout);
 
-    if (response.statusCode != 200) {
-      throw ApiException(
-        'GET $path failed with ${response.statusCode}',
-        statusCode: response.statusCode,
-      );
-    }
-    return jsonDecode(utf8.decode(response.bodyBytes));
+    return _decode('GET', path, response);
   }
 
   /// POST with a JSON body. Calculations can take a while (the backend may
@@ -70,6 +70,8 @@ class ApiClient {
     String path,
     Map<String, dynamic> body, {
     String? languageCode,
+    String? authToken,
+    Duration timeout = const Duration(seconds: 120),
   }) async {
     final response = await _http
         .post(
@@ -78,17 +80,35 @@ class ApiClient {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Accept-Language': ?languageCode,
+            if (authToken != null) 'Authorization': 'Bearer $authToken',
           },
           body: jsonEncode(body),
         )
-        .timeout(const Duration(seconds: 120));
+        .timeout(timeout);
 
-    if (response.statusCode != 200) {
-      throw ApiException(
-        'POST $path failed with ${response.statusCode}',
-        statusCode: response.statusCode,
-      );
+    return _decode('POST', path, response);
+  }
+
+  /// The decoded body of a 2xx answer (`null` when empty, e.g. 204).
+  /// Otherwise throws [ApiException] with the body's error `code`, if any.
+  static dynamic _decode(String method, String path, http.Response response) {
+    final ok = response.statusCode >= 200 && response.statusCode < 300;
+    final text = utf8.decode(response.bodyBytes);
+    if (ok) return text.isEmpty ? null : jsonDecode(text);
+
+    String? code;
+    try {
+      final body = jsonDecode(text);
+      if (body is Map<String, dynamic> && body['code'] is String) {
+        code = body['code'] as String;
+      }
+    } catch (_) {
+      // Not JSON (e.g. a proxy error page): no code.
     }
-    return jsonDecode(utf8.decode(response.bodyBytes));
+    throw ApiException(
+      '$method $path failed with ${response.statusCode}',
+      statusCode: response.statusCode,
+      code: code,
+    );
   }
 }
