@@ -229,3 +229,101 @@ public sealed record MapTerrain
     /// <summary>Slope class (Polish): "płasko" (&lt; 2%), "łagodny spadek" (2–6%), "umiarkowany spadek" (6–12%), "stromo" (&gt; 12%).</summary>
     public required string SlopeClass { get; init; }
 }
+
+/// <summary>
+/// Monthly layers for a block of NASA POWER grid cells around a point (<c>/api/map-layers/grid</c>), for drawing
+/// the area around a field as a heat map. Each cell has one value per month, the same as <c>/api/map-layers</c>
+/// returns for any point inside that cell.
+/// </summary>
+public sealed record MapLayersGridResponse
+{
+    /// <summary>Centre of the grid cell that contains the requested point (the middle cell).</summary>
+    public required MapLocation Center { get; init; }
+
+    /// <summary>Size of one cell in degrees: 0.5° latitude × 0.625° longitude (NASA POWER / MERRA-2).</summary>
+    public required GridCellSize CellSize { get; init; }
+
+    /// <summary>Number of rows (south → north) and columns (west → east) of the block.</summary>
+    public required int Rows { get; init; }
+
+    /// <inheritdoc cref="Rows"/>
+    public required int Cols { get; init; }
+
+    /// <summary>First and last month of the series (inclusive).</summary>
+    public required MapPeriod Period { get; init; }
+
+    /// <summary>Months of the series, "yyyy-MM", ascending. Every series in <c>layers[].values</c> has this length.</summary>
+    public required IReadOnlyList<string> Dates { get; init; }
+
+    /// <summary>Index into <c>dates</c> of the latest month.</summary>
+    public required int DefaultIndex { get; init; }
+
+    /// <summary>Cells of the block. Cells outside the globe (near the poles or the date line) are left out.</summary>
+    public required IReadOnlyList<GridCell> Cells { get; init; }
+
+    /// <summary>Requested layers, sorted by <c>order</c>.</summary>
+    public required IReadOnlyList<GridLayer> Layers { get; init; }
+
+    /// <summary>Data quality notes (Polish) to show to the user.</summary>
+    public required IReadOnlyList<string> Warnings { get; init; }
+
+    /// <summary>When this response was generated (UTC, ISO 8601).</summary>
+    public required DateTimeOffset GeneratedAtUtc { get; init; }
+}
+
+/// <summary>Size of a grid cell in degrees.</summary>
+public sealed record GridCellSize
+{
+    /// <summary>Height in degrees of latitude.</summary>
+    public required double Lat { get; init; }
+
+    /// <summary>Width in degrees of longitude.</summary>
+    public required double Lon { get; init; }
+}
+
+/// <summary>One grid cell: its place in the block and its centre.</summary>
+public sealed record GridCell
+{
+    /// <summary>Row, 0 = southernmost.</summary>
+    public required int Row { get; init; }
+
+    /// <summary>Column, 0 = westernmost.</summary>
+    public required int Col { get; init; }
+
+    /// <summary>Latitude of the cell centre.</summary>
+    public required double Lat { get; init; }
+
+    /// <summary>Longitude of the cell centre.</summary>
+    public required double Lon { get; init; }
+}
+
+/// <summary>One layer over the whole block.</summary>
+public sealed record GridLayer
+{
+    /// <summary>Layer id, e.g. "precipitation".</summary>
+    public required string Id { get; init; }
+
+    /// <summary>Display name (Polish).</summary>
+    public required string Name { get; init; }
+
+    /// <summary>Unit of the values.</summary>
+    public required string Unit { get; init; }
+
+    /// <summary>Number of decimal places the values are rounded to.</summary>
+    public required int Decimals { get; init; }
+
+    /// <summary>True for derived estimates (not measured).</summary>
+    public required bool IsEstimate { get; init; }
+
+    /// <summary>Data source.</summary>
+    public required string Source { get; init; }
+
+    /// <summary>Colour scale for the values (the same as in <c>/api/map-layers</c>).</summary>
+    public required Legend Legend { get; init; }
+
+    /// <summary>
+    /// One monthly series per cell, in the order of <c>cells</c>; each has the length of <c>dates</c>. Null = no
+    /// data for that month; a cell NASA POWER did not answer for has only nulls.
+    /// </summary>
+    public required IReadOnlyList<IReadOnlyList<double?>> Values { get; init; }
+}

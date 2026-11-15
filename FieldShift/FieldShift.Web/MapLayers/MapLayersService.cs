@@ -23,7 +23,7 @@ public sealed class MapLayersService(
     TimeProvider time,
     ILogger<MapLayersService> logger)
 {
-    private static readonly string[] BaseParameters = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "GWETROOT"];
+    internal static readonly string[] BaseParameters = ["T2M", "T2M_MAX", "T2M_MIN", "PRECTOTCORR", "GWETROOT"];
     private const string EvaporationParameter = "EVPTRNS";
     private static readonly TimeSpan CacheTtl = TimeSpan.FromHours(24);
 
