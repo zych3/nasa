@@ -1001,4 +1001,105 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountSignIn => 'Sign in or create an account';
+
+  @override
+  String get myCropsTitle => 'My crops';
+
+  @override
+  String get myCropsIntro =>
+      'Your crops and where they grow. Later the app will check whether they are at risk; it checks only the active ones.';
+
+  @override
+  String get myCropsEmpty =>
+      'You have no saved crops yet. Press \"Add a crop\" and point the place on the map.';
+
+  @override
+  String get myCropsRetry => 'Try again';
+
+  @override
+  String get myCropsAdd => 'Add a crop';
+
+  @override
+  String get myCropsUnknownCrop => 'Unknown crop';
+
+  @override
+  String get myCropsActive => 'Active';
+
+  @override
+  String get myCropsActiveOn => 'The app will watch this crop.';
+
+  @override
+  String get myCropsActiveOff =>
+      'Switched off: the app will not watch this crop.';
+
+  @override
+  String get myCropsEdit => 'Change';
+
+  @override
+  String myCropsCoordinates(String latitude, String longitude) {
+    return 'Place: $latitude, $longitude';
+  }
+
+  @override
+  String get myCropsErrorSignedOut =>
+      'You are signed out. Sign in again under \"Account\".';
+
+  @override
+  String get myCropsErrorRejected =>
+      'This could not be saved. Check the crop and try again.';
+
+  @override
+  String get myCropsAddTitle => 'Add a crop';
+
+  @override
+  String get myCropsEditTitle => 'Change the crop';
+
+  @override
+  String get myCropsPlace => 'Place';
+
+  @override
+  String get myCropsCropLabel => 'Crop';
+
+  @override
+  String get myCropsChooseCrop => 'Choose a crop';
+
+  @override
+  String get myCropsChooseCropFirst => 'Choose a crop first.';
+
+  @override
+  String get myCropsLabelField => 'Name of the place (optional)';
+
+  @override
+  String get myCropsLabelHint => 'e.g. field by the river';
+
+  @override
+  String get myCropsSave => 'Save';
+
+  @override
+  String get myCropsNoPlace => 'No place pointed yet.';
+
+  @override
+  String get myCropsPickOnMap => 'Point the exact place on the map';
+
+  @override
+  String get myCropsPlaceFirst => 'Point the place on the map first.';
+
+  @override
+  String get myCropsFindingParcel => 'Looking for the registered parcel there…';
+
+  @override
+  String get myCropsOnParcel => 'On a registered parcel.';
+
+  @override
+  String get pickerTitle => 'Point the place';
+
+  @override
+  String get pickerHelp =>
+      'Move the map, or tap it, so that the pin shows where the crop grows. Zoom in to point it more exactly.';
+
+  @override
+  String get pickerPin => 'Pin: the chosen place';
+
+  @override
+  String get pickerConfirm => 'Choose this place';
 }

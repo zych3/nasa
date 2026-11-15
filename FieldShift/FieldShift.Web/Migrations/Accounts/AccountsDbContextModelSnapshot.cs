@@ -51,6 +51,59 @@ namespace FieldShift.Web.Migrations.Accounts
                     b.ToTable("users", (string)null);
                 });
 
+            modelBuilder.Entity("FieldShift.Web.Accounts.UserCrop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CropId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("crop_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("text")
+                        .HasColumnName("label");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("latitude");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision")
+                        .HasColumnName("longitude");
+
+                    b.Property<string>("ParcelId")
+                        .HasColumnType("text")
+                        .HasColumnName("parcel_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("user_crops", (string)null);
+                });
+
             modelBuilder.Entity("FieldShift.Web.Accounts.UserSession", b =>
                 {
                     b.Property<string>("TokenHash")
@@ -78,6 +131,17 @@ namespace FieldShift.Web.Migrations.Accounts
                     b.ToTable("user_sessions", (string)null);
                 });
 
+            modelBuilder.Entity("FieldShift.Web.Accounts.UserCrop", b =>
+                {
+                    b.HasOne("FieldShift.Web.Accounts.User", "User")
+                        .WithMany("Crops")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("FieldShift.Web.Accounts.UserSession", b =>
                 {
                     b.HasOne("FieldShift.Web.Accounts.User", "User")
@@ -91,6 +155,8 @@ namespace FieldShift.Web.Migrations.Accounts
 
             modelBuilder.Entity("FieldShift.Web.Accounts.User", b =>
                 {
+                    b.Navigation("Crops");
+
                     b.Navigation("Sessions");
                 });
 #pragma warning restore 612, 618

@@ -1675,6 +1675,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in or create an account'**
   String get accountSignIn;
+
+  /// No description provided for @myCropsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My crops'**
+  String get myCropsTitle;
+
+  /// No description provided for @myCropsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your crops and where they grow. Later the app will check whether they are at risk; it checks only the active ones.'**
+  String get myCropsIntro;
+
+  /// No description provided for @myCropsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no saved crops yet. Press \"Add a crop\" and point the place on the map.'**
+  String get myCropsEmpty;
+
+  /// No description provided for @myCropsRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get myCropsRetry;
+
+  /// No description provided for @myCropsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a crop'**
+  String get myCropsAdd;
+
+  /// No description provided for @myCropsUnknownCrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown crop'**
+  String get myCropsUnknownCrop;
+
+  /// No description provided for @myCropsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get myCropsActive;
+
+  /// No description provided for @myCropsActiveOn.
+  ///
+  /// In en, this message translates to:
+  /// **'The app will watch this crop.'**
+  String get myCropsActiveOn;
+
+  /// No description provided for @myCropsActiveOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Switched off: the app will not watch this crop.'**
+  String get myCropsActiveOff;
+
+  /// No description provided for @myCropsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get myCropsEdit;
+
+  /// No description provided for @myCropsCoordinates.
+  ///
+  /// In en, this message translates to:
+  /// **'Place: {latitude}, {longitude}'**
+  String myCropsCoordinates(String latitude, String longitude);
+
+  /// No description provided for @myCropsErrorSignedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'You are signed out. Sign in again under \"Account\".'**
+  String get myCropsErrorSignedOut;
+
+  /// No description provided for @myCropsErrorRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'This could not be saved. Check the crop and try again.'**
+  String get myCropsErrorRejected;
+
+  /// No description provided for @myCropsAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a crop'**
+  String get myCropsAddTitle;
+
+  /// No description provided for @myCropsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the crop'**
+  String get myCropsEditTitle;
+
+  /// No description provided for @myCropsPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Place'**
+  String get myCropsPlace;
+
+  /// No description provided for @myCropsCropLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crop'**
+  String get myCropsCropLabel;
+
+  /// No description provided for @myCropsChooseCrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a crop'**
+  String get myCropsChooseCrop;
+
+  /// No description provided for @myCropsChooseCropFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a crop first.'**
+  String get myCropsChooseCropFirst;
+
+  /// No description provided for @myCropsLabelField.
+  ///
+  /// In en, this message translates to:
+  /// **'Name of the place (optional)'**
+  String get myCropsLabelField;
+
+  /// No description provided for @myCropsLabelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. field by the river'**
+  String get myCropsLabelHint;
+
+  /// No description provided for @myCropsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get myCropsSave;
+
+  /// No description provided for @myCropsNoPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'No place pointed yet.'**
+  String get myCropsNoPlace;
+
+  /// No description provided for @myCropsPickOnMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the exact place on the map'**
+  String get myCropsPickOnMap;
+
+  /// No description provided for @myCropsPlaceFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the place on the map first.'**
+  String get myCropsPlaceFirst;
+
+  /// No description provided for @myCropsFindingParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for the registered parcel there…'**
+  String get myCropsFindingParcel;
+
+  /// No description provided for @myCropsOnParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'On a registered parcel.'**
+  String get myCropsOnParcel;
+
+  /// No description provided for @pickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the place'**
+  String get pickerTitle;
+
+  /// No description provided for @pickerHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move the map, or tap it, so that the pin shows where the crop grows. Zoom in to point it more exactly.'**
+  String get pickerHelp;
+
+  /// No description provided for @pickerPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin: the chosen place'**
+  String get pickerPin;
+
+  /// No description provided for @pickerConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose this place'**
+  String get pickerConfirm;
 }
 
 class _AppLocalizationsDelegate

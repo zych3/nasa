@@ -688,5 +688,46 @@
   "accountTitle": "Account",
   "accountGuest": "You are using the app without an account.",
   "accountSignOut": "Sign out",
-  "accountSignIn": "Sign in or create an account"
+  "accountSignIn": "Sign in or create an account",
+  "myCropsTitle": "My crops",
+  "myCropsIntro": "Your crops and where they grow. Later the app will check whether they are at risk; it checks only the active ones.",
+  "myCropsEmpty": "You have no saved crops yet. Press \"Add a crop\" and point the place on the map.",
+  "myCropsRetry": "Try again",
+  "myCropsAdd": "Add a crop",
+  "myCropsUnknownCrop": "Unknown crop",
+  "myCropsActive": "Active",
+  "myCropsActiveOn": "The app will watch this crop.",
+  "myCropsActiveOff": "Switched off: the app will not watch this crop.",
+  "myCropsEdit": "Change",
+  "myCropsCoordinates": "Place: {latitude}, {longitude}",
+  "@myCropsCoordinates": {
+    "placeholders": {
+      "latitude": {
+        "type": "String"
+      },
+      "longitude": {
+        "type": "String"
+      }
+    }
+  },
+  "myCropsErrorSignedOut": "You are signed out. Sign in again under \"Account\".",
+  "myCropsErrorRejected": "This could not be saved. Check the crop and try again.",
+  "myCropsAddTitle": "Add a crop",
+  "myCropsEditTitle": "Change the crop",
+  "myCropsPlace": "Place",
+  "myCropsCropLabel": "Crop",
+  "myCropsChooseCrop": "Choose a crop",
+  "myCropsChooseCropFirst": "Choose a crop first.",
+  "myCropsLabelField": "Name of the place (optional)",
+  "myCropsLabelHint": "e.g. field by the river",
+  "myCropsSave": "Save",
+  "myCropsNoPlace": "No place pointed yet.",
+  "myCropsPickOnMap": "Point the exact place on the map",
+  "myCropsPlaceFirst": "Point the place on the map first.",
+  "myCropsFindingParcel": "Looking for the registered parcel there…",
+  "myCropsOnParcel": "On a registered parcel.",
+  "pickerTitle": "Point the place",
+  "pickerHelp": "Move the map, or tap it, so that the pin shows where the crop grows. Zoom in to point it more exactly.",
+  "pickerPin": "Pin: the chosen place",
+  "pickerConfirm": "Choose this place"
 }

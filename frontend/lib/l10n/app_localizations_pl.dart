@@ -1008,4 +1008,106 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get accountSignIn => 'Zaloguj się lub załóż konto';
+
+  @override
+  String get myCropsTitle => 'Moje uprawy';
+
+  @override
+  String get myCropsIntro =>
+      'Twoje uprawy i miejsca, gdzie rosną. Później aplikacja sprawdzi, czy nie są zagrożone; sprawdza tylko aktywne.';
+
+  @override
+  String get myCropsEmpty =>
+      'Nie masz jeszcze zapisanych upraw. Naciśnij „Dodaj uprawę” i wskaż miejsce na mapie.';
+
+  @override
+  String get myCropsRetry => 'Spróbuj ponownie';
+
+  @override
+  String get myCropsAdd => 'Dodaj uprawę';
+
+  @override
+  String get myCropsUnknownCrop => 'Nieznana uprawa';
+
+  @override
+  String get myCropsActive => 'Aktywna';
+
+  @override
+  String get myCropsActiveOn => 'Aplikacja będzie pilnować tej uprawy.';
+
+  @override
+  String get myCropsActiveOff =>
+      'Wyłączona: aplikacja nie będzie pilnować tej uprawy.';
+
+  @override
+  String get myCropsEdit => 'Zmień';
+
+  @override
+  String myCropsCoordinates(String latitude, String longitude) {
+    return 'Miejsce: $latitude, $longitude';
+  }
+
+  @override
+  String get myCropsErrorSignedOut =>
+      'Nie jesteś zalogowany. Zaloguj się ponownie w „Konto”.';
+
+  @override
+  String get myCropsErrorRejected =>
+      'Nie udało się zapisać. Sprawdź uprawę i spróbuj ponownie.';
+
+  @override
+  String get myCropsAddTitle => 'Dodaj uprawę';
+
+  @override
+  String get myCropsEditTitle => 'Zmień uprawę';
+
+  @override
+  String get myCropsPlace => 'Miejsce';
+
+  @override
+  String get myCropsCropLabel => 'Uprawa';
+
+  @override
+  String get myCropsChooseCrop => 'Wybierz uprawę';
+
+  @override
+  String get myCropsChooseCropFirst => 'Najpierw wybierz uprawę.';
+
+  @override
+  String get myCropsLabelField => 'Nazwa miejsca (nieobowiązkowa)';
+
+  @override
+  String get myCropsLabelHint => 'np. pole przy rzece';
+
+  @override
+  String get myCropsSave => 'Zapisz';
+
+  @override
+  String get myCropsNoPlace => 'Nie wskazano jeszcze miejsca.';
+
+  @override
+  String get myCropsPickOnMap => 'Wskaż dokładne miejsce na mapie';
+
+  @override
+  String get myCropsPlaceFirst => 'Najpierw wskaż miejsce na mapie.';
+
+  @override
+  String get myCropsFindingParcel =>
+      'Szukam zarejestrowanej działki w tym miejscu…';
+
+  @override
+  String get myCropsOnParcel => 'Na zarejestrowanej działce.';
+
+  @override
+  String get pickerTitle => 'Wskaż miejsce';
+
+  @override
+  String get pickerHelp =>
+      'Przesuń mapę albo dotknij ją, aby pinezka pokazała, gdzie rośnie uprawa. Przybliż mapę, aby wskazać dokładniej.';
+
+  @override
+  String get pickerPin => 'Pinezka: wybrane miejsce';
+
+  @override
+  String get pickerConfirm => 'Wybierz to miejsce';
 }
