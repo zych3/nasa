@@ -114,6 +114,9 @@ Change the contract only after agreeing with both frontend and backend owners.
   shows the soil-agricultural map's complex with soil type, texture and the register's classes, and the map draws
   that map's tiles (`/api/map-tiles/soil-map/…`, from zoom 13). Complexes have no order, so `OverlayLayer.ordered`
   is false (no level bars). Without parcel data (other country, no parcel, source down) it falls back to SoilGrids.
+- Plant stress (`PlantStressOverlay`, estimate from dry root zone and hot days) has a heat map like the other
+  NASA overlays. Erosion has none: the backend estimates it with the slope of the registered parcel at the point
+  (terrain provider, Poland: GUGiK NMT 1 m, cached), falling back to no slope where there is no parcel.
 - The map keeps the field in view: the camera goes to the field (heat map: one NASA cell around it), and the round
   button in its bottom corner brings it back. The language flag floats in the top corner of every tab
   (`WithFloatingButton`, `MapButton`), with no bar of its own.

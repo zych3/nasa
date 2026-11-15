@@ -125,7 +125,7 @@
   "overlayStepsFrost": "{step, select, s0{bez mrozu} s1{kilka dni mrozu} s2{częsty mróz} other{długi mróz}}",
   "overlayHeatTitle": "Upały",
   "overlayStepsHeat": "{step, select, s0{brak upałów} s1{kilka dni upału} s2{częste upały} other{bardzo częste upały}}",
-  "overlayErosionTitle": "Zmywanie gleby",
+  "overlayErosionTitle": "Erozja (zmywanie gleby)",
   "overlayStepsRisk": "{step, select, s0{niski} s1{umiarkowany} s2{wysoki} other{bardzo wysoki}}",
   "readAloud": "Przeczytaj na głos",
   "readAloudStop": "Zatrzymaj czytanie",
@@ -221,5 +221,6 @@
   "reasonDiseaseDown": "{crop} zmniejsza choroby i szkodniki.",
   "reasonCoverUp": "{crop} chroni glebę zimą.",
   "reasonCompactionUp": "{crop} zagęszcza glebę.",
-  "reasonCompactionDown": "{crop} spulchnia glebę."
+  "reasonCompactionDown": "{crop} spulchnia glebę.",
+  "overlayPlantStressTitle": "Stres roślin"
 }

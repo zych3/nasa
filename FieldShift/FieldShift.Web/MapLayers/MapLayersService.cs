@@ -1,3 +1,4 @@
+using FieldShift.Web.Countries;
 using System.Globalization;
 using FieldShift.Web.DTOs;
 using FieldShift.Web.FieldData;
@@ -21,6 +22,8 @@ public sealed class MapLayersService(
     NasaPowerClient nasaClient,
     ISoilPropertiesProvider soilProvider,
     FieldDataCache fieldData,
+    IEnumerable<ICountryProvider> countries,
+    IEnumerable<ITerrainProvider> terrains,
     IMemoryCache cache,
     IOptions<DemoLocationsOptions> demoLocations,
     TimeProvider time,
@@ -42,20 +45,29 @@ public sealed class MapLayersService(
     public const string NoSoilForErosionWarning =
         "Brak danych glebowych (ISRIC SoilGrids) – ryzyko erozji liczone dla przeciętnej podatności gleby (0,6).";
 
+    public const string ErosionSourceWithoutTerrain = "Szacunek z NASA POWER (PRECTOTCORR) i ISRIC SoilGrids";
+
     public const string NoSoilWarning = "Brak danych glebowych (ISRIC SoilGrids) dla tego punktu.";
 
     public const string NoEvaporationWarning =
         "Dane o parowaniu (EVPTRNS) są niedostępne w NASA POWER – pominięto warstwę „Parowanie”.";
 
+    /// <summary>Slope of the registered parcel at the point, for the erosion estimate.</summary>
+    private sealed record ParcelSlope(string ParcelId, double SlopePct, string Source);
+
     public async Task<MapLayersResponse> GetAsync(MapLayersRequest request, CancellationToken ct)
     {
+        // The parcel is looked up at the exact point (the NASA data below uses a rounded one).
+        var parcelSlope = request.LayerIds.Contains(LayerDefinitions.ErosionRisk)
+            ? await FindParcelSlopeAsync(request.Lat, request.Lon, ct)
+            : null;
         request = request with
         {
             Lat = Math.Round(request.Lat, 2, MidpointRounding.AwayFromZero),
             Lon = Math.Round(request.Lon, 2, MidpointRounding.AwayFromZero),
         };
         var cacheKey = string.Create(CultureInfo.InvariantCulture,
-            $"map-layers:{request.Lat:F2}:{request.Lon:F2}:{request.From}:{request.To}:{string.Join(',', request.LayerIds)}");
+            $"map-layers:{request.Lat:F2}:{request.Lon:F2}:{request.From}:{request.To}:{string.Join(',', request.LayerIds)}:{parcelSlope?.ParcelId}");
 
         if (cache.TryGetValue(cacheKey, out MapLayersResponse? cached) && cached is not null)
         {
@@ -72,11 +84,56 @@ public sealed class MapLayersService(
 
         var (nasa, evaporationAvailable) = nasaTask.Result;
         var soil = FieldProfileService.BuildSoilProfile(soilTask.Result);
-        var demoLocation = DerivedIndices.FindDemoLocation(request.Lat, request.Lon, demoLocations.Value.Locations);
+        var demoLocation = parcelSlope is null
+            ? DerivedIndices.FindDemoLocation(request.Lat, request.Lon, demoLocations.Value.Locations)
+            : new DemoLocation { Name = parcelSlope.ParcelId, Lat = request.Lat, Lon = request.Lon, SlopePct = parcelSlope.SlopePct };
 
-        var response = Compose(request, nasa, evaporationAvailable, soil, demoLocation, time.GetUtcNow());
+        var response = Compose(request, nasa, evaporationAvailable, soil, demoLocation, time.GetUtcNow(),
+            parcelSlope?.Source);
         cache.Set(cacheKey, response, CacheTtl);
         return response;
+    }
+
+    /// <summary>
+    /// The registered parcel at the point and its slope from the country's terrain model (Poland: GUGiK, 1 m),
+    /// through the field data cache; null where there is no parcel, no terrain source or a source fails (erosion
+    /// is then estimated without terrain, as before). The parcel lookup is kept in memory for a day.
+    /// </summary>
+    private async Task<ParcelSlope?> FindParcelSlopeAsync(double lat, double lon, CancellationToken ct)
+    {
+        var key = string.Create(CultureInfo.InvariantCulture, $"parcel-slope:{lat:F5}:{lon:F5}");
+        if (cache.TryGetValue(key, out ParcelSlope? known))
+        {
+            return known;
+        }
+
+        ParcelSlope? result = null;
+        try
+        {
+            foreach (var country in countries)
+            {
+                if (await country.GetFieldAtAsync(lat, lon, ct) is not { } field)
+                {
+                    continue;
+                }
+
+                if (FieldDataCache.Pick(terrains, field) is { } terrain
+                    && (await fieldData.GetAsync(terrain, field, ct)).Value is { } info)
+                {
+                    result = new ParcelSlope(field.ParcelId!, info.SlopePct, info.Source);
+                }
+
+                break;
+            }
+        }
+        catch (Exception ex) when (!ct.IsCancellationRequested)
+        {
+            logger.LogWarning(ex, "Parcel slope for {Lat},{Lon} unavailable; erosion without terrain", lat, lon);
+            return null;
+        }
+
+        cache.Set(key, result, CacheTtl);
+        return result;
     }
 
     private async Task<(NasaPowerDailyData Data, bool EvaporationAvailable)> FetchNasaAsync(
@@ -139,7 +196,8 @@ public sealed class MapLayersService(
         bool evaporationAvailable,
         SoilProfile? soil,
         DemoLocation? demoLocation,
-        DateTimeOffset generatedAtUtc)
+        DateTimeOffset generatedAtUtc,
+        string? terrainSource = null)
     {
         var climate = MonthlyAggregator.Aggregate(nasa, request.From, request.To);
         var months = climate.Months;
@@ -191,7 +249,14 @@ public sealed class MapLayersService(
                 _ => throw new InvalidOperationException($"No data mapping for layer '{definition.Id}'."),
             };
 
-            layers.Add(BuildSeries(definition, values, extra, months));
+            var series = BuildSeries(definition, values, extra, months);
+            if (definition.Id == LayerDefinitions.ErosionRisk && terrainSource is not null)
+            {
+                // The slope is the parcel's own, not SRTM's.
+                series = series with { Source = $"{ErosionSourceWithoutTerrain}, spadek działki: {terrainSource}" };
+            }
+
+            layers.Add(series);
         }
 
         var withGaps = layers.Where(l => l.Values.Any(v => v is null)).Select(l => l.Name).ToList();
@@ -237,7 +302,7 @@ public sealed class MapLayersService(
                     ? null
                     : new MapTerrain
                     {
-                        Source = "NASA SRTM (przez AppEEARS)",
+                        Source = terrainSource ?? "NASA SRTM (przez AppEEARS)",
                         SlopePct = demoLocation.SlopePct,
                         SlopeClass = DerivedIndices.SlopeClass(demoLocation.SlopePct),
                     },

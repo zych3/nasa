@@ -341,7 +341,7 @@
       }
     }
   },
-  "overlayErosionTitle": "Soil erosion",
+  "overlayErosionTitle": "Erosion (soil wash-off)",
   "overlayStepsRisk": "{step, select, s0{low} s1{moderate} s2{high} other{very high}}",
   "@overlayStepsRisk": {
     "placeholders": {
@@ -600,5 +600,6 @@
         "type": "String"
       }
     }
-  }
+  },
+  "overlayPlantStressTitle": "Plant stress"
 }

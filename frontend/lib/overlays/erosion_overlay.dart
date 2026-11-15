@@ -4,7 +4,8 @@ import '../l10n/app_localizations.dart';
 import 'monthly_layer_overlay.dart';
 
 /// Estimated risk of soil being washed away by rain, 0–100 (backend estimate from NASA
-/// POWER heavy rain, ISRIC SoilGrids and terrain slope; shown as "Estimate").
+/// POWER heavy rain, ISRIC SoilGrids and the slope of the parcel at the point, from
+/// the country's terrain model (Poland: GUGiK, 1 m); shown as "Estimate").
 ///
 /// No heat map: the risk depends on the soil of the field, and the backend
 /// has soil for single points only, so the map shows a circle.
