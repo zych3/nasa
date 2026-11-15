@@ -38,7 +38,7 @@ void main() {
     expect(find.text(pl.navConditions), findsOneWidget);
 
     await tester.tap(find.text(pl.navConditions));
-    await tester.pump();
+    await tester.pumpAndSettle();
     expect(selected, 2);
   });
 

@@ -30,7 +30,7 @@ class AreaMapPage extends StatefulWidget {
     super.key,
     required this.store,
     required this.onParcelChosen,
-    this.topBarAction,
+    this.topBarActions = const [],
   });
 
   final SelectedPlotStore store;
@@ -38,9 +38,10 @@ class AreaMapPage extends StatefulWidget {
   /// Called after the user chose a parcel (e.g. to switch to "My field").
   final VoidCallback onParcelChosen;
 
-  /// Extra round button in the top bar, left of the location button
-  /// (e.g. the language flag). It is given a 48 × 48 box.
-  final Widget? topBarAction;
+  /// Extra round buttons in the top bar, left of the location button
+  /// (e.g. the account button and the language flag). Each is given a
+  /// 48 × 48 box.
+  final List<Widget> topBarActions;
 
   @override
   State<AreaMapPage> createState() => _AreaMapPageState();
@@ -309,7 +310,7 @@ class _AreaMapPageState extends State<AreaMapPage> {
                   child: Row(
                     children: [
                       Expanded(child: MapSearchBar(onSearch: _searchAddress)),
-                      if (widget.topBarAction case final action?) ...[
+                      for (final action in widget.topBarActions) ...[
                         const SizedBox(width: 8),
                         MapButton(child: action),
                       ],

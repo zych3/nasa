@@ -607,5 +607,86 @@
   "addressSuggestionsNone": "No matching address. Check the spelling, or put a comma after the town name.",
   "addressKindPlace": "Town or village",
   "addressKindStreet": "Street",
-  "addressKindAddress": "Address"
+  "addressKindAddress": "Address",
+  "authWelcome": "Welcome to FieldShift",
+  "authTagline": "Plan your crops with NASA satellite data.",
+  "authReadAloudHelp": "Sign in or create an account. The app also works without an account.",
+  "authLoginTab": "Sign in",
+  "authRegisterTab": "Create account",
+  "authUsernameLabel": "Login",
+  "authUsernameHint": "e.g. jan_kowalski",
+  "authUsernameRule": "{min} to {max} letters or digits, without spaces.",
+  "@authUsernameRule": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorInvalidUsername": "The login must have {min} to {max} letters or digits, without spaces. You can use . _ -",
+  "@authErrorInvalidUsername": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorUsernameEmpty": "Enter your login.",
+  "authErrorUsernameTaken": "This login is already taken. Choose another one or sign in.",
+  "authErrorPasswordTooLong": "The password can have at most {count} characters.",
+  "@authErrorPasswordTooLong": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorInvalidCredentials": "Wrong login or password.",
+  "authTestLoginButton": "Test sign-in (no account needed)",
+  "authTestLoginNote": "For testing only: signs in to the shared test account.",
+  "accountSignedInAs": "Signed in as {username}",
+  "@accountSignedInAs": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "authPasswordLabel": "Password",
+  "authShowPassword": "Show password",
+  "authHidePassword": "Hide password",
+  "authPasswordRule": "At least {count} characters.",
+  "@authPasswordRule": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authLoginButton": "Sign in",
+  "authRegisterButton": "Create account",
+  "authGuestButton": "Back to the app without an account",
+  "authGuestNote": "The app also works without an account.",
+  "authErrorPasswordEmpty": "Enter your password.",
+  "authErrorPasswordTooShort": "The password must have at least {count} characters.",
+  "@authErrorPasswordTooShort": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorServer": "The server is not working right now. Try again in a moment.",
+  "authErrorNoConnection": "No connection to the server. Check the internet.",
+  "authErrorTryGuest": "You can also continue without an account.",
+  "accountTitle": "Account",
+  "accountGuest": "You are using the app without an account.",
+  "accountSignOut": "Sign out",
+  "accountSignIn": "Sign in or create an account"
 }

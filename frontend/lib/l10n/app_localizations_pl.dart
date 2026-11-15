@@ -893,4 +893,119 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get addressKindAddress => 'Adres';
+
+  @override
+  String get authWelcome => 'Witaj w FieldShift';
+
+  @override
+  String get authTagline => 'Planuj uprawy z danymi satelitarnymi NASA.';
+
+  @override
+  String get authReadAloudHelp =>
+      'Zaloguj się albo załóż konto. Aplikacja działa też bez konta.';
+
+  @override
+  String get authLoginTab => 'Logowanie';
+
+  @override
+  String get authRegisterTab => 'Rejestracja';
+
+  @override
+  String get authUsernameLabel => 'Login';
+
+  @override
+  String get authUsernameHint => 'np. jan_kowalski';
+
+  @override
+  String authUsernameRule(int min, int max) {
+    return 'Od $min do $max liter lub cyfr, bez spacji.';
+  }
+
+  @override
+  String authErrorInvalidUsername(int min, int max) {
+    return 'Login musi mieć od $min do $max liter lub cyfr, bez spacji. Można użyć . _ -';
+  }
+
+  @override
+  String get authErrorUsernameEmpty => 'Wpisz login.';
+
+  @override
+  String get authErrorUsernameTaken =>
+      'Ten login jest już zajęty. Wybierz inny albo zaloguj się.';
+
+  @override
+  String authErrorPasswordTooLong(int count) {
+    return 'Hasło może mieć najwyżej $count znaków.';
+  }
+
+  @override
+  String get authErrorInvalidCredentials => 'Zły login lub hasło.';
+
+  @override
+  String get authTestLoginButton => 'Zaloguj testowo (bez konta)';
+
+  @override
+  String get authTestLoginNote =>
+      'Tylko do testów: logowanie na wspólne konto testowe.';
+
+  @override
+  String accountSignedInAs(String username) {
+    return 'Zalogowano jako $username';
+  }
+
+  @override
+  String get authPasswordLabel => 'Hasło';
+
+  @override
+  String get authShowPassword => 'Pokaż hasło';
+
+  @override
+  String get authHidePassword => 'Ukryj hasło';
+
+  @override
+  String authPasswordRule(int count) {
+    return 'Co najmniej $count znaków.';
+  }
+
+  @override
+  String get authLoginButton => 'Zaloguj się';
+
+  @override
+  String get authRegisterButton => 'Załóż konto';
+
+  @override
+  String get authGuestButton => 'Wróć do aplikacji bez konta';
+
+  @override
+  String get authGuestNote => 'Aplikacja działa też bez konta.';
+
+  @override
+  String get authErrorPasswordEmpty => 'Wpisz hasło.';
+
+  @override
+  String authErrorPasswordTooShort(int count) {
+    return 'Hasło musi mieć co najmniej $count znaków.';
+  }
+
+  @override
+  String get authErrorServer => 'Serwer teraz nie działa. Spróbuj za chwilę.';
+
+  @override
+  String get authErrorNoConnection =>
+      'Brak połączenia z serwerem. Sprawdź internet.';
+
+  @override
+  String get authErrorTryGuest => 'Możesz też kontynuować bez konta.';
+
+  @override
+  String get accountTitle => 'Konto';
+
+  @override
+  String get accountGuest => 'Korzystasz z aplikacji bez konta.';
+
+  @override
+  String get accountSignOut => 'Wyloguj się';
+
+  @override
+  String get accountSignIn => 'Zaloguj się lub załóż konto';
 }
