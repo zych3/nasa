@@ -69,7 +69,7 @@ class SoilQualityOverlay extends MapOverlay {
             itemCode,
             OverlayLegendItem(
               color: readHexColor(item['color']),
-              label: _fixed(_text(item['name']) ?? itemCode),
+              label: _complexName(itemCode, _text(item['name'])),
             ),
           ),
     ];
@@ -87,7 +87,10 @@ class SoilQualityOverlay extends MapOverlay {
       if (current < 0) {
         items.add((
           code,
-          OverlayLegendItem(color: _otherColor, label: _fixed(name)),
+          OverlayLegendItem(
+            color: _otherColor,
+            label: _complexName(code, name),
+          ),
         ));
         current = items.length - 1;
       }
@@ -158,7 +161,9 @@ class SoilQualityOverlay extends MapOverlay {
       return (
         item: OverlayLegendItem(
           color: _qualityColors[qualityClasses.indexOf(first)],
-          label: (l10n) => name == null
+          // The register's name of a class ("orne średnie gorsze") is Polish
+          // only; the class itself (IVb) means the same everywhere.
+          label: (l10n) => name == null || l10n.localeName != 'pl'
               ? l10n.overlayQualityClass(first)
               : l10n.overlayQualityClassNamed(first, name),
         ),
@@ -300,6 +305,14 @@ class SoilQualityOverlay extends MapOverlay {
   /// Text from the backend (Polish source names), the same in every language.
   static L10nText _fixed(String text) =>
       (_) => text;
+
+  /// Name of a soil-agricultural map complex in the user's language, by its
+  /// code ("5" = good rye complex). A code the app has no words for keeps the
+  /// name the backend sent ([name], Polish), or the code itself.
+  static L10nText _complexName(String code, String? name) => (l10n) {
+    final words = l10n.overlaySoilComplex('c$code');
+    return words.isNotEmpty ? words : (name ?? code);
+  };
 
   @override
   String get id => 'soil';
