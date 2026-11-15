@@ -144,7 +144,7 @@ z błędem zostaje pusty, dane demo bez dociągania, łączenie bez szwów (test
 | 48 | Ś | ✅ | `EgibLandClassProvider.cs` | Powiat poznański publikuje w integracji EGiB tylko numer i miejsce działki, bez powierzchni i klas – wcześniej sekcja była „ok” z pustą listą; teraz „noData” (test). |
 | 49 | Ś | 📝 | `LandClassCode.cs` | Nazwy klas bonitacyjnych (np. IVb „orne średnie gorsze”, łąki III „dobre”) wpisane z rozporządzenia o gleboznawczej klasyfikacji gruntów z pamięci, nie z dokumentu – do sprawdzenia z tekstem rozporządzenia. Kody kompleksów, typów i gatunków gleb są przepisane z legendy mapy glebowo-rolniczej (PDF Geoportalu Podlaskiego). |
 | 50 | N | ⏳ | `PostgresProviderCache.cs` | Wygasłe wiersze `provider_cache` nie są usuwane (są tylko nadpisywane przy kolejnym pytaniu). Przy wielu działkach warto dodać okresowe `DELETE … WHERE expires_at < now()` (indeks na `expires_at` już jest). |
-| 51 | N | ⏳ | `ParcelDetailsService.cs` | Wyszukanie działki w ULDK nie jest w cache – drugie zapytanie o tę samą działkę trwa ~0,7 s zamiast ~0,1 s. Wystarczy, bo ULDK jest szybkie. |
+| 51 | N | ✅ | `ParcelDetailsService.cs` | Wyszukanie działki w ULDK nie jest w cache – drugie zapytanie o tę samą działkę trwa ~0,7 s zamiast ~0,1 s. Wystarczy, bo ULDK jest szybkie. |
 | 52 | N | 📝 | `MapLayersService.cs` | SoilGrids w mapie warstw i profilu pola idzie teraz przez cache w PostgreSQL (180 dni): problem #42 (czekanie do 60 s) zostaje tylko przy pierwszym pytaniu o dany punkt. |
 
 Sprawdzone na żywo: działka 141205_2.0008.60 (Chrośla) – klasy RIVb/RIVa/LzrRIV, kompleks 5 „żytni dobry”, gleby
@@ -163,7 +163,7 @@ niedostępna → zapytania działają bez cache (test).
 | 54 | Ś | 📝 | backend `SoilMapTileProvider` | WMS mapy glebowo-rolniczej co jakiś czas odpowiada 503 (dziś kilka razy). Klient ponawia (standard resilience), a nieudany kafelek jest przezroczysty z `max-age=300` i nie trafia do cache. |
 | 55 | N | ✅ | `plot_page.dart` | Pływająca flaga zachodziła na prawy górny róg karty „Moja działka” – karta ma teraz odstęp z prawej. |
 | 56 | N | 📝 | `soil_quality_overlay.dart` | Nazwy kompleksów, typów i gatunków gleb przychodzą z backendu po polsku – w wersji angielskiej zostają polskie (jak dawniej etykiety backendu). |
-| 57 | N | ⏳ | `overlay_controller.dart` | Dane działki pobierane są po punkcie (środek działki), nie po numerze działki – przy działkach wklęsłych środek może wypaść na sąsiedniej działce. Lepiej przekazać numer działki ze `SelectedPlotStore`. |
+| 57 | N | ✅ | `overlay_controller.dart` | Dane działki pobierane są po punkcie (środek działki), nie po numerze działki – przy działkach wklęsłych środek może wypaść na sąsiedniej działce. Lepiej przekazać numer działki ze `SelectedPlotStore`. |
 
 Sprawdzone na żywo: kafelki mapy glebowej przez backend (17 kB, potem z `tile_cache` w 3 ms), legenda z kolorami
 z obrazka legendy WMS, karta „kompleks żytni dobry” z typem gleby, uziarnieniem, klasami z ewidencji i rokiem badania,
@@ -182,6 +182,15 @@ i szeroki ekran.
 Sprawdzone na żywo: działka w Chrośli – spadek 0,5 % (płasko), źródło erozji „…spadek działki: NMT GUGiK”, bez
 ostrzeżenia o braku nachylenia; drugi punkt (Małopolska) 2 %; stres roślin w odpowiedzi i w siatce heatmapy;
 test: większy spadek → nie mniejsza erozja.
+
+**Wysoki priorytet: brak.**
+
+## Recenzja #11 (`feat/parcel-lookup-cache`)
+
+Wyszukanie działki (ULDK) w cache PostgreSQL (`parcel-at.v1` po punkcie ~1 m, `parcel-id.v1` po numerze, 30 dni,
+„brak działki” 1 dzień) – dane działki i erozja nie pytają ULDK ponownie (#51). Aplikacja pyta o wybrane pole po
+numerze działki (#57). Testy: drugie zapytanie o tę samą działkę/punkt nie idzie do rejestru; obrys przeżywa zapis
+w cache.
 
 **Wysoki priorytet: brak.**
 

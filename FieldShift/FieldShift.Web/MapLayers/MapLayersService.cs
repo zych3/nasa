@@ -22,7 +22,7 @@ public sealed class MapLayersService(
     NasaPowerClient nasaClient,
     ISoilPropertiesProvider soilProvider,
     FieldDataCache fieldData,
-    IEnumerable<ICountryProvider> countries,
+    ParcelLookupCache parcels,
     IEnumerable<ITerrainProvider> terrains,
     IMemoryCache cache,
     IOptions<DemoLocationsOptions> demoLocations,
@@ -110,20 +110,11 @@ public sealed class MapLayersService(
         ParcelSlope? result = null;
         try
         {
-            foreach (var country in countries)
+            if (await parcels.AtAsync(lat, lon, ct) is { } field
+                && FieldDataCache.Pick(terrains, field) is { } terrain
+                && (await fieldData.GetAsync(terrain, field, ct)).Value is { } info)
             {
-                if (await country.GetFieldAtAsync(lat, lon, ct) is not { } field)
-                {
-                    continue;
-                }
-
-                if (FieldDataCache.Pick(terrains, field) is { } terrain
-                    && (await fieldData.GetAsync(terrain, field, ct)).Value is { } info)
-                {
-                    result = new ParcelSlope(field.ParcelId!, info.SlopePct, info.Source);
-                }
-
-                break;
+                result = new ParcelSlope(field.ParcelId!, info.SlopePct, info.Source);
             }
         }
         catch (Exception ex) when (!ct.IsCancellationRequested)
