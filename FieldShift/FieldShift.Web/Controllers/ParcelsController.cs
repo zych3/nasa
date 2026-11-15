@@ -2,14 +2,70 @@
 using System.Text.Json;
 using FieldShift.Web.Data;
 using FieldShift.Web.DTOs;
+using FieldShift.Web.FieldData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FieldShift.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ParcelsController(ICountryProvider country, ILogger<ParcelsController> logger) : ControllerBase
+public class ParcelsController(
+    ICountryProvider country,
+    ParcelDetailsService details,
+    ILogger<ParcelsController> logger) : ControllerBase
 {
+    /// <summary>
+    /// What is known about the registered parcel at a point: land register classes, soil map, terrain, modelled
+    /// soil. Each section has its own status; sources are cached in PostgreSQL. Same answer for every country
+    /// that has providers (today: Poland).
+    /// </summary>
+    /// <response code="200">The parcel and its sections.</response>
+    /// <response code="400">Missing or invalid coordinates.</response>
+    /// <response code="404">No registered parcel at the point.</response>
+    /// <response code="502">The parcel register did not answer.</response>
+    [HttpGet("details")]
+    [ProducesResponseType<ParcelDetailsResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ParcelDetailsResponse>> Details(
+        [FromQuery] double? lat, [FromQuery] double? lon, CancellationToken ct)
+    {
+        if (lat is not (>= -90 and <= 90) || lon is not (>= -180 and <= 180))
+        {
+            return Problem("lat (-90..90) and lon (-180..180) are required.", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        return await DetailsResult(() => details.AtAsync(lat.Value, lon.Value, ct), "No registered parcel at this point.");
+    }
+
+    /// <summary>The same as <see cref="Details"/> for a parcel id from the register, e.g. "141205_2.0008.60".</summary>
+    [HttpGet("{id}/details")]
+    [ProducesResponseType<ParcelDetailsResponse>(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ParcelDetailsResponse>> DetailsById(string id, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(id) || id.Length > 100)
+        {
+            return Problem("Parcel id is required (max 100 characters).", statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        return await DetailsResult(() => details.ByIdAsync(id, ct), "Parcel not found.");
+    }
+
+    private async Task<ActionResult<ParcelDetailsResponse>> DetailsResult(
+        Func<Task<ParcelDetailsResponse?>> load, string notFound)
+    {
+        try
+        {
+            return await load() is { } response
+                ? response
+                : Problem(notFound, statusCode: StatusCodes.Status404NotFound);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException
+                                   && !HttpContext.RequestAborted.IsCancellationRequested)
+        {
+            logger.LogWarning(ex, "Parcel register lookup failed");
+            return Problem("Parcel register did not answer.", statusCode: StatusCodes.Status502BadGateway);
+        }
+    }
+
     [HttpGet("search")]
     public async Task<ActionResult<ParcelSearchResponse>> Search([FromQuery] string? address)
     {

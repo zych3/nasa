@@ -1,5 +1,7 @@
 using System.Globalization;
 using FieldShift.Web.DTOs;
+using FieldShift.Web.FieldData;
+using FieldShift.Web.FieldData.Cache;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace FieldShift.Web.FieldProfile;
@@ -16,7 +18,8 @@ public sealed class UpstreamServiceException(string service, Exception inner)
 /// </summary>
 public sealed class FieldProfileProvider(
     NasaPowerClient nasaClient,
-    SoilGridsClient soilClient,
+    ISoilPropertiesProvider soilProvider,
+    FieldDataCache fieldData,
     FieldProfileService service,
     IMemoryCache cache,
     TimeProvider time,
@@ -72,7 +75,8 @@ public sealed class FieldProfileProvider(
     {
         try
         {
-            return await soilClient.GetTopsoilAsync(lat, lon, upstreamCt);
+            // Cached in PostgreSQL for months: SoilGrids is slow and its model rarely changes.
+            return (await fieldData.GetAsync(soilProvider, new FieldLocation(lat, lon), upstreamCt)).Value;
         }
         catch (Exception ex) when (!requestCt.IsCancellationRequested)
         {
