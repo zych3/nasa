@@ -40,6 +40,8 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Resolve a parcel from address / coordinates / number | `POST /api/parcels/resolve` |
 | Parcels in the visible map area | `GET /api/parcels?bbox=...` |
 | Parcels nearest to a point (parcel at the point + parcels of nearest addresses) | `GET /api/parcels/nearby?lat=..&lon=..` |
+| Address hints while typing (`kind`: `place` / `street` / `address`; empty list for < 3 chars or no match) | `GET /api/parcels/suggest?q=...` |
+| Parcel at a point (e.g. a chosen address hint; 404 when none) | `GET /api/parcels/at?lat=..&lon=..` |
 | Parcel details (polygon, public data, soil, terrain) | `GET /api/parcels/{id}` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |

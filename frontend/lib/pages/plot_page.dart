@@ -1,9 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../components/address_search_field.dart';
 import '../components/input/plotInput/plot_input.dart';
 import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
+import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
@@ -43,6 +45,27 @@ class _PlotPageState extends State<PlotPage> {
     }
   }
 
+  /// The user picked a full address from the hints: take the parcel there.
+  Future<void> _choosePoint(AddressSuggestion hint, String text) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _loading = true);
+    try {
+      final parcel = await _parcels.parcelAt(hint.point);
+      if (!mounted) return;
+      if (parcel != null) {
+        await widget.store.select(parcel.withAddress(text));
+      } else {
+        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
+      }
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -60,12 +83,21 @@ class _PlotPageState extends State<PlotPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // Address search with hints, at the very top
+        AddressSearchField(
+          onAddressChosen: _choosePoint,
+          onSearch: _findParcel,
+        ),
+        const SizedBox(height: 16),
+
         // Header: plot name, area, location
         Card(
           child: ListTile(
             leading: const Icon(Icons.agriculture, size: 40),
-            title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
-            subtitle: Text(l10n.plotSummary('—', parcel?.address ?? '—')),
+            title: Text(
+              parcel?.address ?? '—',
+              style: theme.textTheme.titleLarge,
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -106,9 +138,10 @@ class _PlotPageState extends State<PlotPage> {
         ],
 
         // Plot input form (left as-is)
-        Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
-        const SizedBox(height: 8),
-        PlotInput(onSubmitPlot: (_) {}, onFindParcel: _findParcel),
+        // Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
+        // const SizedBox(height: 8),
+        // The address is typed in the search field at the top.
+        PlotInput(onSubmitPlot: (_) {}, address: parcel?.address ?? ''),
         const SizedBox(height: 24),
 
         // Info cards

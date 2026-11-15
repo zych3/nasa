@@ -342,4 +342,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findParcel => 'Find parcel';
+
+  @override
+  String get addressSearchHint => 'e.g. Wieliczka, Krakowska 1';
+
+  @override
+  String get addressSearchHelper =>
+      'Type the town, pick it from the list, then type the street and house number.';
+
+  @override
+  String get addressSuggestionsNone =>
+      'No matching address. Check the spelling, or put a comma after the town name.';
+
+  @override
+  String get addressKindPlace => 'Town or village';
+
+  @override
+  String get addressKindStreet => 'Street';
+
+  @override
+  String get addressKindAddress => 'Address';
 }
