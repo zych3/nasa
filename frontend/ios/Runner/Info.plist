@@ -4,6 +4,10 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Field Shift shows the map around you.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Field Shift adds sowing and harvest dates to your calendar.</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Field Shift adds sowing and harvest dates to your calendar.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

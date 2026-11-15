@@ -232,7 +232,8 @@ class _RotationReportPageState extends State<RotationReportPage> {
               FilledButton(
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(200, 56),
-                  textStyle: const TextStyle(fontSize: 20),
+                  textStyle: Theme.of(context).textTheme.labelLarge
+                      ?.copyWith(fontSize: 20),
                 ),
                 onPressed: onRetry,
                 child: Text(AppLocalizations.of(context).tryAgain),
@@ -409,7 +410,8 @@ class _RotationReportPageState extends State<RotationReportPage> {
         OutlinedButton.icon(
           style: OutlinedButton.styleFrom(
             minimumSize: const Size.fromHeight(56),
-            textStyle: const TextStyle(fontSize: 18),
+            textStyle: Theme.of(context).textTheme.labelLarge
+                ?.copyWith(fontSize: 18),
           ),
           icon: const Icon(Icons.info_outline),
           label: Text(l10n.moreDetails),

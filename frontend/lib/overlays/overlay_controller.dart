@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart' show setEquals;
@@ -8,6 +9,8 @@ import 'package:material_ui/material_ui.dart';
 import '../api/api_client.dart';
 import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
+import '../models/satellite_data.dart';
+import 'field_conditions_controller.dart' show FieldConditionsController;
 import 'map_layers_repository.dart';
 import 'map_overlay.dart';
 import 'overlay_registry.dart';
@@ -21,8 +24,12 @@ enum OverlayStatus {
 }
 
 enum OverlayError {
-  /// No connection or no answer in time: check the internet, try again.
+  /// Our server could not be reached (no connection, server not running).
+  /// Not necessarily the user's internet: the message does not claim it.
   network,
+
+  /// Our server did not answer in time (it was still getting NASA data).
+  slow,
 
   /// Our server answered with an error (e.g. 502 when NASA POWER is down):
   /// the user's internet is fine, trying again later may help.
@@ -68,6 +75,8 @@ class OverlayController extends ChangeNotifier {
   /// `GET /api/parcels/details` of the place, for overlays that use it.
   Map<String, dynamic>? _parcelDetails;
   bool _parcelLoading = false;
+  final Map<SatellitePart, Object> _satellite = {};
+  final Set<SatellitePart> _satelliteLoading = {};
 
   /// Legends of map tile layers, by layer id.
   final _legends = <String, List<Map<String, dynamic>>>{};
@@ -106,6 +115,14 @@ class OverlayController extends ChangeNotifier {
 
   /// What the chosen overlay shows; set when [status] is ready.
   OverlayLayer? get layer => _layer;
+
+  /// Finer, newer NASA satellite data for [place] (IMERG, SMAP, MODIS), for
+  /// the value card's "more detail" part; filled in as each part arrives.
+  Map<SatellitePart, Object> get satellite => Map.unmodifiable(_satellite);
+
+  /// Satellite parts still loading.
+  Set<SatellitePart> get satelliteLoading =>
+      Set.unmodifiable(_satelliteLoading);
 
   /// The shown data is the saved demo response, not data for [place].
   bool get isDemo => _isDemo;
@@ -225,6 +242,11 @@ class OverlayController extends ChangeNotifier {
 
     _requested.add((0, 0));
     _loadBlock(generation, (0, 0), place, demo: demo);
+    _satellite.clear();
+    _satelliteLoading.clear();
+    for (final part in SatellitePart.values) {
+      _loadSatellite(generation, part, place, demo: demo, refresh: refresh);
+    }
     if (overlays.any((o) => o.usesParcelDetails)) {
       _loadParcel(generation, place, demo: demo, refresh: refresh);
     }
@@ -239,15 +261,36 @@ class OverlayController extends ChangeNotifier {
     } catch (e) {
       if (_disposed || generation != _generation) return;
       debugPrint('Map layers for $place failed: $e');
-      _responseError = switch (e) {
-        FormatException() => OverlayError.badData,
-        ApiException() => OverlayError.server,
-        _ => OverlayError.network,
-      };
+      _responseError = overlayErrorOf(e);
       // Overlays with parcel details may still have something to show.
       _parse();
     }
     _notify();
+  }
+
+  /// One satellite part. Failing just leaves it out: it is extra detail.
+  Future<void> _loadSatellite(
+    int generation,
+    SatellitePart part,
+    LatLng? place, {
+    required bool demo,
+    required bool refresh,
+  }) async {
+    _satelliteLoading.add(part);
+    try {
+      final json = demo
+          ? await _repository.demoSatellite(part)
+          : await _repository.satellite(part, place!, refresh: refresh);
+      if (_disposed || generation != _generation) return;
+      _satellite[part] = FieldConditionsController.parseSatellite(part, json);
+    } catch (e) {
+      debugPrint('Satellite ${part.path} for $place failed: $e');
+    } finally {
+      if (!_disposed && generation == _generation) {
+        _satelliteLoading.remove(part);
+        _notify();
+      }
+    }
   }
 
   /// Loads the parcel details and the legends of their map layers. Failing
@@ -380,6 +423,20 @@ class OverlayController extends ChangeNotifier {
         }
       } else if (_parcelLoading) {
         return _waiting(null);
+      } else if (_place case final place?) {
+        // No registered parcel here (or the register did not answer): still
+        // draw the soil map around the place, like the Geoportal does.
+        final legend = _legends[_selected.parcelTileLayer] ?? const [];
+        if (legend.isNotEmpty) {
+          try {
+            final layer = _selected.parseParcel({
+              'location': {'lat': place.latitude, 'lon': place.longitude},
+            }, legend);
+            if (layer != null) return _ready(layer);
+          } catch (e) {
+            debugPrint('Overlay "${_selected.id}" without a parcel: $e');
+          }
+        }
       }
     }
 
@@ -522,3 +579,11 @@ class _BlockGrid {
     return c.latitude.abs() <= 90 && c.longitude.abs() <= 180;
   }
 }
+
+/// What went wrong, from an error of [MapLayersRepository].
+OverlayError overlayErrorOf(Object error) => switch (error) {
+  FormatException() => OverlayError.badData,
+  ApiException() => OverlayError.server,
+  TimeoutException() => OverlayError.slow,
+  _ => OverlayError.network,
+};

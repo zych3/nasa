@@ -6,6 +6,7 @@ using FieldShift.Web.FieldData;
 using FieldShift.Web.FieldProfile;
 using FieldShift.Web.MapLayers;
 using FieldShift.Web.Recommendations;
+using FieldShift.Web.Satellite;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
 using FieldShift.Web.Weather;
@@ -39,6 +40,7 @@ builder.AddMapLayers();
 builder.AddFieldData();
 builder.AddRecommendations();
 builder.AddAccounts();
+builder.AddSatellite();
 
 builder.Services.AddHttpClient<FrostRiskService>(c =>
         c.BaseAddress = new Uri(builder.Configuration["Weather:OpenMeteoBaseUrl"] ?? "https://api.open-meteo.com/"))

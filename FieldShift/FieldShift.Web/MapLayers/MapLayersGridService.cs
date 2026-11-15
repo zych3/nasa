@@ -55,7 +55,7 @@ public static class PowerGrid
 /// (depends on the soil of the field) stay point-only. <see cref="Compose"/> is the pure part used by tests.
 /// </summary>
 public sealed class MapLayersGridService(
-    NasaPowerClient nasaClient,
+    NasaDailyCache nasaClient,
     IMemoryCache cache,
     TimeProvider time,
     ILogger<MapLayersGridService> logger)
@@ -81,6 +81,8 @@ public sealed class MapLayersGridService(
         LayerDefinitions.ExtremeRain,
         LayerDefinitions.SoilMoisture,
         LayerDefinitions.PlantStress,
+        LayerDefinitions.FungalRisk,
+        LayerDefinitions.PestHeat,
     ];
 
     public const string MissingCellsWarning =
@@ -128,7 +130,7 @@ public sealed class MapLayersGridService(
         await NasaSlots.WaitAsync(ct);
         try
         {
-            return await nasaClient.GetDailyAsync(cell.Lat, cell.Lon, request.From.FirstDay, request.To.LastDay,
+            return await nasaClient.GetAsync(cell.Lat, cell.Lon, request.From.FirstDay, request.To.LastDay,
                 MapLayersService.BaseParameters, ct);
         }
         catch (Exception ex) when (!ct.IsCancellationRequested)
@@ -192,7 +194,7 @@ public sealed class MapLayersGridService(
             warnings.Add(MissingCellsWarning);
         }
 
-        if (request.LayerIds.Contains(LayerDefinitions.PlantStress))
+        if (request.LayerIds.Any(id => LayerDefinitions.Find(id)?.IsEstimate == true))
         {
             warnings.Add(MapLayersService.EstimatesWarning);
         }

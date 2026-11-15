@@ -1,7 +1,10 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 
+/// Bottom tabs (forui): thin line on top, icon and word for each tab, so it
+/// never relies on the icon or colour alone.
 class AppNavBar extends StatelessWidget {
   const AppNavBar({
     super.key,
@@ -15,28 +18,32 @@ class AppNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = context.theme.colors;
 
-    return NavigationBar(
-      selectedIndex: selectedIndex,
-      onDestinationSelected: onSelected,
-      labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-      destinations: [
-        NavigationDestination(
-          icon: const Icon(Icons.map_outlined),
-          selectedIcon: const Icon(Icons.map),
-          label: l10n.navMap,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.agriculture_outlined),
-          selectedIcon: const Icon(Icons.agriculture),
-          label: l10n.navPlot,
-        ),
-        NavigationDestination(
-          icon: const Icon(Icons.layers_outlined),
-          selectedIcon: const Icon(Icons.layers),
-          label: l10n.navConditions,
-        ),
-      ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.background,
+        border: Border(top: BorderSide(color: colors.border)),
+      ),
+      child: FBottomNavigationBar(
+        index: selectedIndex,
+        onChange: onSelected,
+        safeAreaBottom: true,
+        children: [
+          FBottomNavigationBarItem(
+            icon: const Icon(FLucideIcons.map),
+            label: Text(l10n.navMap),
+          ),
+          FBottomNavigationBarItem(
+            icon: const Icon(FLucideIcons.sprout),
+            label: Text(l10n.navPlot),
+          ),
+          FBottomNavigationBarItem(
+            icon: const Icon(FLucideIcons.layers),
+            label: Text(l10n.navConditions),
+          ),
+        ],
+      ),
     );
   }
 }

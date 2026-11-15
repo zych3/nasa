@@ -91,7 +91,8 @@ class _AccountSheet extends StatelessWidget {
                 FilledButton.icon(
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(64),
-                    textStyle: const TextStyle(fontSize: 18),
+                    textStyle: Theme.of(context).textTheme.labelLarge
+                        ?.copyWith(fontSize: 18),
                   ),
                   onPressed: () => _closeAndOpen(
                     context,
@@ -106,10 +107,12 @@ class _AccountSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
               ],
+              // "My plans" is for everyone: plans live on the phone.
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(64),
-                  textStyle: const TextStyle(fontSize: 18),
+                  textStyle: Theme.of(context).textTheme.labelLarge
+                      ?.copyWith(fontSize: 18),
                 ),
                 onPressed: () => _closeAndOpen(
                   context,
@@ -123,7 +126,8 @@ class _AccountSheet extends StatelessWidget {
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size.fromHeight(64),
-                    textStyle: const TextStyle(fontSize: 18),
+                    textStyle: Theme.of(context).textTheme.labelLarge
+                        ?.copyWith(fontSize: 18),
                   ),
                   onPressed: () => _signOut(context),
                   icon: const Icon(Icons.logout),
@@ -133,7 +137,8 @@ class _AccountSheet extends StatelessWidget {
                 FilledButton.icon(
                   style: FilledButton.styleFrom(
                     minimumSize: const Size.fromHeight(64),
-                    textStyle: const TextStyle(fontSize: 18),
+                    textStyle: Theme.of(context).textTheme.labelLarge
+                        ?.copyWith(fontSize: 18),
                   ),
                   onPressed: () => _closeAndOpen(
                     context,
