@@ -5,7 +5,8 @@
     "aggregator": "min",
     "cvarFraction": 0.2,
     "waterStressToScore": [[0, 1], [0.3, 0.7], [0.6, 0.2], [1, 0]],
-    "heatDaysFallbackWindowFraction": [0.45, 0.70]
+    "heatDaysFallbackWindowFraction": [0.45, 0.70],
+    "recencyHalfLifeYears": 6
   },
   "transforms": [
     { "from": "acidificationCaO", "to": "ph", "factor": "-1/plot.phBufferCaOPerUnit", "resetFrom": true }
@@ -32,6 +33,7 @@
   "pedotransfer": { "method": "saxtonRawls2006" },
   "phBuffer": { "baseCaOPerUnit": 1000, "perClayPct": 80, "perSocGkg": 40 },
   "soil": { "defaultBulkDensityGcm3": 1.4, "topsoilDepthM": 0.3 },
+  "interactions": { "maxMultiplier": 3 },
   "explain": { "maxCauses": 3 },
   "report": { "minPredecessorAgreement": 0.6 }
 }

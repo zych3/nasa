@@ -9,15 +9,18 @@ import '../l10n/app_localizations.dart';
 import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 import '../repositories/parcel_repository.dart';
+import '../repositories/auth_store.dart';
 import '../repositories/selected_plot_store.dart';
 import 'rotation_wizard_page.dart';
 
 /// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
 /// user pick another one from the parcels nearby or by typing an address.
 class PlotPage extends StatefulWidget {
-  const PlotPage({super.key, required this.store});
+  const PlotPage({super.key, required this.store, required this.authStore});
 
   final SelectedPlotStore store;
+
+  final AuthStore authStore;
 
   @override
   State<PlotPage> createState() => _PlotPageState();
@@ -145,7 +148,10 @@ class _PlotPageState extends State<PlotPage> {
               ? null
               : () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
-                    builder: (_) => RotationWizardPage(parcel: parcel),
+                    builder: (_) => RotationWizardPage(
+                      parcel: parcel,
+                      authStore: widget.authStore,
+                    ),
                   ),
                 ),
         ),

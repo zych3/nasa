@@ -1,0 +1,1281 @@
+[
+  {
+    "id": "white_mustard",
+    "namePl": "Gorczyca biała",
+    "nameEn": "White mustard",
+    "family": "Brassicaceae",
+    "tags": [
+      "catchCrop",
+      "brassica",
+      "frostKilled",
+      "deepRooted"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      200,
+      260
+    ],
+    "harvestWindow": [
+      330,
+      355
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 70,
+        "absMax": 90
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 30,
+        "absMax": 45
+      },
+      "winterMinC": -8,
+      "winterMinCWithSnow": -12,
+      "seasonWaterNeedMm": [
+        80,
+        180
+      ]
+    },
+    "water": {
+      "kc": [
+        0.45,
+        0.9,
+        0.9
+      ],
+      "stageLengthsDays": [
+        7,
+        15,
+        30,
+        10
+      ],
+      "rootDepthM": 1.5,
+      "depletionFraction": 0.55
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 60.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 300-600 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 25.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 15-35 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.075,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.90-0.95 on compaction; read as a loosening of -0.075."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.4,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.3-0.5."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Non-host of take-all: breaks the cycle."
+      },
+      {
+        "var": "pathogen:clubroot",
+        "op": "load",
+        "amount": 0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Host of Plasmodiophora brassicae: avoid before brassicas."
+      },
+      {
+        "var": "nematode:beet_cyst",
+        "op": "load",
+        "amount": -0.15,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Only with resistant/trap varieties (-0.15 to -0.30); neutral or positive otherwise."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Fast ground cover suppresses broadleaf weeds."
+      },
+      {
+        "var": "volunteers:rapeseed",
+        "op": "load",
+        "amount": 0.1,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Brassica volunteers in rotations with oilseed rape."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 4,
+      "maxConsecutiveYears": 1,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "phacelia",
+    "namePl": "Facelia błękitna",
+    "nameEn": "Phacelia",
+    "family": "Boraginaceae",
+    "tags": [
+      "catchCrop",
+      "frostKilled",
+      "deepRooted",
+      "pollinator"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      200,
+      250
+    ],
+    "harvestWindow": [
+      330,
+      350
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 70,
+        "absMax": 85
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 30,
+        "absMax": 40
+      },
+      "winterMinC": -6,
+      "winterMinCWithSnow": -10,
+      "seasonWaterNeedMm": [
+        90,
+        200
+      ]
+    },
+    "water": {
+      "kc": [
+        0.4,
+        0.95,
+        0.85
+      ],
+      "stageLengthsDays": [
+        7,
+        18,
+        30,
+        10
+      ],
+      "rootDepthM": 1.0,
+      "depletionFraction": 0.55
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 60.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 300-600 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 20.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 10-30 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.045,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.92-0.97 on compaction; read as a loosening of -0.045."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.4,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.3-0.5."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Not a host of cereal pathogens."
+      },
+      {
+        "var": "weeds:grass",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Fast ground cover suppresses grass weeds."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Strong competition with broadleaf weeds."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 2,
+      "maxConsecutiveYears": 2,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "oilseed_radish",
+    "namePl": "Rzodkiew oleista",
+    "nameEn": "Oilseed radish",
+    "family": "Brassicaceae",
+    "tags": [
+      "catchCrop",
+      "brassica",
+      "frostKilled",
+      "deepRooted",
+      "nematodeTrap"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      200,
+      250
+    ],
+    "harvestWindow": [
+      330,
+      350
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 70,
+        "absMax": 90
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 35,
+        "absMax": 50
+      },
+      "winterMinC": -10,
+      "winterMinCWithSnow": -15,
+      "seasonWaterNeedMm": [
+        100,
+        220
+      ]
+    },
+    "water": {
+      "kc": [
+        0.45,
+        0.9,
+        0.9
+      ],
+      "stageLengthsDays": [
+        7,
+        15,
+        35,
+        10
+      ],
+      "rootDepthM": 1.8,
+      "depletionFraction": 0.55
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 70.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 400-800 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 30.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 20-40 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.115,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.85-0.92 on compaction; read as a loosening of -0.115."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.4,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.3-0.5."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Non-host of take-all."
+      },
+      {
+        "var": "pathogen:clubroot",
+        "op": "load",
+        "amount": 0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Host of Plasmodiophora brassicae: do not use before brassicas."
+      },
+      {
+        "var": "nematode:beet_cyst",
+        "op": "load",
+        "amount": -0.3,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Only trap/resistant varieties reduce Heterodera schachtii; ordinary varieties can be a host."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.25,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Fast cover and large biomass."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 4,
+      "maxConsecutiveYears": 1,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "oats_cover",
+    "namePl": "Owies (jako poplon)",
+    "nameEn": "Oats (cover crop)",
+    "family": "Poaceae",
+    "tags": [
+      "catchCrop",
+      "cereal",
+      "frostKilled",
+      "shallowRooted"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      200,
+      260
+    ],
+    "harvestWindow": [
+      330,
+      355
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 70,
+        "absMax": 90
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 35,
+        "absMax": 50
+      },
+      "winterMinC": -10,
+      "winterMinCWithSnow": -15,
+      "seasonWaterNeedMm": [
+        100,
+        250
+      ]
+    },
+    "water": {
+      "kc": [
+        0.35,
+        1.15,
+        0.45
+      ],
+      "stageLengthsDays": [
+        10,
+        20,
+        35,
+        15
+      ],
+      "rootDepthM": 1.0,
+      "depletionFraction": 0.55
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 50.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 300-600 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 33.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 20-45 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.025,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.95-1.00 on compaction; read as a loosening of -0.025."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.4,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.3-0.5."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": 0.15,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "A cereal can keep take-all inoculum, though oats is less susceptible than wheat."
+      },
+      {
+        "var": "pathogen:fusarium_cereal",
+        "op": "load",
+        "amount": 0.15,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Host of Fusarium spp."
+      },
+      {
+        "var": "weeds:grass",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Fast cover suppresses grass weeds."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.15,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Moderate competition."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 2,
+      "maxConsecutiveYears": 2,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "winter_rye_cover",
+    "namePl": "Żyto ozime (jako poplon)",
+    "nameEn": "Winter rye (cover crop)",
+    "family": "Poaceae",
+    "tags": [
+      "catchCrop",
+      "cereal",
+      "overwintering",
+      "deepRooted",
+      "allelopathic"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      230,
+      275
+    ],
+    "harvestWindow": [
+      45,
+      75
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 75,
+        "absMax": 95
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 35,
+        "absMax": 50
+      },
+      "winterMinC": -25,
+      "winterMinCWithSnow": -30,
+      "seasonWaterNeedMm": [
+        120,
+        300
+      ]
+    },
+    "water": {
+      "kc": [
+        0.35,
+        1.1,
+        0.5
+      ],
+      "stageLengthsDays": [
+        10,
+        25,
+        40,
+        15
+      ],
+      "rootDepthM": 1.5,
+      "depletionFraction": 0.55
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 70.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 400-800 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 38.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 25-50 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.075,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.90-0.95 on compaction; read as a loosening of -0.075."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.9,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.8-0.95."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": 0.2,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Host that sustains take-all inoculum."
+      },
+      {
+        "var": "pathogen:fusarium_cereal",
+        "op": "load",
+        "amount": 0.2,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Host of Fusarium spp."
+      },
+      {
+        "var": "pathogen:eyespot",
+        "op": "load",
+        "amount": 0.1,
+        "source": "iung_zeszyt69_8",
+        "confidence": "low",
+        "note": "Cereal host."
+      },
+      {
+        "var": "weeds:grass",
+        "op": "load",
+        "amount": -0.3,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Allelopathy and strong competition."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.25,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Allelopathy and ground cover."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 2,
+      "maxConsecutiveYears": 2,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "crimson_clover",
+    "namePl": "Koniczyna inkarnatka",
+    "nameEn": "Crimson clover",
+    "family": "Fabaceae",
+    "tags": [
+      "catchCrop",
+      "legume",
+      "overwintering",
+      "nFixing",
+      "shallowRooted"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      225,
+      265
+    ],
+    "harvestWindow": [
+      45,
+      75
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 65,
+        "absMax": 85
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 35,
+        "absMax": 50
+      },
+      "winterMinC": -15,
+      "winterMinCWithSnow": -20,
+      "seasonWaterNeedMm": [
+        120,
+        280
+      ]
+    },
+    "water": {
+      "kc": [
+        0.4,
+        1.0,
+        0.7
+      ],
+      "stageLengthsDays": [
+        8,
+        20,
+        35,
+        12
+      ],
+      "rootDepthM": 0.8,
+      "depletionFraction": 0.5
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 80.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 350-700 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "residualN",
+        "op": "add",
+        "amount": 45.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 30-60 kg N/ha available to the next crop (legumes give 29-36 kg N per tonne of dry matter)."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 5.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 0-10 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.025,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.95-1.00 on compaction; read as a loosening of -0.025."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.8,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.7-0.9."
+      },
+      {
+        "var": "pathogen:legume_fusarium",
+        "op": "load",
+        "amount": 0.2,
+        "source": "cdr_bobowate_2019",
+        "confidence": "medium",
+        "note": "Host of legume pathogens."
+      },
+      {
+        "var": "pathogen:aphanomyces",
+        "op": "load",
+        "amount": 0.2,
+        "source": "cdr_bobowate_2019",
+        "confidence": "medium",
+        "note": "Host of Aphanomyces euteiches."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Ground cover suppresses broadleaf weeds."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 4,
+      "maxConsecutiveYears": 1,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "cdr_bobowate_2019",
+        "title": "Uprawa roślin motylkowych stosowanych w zazielenieniu",
+        "url": "https://cdr.gov.pl/images/wydawnictwa/2019/2019-UPRAWA-ROSLIN-BOBOWATYCH-DROBNONASIENNYCH.pdf",
+        "publisher": "CDR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "winter_vetch_pea_mix",
+    "namePl": "Wyka ozima z grochem ozimym (mieszanka)",
+    "nameEn": "Winter vetch with winter pea (mixture)",
+    "family": "Fabaceae",
+    "tags": [
+      "catchCrop",
+      "legume",
+      "overwintering",
+      "nFixing"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      225,
+      265
+    ],
+    "harvestWindow": [
+      45,
+      75
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 65,
+        "absMax": 85
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 35,
+        "absMax": 50
+      },
+      "winterMinC": -18,
+      "winterMinCWithSnow": -25,
+      "seasonWaterNeedMm": [
+        130,
+        300
+      ]
+    },
+    "water": {
+      "kc": [
+        0.4,
+        1.05,
+        0.75
+      ],
+      "stageLengthsDays": [
+        8,
+        22,
+        35,
+        12
+      ],
+      "rootDepthM": 1.0,
+      "depletionFraction": 0.5
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 90.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 400-800 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "residualN",
+        "op": "add",
+        "amount": 60.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 40-80 kg N/ha available to the next crop."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 5.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 0-10 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.025,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.95-1.00 on compaction; read as a loosening of -0.025."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.8,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.7-0.9."
+      },
+      {
+        "var": "pathogen:legume_fusarium",
+        "op": "load",
+        "amount": 0.25,
+        "source": "cdr_bobowate_2019",
+        "confidence": "medium",
+        "note": "A legume mixture raises the risk of legume Fusarium."
+      },
+      {
+        "var": "pathogen:aphanomyces",
+        "op": "load",
+        "amount": 0.25,
+        "source": "cdr_bobowate_2019",
+        "confidence": "medium",
+        "note": "Host of Aphanomyces euteiches."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Ground cover suppresses broadleaf weeds."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 4,
+      "maxConsecutiveYears": 1,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "cdr_bobowate_2019",
+        "title": "Uprawa roślin motylkowych stosowanych w zazielenieniu",
+        "url": "https://cdr.gov.pl/images/wydawnictwa/2019/2019-UPRAWA-ROSLIN-BOBOWATYCH-DROBNONASIENNYCH.pdf",
+        "publisher": "CDR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  },
+  {
+    "id": "italian_ryegrass",
+    "namePl": "Życica wielokwiatowa (westerwoldzka)",
+    "nameEn": "Italian/Westerwolds ryegrass",
+    "family": "Poaceae",
+    "tags": [
+      "catchCrop",
+      "grass",
+      "overwintering",
+      "shallowRooted"
+    ],
+    "type": "catch",
+    "sowWindow": [
+      210,
+      270
+    ],
+    "harvestWindow": [
+      45,
+      75
+    ],
+    "management": {
+      "nRateKgHa": 0,
+      "residue": "incorporate"
+    },
+    "suitability": {
+      "sandPct": {
+        "absMin": 0,
+        "optMin": 10,
+        "optMax": 70,
+        "absMax": 90
+      },
+      "clayPct": {
+        "absMin": 0,
+        "optMin": 5,
+        "optMax": 40,
+        "absMax": 55
+      },
+      "winterMinC": -20,
+      "winterMinCWithSnow": -25,
+      "seasonWaterNeedMm": [
+        130,
+        320
+      ]
+    },
+    "water": {
+      "kc": [
+        0.4,
+        1.05,
+        0.8
+      ],
+      "stageLengthsDays": [
+        8,
+        20,
+        35,
+        12
+      ],
+      "rootDepthM": 0.8,
+      "depletionFraction": 0.5
+    },
+    "responses": [],
+    "effects": [
+      {
+        "var": "humusC",
+        "op": "add",
+        "amount": 70.0,
+        "source": "EST",
+        "confidence": "expert_estimate",
+        "note": "Research gave 400-800 kg humus-C/ha/yr; rescaled to the engine humus scale (main crops -150..+150). Verify with a humus balance."
+      },
+      {
+        "var": "nImmobilization",
+        "op": "add",
+        "amount": 38.0,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Midpoint of 25-50 kg N/ha."
+      },
+      {
+        "var": "compaction",
+        "op": "add",
+        "amount": -0.055,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "low",
+        "note": "Research gave a multiplier of 0.92-0.97 on compaction; read as a loosening of -0.055."
+      },
+      {
+        "var": "soilCoverWinter",
+        "op": "add",
+        "amount": 0.9,
+        "source": "arimr_miedzyplony_2026",
+        "confidence": "medium",
+        "note": "Midpoint of 0.8-0.95."
+      },
+      {
+        "var": "pathogen:take_all",
+        "op": "load",
+        "amount": 0.15,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "A grass can keep take-all inoculum."
+      },
+      {
+        "var": "pathogen:fusarium_cereal",
+        "op": "load",
+        "amount": 0.15,
+        "source": "iung_zeszyt69_8",
+        "confidence": "medium",
+        "note": "Host of Fusarium spp."
+      },
+      {
+        "var": "weeds:grass",
+        "op": "load",
+        "amount": -0.25,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Strong competition with grass weeds."
+      },
+      {
+        "var": "weeds:broadleaf",
+        "op": "load",
+        "amount": -0.2,
+        "source": "iung_miedzyplony_2025",
+        "confidence": "medium",
+        "note": "Ground cover suppresses broadleaf weeds."
+      }
+    ],
+    "hardRules": {
+      "minReturnYears": 2,
+      "maxConsecutiveYears": 2,
+      "minReturnSource": "iung_zeszyt69_8"
+    },
+    "sources": [
+      {
+        "id": "iung_miedzyplony_2025",
+        "title": "Międzyplony i ich znaczenie w produkcji rolniczej",
+        "url": "https://www.iung.pl/wp-content/uploads/2026/03/Prezentacja-miedzyplony-2025.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "iung_zeszyt69_8",
+        "title": "Studia i Raporty IUNG-PIB, zeszyt 69(8)",
+        "url": "https://iung.pl/sir/zeszyt69_8.pdf",
+        "publisher": "IUNG-PIB"
+      },
+      {
+        "id": "arimr_miedzyplony_2026",
+        "title": "Międzyplony ozime lub wsiewki śródplonowe 2026",
+        "url": "https://www.gov.pl/web/arimr/miedzyplony-ozime-lub-wsiewki-srodplonowe-2026",
+        "publisher": "ARiMR"
+      },
+      {
+        "id": "EST",
+        "title": "Expert estimate (no published source)",
+        "publisher": "FieldShift team"
+      }
+    ]
+  }
+]

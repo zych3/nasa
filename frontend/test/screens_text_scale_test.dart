@@ -8,6 +8,7 @@ import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/models/trending_crop.dart';
 import 'package:hopito_field_shift/pages/plot_page.dart';
+import 'package:hopito_field_shift/repositories/auth_store.dart';
 import 'package:hopito_field_shift/repositories/selected_plot_store.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -63,7 +64,9 @@ void main() {
       await store.select(_field);
       store.setNearby(const [_field]);
 
-      await tester.pumpWidget(_app(PlotPage(store: store), locale));
+      await tester.pumpWidget(
+        _app(PlotPage(store: store, authStore: AuthStore()), locale),
+      );
       await tester.pump();
       expect(tester.takeException(), isNull);
       for (var i = 0; i < 6; i++) {

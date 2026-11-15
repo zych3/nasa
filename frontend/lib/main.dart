@@ -112,7 +112,10 @@ class _MyScaffoldState extends State<MyScaffold> {
           ),
           _TabWithFlag(
             flag: flag,
-            child: PlotPage(store: widget.plotStore),
+            child: PlotPage(
+              store: widget.plotStore,
+              authStore: widget.authStore,
+            ),
           ),
           _TabWithFlag(
             flag: flag,

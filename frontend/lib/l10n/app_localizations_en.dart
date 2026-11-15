@@ -614,7 +614,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pastCropsHint =>
-      'Start with the last harvest. Each extra year makes the advice better.';
+      'Start with the last harvest. Each extra year makes the advice better. Planting here for the first time? Just continue.';
 
   @override
   String get pastCropLast => 'Last season';
@@ -630,9 +630,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pastCropClear => 'Clear';
-
-  @override
-  String get pastCropRequired => 'Choose at least the last crop to continue.';
 
   @override
   String get goalTitle => 'What matters most to you?';
@@ -720,11 +717,41 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get planHarvest => 'Harvest';
+  String get planHarvest => 'Harvest quality';
+
+  @override
+  String readSeason(String year, String crop) {
+    return '$year: $crop';
+  }
+
+  @override
+  String readPair(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String planSow(String period) {
+    return 'Sow: $period';
+  }
+
+  @override
+  String planHarvestTime(String period) {
+    return 'Harvest time: $period';
+  }
+
+  @override
+  String planPeriodOneMonth(String month, String year) {
+    return '$month $year';
+  }
+
+  @override
+  String planPeriodRange(String from, String to, String year) {
+    return '$from – $to $year';
+  }
 
   @override
   String harvestStars(String stars, int total) {
-    return 'Harvest rating: $stars out of $total stars';
+    return 'Harvest quality: $stars out of $total stars';
   }
 
   @override
@@ -773,6 +800,46 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get detailsPlansHeading => 'Plans for this goal';
+
+  @override
+  String get detailsRecommended => 'Recommended plan';
+
+  @override
+  String get detailsShownNow => 'Shown on the report now';
+
+  @override
+  String get detailsChoosePlan => 'Choose this plan';
+
+  @override
+  String get reportSavePlan => 'Save this plan';
+
+  @override
+  String get reportPlanSaved => 'Plan saved';
+
+  @override
+  String get reportSaveDone => 'The plan is saved in your profile.';
+
+  @override
+  String get reportSaveFailed => 'Could not save the plan. Please try again.';
+
+  @override
+  String get reportSaveTooMany =>
+      'You have too many saved plans. Delete one first.';
+
+  @override
+  String get reportSaveSessionExpired =>
+      'Your sign-in expired. Please sign in again.';
+
+  @override
+  String reportChosenOption(int number) {
+    return 'You are looking at option $number, not the recommended plan.';
+  }
+
+  @override
+  String get reportBackToBest => 'Show recommended';
+
+  @override
   String get detailsOtherGoals => 'Plans for other goals';
 
   @override
@@ -801,8 +868,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inputFarmer => 'Your other answers';
 
   @override
-  String get warnSoilEstimated =>
-      'We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.';
+  String get warnSoilUnavailable =>
+      'We could not get soil data for this field (the soil service did not answer), so we assumed typical Polish soil. Try again later. A soil test (pH) makes the advice better.';
+
+  @override
+  String get warnSoilNoData =>
+      'There is no soil data for this exact spot (it may be built-up land, water or forest), so we assumed typical Polish soil. A soil test (pH) makes the advice better.';
+
+  @override
+  String warnSoilPartial(String values) {
+    return 'Some soil data is missing ($values), so we filled the gaps with typical Polish values. A soil test (pH) makes the advice better.';
+  }
+
+  @override
+  String get soilValueSand => 'sand';
+
+  @override
+  String get soilValueClay => 'clay';
+
+  @override
+  String get soilValueSilt => 'silt';
+
+  @override
+  String get soilValuePh => 'acidity (pH)';
+
+  @override
+  String get soilValueCarbon => 'organic matter';
 
   @override
   String get warnFewCropsFit =>
@@ -861,6 +952,66 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String reasonCompactionDown(String crop) {
     return '$crop loosens the soil.';
+  }
+
+  @override
+  String reasonRuleHighNEyespot(String crop) {
+    return '$crop: a lot of nitrogen left in the soil makes eyespot disease build up faster.';
+  }
+
+  @override
+  String reasonRuleCompactionAphanomyces(String crop) {
+    return '$crop: packed soil makes root rot hit harder.';
+  }
+
+  @override
+  String reasonRuleLowPhLegumeN(String crop) {
+    return '$crop: acid soil means it leaves less nitrogen behind.';
+  }
+
+  @override
+  String reasonRuleLowPhClubroot(String crop) {
+    return '$crop: acid soil makes clubroot hurt the yield more.';
+  }
+
+  @override
+  String reasonRuleAcidLegumeFusarium(String crop) {
+    return '$crop: acid soil makes fusarium wilt hit harder.';
+  }
+
+  @override
+  String reasonRuleHighNFusarium(String crop) {
+    return '$crop: a lot of nitrogen in the soil raises the risk of fusarium.';
+  }
+
+  @override
+  String reasonRuleCompactionPotatoNematode(String crop) {
+    return '$crop: packed soil makes potato nematodes cost more yield.';
+  }
+
+  @override
+  String reasonRuleCompactionRhizoctonia(String crop) {
+    return '$crop: packed soil makes rhizoctonia (root rot) hit harder.';
+  }
+
+  @override
+  String reasonRuleCompactionCerealFusarium(String crop) {
+    return '$crop: packed soil makes fusarium hit harder.';
+  }
+
+  @override
+  String reasonRuleVolunteersClubroot(String crop) {
+    return '$crop: leftover rapeseed plants keep clubroot alive.';
+  }
+
+  @override
+  String reasonRuleHighNLegumeFixation(String crop) {
+    return '$crop: with plenty of nitrogen already in the soil, it fixes and leaves less.';
+  }
+
+  @override
+  String reasonRuleAlkalineTakeAll(String crop) {
+    return '$crop: alkaline soil makes take-all (a cereal root disease) worse.';
   }
 
   @override
@@ -1102,4 +1253,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickerConfirm => 'Choose this place';
+
+  @override
+  String get accountMyPlans => 'My plans';
+
+  @override
+  String get myPlansTitle => 'My plans';
+
+  @override
+  String get myPlansEmpty =>
+      'You have no saved plans yet. Open a report and choose Save this plan.';
+
+  @override
+  String get myPlansLoadError => 'Could not load your plans.';
+
+  @override
+  String myPlansItemInfo(String goal, String date) {
+    return '$goal · saved $date';
+  }
+
+  @override
+  String myPlansSavedOn(String date) {
+    return 'Saved $date';
+  }
+
+  @override
+  String get myPlansDelete => 'Delete';
+
+  @override
+  String get myPlansCancel => 'Cancel';
+
+  @override
+  String get myPlansDeleteTitle => 'Delete this plan?';
+
+  @override
+  String get myPlansDeleteBody => 'It will be removed from your profile.';
+
+  @override
+  String get myPlansDeleted => 'Plan deleted.';
+
+  @override
+  String get myPlansDeleteFailed =>
+      'Could not delete the plan. Please try again.';
 }

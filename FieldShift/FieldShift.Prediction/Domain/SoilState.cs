@@ -82,7 +82,10 @@ public enum ReasonKind
     HardRuleViolation,
     Decay,
 
-    Objective
+    Objective,
+
+    /// <summary>A <see cref="StateInteraction"/> strengthened or weakened an effect or response this season.</summary>
+    StateInteraction
 }
 
 public sealed record Cause(int SeasonIndex, CropId Crop);

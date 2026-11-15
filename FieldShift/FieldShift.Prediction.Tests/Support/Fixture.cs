@@ -35,6 +35,9 @@ public static class Fixture
     public static CropKnowledgeBase WithInteractions(CropKnowledgeBase kb, IEnumerable<InteractionOverride> items) =>
         Rebuild(kb, interactions: items);
 
+    public static CropKnowledgeBase WithStateInteractions(CropKnowledgeBase kb, params StateInteraction[] items) =>
+        Rebuild(kb, stateInteractions: items);
+
     public static CropKnowledgeBase WithAction(
         CropKnowledgeBase kb, string actionId, Func<ManagementActionDefinition, ManagementActionDefinition> change) =>
         Rebuild(kb, actions: kb.Actions.Values.Select(a => a.Id.Value == actionId ? change(a) : a));
@@ -51,13 +54,15 @@ public static class Fixture
         IEnumerable<Crop>? crops = null,
         IEnumerable<ManagementActionDefinition>? actions = null,
         IEnumerable<InteractionOverride>? interactions = null,
-        IEnumerable<Strategy>? strategies = null) =>
+        IEnumerable<Strategy>? strategies = null,
+        IEnumerable<StateInteraction>? stateInteractions = null) =>
         new(kb.Version,
             registry ?? kb.StateVariables,
             crops ?? kb.Crops.Values,
             actions ?? kb.Actions.Values,
             interactions ?? kb.Interactions,
-            strategies ?? kb.Strategies.Values);
+            strategies ?? kb.Strategies.Values,
+            stateInteractions ?? kb.StateInteractions);
 
     public static Plot PlotWithHistory(params HistoricSeason[] history) => new()
     {

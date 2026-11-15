@@ -24,7 +24,8 @@ public sealed record SurvivalFactors(
     public IEnumerable<double> Applicable => new[] { Texture, Heat, Winterkill, Water }.OfType<double>();
 }
 
-public sealed record YearSurvival(int HarvestYear, double Score, SurvivalFactors Factors);
+/// <param name="Weight">How much this year counts (1 for every year unless recency weighting is on).</param>
+public sealed record YearSurvival(int HarvestYear, double Score, SurvivalFactors Factors, double Weight = 1.0);
 
 public sealed record CropStaticSurvival(
     CropId Crop,
@@ -35,7 +36,14 @@ public sealed record CropStaticSurvival(
 {
     public double[] SortedScores { get; } = Years.Select(y => y.Score).Order().ToArray();
 
-    public double MeanWaterStress { get; } = Years.Count == 0 ? 0.0 : Years.Average(y => y.Factors.WaterStress);
+    /// <summary>The weights of <see cref="SortedScores"/>, in the same order; null when every year counts the same.</summary>
+    public double[]? SortedWeights { get; } = Years.Any(y => y.Weight != 1.0)
+        ? Years.OrderBy(y => y.Score).ThenBy(y => y.HarvestYear).Select(y => y.Weight).ToArray()
+        : null;
+
+    public double MeanWaterStress { get; } = Years.Count == 0
+        ? 0.0
+        : Years.Sum(y => y.Weight * y.Factors.WaterStress) / Years.Sum(y => y.Weight);
 
     public double? ScoreIn(int harvestYear) =>
         Years.FirstOrDefault(y => y.HarvestYear == harvestYear)?.Score;

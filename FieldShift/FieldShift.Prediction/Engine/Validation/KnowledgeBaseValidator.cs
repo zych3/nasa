@@ -19,6 +19,7 @@ public static class KnowledgeBaseValidator
         foreach (var action in kb.Actions.Values.OrderBy(a => a.Id.Value, StringComparer.Ordinal))
             ValidateAction(kb, action, r);
         ValidateInteractions(kb, r);
+        ValidateStateInteractions(kb, settings, r);
         ValidateStrategies(kb, r);
         if (settings is not null)
             ValidateSettings(kb, settings, r);
@@ -212,6 +213,46 @@ public static class KnowledgeBaseValidator
         }
     }
 
+    private static void ValidateStateInteractions(CropKnowledgeBase kb, EngineSettings? settings, ValidationReport r)
+    {
+        var max = settings?.Interactions.MaxMultiplier ?? new InteractionSettings().MaxMultiplier;
+        var ids = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var x in kb.StateInteractions)
+        {
+            var where = Fmt.Inv($"stateInteraction '{x.Id}'");
+
+            if (string.IsNullOrWhiteSpace(x.Id) || !ids.Add(x.Id))
+                r.Error("stateInteraction.id", "Ids must be present and unique.", where);
+
+            if (!kb.StateVariables.Contains(x.When.Var))
+                r.Error("stateInteraction.unknownTrigger", Fmt.Inv($"Trigger reads unregistered variable '{x.When.Var}'."), where);
+            if (!kb.StateVariables.Contains(x.Target.Var))
+                r.Error("stateInteraction.unknownTarget", Fmt.Inv($"Target is unregistered variable '{x.Target.Var}'."), where);
+
+            if (x.Multiplier <= 0 || x.Multiplier > max)
+                r.Error("stateInteraction.multiplier", Fmt.Inv($"multiplier {x.Multiplier} must be in (0, {max}]."), where);
+
+            if (x.Target.Kind == InteractionTargetKind.Response && x.Target.Op is not null)
+                r.Error("stateInteraction.op", "op is only valid for effect targets.", where);
+            if (x.Target.Op is EffectOp.Multiply or EffectOp.Set)
+                r.Error("stateInteraction.op", "Only add and load effects can be scaled.", where);
+
+            if (x.Crops is { } selector)
+                CheckSelector(kb, selector, r, where);
+
+            if (!kb.StateVariables.Contains(x.Target.Var)) continue;
+
+            var matched = kb.Crops.Values.Where(c => x.Crops is not { } s || s.Matches(c)).ToList();
+            var acts = x.Target.Kind == InteractionTargetKind.Response
+                ? matched.Any(c => c.Responses.Any(resp => resp.Var == x.Target.Var))
+                : matched.Any(c => c.Effects.Any(e => e.Var == x.Target.Var && (x.Target.Op is null || e.Op == x.Target.Op)))
+                  || kb.Actions.Values.Any(a => a.Effects.Any(e => e.Var == x.Target.Var && (x.Target.Op is null || e.Op == x.Target.Op)));
+            if (!acts)
+                r.Warning("stateInteraction.noTarget", "No matching crop has this effect or response, so the rule never fires.", where);
+        }
+    }
+
     private static void ValidateStrategies(CropKnowledgeBase kb, ValidationReport r)
     {
         foreach (var s in kb.Strategies.Values.OrderBy(s => s.Id.Value, StringComparer.Ordinal))
@@ -269,6 +310,9 @@ public static class KnowledgeBaseValidator
 
         if (s.Survival.CvarFraction is <= 0 or > 1)
             r.Error("settings.cvarFraction", "cvarFraction must be in (0, 1].", "survival");
+
+        if (s.Survival.RecencyHalfLifeYears is { } halfLife && (!double.IsFinite(halfLife) || halfLife <= 0))
+            r.Error("settings.recencyHalfLife", "recencyHalfLifeYears must be positive (or left out for equal weights).", "survival");
 
         var heat = s.Survival.HeatDaysFallbackWindowFraction;
         if (!heat.IsValid || heat.Min < 0 || heat.Max > 1)
