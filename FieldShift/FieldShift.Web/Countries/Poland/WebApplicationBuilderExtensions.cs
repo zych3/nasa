@@ -1,4 +1,5 @@
 ﻿using FieldShift.Web.Countries.Prices;
+using FieldShift.Web.FieldData;
 
 namespace FieldShift.Web.Countries.Poland;
 
@@ -29,7 +30,39 @@ public static partial class WebApplicationBuilderExtensions
         });
         builder.Services.AddTransient<ICountryProvider, PolandCountryProvider>();
 
+        AddFieldDataProviders(builder);
         AddCropData(builder);
+    }
+
+    /// <summary>
+    /// Parcel data from GUGiK's national services (no key): land register (EGiB integration), soil-agricultural
+    /// map and the 1 m terrain model. Cached by <see cref="FieldDataRegistration"/>.
+    /// </summary>
+    private static void AddFieldDataProviders(WebApplicationBuilder builder)
+    {
+        var egibWmsUrl = Required(builder, "Poland:EgibWmsUrl");
+        var soilMapWmsUrl = Required(builder, "Poland:SoilMapWmsUrl");
+        var nmtBaseUrl = Required(builder, "Poland:NmtBaseUrl");
+
+        // The EGiB integration waits for the county's own server, which can be slow.
+        builder.Services.AddHttpClient<ILandRegistryProvider, EgibLandClassProvider>(c =>
+        {
+            c.BaseAddress = new Uri(egibWmsUrl);
+            c.Timeout = TimeSpan.FromSeconds(30);
+            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        });
+        builder.Services.AddHttpClient<ISoilMapProvider, SoilAgriculturalMapProvider>(c =>
+        {
+            c.BaseAddress = new Uri(soilMapWmsUrl);
+            c.Timeout = TimeSpan.FromSeconds(20);
+            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        });
+        builder.Services.AddHttpClient<ITerrainProvider, GugikTerrainProvider>(c =>
+        {
+            c.BaseAddress = new Uri(nmtBaseUrl);
+            c.Timeout = TimeSpan.FromSeconds(20);
+            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        });
     }
 
     /// <summary>Real crop data: GUS prices, Eurostat area/yield, Wikidata photos; saved and refreshed daily.</summary>

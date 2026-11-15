@@ -1,3 +1,5 @@
+using FieldShift.Web.FieldData;
+
 namespace FieldShift.Web.FieldProfile;
 
 public static class FieldProfileRegistration
@@ -28,6 +30,9 @@ public static class FieldProfileRegistration
                 o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(60);
                 o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(60);
             });
+
+        // Worldwide modelled soil for every field data user (cached by FieldDataCache).
+        builder.Services.AddTransient<ISoilPropertiesProvider, SoilGridsSoilProvider>();
 
         builder.Services.AddSingleton<FieldProfileService>();
         builder.Services.AddScoped<FieldProfileProvider>();

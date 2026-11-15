@@ -54,6 +54,22 @@ Data notes: NASA POWER is a ~50 km grid, so climate is regional, not field-level
 record extremes over the period, not averages, which is why `heatRiskMonths` can include months that are
 rarely hot. SoilGrids is a 250 m model estimate that the farmer may correct.
 
+## Parcel details endpoint
+
+`GET /api/parcels/details?lat={lat}&lon={lon}` or `GET /api/parcels/{id}/details`: land register classes, soil
+map (suitability complex, soil type, texture), terrain slope (1 m model) and modelled soil of one registered
+parcel, each section with its own status and source. Guide: [docs/parcel-details.md](docs/parcel-details.md).
+
+```bash
+curl "http://localhost:5066/api/parcels/details?lat=52.20&lon=21.48"
+```
+
+Code: provider interfaces in `FieldShift.Web/FieldData/ProviderContracts.cs`, Polish providers in
+`Countries/Poland/` (`EgibLandClassProvider`, `SoilAgriculturalMapProvider`, `GugikTerrainProvider`), cache in
+`FieldData/Cache/` (table `provider_cache`, migrations in `Migrations/FieldData`). New migrations of the cache:
+`dotnet tool restore && dotnet ef migrations add <Name> --context FieldDataDbContext --output-dir Migrations/FieldData --namespace FieldShift.Web.Migrations.FieldData --project FieldShift.Web`
+(run in `FieldShift/`).
+
 ## Map layers endpoint
 
 `GET /api/map-layers?lat={lat}&lon={lon}&from={yyyy-MM}&to={yyyy-MM}&layers={id1,id2}`: monthly series of 9
@@ -67,7 +83,8 @@ curl "http://localhost:5066/api/map-layers/definitions"
 
 Code in `FieldShift.Web/MapLayers/`: `MonthlyAggregator` (days → months), `DerivedIndices` (plant stress,
 erosion), `TrendCalculator` (anomalies, trends), `LayerDefinitions` (legends), `MapLayersService` (fetch, cache,
-`Compose`). It shares `NasaPowerClient` / `SoilGridsClient` with the field profile.
+`Compose`). It shares `NasaPowerClient` and the soil provider (`ISoilPropertiesProvider`, SoilGrids cached in PostgreSQL)
+with the field profile.
 
 Terrain slope for erosion comes from `DemoLocations` in `appsettings.json` (empty by default). Add points with a
 slope computed from SRTM in NASA AppEEARS:

@@ -23,6 +23,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 - **Frontend:** Flutter (Dart), in `frontend/`. Targets: web, Android (Linux desktop only for local dev).
 - **Backend:** .NET. Owns data fetching, caching, scoring and the API contract.
 - **Database:** PostgreSQL (`db/Dockerfile`), used as the crop price cache through EF Core (`PricesDbContext`). Price endpoints answer from the database; the source API (GUS) is only called when the stored prices are stale (`Prices:StaleAfterHours`, default 24). If GUS is down, the stored prices are served. The schema is the EF migrations in `FieldShift/FieldShift.Web/Migrations`; the backend applies them itself. Change the schema only by editing the entities and running `dotnet ef migrations add <Name>`, never by hand in SQL.
+- **Field data providers:** each kind of data (land register, soil map, terrain, soil properties) has its own interface in `FieldShift/FieldShift.Web/FieldData/ProviderContracts.cs`; each country registers its implementations (Poland: `Countries/Poland/`). Services pick the first provider whose `Supports` says yes and ask it through `FieldDataCache`, which keeps answers in the PostgreSQL table `provider_cache` (own migrations: `Migrations/FieldData`). A new country = new providers, no change in the services. See `FieldShift/docs/parcel-details.md`.
 - **Decider:** start as plain rule-based scoring behind an interface (`IDecider`). An ONNX model is optional and only if time and data allow.
 - The frontend never talks to NASA or other data sources directly; it only calls our backend.
 
@@ -40,7 +41,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Resolve a parcel from address / coordinates / number | `POST /api/parcels/resolve` |
 | Parcels in the visible map area | `GET /api/parcels?bbox=...` |
 | Parcels nearest to a point (parcel at the point + parcels of nearest addresses) | `GET /api/parcels/nearby?lat=..&lon=..` |
-| Parcel details (polygon, public data, soil, terrain) | `GET /api/parcels/{id}` |
+| Parcel details: land register classes, soil map, terrain, modelled soil (sections with status and source) | `GET /api/parcels/details?lat=..&lon=..`, `GET /api/parcels/{id}/details` |
 | Risk indicators with source and confidence | `GET /api/parcels/{id}/indicators` |
 | Climate (NASA POWER) + topsoil (SoilGrids) profile of a point | `GET /api/field-profile?lat=...&lon=...` |
 | Monthly map layers with legends for a date slider | `GET /api/map-layers?lat=...&lon=...&from=yyyy-MM&to=yyyy-MM&layers=...` |

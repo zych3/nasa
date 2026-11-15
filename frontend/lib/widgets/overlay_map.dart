@@ -80,6 +80,9 @@ class _OverlayMapState extends State<OverlayMap> {
 
   static const _maxLabelTextScale = 1.3;
 
+  /// How far the user can zoom out (see `MapOptions.minZoom` below).
+  static const _minZoom = 7.0;
+
   HeatmapImageProvider? _image;
 
   /// Waits until the map stops moving before reporting the visible area.
@@ -189,6 +192,9 @@ class _OverlayMapState extends State<OverlayMap> {
         initialCenter: widget.center,
         initialZoom: widget.initialZoom,
         initialCameraFit: fit == null ? null : _fit(fit),
+        // About Poland and its neighbours: further out the data says
+        // nothing about a field, and the heat map would need too many blocks.
+        minZoom: _minZoom,
         onPositionChanged: _onPositionChanged,
         // The first view counts too, before the user moves anything.
         onMapReady: () => _onPositionChanged(_controller.camera, false),

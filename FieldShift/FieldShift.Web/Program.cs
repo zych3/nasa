@@ -1,6 +1,7 @@
 using FieldShift.Web.Countries;
 using FieldShift.Web.Countries.Poland;
 using FieldShift.Web.Data;
+using FieldShift.Web.FieldData;
 using FieldShift.Web.FieldProfile;
 using FieldShift.Web.MapLayers;
 using FieldShift.Web.Repositories;
@@ -32,6 +33,7 @@ builder.Services.AddOpenApi();
 builder.AddPoland();
 builder.AddFieldProfile();
 builder.AddMapLayers();
+builder.AddFieldData();
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)
