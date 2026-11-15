@@ -21,6 +21,7 @@ public static class AccountsRegistration
         builder.Services.AddSingleton<AccountsSchema>();
         builder.Services.Configure<AccountOptions>(builder.Configuration.GetSection("Accounts"));
         builder.Services.AddSingleton<AccountService>();
+        builder.Services.AddSingleton<UserCropService>();
 
         builder.Services
             .AddAuthentication(TokenAuthenticationHandler.SchemeName)

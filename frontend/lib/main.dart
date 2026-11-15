@@ -119,7 +119,10 @@ class _MyScaffoldState extends State<MyScaffold> {
           AreaMapPage(
             store: widget.plotStore,
             topBarActions: [
-              AccountButton(store: widget.authStore),
+              AccountButton(
+                store: widget.authStore,
+                plotStore: widget.plotStore,
+              ),
               flag,
             ],
             onParcelChosen: () => setState(() => _selectedIndex = 1),

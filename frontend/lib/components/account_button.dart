@@ -2,14 +2,23 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../pages/auth_page.dart';
+import '../pages/my_crops_page.dart';
 import '../repositories/auth_store.dart';
+import '../repositories/selected_plot_store.dart';
 
-/// Round "account" button: opens a sheet with who is signed in and a button
-/// to sign out (or, without an account, to sign in / create one).
+/// Round "account" button: opens a sheet with who is signed in, "My crops"
+/// and a button to sign out (or, without an account, to sign in / create one).
 class AccountButton extends StatelessWidget {
-  const AccountButton({super.key, required this.store});
+  const AccountButton({
+    super.key,
+    required this.store,
+    required this.plotStore,
+  });
 
   final AuthStore store;
+
+  /// The field chosen on the map: the place of a new "my crop".
+  final SelectedPlotStore plotStore;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +27,7 @@ class AccountButton extends StatelessWidget {
       onPressed: () => showModalBottomSheet<void>(
         context: context,
         showDragHandle: true,
-        builder: (_) => _AccountSheet(store: store),
+        builder: (_) => _AccountSheet(store: store, plotStore: plotStore),
       ),
       icon: const Icon(Icons.account_circle_outlined),
     );
@@ -26,9 +35,10 @@ class AccountButton extends StatelessWidget {
 }
 
 class _AccountSheet extends StatelessWidget {
-  const _AccountSheet({required this.store});
+  const _AccountSheet({required this.store, required this.plotStore});
 
   final AuthStore store;
+  final SelectedPlotStore plotStore;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +79,24 @@ class _AccountSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            if (signedIn)
+            if (signedIn) ...[
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(64),
+                  textStyle: const TextStyle(fontSize: 18),
+                ),
+                onPressed: () => _closeAndOpen(
+                  context,
+                  (navContext) => MyCropsPage.open(
+                    navContext,
+                    auth: store,
+                    plotStore: plotStore,
+                  ),
+                ),
+                icon: const Icon(Icons.grass),
+                label: Text(l10n.myCropsTitle),
+              ),
+              const SizedBox(height: 12),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(64),
@@ -79,18 +106,18 @@ class _AccountSheet extends StatelessWidget {
                 onPressed: () => _signOut(context),
                 icon: const Icon(Icons.logout),
                 label: Text(l10n.accountSignOut),
-              )
-            else
+              ),
+            ] else
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   minimumSize: const Size.fromHeight(64),
                   textStyle: Theme.of(context).textTheme.labelLarge
                       ?.copyWith(fontSize: 18),
                 ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  AuthPage.open(context, store);
-                },
+                onPressed: () => _closeAndOpen(
+                  context,
+                  (navContext) => AuthPage.open(navContext, store),
+                ),
                 icon: const Icon(Icons.login),
                 label: Text(l10n.accountSignIn, textAlign: TextAlign.center),
               ),
@@ -98,6 +125,17 @@ class _AccountSheet extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Closes the sheet, then opens a page from the screen below it (the
+  /// sheet's own context is gone once it closes).
+  void _closeAndOpen(
+    BuildContext context,
+    void Function(BuildContext navContext) open,
+  ) {
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    open(navigator.context);
   }
 
   /// Signing out keeps the app open, without an account.

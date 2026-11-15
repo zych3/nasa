@@ -17,6 +17,40 @@ public sealed class User
     public DateTimeOffset CreatedAt { get; set; }
 
     public List<UserSession> Sessions { get; } = [];
+
+    public List<UserCrop> Crops { get; } = [];
+}
+
+/// <summary>
+/// One crop the user grows at one place (table <c>user_crops</c>), saved so that later the app can check whether
+/// it is at risk. <see cref="IsActive"/> = the user wants it watched; inactive entries are kept but skipped.
+/// </summary>
+public sealed class UserCrop
+{
+    public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
+
+    public User? User { get; set; }
+
+    /// <summary>e.g. "wheat"; matches <c>CropCatalog</c>. Not a foreign key: the catalogue lives in code.</summary>
+    public required string CropId { get; set; }
+
+    public double Latitude { get; set; }
+
+    public double Longitude { get; set; }
+
+    /// <summary>The registered parcel at the place, when one was chosen.</summary>
+    public string? ParcelId { get; set; }
+
+    /// <summary>The user's words for the place, e.g. the address or "field by the river".</summary>
+    public string? Label { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+
+    public DateTimeOffset UpdatedAt { get; set; }
 }
 
 /// <summary>
@@ -39,8 +73,7 @@ public sealed class UserSession
 
 /// <summary>
 /// Users and their sessions in PostgreSQL (the same database as the prices, own migrations: Migrations/Accounts,
-/// history table <see cref="MigrationsHistoryTable"/>). Saved rotation queries and crop alerts will hang off
-/// <see cref="User"/>.
+/// history table <see cref="MigrationsHistoryTable"/>). Also the user's crops (<see cref="UserCrop"/>).
 /// </summary>
 public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> options) : DbContext(options)
 {
@@ -49,6 +82,8 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
     public DbSet<User> Users => Set<User>();
 
     public DbSet<UserSession> Sessions => Set<UserSession>();
+
+    public DbSet<UserCrop> Crops => Set<UserCrop>();
 
     /// <summary>The database is down or rejected the command (same rule as the price cache).</summary>
     public static bool IsDatabaseFailure(Exception e) => PricesDbContext.IsDatabaseFailure(e);
@@ -78,6 +113,27 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
                 .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(s => s.UserId);
             e.HasIndex(s => s.ExpiresAt);
+        });
+
+        model.Entity<UserCrop>(e =>
+        {
+            e.ToTable("user_crops");
+            e.HasKey(c => c.Id);
+            e.Property(c => c.Id).HasColumnName("id");
+            e.Property(c => c.UserId).HasColumnName("user_id");
+            e.Property(c => c.CropId).HasColumnName("crop_id").HasColumnType("text");
+            e.Property(c => c.Latitude).HasColumnName("latitude");
+            e.Property(c => c.Longitude).HasColumnName("longitude");
+            e.Property(c => c.ParcelId).HasColumnName("parcel_id").HasColumnType("text");
+            e.Property(c => c.Label).HasColumnName("label").HasColumnType("text");
+            e.Property(c => c.IsActive).HasColumnName("is_active");
+            e.Property(c => c.CreatedAt).HasColumnName("created_at");
+            e.Property(c => c.UpdatedAt).HasColumnName("updated_at");
+            e.HasOne(c => c.User).WithMany(u => u.Crops).HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(c => c.UserId);
+            // Later: the risk check reads all active entries.
+            e.HasIndex(c => c.IsActive);
         });
     }
 }

@@ -58,6 +58,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Log in (same body and answer; 401 `invalid_credentials`) | `POST /api/auth/login` |
 | Testing only: log in to the shared `test` account without a password (404 unless `Accounts:TestLogin` is true: Development, docker compose) | `POST /api/auth/test-login` |
 | The logged-in user / end the session (header `Authorization: Bearer <token>`; 401 without a valid one) | `GET /api/auth/me`, `POST /api/auth/logout` |
+| "My crops": the logged-in user's crops at their places, for a later risk check (Bearer token required, 401 without; each user sees only their own). List (newest first) / one / add (body: `cropId` from `/api/crops`, `latitude`, `longitude` required; `parcelId`, `label` ≤ 200, `isActive` default true; 201) / change (only sent fields: `cropId`, new place as `latitude` + `longitude` together, `parcelId` ("" removes it), `label` ("" removes it), `isActive`). Errors: `code` `invalid_crop`, `invalid_location`, `label_too_long`, `too_many_crops` (max 100), 404 `not_found` | `GET /api/my-crops`, `GET /api/my-crops/{id}`, `POST /api/my-crops`, `PATCH /api/my-crops/{id}` |
 
 Keep this table and the example JSON in `frontend/assets/mock/` in sync with the backend.
 Change the contract only after agreeing with both frontend and backend owners.
