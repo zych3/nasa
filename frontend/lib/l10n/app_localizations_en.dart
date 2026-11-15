@@ -506,7 +506,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get overlayErosionTitle => 'Soil erosion';
+  String get overlayErosionTitle => 'Erosion (soil wash-off)';
 
   @override
   String overlayStepsRisk(String step) {

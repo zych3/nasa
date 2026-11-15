@@ -509,7 +509,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get overlayErosionTitle => 'Zmywanie gleby';
+  String get overlayErosionTitle => 'Erozja (zmywanie gleby)';
 
   @override
   String overlayStepsRisk(String step) {

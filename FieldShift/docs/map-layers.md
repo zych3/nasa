@@ -217,6 +217,11 @@ values: `20` mm falls into "sucho (20–40 mm)", not "bardzo sucho").
 
 ## Data notes
 
+- `erosionRisk` uses the slope of the registered parcel at the requested point (exact point, not the rounded one)
+  from the country's terrain provider (Poland: GUGiK terrain model, 1 m, cached in PostgreSQL); `static.terrain`
+  then names that source. Without a parcel (other country, register down) it falls back to the demo locations,
+  else to no slope with a warning.
+
 - NASA POWER is a ~50 km grid: one value for the whole area around the field, not field-level.
 - Months with partly missing days are computed from available days; sums and day counts are scaled to the full month.
 - `evaporation` is actual evapotranspiration from the model (EVPTRNS, MJ/m²/day × 0.408 = mm). Dry soil

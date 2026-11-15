@@ -857,7 +857,7 @@ abstract class AppLocalizations {
   /// No description provided for @overlayErosionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Soil erosion'**
+  /// **'Erosion (soil wash-off)'**
   String get overlayErosionTitle;
 
   /// No description provided for @overlayStepsRisk.

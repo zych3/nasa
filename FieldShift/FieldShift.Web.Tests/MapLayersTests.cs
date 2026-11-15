@@ -208,6 +208,27 @@ public class MapLayersTests
     }
 
     [Fact]
+    public void Compose_ParcelSlope_DrivesErosion_AndNamesItsSource()
+    {
+        const string nmt = "Numeryczny model terenu GUGiK (siatka 1 m)";
+        var steep = new DemoLocation { Name = "141205_2.0008.60", Lat = 52.20, Lon = 21.48, SlopePct = 10 };
+
+        var flat = MapLayersService.Compose(AllLayers(), Daily(), true, LightSoil(), null, Now);
+        var sloped = MapLayersService.Compose(AllLayers(), Daily(), true, LightSoil(), steep, Now, nmt);
+
+        var erosion = sloped.Layers.Single(l => l.Id == "erosionRisk");
+        Assert.Contains(nmt, erosion.Source);
+        Assert.DoesNotContain("SRTM", erosion.Source);
+        Assert.Equal(nmt, sloped.Static.Terrain!.Source);
+        Assert.Equal("umiarkowany spadek", sloped.Static.Terrain.SlopeClass);
+        Assert.DoesNotContain(MapLayersService.NoSlopeWarning, sloped.Warnings);
+        // Steeper ground, more erosion (where it rained heavily at all).
+        var flatValues = flat.Layers.Single(l => l.Id == "erosionRisk").Values;
+        Assert.Contains(erosion.Values.Zip(flatValues), p => p.First > p.Second);
+        Assert.All(erosion.Values.Zip(flatValues), p => Assert.True(p.First >= p.Second));
+    }
+
+    [Fact]
     public void Compose_NoSoil_UsesDefaultSusceptibilityAndWarns()
     {
         var response = MapLayersService.Compose(AllLayers(), Daily(), true, soil: null, null, Now);

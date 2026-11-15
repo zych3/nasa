@@ -172,3 +172,16 @@ i szeroki ekran.
 
 **Wysoki priorytet: brak.**
 
+## Recenzja #10 (`feat/plant-stress-erosion`)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 58 | N | 📝 | `MapLayersService.cs` | Erozja szuka działki w ULDK przy każdym nowym punkcie (wynik 24 h w pamięci, spadek 365 dni w PostgreSQL). Gdy ULDK nie odpowiada, erozja liczona jest jak dawniej, bez spadku (z ostrzeżeniem). |
+| 59 | N | 📝 | `MapLayersService.cs` | Podatność gleby (K) w erozji dalej z SoilGrids, nie z mapy glebowo-rolniczej – mapa ma kompleksy, nie skład procentowy. |
+
+Sprawdzone na żywo: działka w Chrośli – spadek 0,5 % (płasko), źródło erozji „…spadek działki: NMT GUGiK”, bez
+ostrzeżenia o braku nachylenia; drugi punkt (Małopolska) 2 %; stres roślin w odpowiedzi i w siatce heatmapy;
+test: większy spadek → nie mniejsza erozja.
+
+**Wysoki priorytet: brak.**
+
