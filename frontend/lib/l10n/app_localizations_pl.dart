@@ -747,6 +747,34 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String calendarAddFor(String event) {
+    return 'Dodaj do kalendarza: $event';
+  }
+
+  @override
+  String calendarSowTitle(String crop) {
+    return 'Siew: $crop';
+  }
+
+  @override
+  String calendarHarvestTitle(String crop) {
+    return 'Zbiór: $crop';
+  }
+
+  @override
+  String calendarCoverTitle(String crop) {
+    return 'Siew poplonu: $crop';
+  }
+
+  @override
+  String get calendarNote =>
+      'Z Twojego planu zmianowania w Field Shift. Terminy są orientacyjne: wykonaj w tym oknie.';
+
+  @override
+  String get calendarFailed =>
+      'Nie udało się otworzyć kalendarza na tym urządzeniu.';
+
+  @override
   String planPeriodOneMonth(String month, String year) {
     return '$month $year';
   }
