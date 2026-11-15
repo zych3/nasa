@@ -8,8 +8,10 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
+COPY FieldShift.Prediction/FieldShift.Prediction.csproj FieldShift.Prediction/
 COPY FieldShift.Web/FieldShift.Web.csproj FieldShift.Web/
 RUN dotnet restore FieldShift.Web/FieldShift.Web.csproj
+COPY FieldShift.Prediction/ FieldShift.Prediction/
 COPY FieldShift.Web/ FieldShift.Web/
 RUN dotnet publish FieldShift.Web/FieldShift.Web.csproj -c Release -o /out --no-restore
 

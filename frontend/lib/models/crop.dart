@@ -78,6 +78,7 @@ class Crop {
     required this.names,
     required this.scientificName,
     required this.hasPrices,
+    this.supportsRotation = false,
     this.imageUrl,
     this.wikipediaUrls = const {},
     this.production,
@@ -98,6 +99,8 @@ class Crop {
   final CropProduction? production;
   final CropTraits? traits;
   final bool hasPrices;
+
+  final bool supportsRotation;
 
   /// Codes translated by `cropNoteText`, never shown as-is.
   final String? productionNoteCode;
@@ -126,6 +129,7 @@ class Crop {
           : CropProduction.fromJson(production),
       traits: traits == null ? null : CropTraits.fromJson(traits),
       hasPrices: json['hasPrices'] as bool? ?? false,
+      supportsRotation: json['supportsRotation'] as bool? ?? false,
       productionNoteCode: json['productionNoteCode'] as String?,
       priceNoteCode: json['priceNoteCode'] as String?,
     );

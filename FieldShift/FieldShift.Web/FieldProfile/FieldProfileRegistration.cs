@@ -20,13 +20,13 @@ public static class FieldProfileRegistration
                 o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(120); // must be >= 2 × attempt timeout
             });
 
-        // SoilGrids is slow (3–4 s, sometimes much more) and rate-limited, so it gets a 60 s budget.
+        // SoilGrids is slow (3–4 s, sometimes much more) and rate-limited, so it gets an 80 s budget (measured: 13–49 s per query).
         builder.Services.AddHttpClient<SoilGridsClient>(c => c.BaseAddress = new Uri(soilGridsBaseUrl))
             .AddStandardResilienceHandler(o =>
             {
-                o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(30);
-                o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(60);
-                o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(60);
+                o.AttemptTimeout.Timeout = TimeSpan.FromSeconds(40);
+                o.TotalRequestTimeout.Timeout = TimeSpan.FromSeconds(80);
+                o.CircuitBreaker.SamplingDuration = TimeSpan.FromSeconds(80);
             });
 
         builder.Services.AddSingleton<FieldProfileService>();

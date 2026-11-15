@@ -53,4 +53,32 @@ class ApiClient {
     }
     return jsonDecode(utf8.decode(response.bodyBytes));
   }
+
+  /// POST with a JSON body. Calculations can take a while (the backend may
+  /// have to ask NASA and SoilGrids first), hence the long timeout.
+  Future<dynamic> postJson(
+    String path,
+    Map<String, dynamic> body, {
+    String? languageCode,
+  }) async {
+    final response = await _http
+        .post(
+          Uri.parse('$baseUrl$path'),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Language': ?languageCode,
+          },
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 120));
+
+    if (response.statusCode != 200) {
+      throw ApiException(
+        'POST $path failed with ${response.statusCode}',
+        statusCode: response.statusCode,
+      );
+    }
+    return jsonDecode(utf8.decode(response.bodyBytes));
+  }
 }
