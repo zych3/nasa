@@ -46,7 +46,7 @@ Flutter app (frontend/)  ->  .NET backend  ->  Decider (scoring)
 | Monthly map layers with legends for a date slider | `GET /api/map-layers?lat=...&lon=...&from=yyyy-MM&to=yyyy-MM&layers=...` |
 | Map layer definitions (no data) | `GET /api/map-layers/definitions` |
 | Map colouring (best crop per parcel) | `POST /api/parcels/suitability` |
-| Ranked rotation plans for one parcel | `POST /api/recommendations` |
+| Ranked rotation plans for one plot (body: `lat`, `lon`, `pastCrops` required; `goal`, `excludedCrops`, `hasLivestock`, `hasIrrigation`, `soilPhKCl`, `parcelId` optional; answer: plans per goal, ratings, warnings as codes) | `POST /api/recommendations` |
 | Crop catalogue (names, photo, area/yield, growing needs) | `GET /api/crops`, `GET /api/crops/{id}` |
 | Latest real prices of one crop (default 10, max 240; `status: "no_data"` when none; 503 when the database is down) | `GET /api/crops/{id}/prices?count=10` |
 | Trends: recommended / profitable crops nearby | `GET /api/trends?parcelId=...` |

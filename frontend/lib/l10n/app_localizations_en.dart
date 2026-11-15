@@ -113,6 +113,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sourceSatellite => 'Measured by satellite';
 
   @override
+  String get sourceModel => 'Computer model on real data (ISRIC SoilGrids)';
+
+  @override
   String get sourceEstimated => 'Estimated';
 
   @override
@@ -342,4 +345,284 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findParcel => 'Find parcel';
+
+  @override
+  String get rotationStart => 'Plan my crop rotation';
+
+  @override
+  String get rotationStartHint => 'Find out what to grow in the next years.';
+
+  @override
+  String get rotationStartNeedPlot => 'Choose your field on the map first.';
+
+  @override
+  String wizardStep(int current, int total) {
+    return 'Step $current of $total';
+  }
+
+  @override
+  String get wizardNext => 'Next';
+
+  @override
+  String get wizardBack => 'Back';
+
+  @override
+  String get wizardShowPlan => 'Show my plan';
+
+  @override
+  String get wizardOptional => 'Optional';
+
+  @override
+  String get pastCropsTitle => 'What did you grow here lately?';
+
+  @override
+  String get pastCropsHint =>
+      'Start with the last harvest. Each extra year makes the advice better.';
+
+  @override
+  String get pastCropLast => 'Last season';
+
+  @override
+  String get pastCropBefore => 'Season before';
+
+  @override
+  String get pastCropEarlier => 'Two seasons ago';
+
+  @override
+  String get pastCropChoose => 'Choose a crop';
+
+  @override
+  String get pastCropClear => 'Clear';
+
+  @override
+  String get pastCropRequired => 'Choose at least the last crop to continue.';
+
+  @override
+  String get goalTitle => 'What matters most to you?';
+
+  @override
+  String get goalNoPreference => 'No preference';
+
+  @override
+  String get goalBalanced => 'A bit of everything';
+
+  @override
+  String get goalBalancedHint => 'Good harvest and healthy soil together.';
+
+  @override
+  String get goalSoilHealth => 'Healthy soil';
+
+  @override
+  String get goalSoilHealthHint => 'Build up the soil for the long run.';
+
+  @override
+  String get goalSafeHarvest => 'Safe harvest';
+
+  @override
+  String get goalSafeHarvestHint =>
+      'Crops that cope best with dry or cold years.';
+
+  @override
+  String get extrasTitle => 'Anything else we should know?';
+
+  @override
+  String get extrasLivestock => 'I have animals or manure';
+
+  @override
+  String get extrasIrrigation => 'I can water this field';
+
+  @override
+  String get extrasExcludedLabel => 'Crops I do not want to grow:';
+
+  @override
+  String get extrasPhLabel => 'Soil pH from a soil test';
+
+  @override
+  String get extrasPhHint => 'For example 5.8';
+
+  @override
+  String get extrasPhInvalid => 'Enter a number between 3 and 9.';
+
+  @override
+  String get reportTitle => 'Your crop plan';
+
+  @override
+  String get reportLoading => 'Working out your plan…';
+
+  @override
+  String get reportLoadError =>
+      'We could not make the plan. Check your internet and try again.';
+
+  @override
+  String get reportNoPlan =>
+      'No crop on our list suits this field with these answers. Try changing your answers.';
+
+  @override
+  String get reportMainTitle => 'Best plan for you';
+
+  @override
+  String get reportGoalPicker => 'Plan for:';
+
+  @override
+  String get reportSowNext => 'What to grow, year by year';
+
+  @override
+  String planThenCover(String crop) {
+    return 'Then sow a cover crop: $crop';
+  }
+
+  @override
+  String planRepeats(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Then the plan repeats every $count years.',
+      one: 'Then the plan repeats every year.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planHarvest => 'Harvest';
+
+  @override
+  String harvestStars(String stars, int total) {
+    return 'Harvest rating: $stars out of $total stars';
+  }
+
+  @override
+  String get levelGood => 'Good';
+
+  @override
+  String get levelOk => 'Fair';
+
+  @override
+  String get levelPoor => 'Weak';
+
+  @override
+  String get planNotFeasible =>
+      'This plan breaks one of the growing rules, so treat it with care.';
+
+  @override
+  String get reportQualityTitle => 'How good is this plan?';
+
+  @override
+  String get scoreHarvest => 'Harvest strength';
+
+  @override
+  String get scoreHumus => 'Rich soil (humus)';
+
+  @override
+  String get scoreDisease => 'Protection from disease';
+
+  @override
+  String get scoreWater => 'Water use';
+
+  @override
+  String get scoreNitrogen => 'Nitrogen in the soil';
+
+  @override
+  String get scoreCover => 'Soil covered in winter';
+
+  @override
+  String get scoreStructure => 'Loose, healthy soil';
+
+  @override
+  String get detailsAlternatives => 'Other plans for this goal';
+
+  @override
+  String detailsOption(int number) {
+    return 'Option $number';
+  }
+
+  @override
+  String get detailsOtherGoals => 'Plans for other goals';
+
+  @override
+  String get detailsAllScores => 'All ratings';
+
+  @override
+  String get detailsWhy => 'Why this plan';
+
+  @override
+  String get detailsInputs => 'Where the data comes from';
+
+  @override
+  String get detailsDisclaimer =>
+      'This advice comes from a computer model that uses estimates. It is not a promise. Talk to your local farm advisor before you decide.';
+
+  @override
+  String get inputClimate => 'Weather';
+
+  @override
+  String get inputSoil => 'Soil';
+
+  @override
+  String get inputHistory => 'Your past crops';
+
+  @override
+  String get inputFarmer => 'Your other answers';
+
+  @override
+  String get warnSoilEstimated =>
+      'We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.';
+
+  @override
+  String get warnFewCropsFit =>
+      'Too few crops on our list suit this field (its soil, the weather or the crops you left out), so we cannot build a full rotation.';
+
+  @override
+  String warnGoalUnavailable(String goal) {
+    return 'We found no plan for “$goal”, so we show another one.';
+  }
+
+  @override
+  String warnCropNotSupported(String crop) {
+    return '$crop is not in our rotation model yet, so it was left out.';
+  }
+
+  @override
+  String reasonHumusUp(String crop) {
+    return '$crop adds humus to the soil.';
+  }
+
+  @override
+  String reasonHumusDown(String crop) {
+    return '$crop uses up humus.';
+  }
+
+  @override
+  String reasonNitrogenUp(String crop) {
+    return '$crop leaves nitrogen for the next crop.';
+  }
+
+  @override
+  String reasonNitrogenDown(String crop) {
+    return '$crop takes nitrogen from the soil.';
+  }
+
+  @override
+  String reasonDiseaseUp(String crop) {
+    return '$crop can build up disease and pests in the soil.';
+  }
+
+  @override
+  String reasonDiseaseDown(String crop) {
+    return '$crop lowers disease and pests.';
+  }
+
+  @override
+  String reasonCoverUp(String crop) {
+    return '$crop protects the soil over winter.';
+  }
+
+  @override
+  String reasonCompactionUp(String crop) {
+    return '$crop packs the soil.';
+  }
+
+  @override
+  String reasonCompactionDown(String crop) {
+    return '$crop loosens the soil.';
+  }
 }

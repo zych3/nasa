@@ -112,7 +112,8 @@ public sealed class InMemoryCropRepository : ICropRepository
             _traits.GetValueOrDefault(d.ScientificName),
             HasPrices: prices is { PointCount: > 0 },
             ProductionNoteCode: d.ProductionNoteCode,
-            PriceNoteCode: prices?.NoteCode);
+            PriceNoteCode: prices?.NoteCode,
+            SupportsRotation: Recommendations.CropIdMap.ToEngine(d.Id.Value) is not null);
     }
 
     /// <summary>Reads the ECOCROP extract, keyed by scientific name.</summary>

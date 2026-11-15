@@ -3,6 +3,7 @@ using FieldShift.Web.Countries.Poland;
 using FieldShift.Web.Data;
 using FieldShift.Web.FieldProfile;
 using FieldShift.Web.MapLayers;
+using FieldShift.Web.Recommendations;
 using FieldShift.Web.Repositories;
 using FieldShift.Web.Services;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,7 @@ builder.Services.AddOpenApi();
 builder.AddPoland();
 builder.AddFieldProfile();
 builder.AddMapLayers();
+builder.AddRecommendations();
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback)

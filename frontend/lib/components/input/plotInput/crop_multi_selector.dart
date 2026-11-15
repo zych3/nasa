@@ -13,7 +13,13 @@ class CropMultiSelector extends StatefulWidget {
     required this.selectedCrops,
     required this.onCropToggled,
     this.repository,
+    this.label,
+    this.onlyRotationCrops = false,
   });
+
+  final String? label;
+
+  final bool onlyRotationCrops;
 
   final List<String> selectedCrops;
   final void Function(String cropId, bool isSelected) onCropToggled;
@@ -67,7 +73,7 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.selectCropsLabel,
+          widget.label ?? l10n.selectCropsLabel,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 8),
@@ -152,11 +158,12 @@ class _CropMultiSelectorState extends State<CropMultiSelector> {
 
                     final crops = [
                       for (final crop in snapshot.data ?? const <Crop>[])
-                        if (crop
-                            .nameFor(languageCode)
-                            .toLowerCase()
-                            .contains(q))
-                          crop,
+                        if (!widget.onlyRotationCrops || crop.supportsRotation)
+                          if (crop
+                              .nameFor(languageCode)
+                              .toLowerCase()
+                              .contains(q))
+                            crop,
                     ];
                     if (crops.isEmpty) return message(l10n.noCropsFound);
 
