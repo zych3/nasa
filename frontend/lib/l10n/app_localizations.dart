@@ -2911,6 +2911,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Land use (land register)'**
   String get fieldFactLandUse;
+
+  /// No description provided for @overlayContextUsual.
+  ///
+  /// In en, this message translates to:
+  /// **'As usual for this month (average of {years} years: {mean})'**
+  String overlayContextUsual(String mean, int years);
+
+  /// No description provided for @overlayContextAbove.
+  ///
+  /// In en, this message translates to:
+  /// **'{diff} more than usual for this month (average of {years} years: {mean})'**
+  String overlayContextAbove(String diff, String mean, int years);
+
+  /// No description provided for @overlayContextBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'{diff} less than usual for this month (average of {years} years: {mean})'**
+  String overlayContextBelow(String diff, String mean, int years);
+
+  /// No description provided for @overlayContextHighest.
+  ///
+  /// In en, this message translates to:
+  /// **'The highest for this month in {years} years'**
+  String overlayContextHighest(int years);
+
+  /// No description provided for @overlayContextLowest.
+  ///
+  /// In en, this message translates to:
+  /// **'The lowest for this month in {years} years'**
+  String overlayContextLowest(int years);
+
+  /// No description provided for @overlayContextLastYear.
+  ///
+  /// In en, this message translates to:
+  /// **'A year earlier: {value}'**
+  String overlayContextLastYear(String value);
+
+  /// No description provided for @overlayContextTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Trend over the years: {value} per 10 years'**
+  String overlayContextTrend(String value);
+
+  /// No description provided for @overlayRegionRange.
+  ///
+  /// In en, this message translates to:
+  /// **'In the area shown on the map (NASA cells of about 50 km): from {min} to {max}'**
+  String overlayRegionRange(String min, String max);
+
+  /// No description provided for @overlayHistoryHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Month by month (NASA POWER, about 50 km)'**
+  String get overlayHistoryHeading;
+
+  /// No description provided for @valueDegreeDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{range} °C·days'**
+  String valueDegreeDays(String range);
 }
 
 class _AppLocalizationsDelegate

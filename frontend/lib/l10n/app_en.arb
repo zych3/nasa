@@ -1436,5 +1436,96 @@
   "indAttention": "Watch out",
   "indOk": "Fine",
   "overlaySoilNotFarmland": "By the land register this is not farmland, so it has no soil quality class.",
-  "fieldFactLandUse": "Land use (land register)"
+  "fieldFactLandUse": "Land use (land register)",
+  "overlayContextUsual": "As usual for this month (average of {years} years: {mean})",
+  "@overlayContextUsual": {
+    "placeholders": {
+      "mean": {
+        "type": "String"
+      },
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayContextAbove": "{diff} more than usual for this month (average of {years} years: {mean})",
+  "@overlayContextAbove": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      },
+      "mean": {
+        "type": "String"
+      },
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayContextBelow": "{diff} less than usual for this month (average of {years} years: {mean})",
+  "@overlayContextBelow": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      },
+      "mean": {
+        "type": "String"
+      },
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayContextHighest": "The highest for this month in {years} years",
+  "@overlayContextHighest": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayContextLowest": "The lowest for this month in {years} years",
+  "@overlayContextLowest": {
+    "placeholders": {
+      "years": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayContextLastYear": "A year earlier: {value}",
+  "@overlayContextLastYear": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayContextTrend": "Trend over the years: {value} per 10 years",
+  "@overlayContextTrend": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayRegionRange": "In the area shown on the map (NASA cells of about 50 km): from {min} to {max}",
+  "@overlayRegionRange": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayHistoryHeading": "Month by month (NASA POWER, about 50 km)",
+  "valueDegreeDays": "{range} °C·days",
+  "@valueDegreeDays": {
+    "placeholders": {
+      "range": {
+        "type": "String"
+      }
+    }
+  }
 }

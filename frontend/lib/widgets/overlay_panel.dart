@@ -1,8 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/satellite_data.dart';
+import '../overlays/monthly_layer_overlay.dart';
 import '../models/overlay_layer.dart';
 import '../overlays/overlay_controller.dart';
 import 'overlay_chooser.dart';
@@ -154,6 +157,7 @@ class OverlayPanel extends StatelessWidget {
             overlayTitle: controller.selected.title(l10n),
             examplePlace: showNoFieldNotice || controller.isDemo,
             heatmapShown: controller.heatmap != null,
+            regionRange: _range(controller.heatmap?.values),
             onEarlierMonth: controller.canShowEarlierMonth
                 ? () => controller.stepMonth(-1)
                 : null,
@@ -203,6 +207,7 @@ class _ValueCard extends StatelessWidget {
     required this.overlayTitle,
     required this.examplePlace,
     this.heatmapShown = false,
+    this.regionRange,
     this.onEarlierMonth,
     this.onLaterMonth,
   });
@@ -218,6 +223,9 @@ class _ValueCard extends StatelessWidget {
   /// The map shows a heat map of the area (explained under the value).
   final bool heatmapShown;
 
+  /// Lowest and highest value in the area the map shows (heat map cells).
+  final ({double min, double max})? regionRange;
+
   /// Show the month before / after; `null` = there is none.
   final VoidCallback? onEarlierMonth;
   final VoidCallback? onLaterMonth;
@@ -230,9 +238,31 @@ class _ValueCard extends StatelessWidget {
     final current = layer.current;
     final month = layer.month;
     final source = layer.source;
+    // Monthly overlays are the month-by-month history (the "now" is in the
+    // satellite card above); soil and other kinds are about the place.
     final heading = examplePlace
         ? l10n.overlaysValueHeadingExample
+        : month != null
+        ? l10n.overlayHistoryHeading
         : l10n.overlaysValueHeading;
+    final range = regionRange;
+    final unit = layer.unit;
+    final regionText = range == null || unit == null || range.max <= range.min
+        ? null
+        : l10n.overlayRegionRange(
+            MonthlyLayerOverlay.formatValue(
+              l10n,
+              range.min,
+              unit,
+              layer.decimals,
+            ),
+            MonthlyLayerOverlay.formatValue(
+              l10n,
+              range.max,
+              unit,
+              layer.decimals,
+            ),
+          );
 
     // Everything the card shows, in the order it shows it.
     String readAloudText() => sentencesForReading([
@@ -245,6 +275,7 @@ class _ValueCard extends StatelessWidget {
       if (layer.isEstimate) l10n.sourceEstimated,
       if (source != null) l10n.overlaysSource(source),
       layer.coverage(l10n),
+      ?regionText,
       if (heatmapShown) l10n.overlayHeatmapNote,
     ]);
 
@@ -320,6 +351,10 @@ class _ValueCard extends StatelessWidget {
             ],
             const SizedBox(height: 8),
             _IconText(icon: Icons.straighten, text: layer.coverage(l10n)),
+            if (regionText != null) ...[
+              const SizedBox(height: 8),
+              _IconText(icon: Icons.public, text: regionText),
+            ],
             if (heatmapShown) ...[
               const SizedBox(height: 8),
               _IconText(icon: Icons.blur_on, text: l10n.overlayHeatmapNote),
@@ -536,6 +571,13 @@ class _BigButton extends StatelessWidget {
             ),
     );
   }
+}
+
+/// Lowest and highest of the known values; `null` with fewer than two.
+({double min, double max})? _range(List<double?>? values) {
+  final known = [...?values?.whereType<double>()];
+  if (known.length < 2) return null;
+  return (min: known.reduce(math.min), max: known.reduce(math.max));
 }
 
 /// Satellite parts with finer, newer data for each overlay (by overlay id).

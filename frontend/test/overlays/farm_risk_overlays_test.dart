@@ -38,7 +38,7 @@ void main() {
     expect(lines.first, startsWith('Główna przyczyna'));
     expect(lines.any((l) => l.startsWith('Susza:')), isTrue);
     expect(lines.any((l) => l.startsWith('Upał:')), isTrue);
-    expect(lines.last, pl.overlayStressNotDisease);
+    expect(lines, contains(pl.overlayStressNotDisease));
   });
 
   test('plant stress: the bigger part is named as the main cause', () {
@@ -64,10 +64,11 @@ void main() {
     final layer = const PlantStressOverlay().parse(json);
 
     expect(layer.current, isNotNull);
-    expect(
-      [for (final d in layer.details) d.text(en)],
-      [en.overlayStressNotDisease],
-    );
+    final lines = [for (final d in layer.details) d.text(en)];
+    // No breakdown: only the "not about diseases" note and the comparison
+    // with other years.
+    expect(lines.first, en.overlayStressNotDisease);
+    expect(lines.any((l) => l.startsWith('Drought')), isFalse);
   });
 
   test(

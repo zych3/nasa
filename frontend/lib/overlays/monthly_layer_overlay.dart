@@ -1,6 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:material_ui/material_ui.dart' show Color;
+import 'package:material_ui/material_ui.dart' show Color, Icons;
 
 import '../l10n/app_localizations.dart';
 import '../models/overlay_heatmap.dart';
@@ -116,8 +118,137 @@ abstract class MonthlyLayerOverlay extends MapOverlay {
       coverage: _coverage,
       month: hasMonth ? date : null,
       monthIndex: hasMonth ? shown : null,
-      details: details(layer, hasMonth ? shown : null),
+      details: [
+        ...details(layer, hasMonth ? shown : null),
+        if (hasMonth && value != null)
+          ...contextDetails(layer, dates, shown, unit, decimals),
+      ],
+      unit: unit,
+      decimals: decimals,
     );
+  }
+
+  /// The shown month against the same calendar month in the other years
+  /// of the series (about 50 km, NASA POWER): how it compares with the
+  /// usual, whether it is the highest / lowest, the year before, and the
+  /// trend per decade. Pure; lines without enough data are left out.
+  static List<OverlayDetail> contextDetails(
+    Map<String, dynamic> layer,
+    List<dynamic> dates,
+    int month,
+    String? unit,
+    int decimals,
+  ) {
+    final values = layer['values'];
+    if (values is! List || month >= values.length) return const [];
+    final current = values[month];
+    if (current is! num) return const [];
+    final shownMonth = _calendarMonth(dates[month]);
+    if (shownMonth == null) return const [];
+
+    final others = <double>[
+      for (var i = 0; i < values.length && i < dates.length; i++)
+        if (i != month &&
+            _calendarMonth(dates[i]) == shownMonth &&
+            values[i] is num)
+          (values[i] as num).toDouble(),
+    ];
+    final v = current.toDouble();
+    final lines = <OverlayDetail>[];
+    String fmt(AppLocalizations l10n, double x) =>
+        formatValue(l10n, x, unit, decimals);
+
+    if (others.length >= 3) {
+      final mean = others.reduce((a, b) => a + b) / others.length;
+      final diff = v - mean;
+      final step = math.pow(10, -decimals).toDouble();
+      final same = diff.abs() < math.max(step, mean.abs() * 0.05);
+      lines.add(
+        OverlayDetail(
+          icon: Icons.compare_arrows,
+          text: (l10n) => same
+              ? l10n.overlayContextUsual(fmt(l10n, mean), others.length + 1)
+              : diff > 0
+              ? l10n.overlayContextAbove(
+                  fmt(l10n, diff.abs()),
+                  fmt(l10n, mean),
+                  others.length + 1,
+                )
+              : l10n.overlayContextBelow(
+                  fmt(l10n, diff.abs()),
+                  fmt(l10n, mean),
+                  others.length + 1,
+                ),
+        ),
+      );
+      if (!same && others.every((o) => v > o)) {
+        lines.add(
+          OverlayDetail(
+            icon: Icons.trending_up,
+            text: (l10n) => l10n.overlayContextHighest(others.length + 1),
+          ),
+        );
+      } else if (!same && others.every((o) => v < o)) {
+        lines.add(
+          OverlayDetail(
+            icon: Icons.trending_down,
+            text: (l10n) => l10n.overlayContextLowest(others.length + 1),
+          ),
+        );
+      }
+    }
+    if (month >= 12 &&
+        _calendarMonth(dates[month - 12]) == shownMonth &&
+        values[month - 12] is num) {
+      final lastYear = (values[month - 12] as num).toDouble();
+      lines.add(
+        OverlayDetail(
+          icon: Icons.history,
+          text: (l10n) => l10n.overlayContextLastYear(fmt(l10n, lastYear)),
+        ),
+      );
+    }
+    final stats = layer['stats'];
+    final trend = stats is Map<String, dynamic>
+        ? stats['trendPerDecade']
+        : null;
+    if (trend is num && trend != 0) {
+      final t = trend.toDouble();
+      lines.add(
+        OverlayDetail(
+          icon: t > 0 ? Icons.north_east : Icons.south_east,
+          text: (l10n) => l10n.overlayContextTrend(
+            '${t > 0 ? '+' : '−'}${fmt(l10n, t.abs())}',
+          ),
+        ),
+      );
+    }
+    return lines;
+  }
+
+  /// A value with its unit, in the format of the user's language.
+  static String formatValue(
+    AppLocalizations l10n,
+    double value,
+    String? unit,
+    int decimals,
+  ) {
+    final n = (NumberFormat.decimalPattern(
+      l10n.localeName,
+    )..maximumFractionDigits = decimals.clamp(0, 6)).format(value);
+    return switch (unit) {
+      '°C' => l10n.valueCelsius(n),
+      'mm' => l10n.valueMillimetres(n),
+      'dni' => l10n.valueDays(n),
+      '°C·dni' => l10n.valueDegreeDays(n),
+      _ => n,
+    };
+  }
+
+  /// 1–12 from "yyyy-MM"; null when broken.
+  static int? _calendarMonth(Object? date) {
+    if (date is! String || date.length < 7) return null;
+    return int.tryParse(date.substring(5, 7));
   }
 
   @override

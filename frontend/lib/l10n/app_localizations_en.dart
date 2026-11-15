@@ -1846,4 +1846,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldFactLandUse => 'Land use (land register)';
+
+  @override
+  String overlayContextUsual(String mean, int years) {
+    return 'As usual for this month (average of $years years: $mean)';
+  }
+
+  @override
+  String overlayContextAbove(String diff, String mean, int years) {
+    return '$diff more than usual for this month (average of $years years: $mean)';
+  }
+
+  @override
+  String overlayContextBelow(String diff, String mean, int years) {
+    return '$diff less than usual for this month (average of $years years: $mean)';
+  }
+
+  @override
+  String overlayContextHighest(int years) {
+    return 'The highest for this month in $years years';
+  }
+
+  @override
+  String overlayContextLowest(int years) {
+    return 'The lowest for this month in $years years';
+  }
+
+  @override
+  String overlayContextLastYear(String value) {
+    return 'A year earlier: $value';
+  }
+
+  @override
+  String overlayContextTrend(String value) {
+    return 'Trend over the years: $value per 10 years';
+  }
+
+  @override
+  String overlayRegionRange(String min, String max) {
+    return 'In the area shown on the map (NASA cells of about 50 km): from $min to $max';
+  }
+
+  @override
+  String get overlayHistoryHeading =>
+      'Month by month (NASA POWER, about 50 km)';
+
+  @override
+  String valueDegreeDays(String range) {
+    return '$range °C·days';
+  }
 }

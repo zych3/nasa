@@ -1892,4 +1892,93 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fieldFactLandUse => 'Użytek gruntu (ewidencja)';
+
+  @override
+  String overlayContextUsual(String mean, int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'Jak zwykle w tym miesiącu (średnia z $_temp0: $mean)';
+  }
+
+  @override
+  String overlayContextAbove(String diff, String mean, int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'O $diff więcej niż zwykle w tym miesiącu (średnia z $_temp0: $mean)';
+  }
+
+  @override
+  String overlayContextBelow(String diff, String mean, int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'O $diff mniej niż zwykle w tym miesiącu (średnia z $_temp0: $mean)';
+  }
+
+  @override
+  String overlayContextHighest(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'Najwyżej dla tego miesiąca od $_temp0';
+  }
+
+  @override
+  String overlayContextLowest(int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years lat',
+      many: '$years lat',
+      few: '$years lat',
+      one: '1 roku',
+    );
+    return 'Najniżej dla tego miesiąca od $_temp0';
+  }
+
+  @override
+  String overlayContextLastYear(String value) {
+    return 'Rok wcześniej: $value';
+  }
+
+  @override
+  String overlayContextTrend(String value) {
+    return 'Trend na przestrzeni lat: $value na 10 lat';
+  }
+
+  @override
+  String overlayRegionRange(String min, String max) {
+    return 'Na obszarze widocznym na mapie (kratki NASA ok. 50 km): od $min do $max';
+  }
+
+  @override
+  String get overlayHistoryHeading =>
+      'Miesiąc po miesiącu (NASA POWER, ok. 50 km)';
+
+  @override
+  String valueDegreeDays(String range) {
+    return '$range °C·dni';
+  }
 }

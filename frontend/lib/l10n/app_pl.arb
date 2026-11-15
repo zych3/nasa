@@ -467,5 +467,15 @@
   "indAttention": "Uwaga",
   "indOk": "W porządku",
   "overlaySoilNotFarmland": "Według ewidencji gruntów to nie jest grunt rolny, więc nie ma klasy gleby.",
-  "fieldFactLandUse": "Użytek gruntu (ewidencja)"
+  "fieldFactLandUse": "Użytek gruntu (ewidencja)",
+  "overlayContextUsual": "Jak zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
+  "overlayContextAbove": "O {diff} więcej niż zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
+  "overlayContextBelow": "O {diff} mniej niż zwykle w tym miesiącu (średnia z {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}: {mean})",
+  "overlayContextHighest": "Najwyżej dla tego miesiąca od {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}",
+  "overlayContextLowest": "Najniżej dla tego miesiąca od {years, plural, =1{1 roku} few{{years} lat} many{{years} lat} other{{years} lat}}",
+  "overlayContextLastYear": "Rok wcześniej: {value}",
+  "overlayContextTrend": "Trend na przestrzeni lat: {value} na 10 lat",
+  "overlayRegionRange": "Na obszarze widocznym na mapie (kratki NASA ok. 50 km): od {min} do {max}",
+  "overlayHistoryHeading": "Miesiąc po miesiącu (NASA POWER, ok. 50 km)",
+  "valueDegreeDays": "{range} °C·dni"
 }

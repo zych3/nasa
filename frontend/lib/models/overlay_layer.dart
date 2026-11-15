@@ -93,6 +93,8 @@ class OverlayLayer {
     this.details = const [],
     this.tileLayer,
     this.tileMinZoom,
+    this.unit,
+    this.decimals = 2,
   }) : assert(
          currentIndex == null ||
              (currentIndex >= 0 && currentIndex < legend.length),
@@ -137,6 +139,12 @@ class OverlayLayer {
 
   /// Zoom from which [tileLayer] has a picture.
   final double? tileMinZoom;
+
+  /// Unit of the numbers ("°C", "mm", "dni", "0–1", …) and how many decimals
+  /// they have, to write values such as the region's range; `null` for kinds
+  /// without numbers (soil complexes).
+  final String? unit;
+  final int decimals;
 
   OverlayLegendItem? get current =>
       currentIndex == null ? null : legend[currentIndex!];
