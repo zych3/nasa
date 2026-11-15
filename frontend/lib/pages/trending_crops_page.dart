@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../components/crop_summary_card.dart';
+import '../components/map_button.dart';
 import '../l10n/app_localizations.dart';
 import '../models/trending_crop.dart';
 import '../repositories/trends_repository.dart';
@@ -81,7 +82,16 @@ class _TrendingCropsPageState extends State<TrendingCropsPage> {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              Text(l10n.trendsTitle, style: theme.textTheme.headlineSmall),
+              // Room for the language button floating in the top corner.
+              Padding(
+                padding: const EdgeInsetsDirectional.only(
+                  end: MapButton.reservedEnd - 16,
+                ),
+                child: Text(
+                  l10n.trendsTitle,
+                  style: theme.textTheme.headlineSmall,
+                ),
+              ),
               const SizedBox(height: 4),
               Text(l10n.trendsIntro, style: theme.textTheme.bodyLarge),
               if (_repository.useMock) ...[

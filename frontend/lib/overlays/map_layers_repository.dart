@@ -20,6 +20,13 @@ class MapLayersRepository {
   /// Saved real `GET /api/map-layers/grid` response for the same place.
   static const mockGridAsset = 'assets/mock/map_layers_grid_sample.json';
 
+  /// Saved real `GET /api/parcels/details` response for the same place.
+  static const mockParcelAsset = 'assets/mock/parcel_details_sample.json';
+
+  /// The parcel details call the register, the soil map, the terrain model
+  /// and SoilGrids (first time up to ~15 s; later from the backend's cache).
+  static const parcelTimeout = Duration(seconds: 40);
+
   /// Places kept in memory, per kind of response (a point response is
   /// ~16 kB of JSON, a grid ~150 kB).
   static const maxCachedPlaces = 20;
@@ -42,6 +49,8 @@ class MapLayersRepository {
   /// again.
   final _cache = <String, Future<Map<String, dynamic>>>{};
   final _gridCache = <String, Future<Map<String, dynamic>>>{};
+  final _parcelCache = <String, Future<Map<String, dynamic>>>{};
+  final _legends = <String, Future<List<Map<String, dynamic>>>>{};
 
   /// The backend rounds the point to 2 decimal places (~1 km), so points that
   /// round the same share one response.
@@ -80,6 +89,50 @@ class MapLayersRepository {
       () => _fetch('/api/map-layers/grid', point, gridTimeout),
     );
   }
+
+  /// What is known about the registered parcel at [point]
+  /// (`GET /api/parcels/details`: soil map, land register, terrain). Throws
+  /// [ApiException] with status 404 where there is no registered parcel (e.g.
+  /// outside Poland). Cached and failing like [mapLayers].
+  Future<Map<String, dynamic>> parcelDetails(
+    LatLng point, {
+    bool refresh = false,
+  }) {
+    if (useMock) return demoParcelDetails();
+    return _cached(
+      _parcelCache,
+      '${point.latitude.toStringAsFixed(6)},${point.longitude.toStringAsFixed(6)}',
+      refresh,
+      () => _fetch('/api/parcels/details', point, parcelTimeout),
+    );
+  }
+
+  /// Legend of a map tile layer (`GET /api/map-tiles/{layer}/legend`): code,
+  /// name and colour per entry. Kept for the session; a failure is forgotten.
+  Future<List<Map<String, dynamic>>> mapLegend(String layer) {
+    final cached = _legends[layer];
+    if (cached != null) return cached;
+    final future = _api
+        .getJson('/api/map-tiles/${Uri.encodeComponent(layer)}/legend')
+        .then((json) {
+          if (json is! List) {
+            throw const FormatException('map-tiles legend: not a list');
+          }
+          return [
+            for (final item in json)
+              if (item is Map<String, dynamic>) item,
+          ];
+        });
+    _legends[layer] = future;
+    future.catchError((Object _) {
+      if (identical(_legends[layer], future)) _legends.remove(layer);
+      return const <Map<String, dynamic>>[];
+    });
+    return future;
+  }
+
+  /// The saved demo parcel details (the same place as [demo]).
+  Future<Map<String, dynamic>> demoParcelDetails() => _load(mockParcelAsset);
 
   /// The saved demo response (always the same place, see [mockAsset]).
   Future<Map<String, dynamic>> demo() => _load(mockAsset);

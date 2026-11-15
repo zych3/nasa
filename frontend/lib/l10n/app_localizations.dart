@@ -943,6 +943,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'NASA data: one value per about 50 km'**
   String get overlaysHeatmapCellSize;
+
+  /// No description provided for @overlaysShowMyField.
+  ///
+  /// In en, this message translates to:
+  /// **'Show my field'**
+  String get overlaysShowMyField;
+
+  /// No description provided for @overlaysShowExamplePlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the example place'**
+  String get overlaysShowExamplePlace;
+
+  /// No description provided for @overlayCoverageParcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Data for the parcel from the soil-agricultural map (scale 1:5000). The colours on the map are its complexes.'**
+  String get overlayCoverageParcel;
+
+  /// No description provided for @overlaySoilType.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil type: {name}'**
+  String overlaySoilType(String name);
+
+  /// No description provided for @overlaySoilTexture.
+  ///
+  /// In en, this message translates to:
+  /// **'Texture: {layers}'**
+  String overlaySoilTexture(String layers);
+
+  /// No description provided for @overlaySoilTextureDeeper.
+  ///
+  /// In en, this message translates to:
+  /// **'from {depth}: {name}'**
+  String overlaySoilTextureDeeper(String depth, String name);
+
+  /// No description provided for @overlayLandClasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Land register classes: {classes}'**
+  String overlayLandClasses(String classes);
+
+  /// No description provided for @overlaySoilSurveyed.
+  ///
+  /// In en, this message translates to:
+  /// **'Soil survey from {year}.'**
+  String overlaySoilSurveyed(String year);
+
+  /// No description provided for @overlaysSoilMapZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in to see the soil map'**
+  String get overlaysSoilMapZoomIn;
 }
 
 class _AppLocalizationsDelegate

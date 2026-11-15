@@ -5,6 +5,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../api/api_client.dart' show apiBaseUrl;
+import '../components/map_button.dart';
 import '../l10n/app_localizations.dart';
 import '../models/overlay_heatmap.dart';
 import '../models/overlay_layer.dart';
@@ -20,9 +22,9 @@ import 'single_world_crs.dart';
 /// applies to as a tinted circle), a label "icon + word" with the value
 /// (never colour alone) and the outline of the user's field.
 ///
-/// The camera fits what is drawn whenever it changes: the heat map block
-/// around the field (about 250 km), or the circle (about 1 km for soil, 50 km
-/// for NASA data). When the user stops moving the map, [onVisibleAreaChanged]
+/// The camera fits what is drawn whenever it changes: the field with about
+/// 50 km of heat map around it, or the circle (about 1 km for soil, 50 km for
+/// NASA data); the button in the bottom corner brings it back there. When the user stops moving the map, [onVisibleAreaChanged]
 /// says what is visible, so more of the heat map can be loaded.
 ///
 /// A strip along the top says what the heat map is doing: loading, hidden
@@ -34,7 +36,7 @@ class OverlayMap extends StatefulWidget {
     this.layer,
     this.field,
     this.heatmap,
-    this.heatmapHome,
+    this.heatmapFocus,
     this.heatmapLoading = false,
     this.heatmapTooFar = false,
     this.onVisibleAreaChanged,
@@ -55,9 +57,9 @@ class OverlayMap extends StatefulWidget {
   /// [layer]).
   final OverlayHeatmap? heatmap;
 
-  /// Where the camera goes for a heat map: the block around the field. It
-  /// stays the same while more blocks load, so the map does not jump.
-  final LatLngBounds? heatmapHome;
+  /// Where the camera goes for a heat map: the field with about 50 km around
+  /// it. It stays the same while more blocks load, so the map does not jump.
+  final LatLngBounds? heatmapFocus;
 
   /// Shows "Loading the map of the area…" on the map.
   final bool heatmapLoading;
@@ -89,7 +91,16 @@ class _OverlayMapState extends State<OverlayMap> {
   Timer? _moveEnd;
   static const _moveEndDelay = Duration(milliseconds: 400);
 
+  /// The camera is too far out for the layer's map tiles (they have no
+  /// picture there): the map says to zoom in.
+  bool _tilesTooFar = false;
+
   void _onPositionChanged(MapCamera camera, bool hasGesture) {
+    final minZoom = widget.layer?.tileMinZoom;
+    final tooFar = minZoom != null && camera.zoom < minZoom;
+    if (tooFar != _tilesTooFar && mounted) {
+      setState(() => _tilesTooFar = tooFar);
+    }
     if (widget.onVisibleAreaChanged == null) return;
     _moveEnd?.cancel();
     _moveEnd = Timer(_moveEndDelay, () {
@@ -108,11 +119,22 @@ class _OverlayMapState extends State<OverlayMap> {
     }
   }
 
-  /// What the camera shows: the heat map's home block, else the circle.
+  /// What the camera shows: the field with the heat map around it, else the
+  /// circle.
   static List<LatLng>? _fitPoints(OverlayMap map) {
-    final home = map.heatmapHome;
-    if (home != null) return [home.southWest, home.northEast];
+    final focus = map.heatmapFocus;
+    if (focus != null) return [focus.southWest, focus.northEast];
     return map.layer?.area.boundingPoints;
+  }
+
+  /// Back to the field (or the example place) after the user moved the map.
+  void _showField() {
+    final fit = _fitPoints(widget);
+    if (fit != null) {
+      _controller.fitCamera(_fit(fit));
+    } else {
+      _controller.move(widget.center, widget.initialZoom);
+    }
   }
 
   static bool _samePoints(List<LatLng> a, List<LatLng>? b) =>
@@ -149,6 +171,12 @@ class _OverlayMapState extends State<OverlayMap> {
           text: text,
           leading: leading,
         );
+    if (widget.layer?.tileLayer != null && _tilesTooFar) {
+      return pill(
+        l10n.overlaysSoilMapZoomIn,
+        (onColor) => Icon(Icons.zoom_in, size: 18, color: onColor),
+      );
+    }
     if (widget.heatmapTooFar) {
       return pill(
         l10n.overlaysHeatmapZoomIn,
@@ -204,7 +232,19 @@ class _OverlayMapState extends State<OverlayMap> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'hopito_field_shift',
         ),
-        if (heatmap != null && image != null)
+        if (layer?.tileLayer case final tiles?)
+          // Map tiles of the value's source (e.g. the soil map) through our
+          // backend, half see-through so the roads and places stay visible.
+          Opacity(
+            opacity: 0.65,
+            child: TileLayer(
+              urlTemplate: '$apiBaseUrl/api/map-tiles/$tiles/{z}/{x}/{y}.png',
+              userAgentPackageName: 'hopito_field_shift',
+              minZoom: layer!.tileMinZoom ?? 0,
+              maxNativeZoom: 19,
+            ),
+          )
+        else if (heatmap != null && image != null)
           OverlayImageLayer(
             overlayImages: [
               OverlayImage(
@@ -255,7 +295,11 @@ class _OverlayMapState extends State<OverlayMap> {
               // cover each other or the outline.
               if (layer != null)
                 Marker(
-                  point: layer.area.top,
+                  // On a detailed map (tiles) the value is for the very
+                  // point: the label stands on it, its pin pointing there.
+                  point: layer.tileLayer != null
+                      ? layer.area.center
+                      : layer.area.top,
                   width: 280,
                   height: 56,
                   alignment: Alignment.bottomCenter,
@@ -266,6 +310,8 @@ class _OverlayMapState extends State<OverlayMap> {
                       text: current?.label(l10n) ?? l10n.overlaysNoData,
                       leading: (onColor) => current == null
                           ? Icon(Icons.help_outline, size: 18, color: onColor)
+                          : !layer.ordered
+                          ? Icon(Icons.place, size: 18, color: onColor)
                           : OverlayLevelBars(
                               level: layer.currentIndex! + 1,
                               count: layer.legend.length,
@@ -298,7 +344,8 @@ class _OverlayMapState extends State<OverlayMap> {
           Positioned(
             top: 8,
             left: 8,
-            right: 8,
+            // Room for the language button floating in the screen's corner.
+            right: MapButton.reservedEnd,
             height: 52,
             child: IgnorePointer(
               child: MediaQuery.withClampedTextScaling(
@@ -308,6 +355,21 @@ class _OverlayMapState extends State<OverlayMap> {
             ),
           ),
         const MapAttribution(),
+        // Bottom left (the attribution is bottom right), drawn over it so it
+        // can always be tapped.
+        PositionedDirectional(
+          start: MapButton.margin,
+          bottom: MapButton.margin,
+          child: MapButton(
+            child: IconButton(
+              tooltip: field != null
+                  ? l10n.overlaysShowMyField
+                  : l10n.overlaysShowExamplePlace,
+              onPressed: _showField,
+              icon: const Icon(Icons.center_focus_strong),
+            ),
+          ),
+        ),
       ],
     );
   }

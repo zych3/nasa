@@ -50,6 +50,44 @@ namespace FieldShift.Web.Migrations.FieldData
 
                     b.ToTable("provider_cache", (string)null);
                 });
+
+            modelBuilder.Entity("FieldShift.Web.FieldData.Cache.TileCacheEntry", b =>
+                {
+                    b.Property<string>("Layer")
+                        .HasColumnType("text")
+                        .HasColumnName("layer");
+
+                    b.Property<int>("Z")
+                        .HasColumnType("integer")
+                        .HasColumnName("z");
+
+                    b.Property<int>("X")
+                        .HasColumnType("integer")
+                        .HasColumnName("x");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("integer")
+                        .HasColumnName("y");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<DateTimeOffset>("FetchedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fetched_at");
+
+                    b.Property<byte[]>("Png")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("png");
+
+                    b.HasKey("Layer", "Z", "X", "Y");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.ToTable("tile_cache", (string)null);
+                });
 #pragma warning restore 612, 618
         }
     }

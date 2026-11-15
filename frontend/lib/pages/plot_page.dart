@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../components/input/plotInput/plot_input.dart';
+import '../components/map_button.dart';
 import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
@@ -60,12 +61,18 @@ class _PlotPageState extends State<PlotPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Header: plot name, area, location
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.agriculture, size: 40),
-            title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
-            subtitle: Text(l10n.plotSummary('—', parcel?.address ?? '—')),
+        // Header: plot name, area, location. Room on the right for the
+        // language button floating in the top corner.
+        Padding(
+          padding: const EdgeInsetsDirectional.only(
+            end: MapButton.reservedEnd - 16,
+          ),
+          child: Card(
+            child: ListTile(
+              leading: const Icon(Icons.agriculture, size: 40),
+              title: Text(l10n.plotName, style: theme.textTheme.titleLarge),
+              subtitle: Text(l10n.plotSummary('—', parcel?.address ?? '—')),
+            ),
           ),
         ),
         const SizedBox(height: 16),

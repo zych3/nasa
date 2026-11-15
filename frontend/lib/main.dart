@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
+import 'components/map_button.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_options.dart';
 import 'pages/area_map_page.dart';
@@ -115,7 +116,8 @@ class _MyScaffoldState extends State<MyScaffold> {
   }
 }
 
-/// A list tab with the language flag in a small row above it.
+/// A tab with the language flag floating in its top corner, the same button
+/// as on the "My area" map (no bar of its own).
 class _TabWithFlag extends StatelessWidget {
   const _TabWithFlag({required this.flag, required this.child});
 
@@ -124,13 +126,9 @@ class _TabWithFlag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Align(alignment: Alignment.centerLeft, child: flag),
-          Expanded(child: child),
-        ],
-      ),
+    return WithFloatingButton(
+      button: flag,
+      child: SafeArea(child: child),
     );
   }
 }

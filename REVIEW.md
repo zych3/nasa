@@ -155,3 +155,20 @@ niedostępna → zapytania działają bez cache (test).
 
 **Wysoki priorytet: brak.**
 
+## Recenzja #9 (`feat/soil-map-ui`: flaga bez paska, przycisk „Pokaż moje pole”, gleba z Geoportalu)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 53 | Ś | ✅ | `overlay_map.dart` | Kamera obejmowała cały kawałek heatmapy (250 km), więc nowe pole w tym samym kawałku nie zmieniało widoku. Teraz pole na środku ± jedna komórka NASA, plus przycisk powrotu (test). |
+| 54 | Ś | 📝 | backend `SoilMapTileProvider` | WMS mapy glebowo-rolniczej co jakiś czas odpowiada 503 (dziś kilka razy). Klient ponawia (standard resilience), a nieudany kafelek jest przezroczysty z `max-age=300` i nie trafia do cache. |
+| 55 | N | ✅ | `plot_page.dart` | Pływająca flaga zachodziła na prawy górny róg karty „Moja działka” – karta ma teraz odstęp z prawej. |
+| 56 | N | 📝 | `soil_quality_overlay.dart` | Nazwy kompleksów, typów i gatunków gleb przychodzą z backendu po polsku – w wersji angielskiej zostają polskie (jak dawniej etykiety backendu). |
+| 57 | N | ⏳ | `overlay_controller.dart` | Dane działki pobierane są po punkcie (środek działki), nie po numerze działki – przy działkach wklęsłych środek może wypaść na sąsiedniej działce. Lepiej przekazać numer działki ze `SelectedPlotStore`. |
+
+Sprawdzone na żywo: kafelki mapy glebowej przez backend (17 kB, potem z `tile_cache` w 3 ms), legenda z kolorami
+z obrazka legendy WMS, karta „kompleks żytni dobry” z typem gleby, uziarnieniem, klasami z ewidencji i rokiem badania,
+fallback na SoilGrids bez danych działki (test), NASA niedostępne → gleba nadal widoczna (test), zrzuty: telefon
+i szeroki ekran.
+
+**Wysoki priorytet: brak.**
+

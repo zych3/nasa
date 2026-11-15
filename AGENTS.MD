@@ -110,6 +110,13 @@ Change the contract only after agreeing with both frontend and backend owners.
   the legend's own steps, so every colour on the map is a legend step with words and bars, and the field's cell has
   the card's value. Until it loads, when it fails, and for overlays with `hasHeatmap == false` (soil, erosion: they
   need the field's soil) the value's area is a circle. Saved grid: `assets/mock/map_layers_grid_sample.json`.
+- Soil in Poland comes from the parcel details (`/api/parcels/details`, Geoportal): `SoilQualityOverlay.parseParcel`
+  shows the soil-agricultural map's complex with soil type, texture and the register's classes, and the map draws
+  that map's tiles (`/api/map-tiles/soil-map/…`, from zoom 13). Complexes have no order, so `OverlayLayer.ordered`
+  is false (no level bars). Without parcel data (other country, no parcel, source down) it falls back to SoilGrids.
+- The map keeps the field in view: the camera goes to the field (heat map: one NASA cell around it), and the round
+  button in its bottom corner brings it back. The language flag floats in the top corner of every tab
+  (`WithFloatingButton`, `MapButton`), with no bar of its own.
 - Values are drawn as areas of their real precision (~1 km soil, ~50 km NASA POWER), never as field-level data.
 
 ## Accessibility rules (non-negotiable)

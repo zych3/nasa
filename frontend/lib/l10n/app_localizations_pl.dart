@@ -565,4 +565,42 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlaysHeatmapCellSize => 'Dane NASA: jedna wartość na ok. 50 km';
+
+  @override
+  String get overlaysShowMyField => 'Pokaż moje pole';
+
+  @override
+  String get overlaysShowExamplePlace => 'Pokaż przykładowe miejsce';
+
+  @override
+  String get overlayCoverageParcel =>
+      'Dane dla działki z mapy glebowo-rolniczej (skala 1:5000). Kolory na mapie to kompleksy z tej mapy.';
+
+  @override
+  String overlaySoilType(String name) {
+    return 'Typ gleby: $name';
+  }
+
+  @override
+  String overlaySoilTexture(String layers) {
+    return 'Uziarnienie: $layers';
+  }
+
+  @override
+  String overlaySoilTextureDeeper(String depth, String name) {
+    return 'od $depth: $name';
+  }
+
+  @override
+  String overlayLandClasses(String classes) {
+    return 'Klasy w ewidencji gruntów: $classes';
+  }
+
+  @override
+  String overlaySoilSurveyed(String year) {
+    return 'Badanie gleby z $year r.';
+  }
+
+  @override
+  String get overlaysSoilMapZoomIn => 'Przybliż mapę, aby zobaczyć mapę gleb';
 }

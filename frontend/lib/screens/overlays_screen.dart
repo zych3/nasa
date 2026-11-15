@@ -94,7 +94,7 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
           layer: _controller.layer,
           field: parcel,
           heatmap: _controller.heatmap,
-          heatmapHome: _controller.heatmapHome,
+          heatmapFocus: _controller.heatmapFocus,
           heatmapLoading:
               _controller.isHeatmapLoading && _controller.layer != null,
           heatmapTooFar: _controller.isHeatmapTooFar,

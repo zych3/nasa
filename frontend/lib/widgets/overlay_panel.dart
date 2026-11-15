@@ -212,6 +212,7 @@ class _ValueCard extends StatelessWidget {
       if (month != null)
         l10n.overlaysMonth(DateFormat.yMMMM(l10n.localeName).format(month)),
       current?.label(l10n) ?? l10n.overlaysNoData,
+      for (final detail in layer.details) detail.text(l10n),
       if (layer.isEstimate) l10n.sourceEstimated,
       if (source != null) l10n.overlaysSource(source),
       layer.coverage(l10n),
@@ -247,7 +248,9 @@ class _ValueCard extends StatelessWidget {
               liveRegion: true,
               child: Row(
                 children: [
-                  if (current != null)
+                  if (current != null && !layer.ordered)
+                    Icon(Icons.place, size: 28, color: scheme.onSurface)
+                  else if (current != null)
                     OverlayLevelBars(
                       level: layer.currentIndex! + 1,
                       count: layer.legend.length,
@@ -268,6 +271,10 @@ class _ValueCard extends StatelessWidget {
                 ],
               ),
             ),
+            for (final detail in layer.details) ...[
+              const SizedBox(height: 8),
+              _IconText(icon: detail.icon, text: detail.text(l10n)),
+            ],
             if (layer.isEstimate) ...[
               const SizedBox(height: 12),
               _IconText(
@@ -378,12 +385,15 @@ class _Legend extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  OverlayLevelBars(
-                    level: i + 1,
-                    count: layer.legend.length,
-                    color: scheme.onSurface,
-                  ),
-                  const SizedBox(width: 12),
+                  // Kinds without an order (soil complexes) have no level.
+                  if (layer.ordered) ...[
+                    OverlayLevelBars(
+                      level: i + 1,
+                      count: layer.legend.length,
+                      color: scheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                  ],
                   Expanded(
                     child: Text(
                       item.label(l10n),

@@ -253,6 +253,62 @@ void main() {
     c.dispose();
   });
 
+  group('soil from the parcel details', () {
+    late OverlayController c;
+
+    setUp(() {
+      c = OverlayController(
+        repository: repo,
+        overlays: const [SoilQualityOverlay(), SoilMoistureOverlay()],
+      );
+    });
+
+    tearDown(() => c.dispose());
+
+    test('Polish parcel: the soil map complex, not SoilGrids', () async {
+      repo
+        ..parcelAnswer = loadParcelSample()
+        ..legend = soilMapLegend;
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+
+      expect(repo.parcelRequests, [_field]);
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, 'soil-map');
+      expect(c.layer!.ordered, isFalse);
+
+      // Other overlays still use the map layers response.
+      c.select(c.overlays[1]);
+      expect(c.layer!.tileLayer, isNull);
+      expect(c.layer!.ordered, isTrue);
+    });
+
+    test('no parcel there: SoilGrids soil as before', () async {
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      await pumpEventQueue();
+
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, isNull);
+      expect(c.layer!.source, 'ISRIC SoilGrids v2.0 (0–30 cm)');
+    });
+
+    test('NASA down but the parcel is known: soil still shows', () async {
+      repo.parcelAnswer = loadParcelSample();
+      c.showPlace(_field);
+      repo.fail(_field, ApiException('down', statusCode: 502));
+      await pumpEventQueue();
+
+      expect(c.status, OverlayStatus.ready);
+      expect(c.layer!.tileLayer, 'soil-map');
+
+      c.select(c.overlays[1]);
+      expect(c.status, OverlayStatus.error);
+      expect(c.error, OverlayError.server);
+    });
+  });
+
   group('heat map', () {
     late OverlayController c;
 
@@ -338,7 +394,7 @@ void main() {
 
     test('loads the blocks the map shows; the home block stays put', () async {
       await loadHome();
-      final home = c.heatmapHome;
+      final home = c.heatmapFocus;
       expect(c.heatmap!.rows, 5);
 
       // A bit more to the north: the block north of the field's one.
@@ -352,11 +408,30 @@ void main() {
       expect(c.isHeatmapLoading, isFalse);
       expect(c.heatmap!.rows, 10, reason: 'one grid from both blocks');
       expect(c.heatmap!.cols, 5);
-      expect(c.heatmapHome, home, reason: 'the camera does not jump');
+      expect(c.heatmapFocus, home, reason: 'the camera does not jump');
 
       // Moving back does not ask again.
       c.showArea(bounds(51.0, 20.0, 53.9, 22.5));
       expect(repo.gridRequests, hasLength(2));
+    });
+
+    test('the camera goes to the field, also within the same block', () async {
+      await loadHome();
+      double midLat(LatLngBounds b) => (b.south + b.north) / 2;
+      double midLon(LatLngBounds b) => (b.west + b.east) / 2;
+      final first = c.heatmapFocus!;
+      expect(midLat(first), closeTo(_field.latitude, 1e-9));
+      expect(midLon(first), closeTo(_field.longitude, 1e-9));
+
+      // Another field 20 km away: same NASA block, but the camera moves.
+      const near = LatLng(52.38, 21.48);
+      c.showPlace(near);
+      repo.complete(near, _sampleAt(near));
+      repo.completeGrid(near, gridSampleAt(near));
+      await pumpEventQueue();
+
+      expect(midLat(c.heatmapFocus!), closeTo(near.latitude, 1e-9));
+      expect(c.heatmapFocus, isNot(first));
     });
 
     test('at most 2 blocks load at once', () async {
@@ -385,7 +460,7 @@ void main() {
         c.showArea(bounds(40, 0, 65, 40));
         expect(c.isHeatmapTooFar, isTrue);
         expect(c.heatmap, isNull);
-        expect(c.heatmapHome, isNotNull, reason: 'the camera does not jump');
+        expect(c.heatmapFocus, isNotNull, reason: 'the camera does not jump');
         expect(repo.gridRequests, [_field]);
 
         c.showArea(bounds(51.5, 20.5, 52.5, 22.0));
