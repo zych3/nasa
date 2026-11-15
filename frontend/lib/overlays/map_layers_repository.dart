@@ -90,15 +90,32 @@ class MapLayersRepository {
     );
   }
 
-  /// What is known about the registered parcel at [point]
-  /// (`GET /api/parcels/details`: soil map, land register, terrain). Throws
+  /// What is known about the registered parcel at [point], or about the
+  /// parcel [parcelId] when it is known (`GET /api/parcels/{id}/details`:
+  /// the backend then needs no parcel lookup and the right parcel is asked
+  /// for, also when [point] lies outside it). Soil map, land register,
+  /// terrain. Throws
   /// [ApiException] with status 404 where there is no registered parcel (e.g.
   /// outside Poland). Cached and failing like [mapLayers].
   Future<Map<String, dynamic>> parcelDetails(
     LatLng point, {
+    String? parcelId,
     bool refresh = false,
   }) {
     if (useMock) return demoParcelDetails();
+    if (parcelId != null) {
+      return _cached(
+        _parcelCache,
+        'id:$parcelId',
+        refresh,
+        () async => _asObject(
+          await _api.getJson(
+            '/api/parcels/${Uri.encodeComponent(parcelId)}/details',
+            timeout: parcelTimeout,
+          ),
+        ),
+      );
+    }
     return _cached(
       _parcelCache,
       '${point.latitude.toStringAsFixed(6)},${point.longitude.toStringAsFixed(6)}',

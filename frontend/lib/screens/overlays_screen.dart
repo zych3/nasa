@@ -80,7 +80,9 @@ class _OverlaysScreenState extends State<OverlaysScreen> {
 
   /// Cheap when nothing changed: the controller ignores the current place.
   void _showPlace() {
-    if (widget.active) _controller.showPlace(_place);
+    if (widget.active) {
+      _controller.showPlace(_place, parcelId: widget.store.parcel?.id);
+    }
   }
 
   @override

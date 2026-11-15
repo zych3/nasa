@@ -6,12 +6,13 @@ using FieldShift.Web.FieldProfile;
 namespace FieldShift.Web.FieldData;
 
 /// <summary>
-/// Puts <see cref="ParcelDetailsResponse"/> together: the country whose register has the parcel finds it, then each
+/// Puts <see cref="ParcelDetailsResponse"/> together: the country whose register has the parcel finds it (through
+/// <see cref="ParcelLookupCache"/>), then each
 /// kind of data comes from the first provider that supports the parcel, all at once, through the cache.
 /// Nothing here knows a country: a new country is a new <see cref="ICountryProvider"/> plus its providers.
 /// </summary>
 public sealed class ParcelDetailsService(
-    IEnumerable<ICountryProvider> countries,
+    ParcelLookupCache parcels,
     IEnumerable<ILandRegistryProvider> landRegistries,
     IEnumerable<ISoilMapProvider> soilMaps,
     IEnumerable<ITerrainProvider> terrains,
@@ -21,32 +22,12 @@ public sealed class ParcelDetailsService(
     ILogger<ParcelDetailsService> logger)
 {
     /// <summary>Details of the parcel at a point; null when no country's register has a parcel there.</summary>
-    public async Task<ParcelDetailsResponse?> AtAsync(double lat, double lon, CancellationToken ct)
-    {
-        foreach (var country in countries)
-        {
-            if (await country.GetFieldAtAsync(lat, lon, ct) is { } location)
-            {
-                return await BuildAsync(location, ct);
-            }
-        }
-
-        return null;
-    }
+    public async Task<ParcelDetailsResponse?> AtAsync(double lat, double lon, CancellationToken ct) =>
+        await parcels.AtAsync(lat, lon, ct) is { } location ? await BuildAsync(location, ct) : null;
 
     /// <summary>Details of the parcel with this register id; null when no register knows it.</summary>
-    public async Task<ParcelDetailsResponse?> ByIdAsync(string parcelId, CancellationToken ct)
-    {
-        foreach (var country in countries)
-        {
-            if (await country.GetFieldByParcelIdAsync(parcelId, ct) is { } location)
-            {
-                return await BuildAsync(location, ct);
-            }
-        }
-
-        return null;
-    }
+    public async Task<ParcelDetailsResponse?> ByIdAsync(string parcelId, CancellationToken ct) =>
+        await parcels.ByIdAsync(parcelId, ct) is { } location ? await BuildAsync(location, ct) : null;
 
     private async Task<ParcelDetailsResponse> BuildAsync(FieldLocation location, CancellationToken ct)
     {

@@ -48,6 +48,7 @@ class FakeMapLayersRepository extends MapLayersRepository {
   /// Poland), so overlays fall back to the map layers response.
   Map<String, dynamic>? parcelAnswer;
   final parcelRequests = <LatLng>[];
+  final parcelIdRequests = <String?>[];
 
   /// Legend of every map tile layer.
   List<Map<String, dynamic>> legend = const [];
@@ -55,9 +56,11 @@ class FakeMapLayersRepository extends MapLayersRepository {
   @override
   Future<Map<String, dynamic>> parcelDetails(
     LatLng point, {
+    String? parcelId,
     bool refresh = false,
   }) async {
     parcelRequests.add(point);
+    parcelIdRequests.add(parcelId);
     final answer = parcelAnswer;
     if (answer == null) throw ApiException('no parcel', statusCode: 404);
     return answer;
