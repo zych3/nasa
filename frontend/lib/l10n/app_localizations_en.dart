@@ -1222,4 +1222,628 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get overlayPestNote =>
       'For example Colorado potato beetle or European corn borer. This is not a detection of pests: check traps and plants.';
+
+  @override
+  String get myCropsTitle => 'My crops';
+
+  @override
+  String get myCropsIntro =>
+      'Your crops and where they grow. Later the app will check whether they are at risk; it checks only the active ones.';
+
+  @override
+  String get myCropsEmpty =>
+      'You have no saved crops yet. Press \"Add a crop\" and point the place on the map.';
+
+  @override
+  String get myCropsRetry => 'Try again';
+
+  @override
+  String get myCropsAdd => 'Add a crop';
+
+  @override
+  String get myCropsUnknownCrop => 'Unknown crop';
+
+  @override
+  String get myCropsActive => 'Active';
+
+  @override
+  String get myCropsActiveOn => 'The app will watch this crop.';
+
+  @override
+  String get myCropsActiveOff =>
+      'Switched off: the app will not watch this crop.';
+
+  @override
+  String get myCropsEdit => 'Change';
+
+  @override
+  String myCropsCoordinates(String latitude, String longitude) {
+    return 'Place: $latitude, $longitude';
+  }
+
+  @override
+  String get myCropsErrorSignedOut =>
+      'You are signed out. Sign in again under \"Account\".';
+
+  @override
+  String get myCropsErrorRejected =>
+      'This could not be saved. Check the crop and try again.';
+
+  @override
+  String get myCropsAddTitle => 'Add a crop';
+
+  @override
+  String get myCropsEditTitle => 'Change the crop';
+
+  @override
+  String get myCropsPlace => 'Place';
+
+  @override
+  String get myCropsCropLabel => 'Crop';
+
+  @override
+  String get myCropsChooseCrop => 'Choose a crop';
+
+  @override
+  String get myCropsChooseCropFirst => 'Choose a crop first.';
+
+  @override
+  String get myCropsLabelField => 'Name of the place (optional)';
+
+  @override
+  String get myCropsLabelHint => 'e.g. field by the river';
+
+  @override
+  String get myCropsSave => 'Save';
+
+  @override
+  String get myCropsNoPlace => 'No place pointed yet.';
+
+  @override
+  String get myCropsPickOnMap => 'Point the exact place on the map';
+
+  @override
+  String get myCropsPlaceFirst => 'Point the place on the map first.';
+
+  @override
+  String get myCropsFindingParcel => 'Looking for the registered parcel there…';
+
+  @override
+  String get myCropsOnParcel => 'On a registered parcel.';
+
+  @override
+  String get pickerTitle => 'Point the place';
+
+  @override
+  String get pickerHelp =>
+      'Move the map, or tap it, so that the pin shows where the crop grows. Zoom in to point it more exactly.';
+
+  @override
+  String get pickerPin => 'Pin: the chosen place';
+
+  @override
+  String get pickerConfirm => 'Choose this place';
+
+  @override
+  String get satTitle => 'From NASA satellites – recent';
+
+  @override
+  String get satSubtitle =>
+      'Measured from space for the area of your field. Each value says how big an area it covers.';
+
+  @override
+  String get satNoData => 'No satellite data for this place';
+
+  @override
+  String get satNotConfigured =>
+      'The server has no NASA Earthdata key for this data';
+
+  @override
+  String get satUnavailable => 'The source is not answering right now';
+
+  @override
+  String satDate(String date) {
+    return 'As of $date';
+  }
+
+  @override
+  String get satRainTitle => 'Rain (NASA GPM IMERG)';
+
+  @override
+  String satRainValue(String week, String month) {
+    return '$week mm in 7 days · $month mm in 30 days';
+  }
+
+  @override
+  String satRainLastDay(String mm) {
+    return 'Last day: $mm mm';
+  }
+
+  @override
+  String satRainDry(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days without rain',
+      one: '1 day without rain',
+    );
+    return '$_temp0 in a row';
+  }
+
+  @override
+  String satRainHeavy(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0 with heavy rain (20 mm or more) in 30 days';
+  }
+
+  @override
+  String get satAreaRain => 'one value for about 10 × 10 km';
+
+  @override
+  String get satSoilTitle => 'Soil moisture at root depth (NASA SMAP)';
+
+  @override
+  String get satSoilBelow => 'Drier than usual at this time of year';
+
+  @override
+  String get satSoilAbove => 'Wetter than usual at this time of year';
+
+  @override
+  String get satSoilNormal => 'As usual at this time of year';
+
+  @override
+  String get satSoilScale => 'Soil moisture (0 = dry, 1 = saturated)';
+
+  @override
+  String satSoilValueNormal(String value, String normal, int years) {
+    String _temp0 = intl.Intl.pluralLogic(
+      years,
+      locale: localeName,
+      other: '$years years',
+      one: '1 year',
+    );
+    return '$value now, usually $normal (average of $_temp0) · 0 = dry, 1 = saturated';
+  }
+
+  @override
+  String satSoilValue(String value) {
+    return '$value (0 = dry, 1 = saturated)';
+  }
+
+  @override
+  String satSoilTemp(String temp) {
+    return 'Soil temperature: $temp °C';
+  }
+
+  @override
+  String satSnow(String cm) {
+    return 'Snow: about $cm cm';
+  }
+
+  @override
+  String get satAreaSoil => 'one value for about 9 × 9 km';
+
+  @override
+  String get satNdviTitle => 'Plant greenness (NDVI, NASA MODIS)';
+
+  @override
+  String get satNdviBelow => 'Less green than usual at this time of year';
+
+  @override
+  String get satNdviAbove => 'Greener than usual at this time of year';
+
+  @override
+  String get satNdviNormal => 'As green as usual at this time of year';
+
+  @override
+  String get satNdviScale => 'Plant greenness';
+
+  @override
+  String satNdviValue(String value) {
+    return 'NDVI $value';
+  }
+
+  @override
+  String satNdviValueNormal(String value, String normal) {
+    return 'NDVI $value, usually $normal';
+  }
+
+  @override
+  String get satNdviCloudy =>
+      'The picture was partly covered by clouds or snow, so this value is less certain.';
+
+  @override
+  String get satNdviHelp =>
+      '0.2 means bare soil, 0.8 a dense green crop. The line is this year, the dashes the usual.';
+
+  @override
+  String get satAreaNdvi =>
+      'one pixel about 250 × 250 m (about 6 ha), also covers what is next to the field';
+
+  @override
+  String get satLstTitle => 'Ground temperature (NASA MODIS)';
+
+  @override
+  String satLstValue(String day, String night) {
+    return '$day °C by day, $night °C at night';
+  }
+
+  @override
+  String satLstDay(String day) {
+    return '$day °C by day';
+  }
+
+  @override
+  String satLstNight(String night) {
+    return '$night °C at night';
+  }
+
+  @override
+  String satLstNormal(String day, String night) {
+    return 'Usually $day °C by day, $night °C at night';
+  }
+
+  @override
+  String get satAreaLst => '8-day average, one pixel about 1 × 1 km';
+
+  @override
+  String get satEtTitle => 'Water used by plants and soil (NASA MODIS)';
+
+  @override
+  String get satEtBelow => 'Less than usual – plants may be short of water';
+
+  @override
+  String get satEtAbove => 'More than usual';
+
+  @override
+  String get satEtNormal => 'As usual at this time of year';
+
+  @override
+  String satEtValue(String value) {
+    return '$value mm per day';
+  }
+
+  @override
+  String satEtValueNormal(String value, String normal) {
+    return '$value mm per day, usually $normal mm';
+  }
+
+  @override
+  String get satAreaEt => '8-day average, one pixel about 500 × 500 m';
+
+  @override
+  String get satWarnSoilDry => 'Soil at root depth is drier than usual';
+
+  @override
+  String get satWarnFrozen => 'The top soil is frozen';
+
+  @override
+  String get satWarnGroundFrost => 'Frost at ground level (nights below 0 °C)';
+
+  @override
+  String satWarnHeavyRain(int count) {
+    return '$count days with heavy rain in the last month – soil may be washed away';
+  }
+
+  @override
+  String satWarnDrySpell(int days) {
+    return '$days days in a row without rain';
+  }
+
+  @override
+  String get satWarnNdviLow =>
+      'Plants are less green than usual – worth checking the field';
+
+  @override
+  String get fieldDataStepRain => 'Rain in recent days (NASA GPM IMERG)';
+
+  @override
+  String get fieldDataStepSoil => 'Soil moisture and temperature (NASA SMAP)';
+
+  @override
+  String get fieldDataStepVegetation =>
+      'Plant greenness from space (NASA MODIS)';
+
+  @override
+  String get fieldDataStepSurfaceTemp => 'Ground temperature (NASA MODIS)';
+
+  @override
+  String get fieldDataStepEt => 'Water used by plants (NASA MODIS)';
+
+  @override
+  String overlayQualityClass(String code) {
+    return 'Class $code';
+  }
+
+  @override
+  String overlayQualityClassNamed(String code, String name) {
+    return 'Class $code – $name';
+  }
+
+  @override
+  String get overlaySoilFromRegister =>
+      'The soil map has no data for this place, so the soil quality classes from the land register are shown.';
+
+  @override
+  String get satDetailTitle => 'Now – last days (NASA satellites)';
+
+  @override
+  String get satDetailSubtitle =>
+      'For the area of your field. Below: month by month, use the arrows to go back in time.';
+
+  @override
+  String get satDetailLoading => 'Loading more detail from NASA satellites…';
+
+  @override
+  String get indTitle => 'What it means for your field';
+
+  @override
+  String get indSubtitle =>
+      'Estimated from the newest NASA satellite data and your parcel\'s data. Check the field before you decide.';
+
+  @override
+  String indicatorWarning(String title, String text) {
+    return '$title: $text';
+  }
+
+  @override
+  String get indLevelHigh => 'High';
+
+  @override
+  String get indLevelModerate => 'Moderate';
+
+  @override
+  String get indLevelLow => 'Low';
+
+  @override
+  String indSources(String sources) {
+    return 'Estimate · Data: $sources';
+  }
+
+  @override
+  String get indMoistureTitle => 'Soil moisture and field work';
+
+  @override
+  String get indMoistureTooWet =>
+      'Soil very wet – heavy machines may compact it';
+
+  @override
+  String get indMoistureDry => 'Too little water at the roots';
+
+  @override
+  String get indMoistureOk => 'Moisture is fine – field work is possible';
+
+  @override
+  String get indMoistureUnknown => 'Soil moisture';
+
+  @override
+  String get indStressTitle => 'Plant stress now';
+
+  @override
+  String get indStressHigh =>
+      'Strong stress – plants are short of water or too hot';
+
+  @override
+  String get indStressModerate => 'Some stress – worth keeping an eye on';
+
+  @override
+  String get indStressLow => 'Plants are not under stress';
+
+  @override
+  String get indGroundTitle => 'Ground warmth';
+
+  @override
+  String get indGroundFrozen => 'Top soil is frozen';
+
+  @override
+  String get indGroundCold => 'Cold soil – plants hardly grow';
+
+  @override
+  String get indGroundCool =>
+      'Cool soil – slow growth, warm enough to sow spring cereals';
+
+  @override
+  String get indGroundWarm =>
+      'Warm soil – warm enough to sow maize and warmth-loving crops';
+
+  @override
+  String get indGroundUnknown => 'Ground temperature';
+
+  @override
+  String get indErosionTitle => 'Erosion risk (last 30 days)';
+
+  @override
+  String get indErosionHigh => 'Rain may wash soil away';
+
+  @override
+  String get indErosionModerate => 'Soil may be washed away a little';
+
+  @override
+  String get indErosionLow => 'Soil is not at risk of being washed away';
+
+  @override
+  String get indFungalTitle => 'Weather for fungal diseases (14 days)';
+
+  @override
+  String get indFungalHigh => 'Very favourable – check your plants';
+
+  @override
+  String get indFungalModerate => 'Favourable – keep an eye on your plants';
+
+  @override
+  String get indFungalLow => 'Not favourable';
+
+  @override
+  String indRHeavyRainDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0 with heavy rain (20 mm or more)';
+  }
+
+  @override
+  String indRMaxDailyRain(String mm) {
+    return 'Heaviest rain in a day: $mm mm';
+  }
+
+  @override
+  String indRWetTopsoil(String value) {
+    return 'Top soil soaked ($value of 1), water runs off';
+  }
+
+  @override
+  String indRSlope(String pct) {
+    return 'Slope of the parcel: $pct %';
+  }
+
+  @override
+  String indRLightSoil(String pct) {
+    return 'Light soil (sand $pct %) washes away easily';
+  }
+
+  @override
+  String indRSparseCover(String value) {
+    return 'Few plants on the field (NDVI $value), soil poorly covered';
+  }
+
+  @override
+  String get indRNoErosionDrivers => 'No heavy rain';
+
+  @override
+  String indRRoots(String value) {
+    return 'Moisture at the roots: $value (0 = dry, 1 = saturated)';
+  }
+
+  @override
+  String indRDryRoots(String value, String normal) {
+    return 'Moisture at the roots $value, usually $normal – drier than usual';
+  }
+
+  @override
+  String indRWetRoots(String value, String normal) {
+    return 'Moisture at the roots $value, usually $normal – wetter than usual';
+  }
+
+  @override
+  String indRRootsAsUsual(String value, String normal) {
+    return 'Moisture at the roots $value, usually $normal';
+  }
+
+  @override
+  String indRHotDays(String temp) {
+    return 'Ground heats up to $temp °C by day';
+  }
+
+  @override
+  String indRLessGreen(String value, String normal) {
+    return 'Less green than usual (NDVI $value, usually $normal)';
+  }
+
+  @override
+  String indRLessWaterUse(String value, String normal) {
+    return 'Plants use less water than usual ($value mm a day, usually $normal)';
+  }
+
+  @override
+  String indRDormant(String temp) {
+    return 'Soil at $temp °C – plants are resting for winter';
+  }
+
+  @override
+  String get indRNoStress => 'No signs of drought or heat';
+
+  @override
+  String indRSoilTemp(String temp) {
+    return 'Top soil: $temp °C';
+  }
+
+  @override
+  String indRWarming(String delta, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'Warming up: $delta °C more in $_temp0';
+  }
+
+  @override
+  String indRCooling(String delta, int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'Cooling down: $delta °C less in $_temp0';
+  }
+
+  @override
+  String indRSteady(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days',
+      one: '1 day',
+    );
+    return 'About the same for $_temp0';
+  }
+
+  @override
+  String indRFrostNights(String temp) {
+    return 'Frost at ground level: $temp °C at night';
+  }
+
+  @override
+  String indRVeryWetTopsoil(String value) {
+    return 'Top layer nearly saturated ($value of 1)';
+  }
+
+  @override
+  String indRRainWeek(String mm) {
+    return 'Rain in 7 days: $mm mm';
+  }
+
+  @override
+  String indRDryDays(int count) {
+    return '$count days in a row without rain';
+  }
+
+  @override
+  String indRRainyDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rainy days',
+      one: '1 rainy day',
+    );
+    return '$_temp0 in 14 days';
+  }
+
+  @override
+  String indRMildGround(String temp) {
+    return 'Ground at $temp °C (fungi like 10–25 °C)';
+  }
+
+  @override
+  String get indAttention => 'Watch out';
+
+  @override
+  String get indOk => 'Fine';
+
+  @override
+  String get overlaySoilNotFarmland =>
+      'By the land register this is not farmland, so it has no soil quality class.';
+
+  @override
+  String get fieldFactLandUse => 'Land use (land register)';
 }

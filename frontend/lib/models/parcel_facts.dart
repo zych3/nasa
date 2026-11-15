@@ -68,9 +68,17 @@ String? _text(Object? value) =>
 
 /// Land register (Poland: EGiB): soil quality classes of the parcel.
 class LandRegistryFacts {
-  const LandRegistryFacts({required this.source, required this.classes});
+  const LandRegistryFacts({
+    required this.source,
+    required this.classes,
+    this.landUses = const [],
+  });
 
   final String? source;
+
+  /// Land uses from the register (Polish), e.g. "grunty orne", "tereny
+  /// mieszkaniowe" – also for parcels without a soil quality class.
+  final List<String> landUses;
 
   /// Distinct quality classes, e.g. ("IVb", "orne średnie gorsze"), in the
   /// register's order. Names come from the register (Polish).
@@ -85,7 +93,16 @@ class LandRegistryFacts {
       if (code == null || !seen.add(code)) continue;
       classes.add((code: code, name: _text(item['qualityName'])));
     }
-    return LandRegistryFacts(source: _text(json['source']), classes: classes);
+    final uses = <String>{
+      for (final item in json['classes'] as List<dynamic>? ?? const [])
+        if (item is Map<String, dynamic> && _text(item['landUse']) != null)
+          _text(item['landUse'])!,
+    };
+    return LandRegistryFacts(
+      source: _text(json['source']),
+      classes: classes,
+      landUses: uses.toList(),
+    );
   }
 }
 

@@ -5,33 +5,28 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:forui/forui.dart';
 import 'package:hopito_field_shift/app/app_theme.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:material_ui/material_ui.dart';
-
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/models/parcel_facts.dart';
+import 'package:hopito_field_shift/models/satellite_data.dart';
 import 'package:hopito_field_shift/overlays/field_conditions_controller.dart';
 import 'package:hopito_field_shift/overlays/map_layers_repository.dart';
 import 'package:hopito_field_shift/widgets/field_conditions_section.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
 
 Map<String, dynamic> _asset(String name) =>
     jsonDecode(File('assets/mock/$name').readAsStringSync())
         as Map<String, dynamic>;
 
-final _layers = _asset('map_layers_sample.json');
 final _details = _asset('parcel_details_sample.json');
+final _satellite = _asset('satellite_sample.json');
 
-/// Answers only when the test completes the matching completer.
-class _SlowRepo extends MapLayersRepository {
-  var climate = Completer<Map<String, dynamic>>();
+/// The parcel answers when the test completes [parcel]; satellites answer
+/// at once with the saved real data, or fail when [satelliteFails].
+class _Repo extends MapLayersRepository {
   var parcel = Completer<Map<String, dynamic>>();
-
-  @override
-  Future<Map<String, dynamic>> mapLayers(LatLng point, {bool refresh = false}) {
-    if (refresh) climate = Completer();
-    return climate.future;
-  }
+  bool satelliteFails = false;
 
   @override
   Future<Map<String, dynamic>> parcelDetails(
@@ -44,7 +39,18 @@ class _SlowRepo extends MapLayersRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> demo() async => _layers;
+  Future<Map<String, dynamic>> satellite(
+    SatellitePart part,
+    LatLng point, {
+    bool refresh = false,
+  }) async {
+    if (satelliteFails) throw TimeoutException('NASA slow');
+    return _satellite[part.key] as Map<String, dynamic>;
+  }
+
+  @override
+  Future<Map<String, dynamic>> demoSatellite(SatellitePart part) async =>
+      _satellite[part.key] as Map<String, dynamic>;
 
   @override
   Future<Map<String, dynamic>> demoParcelDetails() async => _details;
@@ -102,77 +108,65 @@ void main() {
     expect(facts.terrain, isNull);
   });
 
-  test('every monthly overlay reads the saved real NASA response', () {
-    final conditions = FieldConditionsController.parseConditions(_layers);
-
-    expect(
-      conditions.map((c) => c.overlay.id),
-      containsAll(['soilMoisture', 'precipitation', 'plantStress']),
-    );
-    for (final c in conditions) {
-      expect(c.layer.current, isNotNull, reason: c.overlay.id);
-    }
-  });
-
-  testWidgets('progress bar, then each part as it arrives', (tester) async {
-    final repo = _SlowRepo();
+  testWidgets('satellites and what they mean first, the parcel when ready', (
+    tester,
+  ) async {
+    final repo = _Repo();
     final controller = FieldConditionsController(repository: repo)
       ..show(_field);
     await tester.pumpWidget(_app(controller));
-
-    expect(find.text(pl.fieldDataLoading), findsOneWidget);
-    expect(find.text(pl.fieldDataLoading), findsOneWidget);
-
-    repo.climate.complete(_layers);
-    // Still loading the parcel (spinner keeps moving): pump, not settle.
+    // Parcel still loading (spinner keeps moving): pump, not settle.
     await tester.pump();
     await tester.pump();
-    expect(find.text(pl.fieldConditionsHeading), findsOneWidget);
-    expect(find.text(pl.overlayMoistureTitle), findsOneWidget);
-    // The parcel part is still loading.
+
+    expect(find.text(pl.indTitle), findsOneWidget);
+    expect(find.text(pl.satTitle), findsOneWidget);
     expect(find.text(pl.fieldDataLoading), findsOneWidget);
     expect(find.text(pl.fieldFactsHeading), findsNothing);
+    // The monthly ~50 km card is gone from "My field".
+    expect(find.text(pl.fieldConditionsHeading), findsNothing);
 
     repo.parcel.complete(_details);
     await tester.pumpAndSettle();
     expect(find.text(pl.fieldDataLoading), findsNothing);
     expect(find.text(pl.fieldFactsHeading), findsOneWidget);
-    expect(find.text(pl.fieldFactQualityClass), findsOneWidget);
+    // The parcel's slope now takes part in the erosion estimate.
+    expect(find.textContaining('Nachylenie działki'), findsWidgets);
   });
 
   testWidgets('NASA down: error, then the example data with a notice', (
     tester,
   ) async {
-    final repo = _SlowRepo();
+    final repo = _Repo()..satelliteFails = true;
     final controller = FieldConditionsController(repository: repo)
       ..show(_field);
     await tester.pumpWidget(_app(controller));
-
-    repo.climate.completeError(TimeoutException('NASA slow'));
     repo.parcel.completeError(TimeoutException('register slow'));
     await tester.pumpAndSettle();
+
     expect(find.text(pl.overlaysErrorSlow), findsOneWidget);
     expect(find.text(pl.fieldFactsNone), findsOneWidget);
 
+    await tester.ensureVisible(find.text(pl.overlaysShowDemo));
     await tester.tap(find.text(pl.overlaysShowDemo));
     await tester.pumpAndSettle();
     expect(find.text(pl.overlaysDemoNotice), findsOneWidget);
-    expect(find.text(pl.fieldConditionsHeading), findsOneWidget);
+    expect(find.text(pl.indTitle), findsOneWidget);
     expect(find.text(pl.fieldFactsHeading), findsOneWidget);
   });
 
   testWidgets('fits a phone at 1.5× text in both languages', (tester) async {
-    tester.view.physicalSize = const Size(360, 3000);
+    tester.view.physicalSize = const Size(360, 5000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
     for (final locale in AppLocalizations.supportedLocales) {
-      final controller = FieldConditionsController(repository: _SlowRepo())
+      final controller = FieldConditionsController(repository: _Repo())
         ..showDemo();
       await tester.pumpWidget(
         MediaQuery(
           data: const MediaQueryData(
-            size: Size(360, 3000),
+            size: Size(360, 5000),
             textScaler: TextScaler.linear(1.5),
           ),
           child: _app(controller, locale: locale),

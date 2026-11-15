@@ -2,7 +2,6 @@ import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../components/map_button.dart';
-import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
@@ -12,9 +11,9 @@ import '../repositories/selected_plot_store.dart';
 import '../widgets/field_conditions_section.dart';
 import 'rotation_wizard_page.dart';
 
-/// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
-/// user pick another one from the parcels nearby. Addresses are searched on
-/// the "My area" map.
+/// "Moje pole" – plot data page: the chosen (saved) parcel and what recent
+/// NASA satellite data and the registers say about it. Fields are chosen on
+/// the "My area" map (also by address).
 class PlotPage extends StatefulWidget {
   const PlotPage({
     super.key,
@@ -184,16 +183,6 @@ class _PlotPageState extends State<PlotPage> {
               style: type.body.md.copyWith(color: colors.mutedForeground),
             ),
 
-            // Parcels near the user's location (from the map).
-            if (nearby.isNotEmpty) ...[
-              _SectionTitle(l10n.nearbyParcelsSection),
-              NearbyPlotList(
-                parcels: nearby,
-                selectedId: parcel?.id,
-                onSelected: widget.store.select,
-              ),
-            ],
-
             // What NASA data and the registers say about the field. Fills in
             // as the data arrives (progress bar until then).
             const SizedBox(height: 36),
@@ -203,30 +192,6 @@ class _PlotPageState extends State<PlotPage> {
               onShowOnMap: widget.onShowConditions,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = context.theme;
-    return Padding(
-      padding: const EdgeInsets.only(top: 36, bottom: 12),
-      child: Semantics(
-        header: true,
-        child: Text(
-          text,
-          style: theme.typography.display.lg.copyWith(
-            fontWeight: FontWeight.w600,
-            color: theme.colors.foreground,
-          ),
         ),
       ),
     );

@@ -1,14 +1,6 @@
 {
-  "fetchedAt": "2026-11-14T16:23:39.6361686+00:00",
+  "fetchedAt": "2026-11-15T16:54:25.6223914+00:00",
   "wikidata": {
-    "Q10998": {
-      "wikidataId": "Q10998",
-      "labelPl": "ziemniak",
-      "labelEn": "potato",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/234%20Solanum%20tuberosum%20L.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Ziemniak",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Potato"
-    },
     "Q11006": {
       "wikidataId": "Q11006",
       "labelPl": "soja warzywna",
@@ -17,21 +9,13 @@
       "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Soja_warzywna",
       "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Soybean"
     },
-    "Q11575": {
-      "wikidataId": "Q11575",
-      "labelPl": "kukurydza zwyczajna",
-      "labelEn": "maize",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89tale%20de%20grains%20de%20ma%C3%AFs%2001.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Kukurydza_zwyczajna",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Maize"
-    },
-    "Q12099": {
-      "wikidataId": "Q12099",
-      "labelPl": "\u017Cyto zwyczajne",
-      "labelEn": "Secale cereale",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Ear%20of%20rye.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%BByto_zwyczajne",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rye"
+    "Q10998": {
+      "wikidataId": "Q10998",
+      "labelPl": "ziemniak",
+      "labelEn": "potato",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/234%20Solanum%20tuberosum%20L.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Ziemniak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Potato"
     },
     "Q11577": {
       "wikidataId": "Q11577",
@@ -41,13 +25,13 @@
       "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/J%C4%99czmie%C5%84_zwyczajny",
       "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Barley"
     },
-    "Q25237": {
-      "wikidataId": "Q25237",
-      "labelPl": "groch zwyczajny",
-      "labelEn": "Pisum sativum",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/NCI%20peas%20in%20pod.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Groch_zwyczajny",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Pea"
+    "Q12099": {
+      "wikidataId": "Q12099",
+      "labelPl": "\u017Cyto zwyczajne",
+      "labelEn": "Secale cereale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Ear%20of%20rye.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%BByto_zwyczajne",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rye"
     },
     "Q12104": {
       "wikidataId": "Q12104",
@@ -73,30 +57,6 @@
       "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/%C5%81ubin_bia%C5%82y",
       "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Lupinus_albus"
     },
-    "Q177932": {
-      "wikidataId": "Q177932",
-      "labelPl": "rzepak",
-      "labelEn": "Brassica napus",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%28MHNT%29%20Brassica%20napus%20-%20Habit.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Rzepak",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rapeseed"
-    },
-    "Q380329": {
-      "wikidataId": "Q380329",
-      "labelPl": "Pszen\u017Cyto",
-      "labelEn": "\u00D7Triticale",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Triticale.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszen%C5%BCyto",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Triticale"
-    },
-    "Q151964": {
-      "wikidataId": "Q151964",
-      "labelPl": "burak cukrowy",
-      "labelEn": "sugar beet",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/SugarBeet.jpg?width=330",
-      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Burak_cukrowy",
-      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Sugar_beet"
-    },
     "Q164148": {
       "wikidataId": "Q164148",
       "labelPl": "\u0141ubin w\u0105skolistny",
@@ -120,6 +80,46 @@
       "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Fagopyrum%20esculentum%201DS-II%203-0312.jpg?width=330",
       "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Gryka_zwyczajna",
       "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Buckwheat"
+    },
+    "Q151964": {
+      "wikidataId": "Q151964",
+      "labelPl": "burak cukrowy",
+      "labelEn": "sugar beet",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/SugarBeet.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Burak_cukrowy",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Sugar_beet"
+    },
+    "Q25237": {
+      "wikidataId": "Q25237",
+      "labelPl": "groch zwyczajny",
+      "labelEn": "Pisum sativum",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/NCI%20peas%20in%20pod.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Groch_zwyczajny",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Pea"
+    },
+    "Q11575": {
+      "wikidataId": "Q11575",
+      "labelPl": "kukurydza zwyczajna",
+      "labelEn": "maize",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%89tale%20de%20grains%20de%20ma%C3%AFs%2001.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Kukurydza_zwyczajna",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Maize"
+    },
+    "Q177932": {
+      "wikidataId": "Q177932",
+      "labelPl": "rzepak",
+      "labelEn": "Brassica napus",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%28MHNT%29%20Brassica%20napus%20-%20Habit.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Rzepak",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Rapeseed"
+    },
+    "Q380329": {
+      "wikidataId": "Q380329",
+      "labelPl": "Pszen\u017Cyto",
+      "labelEn": "\u00D7Triticale",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Triticale.jpg?width=330",
+      "wikipediaUrlPl": "https://pl.wikipedia.org/wiki/Pszen%C5%BCyto",
+      "wikipediaUrlEn": "https://en.wikipedia.org/wiki/Triticale"
     }
   },
   "production": {

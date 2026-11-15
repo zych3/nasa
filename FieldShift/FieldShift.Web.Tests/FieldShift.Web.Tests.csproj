@@ -21,6 +21,8 @@
 
     <ItemGroup>
       <None Include="Fixtures\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+      <!-- Real NASA OPeNDAP (DAP4 binary) answers for one cell; no credentials inside. -->
+      <None Include="Fixtures\**\*.dap" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 
     <ItemGroup>

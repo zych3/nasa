@@ -1,18 +1,22 @@
 import 'package:forui/forui.dart';
-import 'package:intl/intl.dart' show DateFormat, NumberFormat;
+import 'package:intl/intl.dart' show NumberFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/parcel_facts.dart';
+import '../models/satellite_data.dart';
 import '../overlays/field_conditions_controller.dart';
-import 'overlay_level_bars.dart';
 import 'overlay_panel.dart' show overlayErrorText;
+import 'farm_indicators_card.dart';
 import 'read_aloud_button.dart';
+import 'satellite_card.dart';
 
-/// "My field" summary: what NASA data says about the field's area (soil
-/// moisture, rain, heat, frost, plant stress, erosion) and what the registers
-/// and soil models say about the parcel. Shows a progress bar while the data
-/// loads (the first time up to ~20 s) and fills in each part as it arrives.
+/// "My field" summary from recent data only: what it means for the field
+/// (erosion, plant stress, ground warmth, moisture, fungal weather), what
+/// NASA satellites saw in the last days (rain, soil, greenness, ground
+/// temperature, water use) and what the registers say about the parcel.
+/// Shows a progress bar while the data loads and fills in each part as it
+/// arrives. (Monthly ~50 km values are on the "Conditions" map.)
 class FieldConditionsSection extends StatelessWidget {
   const FieldConditionsSection({
     super.key,
@@ -28,23 +32,6 @@ class FieldConditionsSection extends StatelessWidget {
 
   /// Opens the "Conditions" map, when there is one to open.
   final VoidCallback? onShowOnMap;
-
-  /// Overlays whose top third means "watch out" (frost and pest warmth are
-  /// left out: they are high every winter / autumn and would warn all season).
-  static const _riskIds = {
-    'plantStress',
-    'erosionRisk',
-    'heatStress',
-    'fungalRisk',
-  };
-
-  static bool isWarning(FieldCondition c) {
-    final index = c.layer.currentIndex;
-    return _riskIds.contains(c.overlay.id) &&
-        c.layer.ordered &&
-        index != null &&
-        index + 1 > c.layer.legend.length * 2 / 3;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +55,11 @@ class FieldConditionsSection extends StatelessWidget {
       );
     }
 
-    final warnings = c.conditions.where(isWarning).toList();
+    final indicators = c.indicators;
+    final warnings = {
+      ...FarmIndicatorsCard.warnings(l10n, indicators),
+      ...SatelliteCard.warnings(l10n, c.satellite),
+    }.toList();
     final facts = c.facts;
     const gap = SizedBox(height: 16);
 
@@ -87,9 +78,9 @@ class FieldConditionsSection extends StatelessWidget {
           gap,
         ],
         if (c.isLoading) ...[_LoadingCard(controller: c), gap],
-        if (c.climateStatus == FieldDataStatus.failed) ...[
+        if (c.allSatelliteFailed) ...[
           _ErrorCard(
-            message: overlayErrorText(l10n, c.climateError),
+            message: overlayErrorText(l10n, c.satelliteError),
             onRetry: c.retry,
             onShowDemo: c.isDemo ? null : c.showDemo,
           ),
@@ -102,21 +93,32 @@ class FieldConditionsSection extends StatelessWidget {
             title: Text(l10n.fieldWarningsHeading),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (final w in warnings)
-                  Text(
-                    l10n.fieldConditionSentence(
-                      w.overlay.title(l10n),
-                      w.layer.current!.label(l10n),
-                    ),
-                  ),
-              ],
+              children: [for (final w in warnings) Text(w)],
             ),
           ),
           gap,
         ],
-        if (c.conditions.isNotEmpty) ...[
-          _ConditionsCard(conditions: c.conditions, onShowOnMap: onShowOnMap),
+        // What it means first, then the measurements behind it, then the
+        // parcel's registers.
+        if (!indicators.isEmpty) ...[
+          FarmIndicatorsCard(indicators: indicators),
+          gap,
+        ],
+        if (SatellitePart.values.any(
+          (p) => c.satelliteStatus(p) == FieldDataStatus.ready,
+        )) ...[
+          SatelliteCard(data: c.satellite),
+          gap,
+        ],
+        if (onShowOnMap case final show?) ...[
+          FButton(
+            variant: FButtonVariant.outline,
+            onPress: show,
+            prefix: const Icon(FLucideIcons.layers),
+            child: Flexible(
+              child: Text(l10n.fieldShowOnMap, textAlign: TextAlign.center),
+            ),
+          ),
           gap,
         ],
         if (facts != null)
@@ -134,12 +136,7 @@ class FieldConditionsSection extends StatelessWidget {
       l10n.overlaysTitle,
       if (c.isDemo) l10n.overlaysDemoNotice,
       if (c.isLoading) l10n.fieldDataLoading,
-      for (final condition in c.conditions)
-        l10n.fieldConditionSentence(
-          condition.overlay.title(l10n),
-          condition.layer.current!.label(l10n),
-        ),
-      if (c.conditions.isNotEmpty) l10n.overlaysHeatmapCellSize,
+      ...FarmIndicatorsCard.sentences(l10n, c.indicators),
       if (c.facts case final facts?) ..._factsSentences(l10n, facts),
     ]);
   }
@@ -223,12 +220,11 @@ class _CardBody extends StatelessWidget {
   );
 }
 
-/// Title of a card, with optional quiet lines under it.
+/// Title of a card.
 class _CardTitle extends StatelessWidget {
-  const _CardTitle(this.text, {this.subtitle = const []});
+  const _CardTitle(this.text);
 
   final String text;
-  final List<String> subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -244,15 +240,6 @@ class _CardTitle extends StatelessWidget {
             color: colors.foreground,
           ),
         ),
-        for (final line in subtitle) ...[
-          const SizedBox(height: 2),
-          Text(
-            line,
-            style: theme.typography.body.sm.copyWith(
-              color: colors.mutedForeground,
-            ),
-          ),
-        ],
         const SizedBox(height: 8),
       ],
     );
@@ -291,12 +278,20 @@ class _LoadingCard extends StatelessWidget {
             semanticsLabel: l10n.fieldDataLoading,
           ),
         const SizedBox(height: 16),
-        _Step(
-          status: controller.climateStatus,
-          text: l10n.fieldDataStepClimate,
-        ),
-        const SizedBox(height: 10),
         _Step(status: controller.parcelStatus, text: l10n.fieldDataStepParcel),
+        for (final part in SatellitePart.values) ...[
+          const SizedBox(height: 10),
+          _Step(
+            status: controller.satelliteStatus(part),
+            text: switch (part) {
+              SatellitePart.rain => l10n.fieldDataStepRain,
+              SatellitePart.soil => l10n.fieldDataStepSoil,
+              SatellitePart.vegetation => l10n.fieldDataStepVegetation,
+              SatellitePart.surfaceTemperature => l10n.fieldDataStepSurfaceTemp,
+              SatellitePart.evapotranspiration => l10n.fieldDataStepEt,
+            },
+          ),
+        ],
       ],
     );
   }
@@ -385,158 +380,6 @@ class _ErrorCard extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _ConditionsCard extends StatelessWidget {
-  const _ConditionsCard({required this.conditions, this.onShowOnMap});
-
-  final List<FieldCondition> conditions;
-  final VoidCallback? onShowOnMap;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    // All NASA layers are for the same month and place.
-    final month = conditions.first.layer.month;
-
-    return _CardBody(
-      children: [
-        _CardTitle(
-          l10n.fieldConditionsHeading,
-          subtitle: [
-            if (month != null)
-              l10n.overlaysMonth(
-                DateFormat.yMMMM(l10n.localeName).format(month),
-              ),
-            l10n.overlaysHeatmapCellSize,
-          ],
-        ),
-        for (final (i, condition) in conditions.indexed) ...[
-          if (i > 0) const FDivider(),
-          _ConditionRow(condition: condition),
-        ],
-        if (onShowOnMap case final show?) ...[
-          const SizedBox(height: 12),
-          FButton(
-            variant: FButtonVariant.outline,
-            onPress: show,
-            prefix: const Icon(FLucideIcons.layers),
-            child: Flexible(
-              child: Text(l10n.fieldShowOnMap, textAlign: TextAlign.center),
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _ConditionRow extends StatelessWidget {
-  const _ConditionRow({required this.condition});
-
-  final FieldCondition condition;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = context.theme;
-    final colors = theme.colors;
-    final type = theme.typography;
-    final layer = condition.layer;
-    final current = layer.current!;
-    final warning = FieldConditionsSection.isWarning(condition);
-    final source = layer.source;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Soft tile in the legend colour of the value (never the only
-          // signal: the word and the bars say the same).
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Color.alphaBlend(
-                current.color.withValues(alpha: 0.22),
-                colors.card,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              condition.overlay.icon,
-              size: 22,
-              color: colors.foreground,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  condition.overlay.title(l10n),
-                  style: type.body.sm.copyWith(color: colors.mutedForeground),
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    if (warning) ...[
-                      Icon(
-                        FLucideIcons.triangleAlert,
-                        size: 18,
-                        color: colors.error,
-                      ),
-                      const SizedBox(width: 6),
-                    ],
-                    Expanded(
-                      child: Text(
-                        current.label(l10n),
-                        style: type.body.md.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colors.foreground,
-                        ),
-                      ),
-                    ),
-                    if (layer.ordered) ...[
-                      const SizedBox(width: 8),
-                      OverlayLevelBars(
-                        level: layer.currentIndex! + 1,
-                        count: layer.legend.length,
-                        color: colors.foreground,
-                        height: 18,
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    if (layer.isEstimate)
-                      FBadge(
-                        variant: FBadgeVariant.secondary,
-                        child: Text(l10n.sourceEstimated),
-                      ),
-                    if (source != null)
-                      Text(
-                        l10n.overlaysSource(source),
-                        style: type.body.xs.copyWith(
-                          color: colors.mutedForeground,
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -641,6 +484,19 @@ List<_FactRow> _factRows(AppLocalizations l10n, ParcelFacts facts) {
       label: l10n.fieldFactArea,
       value: l10n.fieldFactAreaValue(number(area, 2)),
       note: sourceNote(registry?.source),
+    ));
+  }
+  if (registry != null &&
+      registry.classes.isEmpty &&
+      registry.landUses.isNotEmpty) {
+    rows.add((
+      icon: Icons.home_work_outlined,
+      label: l10n.fieldFactLandUse,
+      value: registry.landUses.join(', '),
+      note: [
+        l10n.overlaySoilNotFarmland,
+        ?sourceNote(registry.source),
+      ].join(' · '),
     ));
   }
   if (registry != null && registry.classes.isNotEmpty) {

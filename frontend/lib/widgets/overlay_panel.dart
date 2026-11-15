@@ -2,11 +2,13 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
+import '../models/satellite_data.dart';
 import '../models/overlay_layer.dart';
 import '../overlays/overlay_controller.dart';
 import 'overlay_chooser.dart';
 import 'overlay_level_bars.dart';
 import 'read_aloud_button.dart';
+import 'satellite_card.dart';
 
 /// Side / bottom panel of the "Conditions" screen: choose an overlay, read
 /// its value for the place (word + level + source + how precise it is) and
@@ -145,6 +147,8 @@ class OverlayPanel extends StatelessWidget {
             ),
             const SizedBox(height: 12),
           ],
+          ..._satelliteDetail(l10n),
+          const SizedBox(height: 12),
           _ValueCard(
             layer: layer,
             overlayTitle: controller.selected.title(l10n),
@@ -159,6 +163,35 @@ class OverlayPanel extends StatelessWidget {
           ),
         ];
     }
+  }
+
+  /// "More detail from NASA satellites" for the chosen overlay: the matching
+  /// satellite parts (finer and newer than the monthly ~50 km value), or a
+  /// line while they load.
+  List<Widget> _satelliteDetail(AppLocalizations l10n) {
+    final parts =
+        overlaySatelliteParts[controller.selected.id] ??
+        const <SatellitePart>[];
+    final loaded = [
+      for (final p in parts)
+        if (controller.satellite.containsKey(p)) p,
+    ];
+    final loading = parts.any(controller.satelliteLoading.contains);
+    return [
+      if (loaded.isNotEmpty) ...[
+        const SizedBox(height: 12),
+        SatelliteCard(
+          data: controller.satellite,
+          parts: loaded,
+          title: l10n.satDetailTitle,
+          subtitle: l10n.satDetailSubtitle,
+        ),
+      ],
+      if (loading) ...[
+        const SizedBox(height: 12),
+        _Notice(icon: Icons.satellite_alt, text: l10n.satDetailLoading),
+      ],
+    ];
   }
 }
 
@@ -504,6 +537,26 @@ class _BigButton extends StatelessWidget {
     );
   }
 }
+
+/// Satellite parts with finer, newer data for each overlay (by overlay id).
+const Map<String, List<SatellitePart>> overlaySatelliteParts = {
+  'soil': [SatellitePart.soil],
+  'soilMoisture': [SatellitePart.soil, SatellitePart.evapotranspiration],
+  'precipitation': [SatellitePart.rain],
+  'extremeRain': [SatellitePart.rain],
+  'temperature': [SatellitePart.surfaceTemperature, SatellitePart.soil],
+  'frostRisk': [SatellitePart.surfaceTemperature, SatellitePart.soil],
+  'heatStress': [SatellitePart.surfaceTemperature],
+  'plantStress': [
+    SatellitePart.vegetation,
+    SatellitePart.soil,
+    SatellitePart.evapotranspiration,
+  ],
+  'erosionRisk': [SatellitePart.rain],
+  'fungalRisk': [SatellitePart.rain, SatellitePart.soil],
+  'pestHeat': [SatellitePart.surfaceTemperature],
+  'evaporation': [SatellitePart.evapotranspiration],
+};
 
 /// Words for [error] (also used by the "My field" summary).
 String overlayErrorText(AppLocalizations l10n, OverlayError? error) =>
