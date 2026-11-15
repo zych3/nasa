@@ -153,7 +153,6 @@ class OverlayPanel extends StatelessWidget {
           const SizedBox(height: 12),
           _ValueCard(
             layer: layer,
-            overlayTitle: controller.selected.title(l10n),
             examplePlace: showNoFieldNotice || controller.isDemo,
             heatmapShown: controller.heatmap != null,
             regionRange: _range(controller.heatmap?.values),
@@ -203,7 +202,6 @@ class OverlayPanel extends StatelessWidget {
 class _ValueCard extends StatelessWidget {
   const _ValueCard({
     required this.layer,
-    required this.overlayTitle,
     required this.examplePlace,
     this.heatmapShown = false,
     this.regionRange,
@@ -212,9 +210,6 @@ class _ValueCard extends StatelessWidget {
   });
 
   final OverlayLayer layer;
-
-  /// Name of the shown overlay (read aloud first).
-  final String overlayTitle;
 
   /// The value is not for the user's field (no field chosen, or demo data).
   final bool examplePlace;

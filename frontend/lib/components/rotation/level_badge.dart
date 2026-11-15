@@ -1,19 +1,27 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../l10n/rotation_text.dart';
 
+/// A rating level ("good", "fair", "poor") as an icon and a word in the
+/// theme's colours, never colour alone.
 class LevelBadge extends StatelessWidget {
   const LevelBadge({super.key, required this.level});
 
   final String level;
 
+  /// Amber that reads on both light and dark backgrounds.
+  static const _amber = Color(0xFFB26A00);
+
   @override
   Widget build(BuildContext context) {
+    final theme = context.theme;
+    final colors = theme.colors;
     final (icon, color) = switch (level) {
-      'good' => (Icons.check_circle, Colors.green.shade800),
-      'poor' => (Icons.warning_amber_rounded, Colors.red.shade800),
-      _ => (Icons.remove_circle_outline, Colors.orange.shade900),
+      'good' => (FLucideIcons.circleCheck, colors.primary),
+      'poor' => (FLucideIcons.triangleAlert, colors.error),
+      _ => (FLucideIcons.circleMinus, _amber),
     };
     final text = levelLabel(AppLocalizations.of(context), level);
 
@@ -23,14 +31,15 @@ class LevelBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: color, size: 26),
+          Icon(icon, color: color, size: 18),
           const SizedBox(width: 6),
-          Text(
-            text,
-            style: TextStyle(
-              color: color,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              text,
+              style: theme.typography.body.md.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],

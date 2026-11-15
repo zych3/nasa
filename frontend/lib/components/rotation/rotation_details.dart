@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -37,13 +38,22 @@ class RotationDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final plans = report.plansFor(goal);
     if (plans == null) return const SizedBox.shrink();
 
     Widget heading(String text) => Padding(
-      padding: const EdgeInsets.only(top: 24, bottom: 8),
-      child: Text(text, style: theme.textTheme.titleLarge),
+      padding: const EdgeInsets.only(top: 28, bottom: 8),
+      child: Text(
+        text,
+        style: type.body.md.copyWith(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.1,
+        ),
+      ),
     );
 
     final others = [
@@ -60,11 +70,24 @@ class RotationDetails extends StatelessWidget {
       onChoose: onChoose,
     );
 
+    final inputs = [
+      for (final input in report.inputs)
+        if (inputLabel(l10n, input.key) != null &&
+            originLabel(l10n, input.origin) != null)
+          input,
+    ];
+
     return ListView(
       controller: controller,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
       children: [
-        Text(l10n.moreDetails, style: theme.textTheme.headlineSmall),
+        Text(
+          l10n.moreDetails,
+          style: type.display.xl.copyWith(
+            fontWeight: FontWeight.w600,
+            color: colors.foreground,
+          ),
+        ),
 
         heading(l10n.detailsPlansHeading),
         tile(l10n.detailsRecommended, plans.goal, plans.best),
@@ -77,28 +100,30 @@ class RotationDetails extends StatelessWidget {
             tile(goalLabel(l10n, g.goal)!, g.goal, g.best),
         ],
 
-        heading(l10n.detailsInputs),
-        for (final input in report.inputs)
-          if (inputLabel(l10n, input.key) != null &&
-              originLabel(l10n, input.origin) != null)
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(switch (input.origin) {
-                'satellite' => Icons.satellite_alt,
-                'user_answer' => Icons.person_outline,
-                'model' => Icons.layers_outlined,
-                _ => Icons.calculate_outlined,
-              }),
-              title: Text(inputLabel(l10n, input.key)!),
-              subtitle: Text(originLabel(l10n, input.origin)!),
-            ),
+        if (inputs.isNotEmpty) ...[
+          heading(l10n.detailsInputs),
+          FTileGroup(
+            children: [
+              for (final input in inputs)
+                FTile(
+                  prefix: Icon(switch (input.origin) {
+                    'satellite' => FLucideIcons.satellite,
+                    'user_answer' => FLucideIcons.user,
+                    'model' => FLucideIcons.layers,
+                    _ => FLucideIcons.calculator,
+                  }),
+                  title: Text(inputLabel(l10n, input.key)!),
+                  subtitle: Text(originLabel(l10n, input.origin)!),
+                ),
+            ],
+          ),
+        ],
 
-        const SizedBox(height: 16),
-        Text(
-          l10n.detailsDisclaimer,
-          style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
+        const SizedBox(height: 20),
+        FAlert(
+          icon: const Icon(FLucideIcons.info),
+          title: Text(l10n.detailsDisclaimer),
         ),
-        const SizedBox(height: 24),
       ],
     );
   }
@@ -124,46 +149,73 @@ class _PlanTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
     final language = Localizations.localeOf(context).languageCode;
 
     final route = plan.seasons.map((s) => s.crop.nameFor(language)).join(' → ');
 
-    return ExpansionTile(
-      initiallyExpanded: isShown,
-      tilePadding: EdgeInsets.zero,
-      childrenPadding: const EdgeInsets.only(bottom: 16),
-      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-      leading: isShown
-          ? Icon(Icons.check_circle, color: theme.colorScheme.primary)
-          : null,
-      title: Text(title, style: theme.textTheme.titleMedium),
-      subtitle: Text(route),
-      children: [
-        PlanInsight(plan: plan, cropNames: cropNames),
-        const SizedBox(height: 16),
-        if (isShown)
-          Row(
-            children: [
-              const Icon(Icons.check_circle_outline, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                l10n.detailsShownNow,
-                style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: FCard(
+        clipBehavior: Clip.antiAlias,
+        child: Theme(
+          // No lines above and below the opened tile: the card frames it.
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          // Its own (transparent) Material, so the tap ripple shows on the card.
+          child: Material(
+            type: MaterialType.transparency,
+            child: ExpansionTile(
+              initiallyExpanded: isShown,
+              tilePadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
               ),
-            ],
-          )
-        else
-          FilledButton.icon(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(56),
-              textStyle: const TextStyle(fontSize: 18),
+              childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
+              leading: isShown
+                  ? Icon(FLucideIcons.circleCheck, color: colors.primary)
+                  : null,
+              title: Text(
+                title,
+                style: theme.typography.body.md.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
+              ),
+              subtitle: Text(
+                route,
+                style: theme.typography.body.md.copyWith(
+                  color: colors.mutedForeground,
+                ),
+              ),
+              children: [
+                PlanInsight(plan: plan, cropNames: cropNames),
+                const SizedBox(height: 16),
+                if (isShown)
+                  Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: FBadge(
+                      variant: FBadgeVariant.secondary,
+                      child: Text(l10n.detailsShownNow),
+                    ),
+                  )
+                else
+                  FButton(
+                    onPress: () => onChoose(goal, plan),
+                    prefix: const Icon(FLucideIcons.check),
+                    child: Flexible(
+                      child: Text(
+                        l10n.detailsChoosePlan,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            icon: const Icon(Icons.check),
-            label: Text(l10n.detailsChoosePlan),
-            onPressed: () => onChoose(goal, plan),
           ),
-      ],
+        ),
+      ),
     );
   }
 }

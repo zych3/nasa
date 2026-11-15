@@ -7,7 +7,7 @@ const _stars = 5;
 
 int _halvesOf(double value) => (value.clamp(0.0, 1.0) * _stars * 2).round();
 
-/// "Harvest quality: 3.5 out of 5 stars", for screen readers and reading aloud.
+/// "Harvest quality: 3.5 out of 5 stars", for screen readers.
 String starsLabel(AppLocalizations l10n, String locale, double value) =>
     l10n.harvestStars(
       NumberFormat('0.#', locale).format(_halvesOf(value) / 2),
@@ -33,12 +33,12 @@ class StarRating extends StatelessWidget {
           for (var i = 0; i < _stars; i++)
             Icon(
               halves >= 2 * (i + 1)
-                  ? Icons.star
+                  ? Icons.star_rounded
                   : halves == 2 * i + 1
-                  ? Icons.star_half
-                  : Icons.star_border,
-              size: 28,
-              color: Colors.amber.shade800,
+                  ? Icons.star_half_rounded
+                  : Icons.star_outline_rounded,
+              size: 22,
+              color: const Color(0xFFE0A100),
             ),
         ],
       ),

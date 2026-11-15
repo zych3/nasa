@@ -19,21 +19,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navPlot => 'My field';
 
   @override
-  String get changeLanguage => 'Change language';
-
-  @override
   String get plotName => 'My plot';
-
-  @override
-  String plotSummary(String area, String location) {
-    return '$area ha  •  location: $location';
-  }
-
-  @override
-  String get plotDataSection => 'Plot details';
-
-  @override
-  String get infoSection => 'Information';
 
   @override
   String get soil => 'Soil';
@@ -57,42 +43,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moreDetails => 'More details';
 
   @override
-  String priceChange(String percent, int months) {
-    return '$percent% price in $months months';
-  }
-
-  @override
-  String get trendUp => 'Price going up';
-
-  @override
-  String get trendDown => 'Price going down';
-
-  @override
-  String get trendFlat => 'Price steady';
-
-  @override
-  String get whyGrowSection => 'Why grow it';
-
-  @override
-  String get cropDataSection => 'About the crop';
-
-  @override
-  String get weatherSection => 'Weather in your area';
-
-  @override
-  String get priceSection => 'Price';
-
-  @override
-  String priceNow(String price, String currency, String unit) {
-    return '$price $currency per $unit';
-  }
-
-  @override
-  String priceHistory(int months) {
-    return 'Price over the last $months months';
-  }
-
-  @override
   String get sourceSatellite => 'Measured by satellite';
 
   @override
@@ -108,13 +58,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parcelNotFound => 'We could not find a parcel at this address.';
-
-  @override
-  String get parcelLookupFailed =>
-      'Could not look up the parcel. Check your connection and try again.';
-
-  @override
-  String get plotAddressLabel => 'Plot address';
 
   @override
   String get plotAddressHint => 'Enter a street or place';
@@ -140,22 +83,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noCropsFound => 'No crops found';
 
   @override
-  String get submitPlot => 'Save plot';
-
-  @override
-  String get locationDialogTitle => 'Where are you?';
-
-  @override
-  String get locationDialogBody =>
-      'Can we use your location? We will show the map around you. We do not save it.';
-
-  @override
-  String get locationAllow => 'Use my location';
-
-  @override
-  String get locationDeny => 'Not now';
-
-  @override
   String get locationMyPosition => 'Show my location';
 
   @override
@@ -169,9 +96,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get locationFailed =>
       'Could not find your location. You can move the map to your field by hand.';
-
-  @override
-  String get parcelHere => 'Parcel where you are';
 
   @override
   String get myFieldMarker => 'My field';
@@ -193,102 +117,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not load parcels here. Check your connection and try again.';
 
   @override
-  String get priceNoData => 'No data';
-
-  @override
-  String get priceNoDataDetails => 'No public price list exists for this crop.';
-
-  @override
-  String priceLatest(String date) {
-    return 'Latest price: $date';
-  }
-
-  @override
-  String priceHistoryMonthly(int count) {
-    return 'Monthly prices, last $count';
-  }
-
-  @override
-  String priceHistoryYearly(int count) {
-    return 'Yearly prices, last $count';
-  }
-
-  @override
-  String priceChartLabel(
-    String from,
-    String to,
-    String min,
-    String max,
-    String currency,
-  ) {
-    return 'Price chart from $from to $to, lowest $min, highest $max $currency';
-  }
-
-  @override
-  String get sourceOfficial => 'Official statistics';
-
-  @override
-  String get noteOnePriceAllWheat =>
-      'GUS publishes one price for all wheat, winter and spring.';
-
-  @override
-  String get noteOnePriceAllRye => 'GUS publishes one price for all rye.';
-
-  @override
-  String get noteOnePriceAllBarley =>
-      'GUS publishes one price for all barley, winter and spring.';
-
-  @override
-  String get noteGrainMaizePrice => 'Price of maize grain.';
-
-  @override
-  String get noteYearlyOnly => 'GUS publishes this price only once a year.';
-
-  @override
-  String get noteGrainMaizeOnly =>
-      'Area and yield are for grain maize only, not silage maize.';
-
-  @override
-  String get noteAllSweetLupins =>
-      'Eurostat gives one figure for all sweet lupins.';
-
-  @override
-  String get noteNoEurostatFigure =>
-      'Eurostat has no separate figures for this crop.';
-
-  @override
-  String factAreaPoland(String year) {
-    return 'Area in Poland ($year)';
-  }
-
-  @override
-  String factYieldPoland(String year) {
-    return 'Average yield in Poland ($year)';
-  }
-
-  @override
-  String get factGrowingTime => 'Time from sowing to harvest';
-
-  @override
-  String get factRainfall => 'Best rainfall in the growing season';
-
-  @override
-  String get factTemperature => 'Best temperature';
-
-  @override
-  String get factSoilPh => 'Best soil pH';
-
-  @override
-  String valueHectares(String value) {
-    return '$value ha';
-  }
-
-  @override
-  String valueTonnesPerHectare(String value) {
-    return '$value t/ha';
-  }
-
-  @override
   String valueDays(String range) {
     return '$range days';
   }
@@ -302,12 +130,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String valueCelsius(String range) {
     return '$range °C';
   }
-
-  @override
-  String get sourceCropDatabase => 'Crop database';
-
-  @override
-  String get cropDataMissing => 'No data';
 
   @override
   String get cropListLoadError => 'We could not load the crops.';
@@ -877,11 +699,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planHarvest => 'Harvest quality';
 
   @override
-  String readSeason(String year, String crop) {
-    return '$year: $crop';
-  }
-
-  @override
   String planSow(String period) {
     return 'Sow: $period';
   }
@@ -971,9 +788,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scoreStructure => 'Loose, healthy soil';
 
   @override
-  String get detailsAlternatives => 'Other plans for this goal';
-
-  @override
   String detailsOption(int number) {
     return 'Option $number';
   }
@@ -1012,10 +826,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reportSaveTooMany =>
       'You have too many saved plans. Delete one first.';
-
-  @override
-  String get reportSaveSessionExpired =>
-      'Your sign-in expired. Please sign in again.';
 
   @override
   String reportChosenOption(int number) {
@@ -1207,10 +1017,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addressSearchHint => 'e.g. Wieliczka, Krakowska 1';
 
   @override
-  String get addressSearchHelper =>
-      'Type the town, pick it from the list, then type the street and house number.';
-
-  @override
   String get addressSuggestionsNone =>
       'No matching address. Check the spelling, or put a comma after the town name.';
 
@@ -1344,10 +1150,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Getting data from NASA and the registers… The first time this can take up to 20 seconds.';
 
   @override
-  String get fieldDataStepClimate =>
-      'Weather and soil moisture in the area (NASA POWER)';
-
-  @override
   String get fieldDataStepParcel =>
       'Your parcel: land register, soil map, terrain';
 
@@ -1359,16 +1161,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fieldDataStepLoading => 'loading';
-
-  @override
-  String fieldConditionSentence(String title, String value) {
-    return '$title: $value';
-  }
-
-  @override
-  String fieldFactSentence(String label, String value) {
-    return '$label: $value';
-  }
 
   @override
   String get fieldWarningsHeading => 'Watch out';
@@ -2189,9 +1981,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get myPlansEmpty =>
       'You have no saved plans yet. Open a report and choose Save this plan.';
-
-  @override
-  String get myPlansLoadError => 'Could not load your plans.';
 
   @override
   String myPlansItemInfo(String goal, String date) {

@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -19,7 +20,8 @@ class PlanInsight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
 
     final reasons = <String>{
       for (final r in plan.reasons)
@@ -27,8 +29,15 @@ class PlanInsight extends StatelessWidget {
     };
 
     Widget label(String text) => Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 4),
-      child: Text(text, style: theme.textTheme.titleMedium),
+      padding: const EdgeInsets.only(top: 24, bottom: 8),
+      child: Text(
+        text,
+        style: theme.typography.body.md.copyWith(
+          color: colors.mutedForeground,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.1,
+        ),
+      ),
     );
 
     return Column(
@@ -37,24 +46,46 @@ class PlanInsight extends StatelessWidget {
         PlanTimeline(plan: plan),
 
         label(l10n.detailsAllScores),
-        for (final s in plan.scores)
-          if (scoreLabel(l10n, s.key) != null)
-            RatingRow(label: scoreLabel(l10n, s.key)!, rating: s.rating),
+        FCard(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final s in plan.scores)
+                  if (scoreLabel(l10n, s.key) != null)
+                    RatingRow(
+                      label: scoreLabel(l10n, s.key)!,
+                      rating: s.rating,
+                    ),
+              ],
+            ),
+          ),
+        ),
 
         if (reasons.isNotEmpty) ...[
           label(l10n.detailsWhy),
           for (final text in reasons)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.info_outline, size: 22),
-                  const SizedBox(width: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Icon(
+                      FLucideIcons.info,
+                      size: 18,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       text,
-                      style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+                      style: theme.typography.body.md.copyWith(
+                        color: colors.foreground,
+                      ),
                     ),
                   ),
                 ],

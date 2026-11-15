@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:hopito_field_shift/app/app_theme.dart';
 import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/components/account_button.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
@@ -88,8 +90,11 @@ Widget _app(Widget home) => MaterialApp(
   supportedLocales: AppLocalizations.supportedLocales,
   localizationsDelegates: const [
     AppLocalizations.delegate,
+    FLocalizations.delegate,
     ...GlobalMaterialLocalizations.delegates,
   ],
+  theme: AppTheme.material(AppTheme.light),
+  builder: (context, child) => FTheme(data: AppTheme.light, child: child!),
   home: home,
 );
 

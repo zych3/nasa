@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../components/input/plotInput/crop_multi_selector.dart';
@@ -11,6 +12,9 @@ import '../repositories/auth_store.dart';
 import '../repositories/crop_repository.dart';
 import 'rotation_report_page.dart';
 
+/// "Plan crop rotation": three short steps (past crops, goal, extras), one
+/// question per screen, every answer optional. forui look: a thin progress
+/// bar, grouped tiles, big buttons at the bottom.
 class RotationWizardPage extends StatefulWidget {
   const RotationWizardPage({
     super.key,
@@ -104,7 +108,9 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final last = _step == _steps - 1;
 
     return PopScope(
@@ -113,88 +119,126 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
         if (!didPop) _back();
       },
       child: Scaffold(
+        backgroundColor: colors.background,
         appBar: AppBar(
           leading: IconButton(
-            iconSize: 28,
+            iconSize: 24,
             tooltip: l10n.wizardBack,
-            icon: const Icon(Icons.arrow_back),
+            icon: const Icon(FLucideIcons.arrowLeft),
             onPressed: _back,
           ),
           title: Text(l10n.rotationStart),
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.wizardStep(_step + 1, _steps),
-                      style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              // Readable line length on wide (web) screens.
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          l10n.wizardStep(_step + 1, _steps),
+                          style: type.body.md.copyWith(
+                            color: colors.mutedForeground,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        FDeterminateProgress(
+                          value: (_step + 1) / _steps,
+                          semanticsLabel: l10n.wizardStep(_step + 1, _steps),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
-                    LinearProgressIndicator(
-                      value: (_step + 1) / _steps,
-                      minHeight: 8,
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+                      children: [
+                        if (_step == 0) ..._pastCropsStep(l10n),
+                        if (_step == 1) ..._goalStep(l10n),
+                        if (_step == 2) ..._extrasStep(l10n),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    if (_step == 0) ..._pastCropsStep(l10n, theme),
-                    if (_step == 1) ..._goalStep(l10n, theme),
-                    if (_step == 2) ..._extrasStep(l10n, theme),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(60),
-                        textStyle: Theme.of(context).textTheme.labelLarge
-                            ?.copyWith(fontSize: 20),
+                  ),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: colors.border)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                      child: FButton(
+                        size: FButtonSizeVariant.lg,
+                        onPress: _next,
+                        suffix: Icon(
+                          last
+                              ? FLucideIcons.sparkles
+                              : FLucideIcons.arrowRight,
+                        ),
+                        child: Flexible(
+                          child: Text(
+                            last ? l10n.wizardShowPlan : l10n.wizardNext,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
-                      onPressed: _next,
-                      child: Text(last ? l10n.wizardShowPlan : l10n.wizardNext),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _title(String text, ThemeData theme) =>
-      Text(text, style: theme.textTheme.headlineSmall);
+  /// Big question and a quiet line under it.
+  List<Widget> _question(String title, String hint) {
+    final theme = context.theme;
+    return [
+      Semantics(
+        header: true,
+        child: Text(
+          title,
+          style: theme.typography.display.xl2.copyWith(
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.5,
+            height: 1.2,
+            color: theme.colors.foreground,
+          ),
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        hint,
+        style: theme.typography.body.md.copyWith(
+          color: theme.colors.mutedForeground,
+        ),
+      ),
+      const SizedBox(height: 24),
+    ];
+  }
 
-  List<Widget> _pastCropsStep(AppLocalizations l10n, ThemeData theme) {
+  List<Widget> _pastCropsStep(AppLocalizations l10n) {
     final language = Localizations.localeOf(context).languageCode;
     final labels = [
       l10n.pastCropLast,
       l10n.pastCropBefore,
       l10n.pastCropEarlier,
     ];
+    final colors = context.theme.colors;
 
     return [
-      _title(l10n.pastCropsTitle, theme),
-      const SizedBox(height: 8),
-      Text(
-        l10n.pastCropsHint,
-        style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
-      ),
-      const SizedBox(height: 16),
+      ..._question(l10n.pastCropsTitle, l10n.pastCropsHint),
       FutureBuilder<List<Crop>>(
         future: _cropList,
         builder: (context, snapshot) {
@@ -211,33 +255,32 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
           }
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (var i = 0; i < _past.length; i++)
-                Card(
-                  child: ListTile(
-                    minTileHeight: 80,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+              FTileGroup(
+                description: Text(l10n.wizardOptional),
+                children: [
+                  for (var i = 0; i < _past.length; i++)
+                    FTile(
+                      prefix: Icon(
+                        _past[i] == null
+                            ? FLucideIcons.circlePlus
+                            : FLucideIcons.sprout,
+                        color: _past[i] == null
+                            ? colors.mutedForeground
+                            : colors.primary,
+                      ),
+                      title: Text(labels[i]),
+                      subtitle: Text(nameOf(_past[i]) ?? l10n.pastCropChoose),
+                      suffix: const Icon(FLucideIcons.chevronRight),
+                      onPress: crops.isEmpty ? null : () => _pickCrop(i, crops),
                     ),
-                    leading: Icon(
-                      _past[i] == null ? Icons.add_circle_outline : Icons.grass,
-                      size: 32,
-                    ),
-                    title: Text(
-                      labels[i],
-                      style: theme.textTheme.bodyMedium?.copyWith(fontSize: 18),
-                    ),
-                    subtitle: Text(
-                      nameOf(_past[i]) ?? l10n.pastCropChoose,
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    trailing: Text(l10n.wizardOptional),
-                    onTap: crops.isEmpty ? null : () => _pickCrop(i, crops),
-                  ),
-                ),
-              if (snapshot.connectionState != ConnectionState.done)
-                const LinearProgressIndicator(),
+                ],
+              ),
+              if (snapshot.connectionState != ConnectionState.done) ...[
+                const SizedBox(height: 12),
+                const FProgress(),
+              ],
             ],
           );
         },
@@ -245,76 +288,83 @@ class _RotationWizardPageState extends State<RotationWizardPage> {
     ];
   }
 
-  List<Widget> _goalStep(AppLocalizations l10n, ThemeData theme) {
-    Widget card(String? goal, String title, String? hint, IconData icon) {
+  List<Widget> _goalStep(AppLocalizations l10n) {
+    final colors = context.theme.colors;
+
+    FTile tile(String? goal, String title, String? hint, IconData icon) {
       final selected = _goal == goal;
-      return Card(
-        color: selected ? theme.colorScheme.primaryContainer : null,
-        child: ListTile(
-          minTileHeight: 80,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          leading: Icon(selected ? Icons.check_circle : icon, size: 32),
-          title: Text(title, style: theme.textTheme.titleLarge),
-          subtitle: hint == null
-              ? null
-              : Text(
-                  hint,
-                  style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
-                ),
-          onTap: () => setState(() => _goal = goal),
-        ),
+      return FTile(
+        selected: selected,
+        prefix: Icon(icon, color: selected ? colors.primary : null),
+        title: Text(title),
+        subtitle: hint == null ? null : Text(hint),
+        suffix: selected
+            ? Icon(FLucideIcons.circleCheck, color: colors.primary)
+            : const Icon(FLucideIcons.circle),
+        semanticsLabel: title,
+        onPress: () => setState(() => _goal = goal),
       );
     }
 
     return [
-      _title(l10n.goalTitle, theme),
-      const SizedBox(height: 4),
-      Text(l10n.wizardOptional, style: theme.textTheme.bodyLarge),
-      const SizedBox(height: 16),
-      card(null, l10n.goalNoPreference, null, Icons.help_outline),
-      for (final goal in _goals)
-        card(goal, goalLabel(l10n, goal)!, goalHint(l10n, goal), switch (goal) {
-          'soil_health' => Icons.landscape_outlined,
-          'safe_harvest' => Icons.shield_outlined,
-          _ => Icons.balance,
-        }),
+      ..._question(l10n.goalTitle, l10n.wizardOptional),
+      FTileGroup(
+        children: [
+          tile(null, l10n.goalNoPreference, null, FLucideIcons.circleHelp),
+          for (final goal in _goals)
+            tile(
+              goal,
+              goalLabel(l10n, goal)!,
+              goalHint(l10n, goal),
+              switch (goal) {
+                'soil_health' => FLucideIcons.mountain,
+                'safe_harvest' => FLucideIcons.shieldCheck,
+                _ => FLucideIcons.scale,
+              },
+            ),
+        ],
+      ),
     ];
   }
 
-  List<Widget> _extrasStep(AppLocalizations l10n, ThemeData theme) => [
-    _title(l10n.extrasTitle, theme),
-    const SizedBox(height: 4),
-    Text(l10n.wizardOptional, style: theme.textTheme.bodyLarge),
-    const SizedBox(height: 8),
-    SwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(l10n.extrasLivestock, style: theme.textTheme.titleMedium),
-      value: _livestock,
-      onChanged: (v) => setState(() => _livestock = v),
-    ),
-    SwitchListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(l10n.extrasIrrigation, style: theme.textTheme.titleMedium),
-      value: _irrigation,
-      onChanged: (v) => setState(() => _irrigation = v),
-    ),
-    const SizedBox(height: 16),
-    TextField(
-      controller: _ph,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      style: const TextStyle(fontSize: 18),
-      decoration: InputDecoration(
-        labelText: l10n.extrasPhLabel,
-        hintText: l10n.extrasPhHint,
-        errorText: _phInvalid ? l10n.extrasPhInvalid : null,
-        border: const OutlineInputBorder(),
+  List<Widget> _extrasStep(AppLocalizations l10n) => [
+    ..._question(l10n.extrasTitle, l10n.wizardOptional),
+    FCard(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FSwitch(
+              label: Text(l10n.extrasLivestock),
+              value: _livestock,
+              onChange: (v) => setState(() => _livestock = v),
+            ),
+            const SizedBox(height: 12),
+            const FDivider(),
+            const SizedBox(height: 12),
+            FSwitch(
+              label: Text(l10n.extrasIrrigation),
+              value: _irrigation,
+              onChange: (v) => setState(() => _irrigation = v),
+            ),
+          ],
+        ),
       ),
-      onChanged: (_) {
-        if (_phInvalid) setState(() => _phInvalid = false);
-      },
+    ),
+    const SizedBox(height: 24),
+    FTextField(
+      control: FTextFieldControl.managed(
+        controller: _ph,
+        onChange: (_) {
+          if (_phInvalid) setState(() => _phInvalid = false);
+        },
+      ),
+      size: FTextFieldSizeVariant.lg,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      label: Text(l10n.extrasPhLabel),
+      hint: l10n.extrasPhHint,
+      error: _phInvalid ? Text(l10n.extrasPhInvalid) : null,
     ),
     const SizedBox(height: 24),
     CropMultiSelector(

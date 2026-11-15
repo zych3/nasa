@@ -116,35 +116,11 @@ abstract class AppLocalizations {
   /// **'My field'**
   String get navPlot;
 
-  /// No description provided for @changeLanguage.
-  ///
-  /// In en, this message translates to:
-  /// **'Change language'**
-  String get changeLanguage;
-
   /// No description provided for @plotName.
   ///
   /// In en, this message translates to:
   /// **'My plot'**
   String get plotName;
-
-  /// No description provided for @plotSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'{area} ha  •  location: {location}'**
-  String plotSummary(String area, String location);
-
-  /// No description provided for @plotDataSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot details'**
-  String get plotDataSection;
-
-  /// No description provided for @infoSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Information'**
-  String get infoSection;
 
   /// No description provided for @soil.
   ///
@@ -188,66 +164,6 @@ abstract class AppLocalizations {
   /// **'More details'**
   String get moreDetails;
 
-  /// No description provided for @priceChange.
-  ///
-  /// In en, this message translates to:
-  /// **'{percent}% price in {months} months'**
-  String priceChange(String percent, int months);
-
-  /// No description provided for @trendUp.
-  ///
-  /// In en, this message translates to:
-  /// **'Price going up'**
-  String get trendUp;
-
-  /// No description provided for @trendDown.
-  ///
-  /// In en, this message translates to:
-  /// **'Price going down'**
-  String get trendDown;
-
-  /// No description provided for @trendFlat.
-  ///
-  /// In en, this message translates to:
-  /// **'Price steady'**
-  String get trendFlat;
-
-  /// No description provided for @whyGrowSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Why grow it'**
-  String get whyGrowSection;
-
-  /// No description provided for @cropDataSection.
-  ///
-  /// In en, this message translates to:
-  /// **'About the crop'**
-  String get cropDataSection;
-
-  /// No description provided for @weatherSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Weather in your area'**
-  String get weatherSection;
-
-  /// No description provided for @priceSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Price'**
-  String get priceSection;
-
-  /// No description provided for @priceNow.
-  ///
-  /// In en, this message translates to:
-  /// **'{price} {currency} per {unit}'**
-  String priceNow(String price, String currency, String unit);
-
-  /// No description provided for @priceHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'Price over the last {months} months'**
-  String priceHistory(int months);
-
   /// No description provided for @sourceSatellite.
   ///
   /// In en, this message translates to:
@@ -277,18 +193,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We could not find a parcel at this address.'**
   String get parcelNotFound;
-
-  /// No description provided for @parcelLookupFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not look up the parcel. Check your connection and try again.'**
-  String get parcelLookupFailed;
-
-  /// No description provided for @plotAddressLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Plot address'**
-  String get plotAddressLabel;
 
   /// No description provided for @plotAddressHint.
   ///
@@ -320,36 +224,6 @@ abstract class AppLocalizations {
   /// **'No crops found'**
   String get noCropsFound;
 
-  /// No description provided for @submitPlot.
-  ///
-  /// In en, this message translates to:
-  /// **'Save plot'**
-  String get submitPlot;
-
-  /// No description provided for @locationDialogTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Where are you?'**
-  String get locationDialogTitle;
-
-  /// No description provided for @locationDialogBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Can we use your location? We will show the map around you. We do not save it.'**
-  String get locationDialogBody;
-
-  /// No description provided for @locationAllow.
-  ///
-  /// In en, this message translates to:
-  /// **'Use my location'**
-  String get locationAllow;
-
-  /// No description provided for @locationDeny.
-  ///
-  /// In en, this message translates to:
-  /// **'Not now'**
-  String get locationDeny;
-
   /// No description provided for @locationMyPosition.
   ///
   /// In en, this message translates to:
@@ -373,12 +247,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not find your location. You can move the map to your field by hand.'**
   String get locationFailed;
-
-  /// No description provided for @parcelHere.
-  ///
-  /// In en, this message translates to:
-  /// **'Parcel where you are'**
-  String get parcelHere;
 
   /// No description provided for @myFieldMarker.
   ///
@@ -416,150 +284,6 @@ abstract class AppLocalizations {
   /// **'Could not load parcels here. Check your connection and try again.'**
   String get parcelsLoadFailed;
 
-  /// No description provided for @priceNoData.
-  ///
-  /// In en, this message translates to:
-  /// **'No data'**
-  String get priceNoData;
-
-  /// No description provided for @priceNoDataDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'No public price list exists for this crop.'**
-  String get priceNoDataDetails;
-
-  /// No description provided for @priceLatest.
-  ///
-  /// In en, this message translates to:
-  /// **'Latest price: {date}'**
-  String priceLatest(String date);
-
-  /// No description provided for @priceHistoryMonthly.
-  ///
-  /// In en, this message translates to:
-  /// **'Monthly prices, last {count}'**
-  String priceHistoryMonthly(int count);
-
-  /// No description provided for @priceHistoryYearly.
-  ///
-  /// In en, this message translates to:
-  /// **'Yearly prices, last {count}'**
-  String priceHistoryYearly(int count);
-
-  /// No description provided for @priceChartLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Price chart from {from} to {to}, lowest {min}, highest {max} {currency}'**
-  String priceChartLabel(
-    String from,
-    String to,
-    String min,
-    String max,
-    String currency,
-  );
-
-  /// No description provided for @sourceOfficial.
-  ///
-  /// In en, this message translates to:
-  /// **'Official statistics'**
-  String get sourceOfficial;
-
-  /// No description provided for @noteOnePriceAllWheat.
-  ///
-  /// In en, this message translates to:
-  /// **'GUS publishes one price for all wheat, winter and spring.'**
-  String get noteOnePriceAllWheat;
-
-  /// No description provided for @noteOnePriceAllRye.
-  ///
-  /// In en, this message translates to:
-  /// **'GUS publishes one price for all rye.'**
-  String get noteOnePriceAllRye;
-
-  /// No description provided for @noteOnePriceAllBarley.
-  ///
-  /// In en, this message translates to:
-  /// **'GUS publishes one price for all barley, winter and spring.'**
-  String get noteOnePriceAllBarley;
-
-  /// No description provided for @noteGrainMaizePrice.
-  ///
-  /// In en, this message translates to:
-  /// **'Price of maize grain.'**
-  String get noteGrainMaizePrice;
-
-  /// No description provided for @noteYearlyOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'GUS publishes this price only once a year.'**
-  String get noteYearlyOnly;
-
-  /// No description provided for @noteGrainMaizeOnly.
-  ///
-  /// In en, this message translates to:
-  /// **'Area and yield are for grain maize only, not silage maize.'**
-  String get noteGrainMaizeOnly;
-
-  /// No description provided for @noteAllSweetLupins.
-  ///
-  /// In en, this message translates to:
-  /// **'Eurostat gives one figure for all sweet lupins.'**
-  String get noteAllSweetLupins;
-
-  /// No description provided for @noteNoEurostatFigure.
-  ///
-  /// In en, this message translates to:
-  /// **'Eurostat has no separate figures for this crop.'**
-  String get noteNoEurostatFigure;
-
-  /// No description provided for @factAreaPoland.
-  ///
-  /// In en, this message translates to:
-  /// **'Area in Poland ({year})'**
-  String factAreaPoland(String year);
-
-  /// No description provided for @factYieldPoland.
-  ///
-  /// In en, this message translates to:
-  /// **'Average yield in Poland ({year})'**
-  String factYieldPoland(String year);
-
-  /// No description provided for @factGrowingTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Time from sowing to harvest'**
-  String get factGrowingTime;
-
-  /// No description provided for @factRainfall.
-  ///
-  /// In en, this message translates to:
-  /// **'Best rainfall in the growing season'**
-  String get factRainfall;
-
-  /// No description provided for @factTemperature.
-  ///
-  /// In en, this message translates to:
-  /// **'Best temperature'**
-  String get factTemperature;
-
-  /// No description provided for @factSoilPh.
-  ///
-  /// In en, this message translates to:
-  /// **'Best soil pH'**
-  String get factSoilPh;
-
-  /// No description provided for @valueHectares.
-  ///
-  /// In en, this message translates to:
-  /// **'{value} ha'**
-  String valueHectares(String value);
-
-  /// No description provided for @valueTonnesPerHectare.
-  ///
-  /// In en, this message translates to:
-  /// **'{value} t/ha'**
-  String valueTonnesPerHectare(String value);
-
   /// No description provided for @valueDays.
   ///
   /// In en, this message translates to:
@@ -577,18 +301,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{range} °C'**
   String valueCelsius(String range);
-
-  /// No description provided for @sourceCropDatabase.
-  ///
-  /// In en, this message translates to:
-  /// **'Crop database'**
-  String get sourceCropDatabase;
-
-  /// No description provided for @cropDataMissing.
-  ///
-  /// In en, this message translates to:
-  /// **'No data'**
-  String get cropDataMissing;
 
   /// No description provided for @cropListLoadError.
   ///
@@ -1437,12 +1149,6 @@ abstract class AppLocalizations {
   /// **'Harvest quality'**
   String get planHarvest;
 
-  /// No description provided for @readSeason.
-  ///
-  /// In en, this message translates to:
-  /// **'{year}: {crop}'**
-  String readSeason(String year, String crop);
-
   /// No description provided for @planSow.
   ///
   /// In en, this message translates to:
@@ -1581,12 +1287,6 @@ abstract class AppLocalizations {
   /// **'Loose, healthy soil'**
   String get scoreStructure;
 
-  /// No description provided for @detailsAlternatives.
-  ///
-  /// In en, this message translates to:
-  /// **'Other plans for this goal'**
-  String get detailsAlternatives;
-
   /// No description provided for @detailsOption.
   ///
   /// In en, this message translates to:
@@ -1658,12 +1358,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have too many saved plans. Delete one first.'**
   String get reportSaveTooMany;
-
-  /// No description provided for @reportSaveSessionExpired.
-  ///
-  /// In en, this message translates to:
-  /// **'Your sign-in expired. Please sign in again.'**
-  String get reportSaveSessionExpired;
 
   /// No description provided for @reportChosenOption.
   ///
@@ -1935,12 +1629,6 @@ abstract class AppLocalizations {
   /// **'e.g. Wieliczka, Krakowska 1'**
   String get addressSearchHint;
 
-  /// No description provided for @addressSearchHelper.
-  ///
-  /// In en, this message translates to:
-  /// **'Type the town, pick it from the list, then type the street and house number.'**
-  String get addressSearchHelper;
-
   /// No description provided for @addressSuggestionsNone.
   ///
   /// In en, this message translates to:
@@ -2169,12 +1857,6 @@ abstract class AppLocalizations {
   /// **'Getting data from NASA and the registers… The first time this can take up to 20 seconds.'**
   String get fieldDataLoading;
 
-  /// No description provided for @fieldDataStepClimate.
-  ///
-  /// In en, this message translates to:
-  /// **'Weather and soil moisture in the area (NASA POWER)'**
-  String get fieldDataStepClimate;
-
   /// No description provided for @fieldDataStepParcel.
   ///
   /// In en, this message translates to:
@@ -2198,18 +1880,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'loading'**
   String get fieldDataStepLoading;
-
-  /// No description provided for @fieldConditionSentence.
-  ///
-  /// In en, this message translates to:
-  /// **'{title}: {value}'**
-  String fieldConditionSentence(String title, String value);
-
-  /// No description provided for @fieldFactSentence.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}: {value}'**
-  String fieldFactSentence(String label, String value);
 
   /// No description provided for @fieldWarningsHeading.
   ///
@@ -3410,12 +3080,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have no saved plans yet. Open a report and choose Save this plan.'**
   String get myPlansEmpty;
-
-  /// No description provided for @myPlansLoadError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not load your plans.'**
-  String get myPlansLoadError;
 
   /// No description provided for @myPlansItemInfo.
   ///

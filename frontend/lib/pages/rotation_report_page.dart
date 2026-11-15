@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../components/rotation/climate_trends_section.dart';
@@ -201,11 +202,12 @@ class _RotationReportPageState extends State<RotationReportPage> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      backgroundColor: context.theme.colors.background,
       appBar: AppBar(
         leading: IconButton(
-          iconSize: 28,
+          iconSize: 24,
           tooltip: l10n.wizardBack,
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(FLucideIcons.arrowLeft),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(l10n.reportTitle),
@@ -220,7 +222,14 @@ class _RotationReportPageState extends State<RotationReportPage> {
             if (snapshot.hasError) {
               return _message(context, l10n.reportLoadError, onRetry: _retry);
             }
-            return _content(context, snapshot.data!);
+            return Align(
+              alignment: Alignment.topCenter,
+              child: ConstrainedBox(
+                // Readable line length on wide (web) screens.
+                constraints: const BoxConstraints(maxWidth: 640),
+                child: _content(context, snapshot.data!),
+              ),
+            );
           },
         ),
       ),
@@ -233,60 +242,72 @@ class _RotationReportPageState extends State<RotationReportPage> {
     bool busy = false,
     VoidCallback? onRetry,
   }) {
-    final theme = Theme.of(context);
+    final theme = context.theme;
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (busy) ...[
-              const CircularProgressIndicator(),
-              const SizedBox(height: 24),
-            ],
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(fontSize: 20),
-            ),
-            if (onRetry != null) ...[
-              const SizedBox(height: 24),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size(200, 56),
-                  textStyle: Theme.of(context).textTheme.labelLarge
-                      ?.copyWith(fontSize: 20),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (busy) ...[
+                const Center(child: FCircularProgress()),
+                const SizedBox(height: 20),
+                Text(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: theme.typography.body.md.copyWith(
+                    color: theme.colors.mutedForeground,
+                  ),
                 ),
-                onPressed: onRetry,
-                child: Text(AppLocalizations.of(context).tryAgain),
-              ),
+              ] else
+                FAlert(
+                  variant: FAlertVariant.destructive,
+                  icon: const Icon(FLucideIcons.cloudOff),
+                  title: Text(text),
+                ),
+              if (onRetry != null) ...[
+                const SizedBox(height: 16),
+                FButton(
+                  size: FButtonSizeVariant.lg,
+                  onPress: onRetry,
+                  prefix: const Icon(FLucideIcons.refreshCw),
+                  child: Text(AppLocalizations.of(context).tryAgain),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _note(ThemeData theme, String text) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Icon(Icons.info_outline, size: 24),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+  /// Small grey heading above a group ("PLAN QUALITY").
+  Widget _sectionLabel(String text) {
+    final theme = context.theme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 32, bottom: 10),
+      child: Semantics(
+        header: true,
+        child: Text(
+          text,
+          style: theme.typography.body.md.copyWith(
+            color: theme.colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.1,
           ),
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 
   Widget _content(BuildContext context, RotationReport report) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final language = Localizations.localeOf(context).languageCode;
     final names = _names(report, language);
     final goal = _goal ?? report.mainGoal;
@@ -295,16 +316,53 @@ class _RotationReportPageState extends State<RotationReportPage> {
       for (final w in report.warnings) ?warningText(l10n, w, (id) => names[id]),
     ];
 
+    Widget warningsCard() => FCard(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final text in warnings)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Icon(
+                        FLucideIcons.info,
+                        size: 18,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        text,
+                        style: type.body.md.copyWith(color: colors.foreground),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+
     if (plans == null || !report.hasPlan) {
       return ListView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         children: [
-          Text(
-            l10n.reportNoPlan,
-            style: theme.textTheme.titleMedium?.copyWith(fontSize: 20),
+          FAlert(
+            icon: const Icon(FLucideIcons.circleAlert),
+            title: Text(l10n.reportNoPlan),
           ),
-          const SizedBox(height: 16),
-          for (final text in warnings) _note(theme, text),
+          if (warnings.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            warningsCard(),
+          ],
         ],
       );
     }
@@ -317,14 +375,40 @@ class _RotationReportPageState extends State<RotationReportPage> {
       for (final g in report.goals)
         if (goalLabel(l10n, g.goal) != null) g.goal,
     ];
+    final saved = _saved.contains(plan);
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
       children: [
+        Text(
+          (plans.goal == report.mainGoal
+              ? l10n.reportMainTitle
+              : l10n.reportSowNext),
+          style: type.body.md.copyWith(
+            color: colors.mutedForeground,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.1,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Semantics(
+          header: true,
+          child: Text(
+            plan.seasons.map((s) => s.crop.nameFor(language)).join(' → '),
+            style: type.display.xl2.copyWith(
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.5,
+              height: 1.2,
+              color: colors.foreground,
+            ),
+          ),
+        ),
+
         if (goalsToPick.length > 1) ...[
+          const SizedBox(height: 20),
           Text(
             l10n.reportGoalPicker,
-            style: theme.textTheme.titleMedium?.copyWith(fontSize: 18),
+            style: type.body.md.copyWith(color: colors.mutedForeground),
           ),
           const SizedBox(height: 8),
           Wrap(
@@ -332,125 +416,113 @@ class _RotationReportPageState extends State<RotationReportPage> {
             runSpacing: 8,
             children: [
               for (final g in goalsToPick)
-                ChoiceChip(
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 12,
-                  ),
-                  label: Text(
-                    goalLabel(l10n, g)!,
-                    style: const TextStyle(fontSize: 18),
-                  ),
+                FButton(
+                  size: FButtonSizeVariant.sm,
+                  mainAxisSize: MainAxisSize.min,
+                  variant: g == plans.goal
+                      ? FButtonVariant.primary
+                      : FButtonVariant.outline,
                   selected: g == plans.goal,
-                  onSelected: (_) => setState(() {
+                  prefix: g == plans.goal
+                      ? const Icon(FLucideIcons.check)
+                      : null,
+                  onPress: () => setState(() {
                     _goal = g;
                     _choice = null;
                   }),
+                  child: Text(goalLabel(l10n, g)!),
                 ),
             ],
           ),
-          const SizedBox(height: 16),
         ],
 
-        Text(
-          plans.goal == report.mainGoal
-              ? l10n.reportMainTitle
-              : l10n.reportSowNext,
-          style: theme.textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 20),
         if (optionNumber >= 0) ...[
-          Card(
-            color: theme.colorScheme.secondaryContainer,
-            child: ListTile(
-              leading: const Icon(Icons.swap_horiz, size: 28),
-              title: Text(
-                l10n.reportChosenOption(optionNumber + 1),
-                style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
-              ),
-              trailing: TextButton(
-                onPressed: () => setState(() => _choice = null),
-                child: Text(
-                  l10n.reportBackToBest,
-                  style: const TextStyle(fontSize: 18),
-                ),
+          FAlert(
+            icon: const Icon(FLucideIcons.arrowLeftRight),
+            title: Text(l10n.reportChosenOption(optionNumber + 1)),
+            subtitle: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: FButton(
+                variant: FButtonVariant.ghost,
+                size: FButtonSizeVariant.sm,
+                mainAxisSize: MainAxisSize.min,
+                onPress: () => setState(() => _choice = null),
+                child: Text(l10n.reportBackToBest),
               ),
             ),
           ),
+          const SizedBox(height: 12),
         ],
         PlanTimeline(plan: plan),
 
-        if (!plan.isFeasible)
-          Card(
-            color: theme.colorScheme.errorContainer,
-            child: ListTile(
-              leading: const Icon(Icons.warning_amber_rounded, size: 28),
-              title: Text(
-                l10n.planNotFeasible,
-                style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
-              ),
-            ),
+        if (!plan.isFeasible) ...[
+          const SizedBox(height: 12),
+          FAlert(
+            variant: FAlertVariant.destructive,
+            icon: const Icon(FLucideIcons.triangleAlert),
+            title: Text(l10n.planNotFeasible),
           ),
-
-        const SizedBox(height: 16),
-        Text(l10n.reportQualityTitle, style: theme.textTheme.headlineSmall),
-        const SizedBox(height: 4),
-        for (final key in _headline)
-          if (plan.score(key) != null && scoreLabel(l10n, key) != null)
-            RatingRow(label: scoreLabel(l10n, key)!, rating: plan.score(key)!),
-
-        if (warnings.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          for (final text in warnings) _note(theme, text),
         ],
 
-        const SizedBox(height: 24),
-        FilledButton.icon(
-          style: FilledButton.styleFrom(
-            minimumSize: const Size.fromHeight(64),
-            textStyle: const TextStyle(fontSize: 20),
+        _sectionLabel(l10n.reportQualityTitle),
+        FCard(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final key in _headline)
+                  if (plan.score(key) != null && scoreLabel(l10n, key) != null)
+                    RatingRow(
+                      label: scoreLabel(l10n, key)!,
+                      rating: plan.score(key)!,
+                    ),
+              ],
+            ),
           ),
-          icon: _saving
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 3),
-                )
-              : Icon(
-                  _saved.contains(plan) ? Icons.check_circle : Icons.bookmark,
-                  size: 28,
-                ),
-          label: Text(
-            _saved.contains(plan) ? l10n.reportPlanSaved : l10n.reportSavePlan,
-          ),
-          onPressed: _saving || _saved.contains(plan)
-              ? null
-              : () => _save(plans, plan),
         ),
-        const SizedBox(height: 12),
-        OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            minimumSize: const Size.fromHeight(56),
-            textStyle: Theme.of(context).textTheme.labelLarge
-                ?.copyWith(fontSize: 18),
+
+        if (warnings.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          warningsCard(),
+        ],
+
+        const SizedBox(height: 28),
+        FButton(
+          size: FButtonSizeVariant.lg,
+          onPress: _saving || saved ? null : () => _save(plans, plan),
+          prefix: _saving
+              ? const FCircularProgress()
+              : Icon(saved ? FLucideIcons.circleCheck : FLucideIcons.bookmark),
+          child: Flexible(
+            child: Text(
+              saved ? l10n.reportPlanSaved : l10n.reportSavePlan,
+              textAlign: TextAlign.center,
+            ),
           ),
-          icon: const Icon(Icons.info_outline),
-          label: Text(l10n.moreDetails),
-          onPressed: () => _showDetails(report, plans.goal, plan, names),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 10),
+        FButton(
+          size: FButtonSizeVariant.lg,
+          variant: FButtonVariant.outline,
+          onPress: () => _showDetails(report, plans.goal, plan, names),
+          prefix: const Icon(FLucideIcons.listTree),
+          child: Flexible(
+            child: Text(l10n.moreDetails, textAlign: TextAlign.center),
+          ),
+        ),
+        const SizedBox(height: 10),
         // Always there: planning can end without saving anything.
-        OutlinedButton.icon(
-          style: OutlinedButton.styleFrom(
-            minimumSize: const Size.fromHeight(56),
-            textStyle: const TextStyle(fontSize: 18),
+        FButton(
+          size: FButtonSizeVariant.lg,
+          variant: FButtonVariant.ghost,
+          onPress: _finish,
+          prefix: const Icon(FLucideIcons.check),
+          child: Flexible(
+            child: Text(l10n.reportDone, textAlign: TextAlign.center),
           ),
-          icon: const Icon(Icons.check),
-          label: Text(l10n.reportDone),
-          onPressed: _finish,
         ),
-        const SizedBox(height: 16),
         ClimateTrendsSection(future: _climate),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -5,6 +6,7 @@ import '../../models/crop.dart';
 
 const String cropPickerCleared = '';
 
+/// Bottom sheet to pick one crop (or clear the answer).
 class CropPickerSheet extends StatelessWidget {
   const CropPickerSheet({
     super.key,
@@ -21,35 +23,39 @@ class CropPickerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final language = Localizations.localeOf(context).languageCode;
+    final colors = context.theme.colors;
 
     return SafeArea(
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          if (canClear)
-            ListTile(
-              minTileHeight: 56,
-              leading: const Icon(Icons.close),
-              title: Text(
-                l10n.pastCropClear,
-                style: const TextStyle(fontSize: 18),
-              ),
-              onTap: () => Navigator.pop(context, cropPickerCleared),
-            ),
-          for (final crop in crops)
-            ListTile(
-              minTileHeight: 56,
-              selected: crop.id == selectedId,
-              leading: Icon(
-                crop.id == selectedId ? Icons.check_circle : Icons.grass,
-              ),
-              title: Text(
-                crop.nameFor(language),
-                style: const TextStyle(fontSize: 18),
-              ),
-              onTap: () => Navigator.pop(context, crop.id),
-            ),
-        ],
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: FTileGroup(
+            children: [
+              if (canClear)
+                FTile(
+                  prefix: Icon(FLucideIcons.x, color: colors.mutedForeground),
+                  title: Text(l10n.pastCropClear),
+                  onPress: () => Navigator.pop(context, cropPickerCleared),
+                ),
+              for (final crop in crops)
+                FTile(
+                  selected: crop.id == selectedId,
+                  prefix: Icon(
+                    FLucideIcons.sprout,
+                    color: crop.id == selectedId ? colors.primary : null,
+                  ),
+                  title: Text(crop.nameFor(language)),
+                  suffix: crop.id == selectedId
+                      ? Icon(FLucideIcons.check, color: colors.primary)
+                      : null,
+                  onPress: () => Navigator.pop(context, crop.id),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

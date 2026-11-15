@@ -7,7 +7,7 @@ import '../repositories/auth_store.dart';
 /// Sign in or create an account. Opened from "Account" ([AccountButton]);
 /// the app works without it. Closes itself once signed in. Same white
 /// Material look as the rest of the app: one task at a time (switch at the
-/// top), big fields and buttons, back button and read-aloud in the bar.
+/// top), big fields and buttons, back button in the bar.
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key, required this.store});
 

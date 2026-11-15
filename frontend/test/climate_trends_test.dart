@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:hopito_field_shift/app/app_theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/testing.dart';
@@ -164,12 +166,16 @@ Future<void> _open(
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
+        FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
-      builder: (context, child) => MediaQuery(
-        data: MediaQuery.of(context)
-            .copyWith(textScaler: TextScaler.linear(textScale)),
-        child: child!,
+      builder: (context, child) => FTheme(
+        data: AppTheme.light,
+        child: MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: TextScaler.linear(textScale)),
+          child: child!,
+        ),
       ),
       home: RotationReportPage(
         parcel: const Parcel(id: 'p1', center: LatLng(52.4, 21.1), ring: []),
@@ -399,7 +405,7 @@ void main() {
       );
       // Direction is an icon and a word, not colour alone.
       expect(
-        find.byIcon(Icons.trending_up),
+        find.byIcon(FLucideIcons.trendingUp),
         findsNWidgets(saved.trends.length),
       );
       // The section is the last thing in the report, below the plan's buttons.
@@ -438,7 +444,7 @@ void main() {
         find.text(en.climateNoClearTrends('1981', '2025')),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.trending_up), findsNothing);
+      expect(find.byIcon(FLucideIcons.trendingUp), findsNothing);
       expect(find.text(en.climateNoteRegional('50')), findsOneWidget);
     });
 
@@ -483,7 +489,7 @@ void main() {
       );
 
       expect(find.text(en.climateWaterBalanceDown), findsOneWidget);
-      expect(find.byIcon(Icons.trending_down), findsOneWidget);
+      expect(find.byIcon(FLucideIcons.trendingDown), findsOneWidget);
       expect(find.text(en.climateAdviceKeepSoilCovered), findsOneWidget);
       expect(
         find.text(en.climateAdviceDroughtCropsOnLightSoil),
@@ -505,12 +511,16 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: const [
             AppLocalizations.delegate,
+            FLocalizations.delegate,
             ...GlobalMaterialLocalizations.delegates,
           ],
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: const TextScaler.linear(2)),
-            child: child!,
+          builder: (context, child) => FTheme(
+            data: AppTheme.light,
+            child: MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(2)),
+              child: child!,
+            ),
           ),
           home: Scaffold(
             body: SingleChildScrollView(

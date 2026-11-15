@@ -1,3 +1,4 @@
+import 'package:forui/forui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -20,7 +21,9 @@ class ClimateTrendsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final locale = Localizations.localeOf(context).toString();
 
     return FutureBuilder<ClimateTrends?>(
@@ -31,16 +34,12 @@ class ClimateTrendsSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
               children: [
-                const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(strokeWidth: 3),
-                ),
+                const FCircularProgress(),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     l10n.climateLoading,
-                    style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+                    style: type.body.md.copyWith(color: colors.mutedForeground),
                   ),
                 ),
               ],
@@ -56,37 +55,50 @@ class ClimateTrendsSection extends StatelessWidget {
         final shown = climateTrendsToShow(l10n, locale, trends);
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Divider(height: 32),
-            Text(
-              l10n.climateSectionTitle,
-              style: theme.textTheme.headlineSmall,
+            const SizedBox(height: 32),
+            Semantics(
+              header: true,
+              child: Text(
+                l10n.climateSectionTitle,
+                style: type.display.lg.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: colors.foreground,
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             if (shown.isEmpty)
               Text(
                 l10n.climateNoClearTrends(
                   '${trends.fromYear}',
                   '${trends.toYear}',
                 ),
-                style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+                style: type.body.md.copyWith(color: colors.mutedForeground),
               ),
             for (final trend in shown) _TrendCard(trend: trend),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             for (final note in climateFootnotes(l10n, trends))
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.info_outline, size: 24),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Icon(
+                        FLucideIcons.info,
+                        size: 16,
+                        color: colors.mutedForeground,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         note,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          fontSize: 18,
+                        style: type.body.md.copyWith(
+                          color: colors.mutedForeground,
                         ),
                       ),
                     ),
@@ -109,61 +121,96 @@ class _TrendCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final theme = context.theme;
+    final colors = theme.colors;
+    final type = theme.typography;
     final locale = Localizations.localeOf(context).toString();
     final advice = [
       for (final code in trend.adviceCodes) ?climateAdviceText(l10n, code),
     ];
-    final text = theme.textTheme.bodyLarge?.copyWith(fontSize: 18);
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  trend.isUp ? Icons.trending_up : Icons.trending_down,
-                  size: 32,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    climateTrendHeadline(l10n, trend)!,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: FCard(
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: colors.secondary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      trend.isUp
+                          ? FLucideIcons.trendingUp
+                          : FLucideIcons.trendingDown,
+                      size: 20,
+                      color: colors.foreground,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(climateFactText(l10n, locale, trend)!, style: text),
-            if (advice.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                l10n.climateAdviceTitle,
-                style: text?.copyWith(fontWeight: FontWeight.w600),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      climateTrendHeadline(l10n, trend)!,
+                      style: type.body.md.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: colors.foreground,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              for (final sentence in advice)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.lightbulb_outline, size: 24),
-                      const SizedBox(width: 8),
-                      Expanded(child: Text(sentence, style: text)),
-                    ],
+              const SizedBox(height: 10),
+              Text(
+                climateFactText(l10n, locale, trend)!,
+                style: type.body.md.copyWith(color: colors.foreground),
+              ),
+              if (advice.isNotEmpty) ...[
+                const SizedBox(height: 14),
+                Text(
+                  l10n.climateAdviceTitle,
+                  style: type.body.md.copyWith(
+                    color: colors.mutedForeground,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.1,
                   ),
                 ),
+                for (final sentence in advice)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Icon(
+                            FLucideIcons.lightbulb,
+                            size: 18,
+                            color: colors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            sentence,
+                            style: type.body.md.copyWith(
+                              color: colors.foreground,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

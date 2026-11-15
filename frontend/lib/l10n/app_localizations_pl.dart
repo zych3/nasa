@@ -19,21 +19,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get navPlot => 'Moje pole';
 
   @override
-  String get changeLanguage => 'Zmień język';
-
-  @override
   String get plotName => 'Moja działka';
-
-  @override
-  String plotSummary(String area, String location) {
-    return '$area ha  •  lokalizacja: $location';
-  }
-
-  @override
-  String get plotDataSection => 'Dane działki';
-
-  @override
-  String get infoSection => 'Informacje';
 
   @override
   String get soil => 'Gleba';
@@ -57,42 +43,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get moreDetails => 'Więcej informacji';
 
   @override
-  String priceChange(String percent, int months) {
-    return '$percent% ceny w $months mies.';
-  }
-
-  @override
-  String get trendUp => 'Cena rośnie';
-
-  @override
-  String get trendDown => 'Cena spada';
-
-  @override
-  String get trendFlat => 'Cena stabilna';
-
-  @override
-  String get whyGrowSection => 'Dlaczego warto';
-
-  @override
-  String get cropDataSection => 'O uprawie';
-
-  @override
-  String get weatherSection => 'Pogoda w Twojej okolicy';
-
-  @override
-  String get priceSection => 'Cena';
-
-  @override
-  String priceNow(String price, String currency, String unit) {
-    return '$price $currency za $unit';
-  }
-
-  @override
-  String priceHistory(int months) {
-    return 'Cena w ostatnich $months mies.';
-  }
-
-  @override
   String get sourceSatellite => 'Zmierzone przez satelitę';
 
   @override
@@ -108,13 +58,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get parcelNotFound => 'Nie znaleziono działki pod tym adresem.';
-
-  @override
-  String get parcelLookupFailed =>
-      'Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.';
-
-  @override
-  String get plotAddressLabel => 'Adres działki';
 
   @override
   String get plotAddressHint => 'Wpisz ulicę lub miejscowość';
@@ -142,22 +85,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noCropsFound => 'Nie znaleziono upraw';
 
   @override
-  String get submitPlot => 'Zapisz działkę';
-
-  @override
-  String get locationDialogTitle => 'Gdzie jesteś?';
-
-  @override
-  String get locationDialogBody =>
-      'Czy możemy użyć Twojej lokalizacji? Pokażemy mapę wokół Ciebie. Nie zapisujemy jej.';
-
-  @override
-  String get locationAllow => 'Użyj mojej lokalizacji';
-
-  @override
-  String get locationDeny => 'Nie teraz';
-
-  @override
   String get locationMyPosition => 'Pokaż moją lokalizację';
 
   @override
@@ -171,9 +98,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get locationFailed =>
       'Nie udało się znaleźć Twojej lokalizacji. Możesz przesunąć mapę do swojego pola ręcznie.';
-
-  @override
-  String get parcelHere => 'Działka, na której jesteś';
 
   @override
   String get myFieldMarker => 'Moje pole';
@@ -195,103 +119,6 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie udało się wczytać działek. Sprawdź połączenie i spróbuj ponownie.';
 
   @override
-  String get priceNoData => 'Brak danych';
-
-  @override
-  String get priceNoDataDetails =>
-      'Dla tej uprawy nie ma publicznych notowań cen.';
-
-  @override
-  String priceLatest(String date) {
-    return 'Ostatnia cena: $date';
-  }
-
-  @override
-  String priceHistoryMonthly(int count) {
-    return 'Ceny miesięczne, ostatnie $count';
-  }
-
-  @override
-  String priceHistoryYearly(int count) {
-    return 'Ceny roczne, ostatnie $count';
-  }
-
-  @override
-  String priceChartLabel(
-    String from,
-    String to,
-    String min,
-    String max,
-    String currency,
-  ) {
-    return 'Wykres cen od $from do $to, najniższa $min, najwyższa $max $currency';
-  }
-
-  @override
-  String get sourceOfficial => 'Statystyka publiczna';
-
-  @override
-  String get noteOnePriceAllWheat =>
-      'GUS podaje jedną cenę dla całej pszenicy, ozimej i jarej.';
-
-  @override
-  String get noteOnePriceAllRye => 'GUS podaje jedną cenę dla całego żyta.';
-
-  @override
-  String get noteOnePriceAllBarley =>
-      'GUS podaje jedną cenę dla całego jęczmienia, ozimego i jarego.';
-
-  @override
-  String get noteGrainMaizePrice => 'Cena ziarna kukurydzy.';
-
-  @override
-  String get noteYearlyOnly => 'GUS podaje tę cenę tylko raz w roku.';
-
-  @override
-  String get noteGrainMaizeOnly =>
-      'Powierzchnia i plon dotyczą tylko kukurydzy na ziarno, bez kukurydzy na kiszonkę.';
-
-  @override
-  String get noteAllSweetLupins =>
-      'Eurostat podaje jedną liczbę dla wszystkich łubinów słodkich.';
-
-  @override
-  String get noteNoEurostatFigure =>
-      'Eurostat nie podaje osobnych danych dla tej uprawy.';
-
-  @override
-  String factAreaPoland(String year) {
-    return 'Powierzchnia w Polsce ($year)';
-  }
-
-  @override
-  String factYieldPoland(String year) {
-    return 'Średni plon w Polsce ($year)';
-  }
-
-  @override
-  String get factGrowingTime => 'Czas od siewu do zbioru';
-
-  @override
-  String get factRainfall => 'Najlepsze opady w sezonie wegetacyjnym';
-
-  @override
-  String get factTemperature => 'Najlepsza temperatura';
-
-  @override
-  String get factSoilPh => 'Najlepsze pH gleby';
-
-  @override
-  String valueHectares(String value) {
-    return '$value ha';
-  }
-
-  @override
-  String valueTonnesPerHectare(String value) {
-    return '$value t/ha';
-  }
-
-  @override
   String valueDays(String range) {
     return '$range dni';
   }
@@ -305,12 +132,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String valueCelsius(String range) {
     return '$range °C';
   }
-
-  @override
-  String get sourceCropDatabase => 'Baza danych upraw';
-
-  @override
-  String get cropDataMissing => 'Brak danych';
 
   @override
   String get cropListLoadError => 'Nie udało się wczytać upraw.';
@@ -888,11 +709,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get planHarvest => 'Jakość plonu';
 
   @override
-  String readSeason(String year, String crop) {
-    return '$year: $crop';
-  }
-
-  @override
   String planSow(String period) {
     return 'Siew: $period';
   }
@@ -983,9 +799,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get scoreStructure => 'Luźna, zdrowa gleba';
 
   @override
-  String get detailsAlternatives => 'Inne plany dla tego celu';
-
-  @override
   String detailsOption(int number) {
     return 'Wariant $number';
   }
@@ -1025,10 +838,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get reportSaveTooMany =>
       'Masz za dużo zapisanych planów. Usuń któryś.';
-
-  @override
-  String get reportSaveSessionExpired =>
-      'Logowanie wygasło. Zaloguj się ponownie.';
 
   @override
   String reportChosenOption(int number) {
@@ -1220,10 +1029,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get addressSearchHint => 'np. Wieliczka, Krakowska 1';
 
   @override
-  String get addressSearchHelper =>
-      'Wpisz miejscowość, wybierz ją z listy, a potem wpisz ulicę i numer domu.';
-
-  @override
   String get addressSuggestionsNone =>
       'Nie znaleziono takiego adresu. Sprawdź pisownię albo postaw przecinek po nazwie miejscowości.';
 
@@ -1356,10 +1161,6 @@ class AppLocalizationsPl extends AppLocalizations {
       'Pobieramy dane z NASA i rejestrów… Za pierwszym razem może to potrwać do 20 sekund.';
 
   @override
-  String get fieldDataStepClimate =>
-      'Pogoda i wilgotność gleby w okolicy (NASA POWER)';
-
-  @override
   String get fieldDataStepParcel =>
       'Twoja działka: ewidencja gruntów, mapa gleb, ukształtowanie terenu';
 
@@ -1371,16 +1172,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get fieldDataStepLoading => 'pobieranie';
-
-  @override
-  String fieldConditionSentence(String title, String value) {
-    return '$title: $value';
-  }
-
-  @override
-  String fieldFactSentence(String label, String value) {
-    return '$label: $value';
-  }
 
   @override
   String get fieldWarningsHeading => 'Na co uważać';
@@ -2240,9 +2031,6 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get myPlansEmpty =>
       'Nie masz jeszcze zapisanych planów. Otwórz raport i wybierz Zapisz ten plan.';
-
-  @override
-  String get myPlansLoadError => 'Nie udało się wczytać Twoich planów.';
 
   @override
   String myPlansItemInfo(String goal, String date) {

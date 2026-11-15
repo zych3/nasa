@@ -9,26 +9,19 @@ import 'map_overlay.dart';
 
 /// Soil of the field.
 ///
-/// In Poland, from the parcel details (`GET /api/parcels/details`): the
-/// agricultural suitability complex of the official soil-agricultural map
-/// (1:5000, Geoportal), drawn as that map's tiles around the field, with the
-/// soil type, texture and the land register's classes in the value card
-/// ([parseParcel]). The complexes have no order (wheat, rye, fodder…), so no
-/// level bars.
+/// In Poland the soil-agricultural map (1:5000, Geoportal) is always drawn as
+/// map tiles with its complexes as the legend ([parseParcel]), like on the
+/// Geoportal. "Here" is the parcel's own value from `GET /api/parcels/details`:
+/// the map's complex at the parcel, else the land register's quality class,
+/// else its land use (built-up, roads…). The complexes have no order (wheat,
+/// rye, fodder…), so no level bars.
 ///
-/// Elsewhere, or when that data is missing, the modelled soil heaviness
-/// (light, medium, heavy) from `static.soil.soilClass` of `GET /api/map-layers`
-/// ([parse]). The backend derives
-/// it from ISRIC SoilGrids: "Lekka" (sand > 65 %), "Ciężka" (clay > 30 %),
-/// otherwise "Średnia"; `null` when SoilGrids has no data for the point.
-///
-/// Note: the backend does NOT send the Polish agronomic category (I–IV) nor
-/// any soil quality score; this overlay shows only what it sends. See
-/// PROGRESS.md ("Do decyzji").
-///
-/// SoilGrids is a modelled map (about 250 m) and the backend rounds the point
-/// to 2 decimal places (up to ~0.7 km off), so the value is drawn as an area
-/// of about 1 km, never as the exact field.
+/// Without the soil map (outside Poland) the modelled soil heaviness (light,
+/// medium, heavy) from `static.soil.soilClass` of `GET /api/map-layers`
+/// ([parse]), which the backend derives from ISRIC SoilGrids: "Lekka"
+/// (sand > 65 %), "Ciężka" (clay > 30 %), otherwise "Średnia". SoilGrids is a
+/// model (about 250 m) and the point is rounded to ~1 km, so that value is
+/// drawn as an area of about 1 km, never as the exact field.
 class SoilQualityOverlay extends MapOverlay {
   const SoilQualityOverlay();
 

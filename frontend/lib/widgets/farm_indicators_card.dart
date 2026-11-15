@@ -35,14 +35,6 @@ class FarmIndicatorsCard extends StatelessWidget {
       ),
   ];
 
-  /// Every row as sentences, for reading aloud.
-  static List<String> sentences(AppLocalizations l10n, FarmIndicators i) => [
-    for (final row in _rows(l10n, i)) ...[
-      l10n.indicatorWarning(row.title, row.main),
-      for (final r in row.indicator.reasons) _reason(l10n, r),
-    ],
-  ];
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);

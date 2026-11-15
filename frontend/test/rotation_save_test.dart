@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:forui/forui.dart';
+import 'package:hopito_field_shift/app/app_theme.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:hopito_field_shift/api/api_client.dart';
@@ -150,8 +152,11 @@ Future<void> _open(
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
         AppLocalizations.delegate,
+        FLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
+      theme: AppTheme.material(AppTheme.light),
+      builder: (context, child) => FTheme(data: AppTheme.light, child: child!),
       home: Builder(
         builder: (context) => Scaffold(
           body: TextButton(
@@ -271,13 +276,14 @@ void main() {
       expect(server.posted, isEmpty);
       expect(find.text('Plan saved'), findsOneWidget);
       expect(find.text('The plan is saved on this phone.'), findsOneWidget);
-      final button = tester.widget<FilledButton>(
+      final button = tester.widget<FButton>(
         find.ancestor(
           of: find.text('Plan saved'),
-          matching: find.bySubtype<FilledButton>(),
+          matching: find.byType(FButton),
         ),
       );
-      expect(button.onPressed, isNull);
+      // Already saved: the button is turned off.
+      expect(button.onPress, isNull);
     });
 
     testWidgets('with an account it is also copied there', (tester) async {
@@ -376,7 +382,7 @@ void main() {
     ) async {
       await _open(tester, plans, AuthStore(repository: _FakeAuth()));
 
-      await tester.tap(find.widgetWithText(OutlinedButton, 'Done'));
+      await tester.tap(find.widgetWithText(FButton, 'Done'));
       await tester.pumpAndSettle();
 
       expect(find.text('start'), findsOneWidget);
