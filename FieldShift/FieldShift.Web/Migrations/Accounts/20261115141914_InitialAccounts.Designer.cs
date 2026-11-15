@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FieldShift.Web.Migrations.Accounts
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20261115132827_InitialAccounts")]
+    [Migration("20261115141914_InitialAccounts")]
     partial class InitialAccounts
     {
         /// <inheritdoc />
@@ -36,19 +36,19 @@ namespace FieldShift.Web.Migrations.Accounts
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("password_hash");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("users", (string)null);

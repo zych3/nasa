@@ -885,4 +885,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addressKindAddress => 'Address';
+
+  @override
+  String get authWelcome => 'Welcome to FieldShift';
+
+  @override
+  String get authTagline => 'Plan your crops with NASA satellite data.';
+
+  @override
+  String get authReadAloudHelp =>
+      'Sign in or create an account. The app also works without an account.';
+
+  @override
+  String get authLoginTab => 'Sign in';
+
+  @override
+  String get authRegisterTab => 'Create account';
+
+  @override
+  String get authUsernameLabel => 'Login';
+
+  @override
+  String get authUsernameHint => 'e.g. jan_kowalski';
+
+  @override
+  String authUsernameRule(int min, int max) {
+    return '$min to $max letters or digits, without spaces.';
+  }
+
+  @override
+  String authErrorInvalidUsername(int min, int max) {
+    return 'The login must have $min to $max letters or digits, without spaces. You can use . _ -';
+  }
+
+  @override
+  String get authErrorUsernameEmpty => 'Enter your login.';
+
+  @override
+  String get authErrorUsernameTaken =>
+      'This login is already taken. Choose another one or sign in.';
+
+  @override
+  String authErrorPasswordTooLong(int count) {
+    return 'The password can have at most $count characters.';
+  }
+
+  @override
+  String get authErrorInvalidCredentials => 'Wrong login or password.';
+
+  @override
+  String get authTestLoginButton => 'Test sign-in (no account needed)';
+
+  @override
+  String get authTestLoginNote =>
+      'For testing only: signs in to the shared test account.';
+
+  @override
+  String accountSignedInAs(String username) {
+    return 'Signed in as $username';
+  }
+
+  @override
+  String get authPasswordLabel => 'Password';
+
+  @override
+  String get authShowPassword => 'Show password';
+
+  @override
+  String get authHidePassword => 'Hide password';
+
+  @override
+  String authPasswordRule(int count) {
+    return 'At least $count characters.';
+  }
+
+  @override
+  String get authLoginButton => 'Sign in';
+
+  @override
+  String get authRegisterButton => 'Create account';
+
+  @override
+  String get authGuestButton => 'Back to the app without an account';
+
+  @override
+  String get authGuestNote => 'The app also works without an account.';
+
+  @override
+  String get authErrorPasswordEmpty => 'Enter your password.';
+
+  @override
+  String authErrorPasswordTooShort(int count) {
+    return 'The password must have at least $count characters.';
+  }
+
+  @override
+  String get authErrorServer =>
+      'The server is not working right now. Try again in a moment.';
+
+  @override
+  String get authErrorNoConnection =>
+      'No connection to the server. Check the internet.';
+
+  @override
+  String get authErrorTryGuest => 'You can also continue without an account.';
+
+  @override
+  String get accountTitle => 'Account';
+
+  @override
+  String get accountGuest => 'You are using the app without an account.';
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountSignIn => 'Sign in or create an account';
 }

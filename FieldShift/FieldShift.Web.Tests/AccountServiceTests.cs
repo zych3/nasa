@@ -5,21 +5,22 @@ namespace TestProject1;
 public sealed class AccountServiceTests
 {
     [Theory]
-    [InlineData(" Jan@Example.COM ", "jan@example.com")]
-    [InlineData("a@b", "a@b")]
-    public void NormalizesEmail(string input, string expected) =>
-        Assert.Equal(expected, AccountService.NormalizeEmail(input));
+    [InlineData(" JanKowalski ", "jankowalski")]
+    [InlineData("jan.k_1-2", "jan.k_1-2")]
+    [InlineData("Łukasz", "łukasz")]
+    [InlineData("abc", "abc")]
+    public void NormalizesUsername(string input, string expected) =>
+        Assert.Equal(expected, AccountService.NormalizeUsername(input));
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
-    [InlineData("no-at-sign")]
-    [InlineData("@example.com")]
-    [InlineData("jan@")]
-    [InlineData("jan@@example.com")]
-    [InlineData("jan kowalski@example.com")]
-    public void RejectsInvalidEmail(string? input) =>
-        Assert.Null(AccountService.NormalizeEmail(input));
+    [InlineData("ab")]
+    [InlineData("jan kowalski")]
+    [InlineData("jan@poczta.pl")]
+    [InlineData("123456789012345678901234567890123")]
+    public void RejectsInvalidUsername(string? input) =>
+        Assert.Null(AccountService.NormalizeUsername(input));
 
     [Fact]
     public void HashesTokenToSha256Hex()

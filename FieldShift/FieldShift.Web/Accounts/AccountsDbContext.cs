@@ -8,8 +8,8 @@ public sealed class User
 {
     public Guid Id { get; set; }
 
-    /// <summary>Login, stored trimmed and lower case; unique.</summary>
-    public required string Email { get; set; }
+    /// <summary>Login name, stored trimmed and lower case; unique.</summary>
+    public required string Username { get; set; }
 
     /// <summary>ASP.NET Core Identity password hash (PBKDF2, salted); never the password itself.</summary>
     public required string PasswordHash { get; set; }
@@ -60,10 +60,10 @@ public sealed class AccountsDbContext(DbContextOptions<AccountsDbContext> option
             e.ToTable("users");
             e.HasKey(u => u.Id);
             e.Property(u => u.Id).HasColumnName("id");
-            e.Property(u => u.Email).HasColumnName("email").HasColumnType("text");
+            e.Property(u => u.Username).HasColumnName("username").HasColumnType("text");
             e.Property(u => u.PasswordHash).HasColumnName("password_hash").HasColumnType("text");
             e.Property(u => u.CreatedAt).HasColumnName("created_at");
-            e.HasIndex(u => u.Email).IsUnique();
+            e.HasIndex(u => u.Username).IsUnique();
         });
 
         model.Entity<UserSession>(e =>

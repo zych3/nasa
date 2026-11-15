@@ -16,7 +16,7 @@ namespace FieldShift.Web.Migrations.Accounts
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
+                    username = table.Column<string>(type: "text", nullable: false),
                     password_hash = table.Column<string>(type: "text", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
@@ -56,9 +56,9 @@ namespace FieldShift.Web.Migrations.Accounts
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_email",
+                name: "IX_users_username",
                 table: "users",
-                column: "email",
+                column: "username",
                 unique: true);
         }
 

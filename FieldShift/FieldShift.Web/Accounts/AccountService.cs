@@ -10,16 +10,23 @@ public sealed class AccountOptions
 {
     /// <summary>How long a login stays valid.</summary>
     public int SessionDays { get; set; } = 30;
+
+    /// <summary>
+    /// Enables <c>POST /api/auth/test-login</c>: a session for the shared <see cref="AccountService.TestUsername"/>
+    /// account without a password. For local testing only; off by default.
+    /// </summary>
+    public bool TestLogin { get; set; }
 }
 
 /// <summary>Error codes sent to the frontend (it translates them; never display text).</summary>
 public static class AccountErrorCodes
 {
-    public const string InvalidEmail = "invalid_email";
+    public const string InvalidUsername = "invalid_username";
     public const string PasswordTooShort = "password_too_short";
     public const string PasswordTooLong = "password_too_long";
-    public const string EmailTaken = "email_taken";
+    public const string UsernameTaken = "username_taken";
     public const string InvalidCredentials = "invalid_credentials";
+    public const string DatabaseUnavailable = "database_unavailable";
 }
 
 public sealed record AccountResult(User? User, string? Token, DateTimeOffset? ExpiresAt, string? ErrorCode)
@@ -34,21 +41,27 @@ public sealed class AccountService(
     IOptions<AccountOptions> options,
     TimeProvider time)
 {
+    public const int MinUsernameLength = 3;
+    public const int MaxUsernameLength = 32;
     public const int MinPasswordLength = 8;
     public const int MaxPasswordLength = 128;
-    private const int MaxEmailLength = 254;
+
+    /// <summary>Account used by the test login. Its password is random, so it cannot be logged into normally.</summary>
+    public const string TestUsername = "test";
 
     private static readonly PasswordHasher<User> Hasher = new();
 
-    /// <summary>Hash checked when the email is unknown, so a wrong email takes as long as a wrong password.</summary>
+    /// <summary>Hash checked when the username is unknown, so a wrong username takes as long as a wrong password.</summary>
     private static readonly string DummyHash = Hasher.HashPassword(null!, "not-a-real-password");
 
-    public async Task<AccountResult> RegisterAsync(string? email, string? password, CancellationToken ct)
+    public bool TestLoginEnabled => options.Value.TestLogin;
+
+    public async Task<AccountResult> RegisterAsync(string? username, string? password, CancellationToken ct)
     {
-        var normalized = NormalizeEmail(email);
+        var normalized = NormalizeUsername(username);
         if (normalized is null)
         {
-            return AccountResult.Fail(AccountErrorCodes.InvalidEmail);
+            return AccountResult.Fail(AccountErrorCodes.InvalidUsername);
         }
 
         if (password is null || password.Length < MinPasswordLength)
@@ -64,21 +77,13 @@ public sealed class AccountService(
         await schema.EnsureAppliedAsync(ct);
         await using var db = await contexts.CreateDbContextAsync(ct);
 
-        if (await db.Users.AnyAsync(u => u.Email == normalized, ct))
+        if (await db.Users.AnyAsync(u => u.Username == normalized, ct))
         {
-            return AccountResult.Fail(AccountErrorCodes.EmailTaken);
+            return AccountResult.Fail(AccountErrorCodes.UsernameTaken);
         }
 
-        var user = new User
-        {
-            Id = Guid.NewGuid(),
-            Email = normalized,
-            PasswordHash = "",
-            CreatedAt = time.GetUtcNow(),
-        };
-        user.PasswordHash = Hasher.HashPassword(user, password);
+        var user = NewUser(normalized, password);
         db.Users.Add(user);
-
         var (token, session) = NewSession(user.Id);
         db.Sessions.Add(session);
 
@@ -88,16 +93,16 @@ public sealed class AccountService(
         }
         catch (DbUpdateException e) when (IsUniqueViolation(e))
         {
-            // Two registrations with the same email at the same moment.
-            return AccountResult.Fail(AccountErrorCodes.EmailTaken);
+            // Two registrations with the same username at the same moment.
+            return AccountResult.Fail(AccountErrorCodes.UsernameTaken);
         }
 
         return new AccountResult(user, token, session.ExpiresAt, null);
     }
 
-    public async Task<AccountResult> LoginAsync(string? email, string? password, CancellationToken ct)
+    public async Task<AccountResult> LoginAsync(string? username, string? password, CancellationToken ct)
     {
-        var normalized = NormalizeEmail(email);
+        var normalized = NormalizeUsername(username);
         if (normalized is null || string.IsNullOrEmpty(password) || password.Length > MaxPasswordLength)
         {
             return AccountResult.Fail(AccountErrorCodes.InvalidCredentials);
@@ -106,7 +111,7 @@ public sealed class AccountService(
         await schema.EnsureAppliedAsync(ct);
         await using var db = await contexts.CreateDbContextAsync(ct);
 
-        var user = await db.Users.SingleOrDefaultAsync(u => u.Email == normalized, ct);
+        var user = await db.Users.SingleOrDefaultAsync(u => u.Username == normalized, ct);
         if (user is null)
         {
             Hasher.VerifyHashedPassword(null!, DummyHash, password);
@@ -124,15 +129,36 @@ public sealed class AccountService(
             user.PasswordHash = Hasher.HashPassword(user, password);
         }
 
-        // Drop this user's expired sessions while we are here.
-        var now = time.GetUtcNow();
-        await db.Sessions.Where(s => s.UserId == user.Id && s.ExpiresAt <= now).ExecuteDeleteAsync(ct);
+        return await StartSessionAsync(db, user, ct);
+    }
 
-        var (token, session) = NewSession(user.Id);
-        db.Sessions.Add(session);
-        await db.SaveChangesAsync(ct);
+    /// <summary>
+    /// A session for the shared test account (created on first use), without a password. Only call when
+    /// <see cref="TestLoginEnabled"/>.
+    /// </summary>
+    public async Task<AccountResult> TestLoginAsync(CancellationToken ct)
+    {
+        await schema.EnsureAppliedAsync(ct);
+        await using var db = await contexts.CreateDbContextAsync(ct);
 
-        return new AccountResult(user, token, session.ExpiresAt, null);
+        var user = await db.Users.SingleOrDefaultAsync(u => u.Username == TestUsername, ct);
+        if (user is null)
+        {
+            user = NewUser(TestUsername, Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)));
+            db.Users.Add(user);
+            try
+            {
+                await db.SaveChangesAsync(ct);
+            }
+            catch (DbUpdateException e) when (IsUniqueViolation(e))
+            {
+                // Created by a parallel test login.
+                db.ChangeTracker.Clear();
+                user = await db.Users.SingleAsync(u => u.Username == TestUsername, ct);
+            }
+        }
+
+        return await StartSessionAsync(db, user, ct);
     }
 
     /// <summary>The user the token belongs to, or null when it is unknown or expired.</summary>
@@ -159,21 +185,49 @@ public sealed class AccountService(
         await db.Sessions.Where(s => s.TokenHash == hash).ExecuteDeleteAsync(ct);
     }
 
-    /// <summary>Trimmed, lower-case email, or null when it does not look like one.</summary>
-    internal static string? NormalizeEmail(string? email)
+    /// <summary>
+    /// Trimmed, lower-case username, or null when it is not 3–32 letters, digits, '.', '_' or '-'
+    /// (Polish letters allowed).
+    /// </summary>
+    internal static string? NormalizeUsername(string? username)
     {
-        var e = email?.Trim().ToLowerInvariant();
-        if (string.IsNullOrEmpty(e) || e.Length > MaxEmailLength || e.Any(char.IsWhiteSpace))
+        var u = username?.Trim().ToLowerInvariant();
+        if (u is null || u.Length is < MinUsernameLength or > MaxUsernameLength)
         {
             return null;
         }
 
-        var at = e.IndexOf('@');
-        return at > 0 && at == e.LastIndexOf('@') && at < e.Length - 1 ? e : null;
+        return u.All(c => char.IsLetterOrDigit(c) || c is '.' or '_' or '-') ? u : null;
     }
 
     internal static string HashToken(string token) =>
         Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
+
+    private async Task<AccountResult> StartSessionAsync(AccountsDbContext db, User user, CancellationToken ct)
+    {
+        // Drop this user's expired sessions while we are here.
+        var now = time.GetUtcNow();
+        await db.Sessions.Where(s => s.UserId == user.Id && s.ExpiresAt <= now).ExecuteDeleteAsync(ct);
+
+        var (token, session) = NewSession(user.Id);
+        db.Sessions.Add(session);
+        await db.SaveChangesAsync(ct);
+
+        return new AccountResult(user, token, session.ExpiresAt, null);
+    }
+
+    private User NewUser(string username, string password)
+    {
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Username = username,
+            PasswordHash = "",
+            CreatedAt = time.GetUtcNow(),
+        };
+        user.PasswordHash = Hasher.HashPassword(user, password);
+        return user;
+    }
 
     private (string Token, UserSession Session) NewSession(Guid userId)
     {
