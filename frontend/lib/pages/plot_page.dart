@@ -1,19 +1,16 @@
 import 'package:material_ui/material_ui.dart';
 
-import '../components/address_search_field.dart';
-import '../components/input/plotInput/plot_input.dart';
 import '../components/map_button.dart';
 import '../components/nearby_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
-import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
-import '../repositories/parcel_repository.dart';
 import '../repositories/selected_plot_store.dart';
 import 'rotation_wizard_page.dart';
 
 /// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
-/// user pick another one from the parcels nearby or by typing an address.
+/// user pick another one from the parcels nearby. Addresses are searched on
+/// the "My area" map.
 class PlotPage extends StatefulWidget {
   const PlotPage({super.key, required this.store});
 
@@ -24,50 +21,6 @@ class PlotPage extends StatefulWidget {
 }
 
 class _PlotPageState extends State<PlotPage> {
-  final _parcels = ParcelRepository();
-  bool _loading = false;
-
-  Future<void> _findParcel(String address) async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _loading = true);
-    try {
-      final parcel = await _parcels.searchByAddress(address);
-      if (!mounted) return;
-      if (parcel != null) {
-        await widget.store.select(parcel.withAddress(address));
-      } else {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
-      }
-    } catch (_) {
-      if (!mounted) return;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
-  /// The user picked a full address from the hints: take the parcel there.
-  Future<void> _choosePoint(AddressSuggestion hint, String text) async {
-    final l10n = AppLocalizations.of(context);
-    final messenger = ScaffoldMessenger.of(context);
-    setState(() => _loading = true);
-    try {
-      final parcel = await _parcels.parcelAt(hint.point);
-      if (!mounted) return;
-      if (parcel != null) {
-        await widget.store.select(parcel.withAddress(text));
-      } else {
-        messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
-      }
-    } catch (_) {
-      if (!mounted) return;
-      messenger.showSnackBar(SnackBar(content: Text(l10n.parcelLookupFailed)));
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -85,27 +38,26 @@ class _PlotPageState extends State<PlotPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Address search with hints, at the very top. Room on the right for
-        // the language button floating in the top corner.
-        Padding(
-          padding: const EdgeInsetsDirectional.only(
+        // Header: the field's address (or "My plot" when it has none) and
+        // its parcel number. Room on the right for the language button
+        // floating in the top corner. (Fields are found on the "My area"
+        // map, which has the address search.)
+        Card(
+          margin: const EdgeInsetsDirectional.only(
             end: MapButton.reservedEnd - 16,
           ),
-          child: AddressSearchField(
-            onAddressChosen: _choosePoint,
-            onSearch: _findParcel,
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Header: plot name, area, location
-        Card(
           child: ListTile(
             leading: const Icon(Icons.agriculture, size: 40),
             title: Text(
-              parcel?.address ?? '—',
+              parcel?.address ?? l10n.plotName,
               style: theme.textTheme.titleLarge,
             ),
+            subtitle: parcel == null
+                ? null
+                : Text(
+                    l10n.parcelNumber(parcel.id),
+                    style: theme.textTheme.bodyLarge,
+                  ),
           ),
         ),
         const SizedBox(height: 16),
@@ -114,14 +66,7 @@ class _PlotPageState extends State<PlotPage> {
         SizedBox(
           height: 280,
           child: parcel != null
-              ? _FieldMap(
-                  field: parcel,
-                  nearby: nearby,
-                  caption: [
-                    ?parcel.address,
-                    l10n.parcelNumber(parcel.id),
-                  ].join('\n'),
-                )
+              ? _FieldMap(field: parcel, nearby: nearby)
               : Container(
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceContainerHighest,
@@ -131,7 +76,6 @@ class _PlotPageState extends State<PlotPage> {
                   child: const Icon(Icons.map_outlined, size: 48),
                 ),
         ),
-        if (_loading) const LinearProgressIndicator(),
         const SizedBox(height: 16),
 
         FilledButton.icon(
@@ -167,15 +111,6 @@ class _PlotPageState extends State<PlotPage> {
           ),
           const SizedBox(height: 24),
         ],
-
-        // Plot input form (left as-is)
-        // Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),
-        // const SizedBox(height: 8),
-        // The address is typed in the search field at the top.
-        // No "Save" button until the plot can be saved somewhere (it used
-        // to clear the form without saving anything).
-        PlotInput(address: parcel?.address ?? ''),
-        const SizedBox(height: 24),
 
         // Info cards
         Text(l10n.infoSection, style: theme.textTheme.titleMedium),
@@ -221,48 +156,19 @@ class _PlotPageState extends State<PlotPage> {
 }
 
 /// The same map as the "Map" screen, but view-only (no tap handler, so the
-/// parcels cannot be chosen here), fitted around the field, with its address
-/// on top.
+/// parcels cannot be chosen here), fitted around the field. Its address and
+/// number are in the header above.
 class _FieldMap extends StatelessWidget {
-  const _FieldMap({
-    required this.field,
-    required this.nearby,
-    required this.caption,
-  });
+  const _FieldMap({required this.field, required this.nearby});
 
   final Parcel field;
   final List<Parcel> nearby;
-  final String caption;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: ParcelMap(myField: field, parcels: nearby, fitMyField: true),
-          ),
-          Positioned(
-            top: 8,
-            left: 8,
-            right: 8,
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: Text(caption),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: ParcelMap(myField: field, parcels: nearby, fitMyField: true),
     );
   }
 }
