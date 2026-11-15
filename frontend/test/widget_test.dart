@@ -35,19 +35,14 @@ void main() {
     final pl = lookupAppLocalizations(const Locale('pl'));
     expect(find.text(pl.navMap), findsOneWidget);
     expect(find.text(pl.navPlot), findsOneWidget);
-    expect(find.text(pl.navTrends), findsOneWidget);
     expect(find.text(pl.navConditions), findsOneWidget);
-
-    await tester.tap(find.text(pl.navTrends));
-    await tester.pump();
-    expect(selected, 2);
 
     await tester.tap(find.text(pl.navConditions));
     await tester.pump();
-    expect(selected, 3);
+    expect(selected, 2);
   });
 
-  testWidgets('nav bar with 4 tabs fits a phone at 1.5× text', (tester) async {
+  testWidgets('nav bar with 3 tabs fits a phone at 1.5× text', (tester) async {
     tester.view.physicalSize = const Size(360, 640);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -62,7 +57,7 @@ void main() {
           child: _app(
             locale,
             const SizedBox(),
-            bottom: AppNavBar(selectedIndex: 3, onSelected: (_) {}),
+            bottom: AppNavBar(selectedIndex: 2, onSelected: (_) {}),
           ),
         ),
       );

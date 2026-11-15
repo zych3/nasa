@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hopito_field_shift/components/crop_details_sheet.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/models/trending_crop.dart';
 import 'package:hopito_field_shift/pages/plot_page.dart';
-import 'package:hopito_field_shift/pages/trending_crops_page.dart';
 import 'package:hopito_field_shift/repositories/selected_plot_store.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -43,6 +43,16 @@ const _field = Parcel(
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
+  // Crop photos go through a disk cache that asks path_provider for a folder;
+  // tests have no such plugin, so give it a temporary one.
+  setUpAll(() {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          (call) async => Directory.systemTemp.createTempSync('crop_img').path,
+        );
+  });
 
   for (final locale in AppLocalizations.supportedLocales) {
     testWidgets('My field fits a phone at 1.5× text, $locale', (tester) async {
@@ -61,24 +71,6 @@ void main() {
         await tester.pump();
         expect(tester.takeException(), isNull, reason: 'scrolled $i');
       }
-    });
-
-    testWidgets('Popular crops fits a phone at 1.5× text, $locale', (
-      tester,
-    ) async {
-      tester.view.physicalSize = const Size(360, 640);
-      tester.view.devicePixelRatio = 1;
-      addTearDown(tester.view.reset);
-
-      final l10n = lookupAppLocalizations(locale);
-      await tester.pumpWidget(_app(const TrendingCropsPage(), locale));
-      // Demo data comes from the asset bundle (real async I/O).
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 300)),
-      );
-      await tester.pump();
-      expect(find.text(l10n.trendsTitle), findsOneWidget);
-      expect(tester.takeException(), isNull);
     });
 
     testWidgets('Crop details fit a phone at 1.5× text, $locale', (
@@ -113,6 +105,10 @@ void main() {
         expect(tester.takeException(), isNull, reason: crop.id);
         expect(find.text(l10n.close), findsOneWidget, reason: crop.id);
       }
+      // Network timeouts (10 s) of the photos and prices run on the test's
+      // fake clock: let them end before the test does.
+      await tester.pumpWidget(const SizedBox());
+      await tester.pump(const Duration(seconds: 15));
     });
   }
 }

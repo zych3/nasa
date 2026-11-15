@@ -3,7 +3,6 @@
   "appTitle": "Field Shift",
   "navMap": "My area",
   "navPlot": "My field",
-  "navTrends": "Popular crops",
   "changeLanguage": "Change language",
   "plotName": "My plot",
   "plotSummary": "{area} ha  •  location: {location}",
@@ -23,10 +22,6 @@
   "crop": "Crop",
   "moisture": "Moisture",
   "temperature": "Temperature",
-  "trendsTitle": "Popular crops near you",
-  "trendsIntro": "Crops that do well in your area right now. Tap a crop to learn more.",
-  "trendsLoadError": "We could not load the crops. Check your internet and try again.",
-  "trendsEmpty": "No crop suggestions yet.",
   "tryAgain": "Try again",
   "close": "Close",
   "moreDetails": "More details",
@@ -73,7 +68,6 @@
   "sourceSatellite": "Measured by satellite",
   "sourceEstimated": "Estimated",
   "sourceUserAnswer": "From your answer",
-  "demoDataNotice": "Demo data: not real prices yet.",
   "parcelNumber": "Parcel {id}",
   "@parcelNumber": {
     "placeholders": {

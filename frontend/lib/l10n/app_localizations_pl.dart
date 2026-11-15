@@ -19,9 +19,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get navPlot => 'Moje pole';
 
   @override
-  String get navTrends => 'Popularne uprawy';
-
-  @override
   String get changeLanguage => 'Zmień język';
 
   @override
@@ -49,20 +46,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get temperature => 'Temperatura';
-
-  @override
-  String get trendsTitle => 'Popularne uprawy w okolicy';
-
-  @override
-  String get trendsIntro =>
-      'Uprawy, które teraz dobrze sprawdzają się w Twojej okolicy. Dotknij uprawy, aby dowiedzieć się więcej.';
-
-  @override
-  String get trendsLoadError =>
-      'Nie udało się wczytać upraw. Sprawdź internet i spróbuj ponownie.';
-
-  @override
-  String get trendsEmpty => 'Brak propozycji upraw.';
 
   @override
   String get tryAgain => 'Spróbuj ponownie';
@@ -117,10 +100,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get sourceUserAnswer => 'Z Twojej odpowiedzi';
-
-  @override
-  String get demoDataNotice =>
-      'Dane demonstracyjne: to jeszcze nie są prawdziwe ceny.';
 
   @override
   String parcelNumber(String id) {
