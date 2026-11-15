@@ -24,6 +24,10 @@ public static class KnowledgeBaseLoader
         var crops = ReadCrops(directory, report);
         var actions = Read<List<ManagementActionDefinition>>(Path.Combine(directory, "actions.json"), false, report);
         var interactions = Read<List<InteractionOverride>>(Path.Combine(directory, "interactions.json"), false, report);
+        var stateInteractionsPath = Path.Combine(directory, "stateInteractions.json");
+        var stateInteractions = File.Exists(stateInteractionsPath)
+            ? Read<List<StateInteraction>>(stateInteractionsPath, true, report)
+            : null;
         var strategies = ReadStrategies(Path.Combine(directory, "strategies.json"), report);
         var settings = Read<EngineSettings>(Path.Combine(directory, "engineSettings.json"), true, report);
 
@@ -39,7 +43,8 @@ public static class KnowledgeBaseLoader
                 crops,
                 actions ?? [],
                 interactions ?? [],
-                strategies);
+                strategies,
+                stateInteractions ?? []);
         }
         catch (InvalidOperationException ex)
         {

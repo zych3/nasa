@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../models/rotation_report.dart';
 import 'app_localizations.dart';
 
@@ -54,14 +56,74 @@ String? originLabel(AppLocalizations l10n, String origin) => switch (origin) {
   _ => null,
 };
 
+/// "September – October 2026" for a window given as days of the year.
+String periodText(
+  AppLocalizations l10n,
+  String locale,
+  DayRange range,
+  int year,
+) {
+  String month(int day) =>
+      DateFormat.MMMM(locale)
+          .format(DateTime.utc(2001).add(Duration(days: day - 1)));
+  final from = month(range.from);
+  final to = month(range.to);
+  return from == to
+      ? l10n.planPeriodOneMonth(from, '$year')
+      : l10n.planPeriodRange(from, to, '$year');
+}
+
+/// "Sow: September – October 2026" for the main crop of [season] (the year
+/// before harvest for winter crops), or null when the dates are unknown.
+String? seasonSowText(AppLocalizations l10n, String locale, PlanSeason season) {
+  final sow = season.crop.sow;
+  if (sow == null) return null;
+  final year = season.year - (season.crop.sownPreviousYear ? 1 : 0);
+  return l10n.planSow(periodText(l10n, locale, sow, year));
+}
+
+String? seasonHarvestText(
+  AppLocalizations l10n,
+  String locale,
+  PlanSeason season,
+) {
+  final harvest = season.crop.harvest;
+  if (harvest == null) return null;
+  return l10n.planHarvestTime(periodText(l10n, locale, harvest, season.year));
+}
+
+/// The cover crop is sown after the main harvest, in the harvest year.
+String? catchSowText(AppLocalizations l10n, String locale, PlanSeason season) {
+  final sow = season.catchCrop?.sow;
+  if (sow == null) return null;
+  return l10n.planSow(periodText(l10n, locale, sow, season.year));
+}
+
+String? soilValueLabel(AppLocalizations l10n, String key) => switch (key) {
+  'sand' => l10n.soilValueSand,
+  'clay' => l10n.soilValueClay,
+  'silt' => l10n.soilValueSilt,
+  'ph' => l10n.soilValuePh,
+  'soc' => l10n.soilValueCarbon,
+  _ => null,
+};
+
 String? warningText(
   AppLocalizations l10n,
   ReportWarning warning,
   String? Function(String id) cropName,
 ) {
   switch (warning.code) {
-    case 'soil_estimated':
-      return l10n.warnSoilEstimated;
+    case 'soil_unavailable':
+      return l10n.warnSoilUnavailable;
+    case 'soil_no_data':
+      return l10n.warnSoilNoData;
+    case 'soil_partial':
+      final values = [
+        for (final key in (warning.subject ?? '').split(','))
+          ?soilValueLabel(l10n, key),
+      ];
+      return values.isEmpty ? null : l10n.warnSoilPartial(values.join(', '));
     case 'few_crops_fit':
       return l10n.warnFewCropsFit;
     case 'goal_unavailable':
@@ -78,6 +140,36 @@ String? warningText(
 }
 
 String? reasonText(AppLocalizations l10n, PlanReason reason, String cropName) {
+  const interactionPrefix = 'interaction.rule.';
+  if (reason.code.startsWith(interactionPrefix)) {
+    return switch (reason.code.substring(interactionPrefix.length)) {
+      'highN_eyespot' => l10n.reasonRuleHighNEyespot(cropName),
+      'compaction_aphanomyces' => l10n.reasonRuleCompactionAphanomyces(
+        cropName,
+      ),
+      'lowPh_legumeN' => l10n.reasonRuleLowPhLegumeN(cropName),
+      'lowPhAmplifiesClubrootLoss' => l10n.reasonRuleLowPhClubroot(cropName),
+      'acidSoilWorsensLegumeFusarium' => l10n.reasonRuleAcidLegumeFusarium(
+        cropName,
+      ),
+      'highNBoostsCerealFusarium' => l10n.reasonRuleHighNFusarium(cropName),
+      'compactionAmplifiesPotatoCystNematodeLoss' =>
+        l10n.reasonRuleCompactionPotatoNematode(cropName),
+      'compactionAmplifiesRhizoctoniaLoss' =>
+        l10n.reasonRuleCompactionRhizoctonia(cropName),
+      'compactionAmplifiesCerealFusariumLoss' =>
+        l10n.reasonRuleCompactionCerealFusarium(cropName),
+      'rapeseedVolunteersBoostClubroot' => l10n.reasonRuleVolunteersClubroot(
+        cropName,
+      ),
+      'highResidualNSuppressesLegumeNFixation' =>
+        l10n.reasonRuleHighNLegumeFixation(cropName),
+      'alkalinePhAmplifiesTakeAllLoss' => l10n.reasonRuleAlkalineTakeAll(
+        cropName,
+      ),
+      _ => null,
+    };
+  }
   if (reason.code.startsWith('effect.')) {
     final up = reason.delta > 0;
     final variable = reason.variable ?? reason.code.substring('effect.'.length);

@@ -42,7 +42,12 @@ public sealed class SimEnvironment
                     kb.StateVariables.IndexOf(t.From), kb.StateVariables.IndexOf(t.To));
             })
             .ToList();
+        EffectInteractions = StateInteractions.Compile(kb, InteractionTargetKind.Effect);
+        ResponseInteractions = StateInteractions.Compile(kb, InteractionTargetKind.Response);
     }
+
+    public CompiledInteraction[] EffectInteractions { get; }
+    public CompiledInteraction[] ResponseInteractions { get; }
 
     public CropKnowledgeBase Kb { get; }
     public PlotFeatures Features { get; }

@@ -133,6 +133,7 @@ class _MyScaffoldState extends State<MyScaffold> {
               store: widget.plotStore,
               repository: _mapLayers,
               onShowConditions: () => setState(() => _selectedIndex = 2),
+              authStore: widget.authStore,
             ),
           ),
           _TabWithFlag(

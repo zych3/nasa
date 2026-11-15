@@ -1025,7 +1025,7 @@ abstract class AppLocalizations {
   /// No description provided for @pastCropsHint.
   ///
   /// In en, this message translates to:
-  /// **'Start with the last harvest. Each extra year makes the advice better.'**
+  /// **'Start with the last harvest. Each extra year makes the advice better. Planting here for the first time? Just continue.'**
   String get pastCropsHint;
 
   /// No description provided for @pastCropLast.
@@ -1057,12 +1057,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get pastCropClear;
-
-  /// No description provided for @pastCropRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose at least the last crop to continue.'**
-  String get pastCropRequired;
 
   /// No description provided for @goalTitle.
   ///
@@ -1211,13 +1205,49 @@ abstract class AppLocalizations {
   /// No description provided for @planHarvest.
   ///
   /// In en, this message translates to:
-  /// **'Harvest'**
+  /// **'Harvest quality'**
   String get planHarvest;
+
+  /// No description provided for @readSeason.
+  ///
+  /// In en, this message translates to:
+  /// **'{year}: {crop}'**
+  String readSeason(String year, String crop);
+
+  /// No description provided for @readPair.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String readPair(String label, String value);
+
+  /// No description provided for @planSow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sow: {period}'**
+  String planSow(String period);
+
+  /// No description provided for @planHarvestTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Harvest time: {period}'**
+  String planHarvestTime(String period);
+
+  /// No description provided for @planPeriodOneMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{month} {year}'**
+  String planPeriodOneMonth(String month, String year);
+
+  /// No description provided for @planPeriodRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{from} – {to} {year}'**
+  String planPeriodRange(String from, String to, String year);
 
   /// No description provided for @harvestStars.
   ///
   /// In en, this message translates to:
-  /// **'Harvest rating: {stars} out of {total} stars'**
+  /// **'Harvest quality: {stars} out of {total} stars'**
   String harvestStars(String stars, int total);
 
   /// No description provided for @levelGood.
@@ -1304,6 +1334,78 @@ abstract class AppLocalizations {
   /// **'Option {number}'**
   String detailsOption(int number);
 
+  /// No description provided for @detailsPlansHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans for this goal'**
+  String get detailsPlansHeading;
+
+  /// No description provided for @detailsRecommended.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended plan'**
+  String get detailsRecommended;
+
+  /// No description provided for @detailsShownNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown on the report now'**
+  String get detailsShownNow;
+
+  /// No description provided for @detailsChoosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose this plan'**
+  String get detailsChoosePlan;
+
+  /// No description provided for @reportSavePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Save this plan'**
+  String get reportSavePlan;
+
+  /// No description provided for @reportPlanSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan saved'**
+  String get reportPlanSaved;
+
+  /// No description provided for @reportSaveDone.
+  ///
+  /// In en, this message translates to:
+  /// **'The plan is saved in your profile.'**
+  String get reportSaveDone;
+
+  /// No description provided for @reportSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the plan. Please try again.'**
+  String get reportSaveFailed;
+
+  /// No description provided for @reportSaveTooMany.
+  ///
+  /// In en, this message translates to:
+  /// **'You have too many saved plans. Delete one first.'**
+  String get reportSaveTooMany;
+
+  /// No description provided for @reportSaveSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your sign-in expired. Please sign in again.'**
+  String get reportSaveSessionExpired;
+
+  /// No description provided for @reportChosenOption.
+  ///
+  /// In en, this message translates to:
+  /// **'You are looking at option {number}, not the recommended plan.'**
+  String reportChosenOption(int number);
+
+  /// No description provided for @reportBackToBest.
+  ///
+  /// In en, this message translates to:
+  /// **'Show recommended'**
+  String get reportBackToBest;
+
   /// No description provided for @detailsOtherGoals.
   ///
   /// In en, this message translates to:
@@ -1358,11 +1460,53 @@ abstract class AppLocalizations {
   /// **'Your other answers'**
   String get inputFarmer;
 
-  /// No description provided for @warnSoilEstimated.
+  /// No description provided for @warnSoilUnavailable.
   ///
   /// In en, this message translates to:
-  /// **'We could not read the soil of this field, so we assumed typical Polish soil. A soil test (pH) makes the advice better.'**
-  String get warnSoilEstimated;
+  /// **'We could not get soil data for this field (the soil service did not answer), so we assumed typical Polish soil. Try again later. A soil test (pH) makes the advice better.'**
+  String get warnSoilUnavailable;
+
+  /// No description provided for @warnSoilNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no soil data for this exact spot (it may be built-up land, water or forest), so we assumed typical Polish soil. A soil test (pH) makes the advice better.'**
+  String get warnSoilNoData;
+
+  /// No description provided for @warnSoilPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Some soil data is missing ({values}), so we filled the gaps with typical Polish values. A soil test (pH) makes the advice better.'**
+  String warnSoilPartial(String values);
+
+  /// No description provided for @soilValueSand.
+  ///
+  /// In en, this message translates to:
+  /// **'sand'**
+  String get soilValueSand;
+
+  /// No description provided for @soilValueClay.
+  ///
+  /// In en, this message translates to:
+  /// **'clay'**
+  String get soilValueClay;
+
+  /// No description provided for @soilValueSilt.
+  ///
+  /// In en, this message translates to:
+  /// **'silt'**
+  String get soilValueSilt;
+
+  /// No description provided for @soilValuePh.
+  ///
+  /// In en, this message translates to:
+  /// **'acidity (pH)'**
+  String get soilValuePh;
+
+  /// No description provided for @soilValueCarbon.
+  ///
+  /// In en, this message translates to:
+  /// **'organic matter'**
+  String get soilValueCarbon;
 
   /// No description provided for @warnFewCropsFit.
   ///
@@ -1435,6 +1579,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{crop} loosens the soil.'**
   String reasonCompactionDown(String crop);
+
+  /// No description provided for @reasonRuleHighNEyespot.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: a lot of nitrogen left in the soil makes eyespot disease build up faster.'**
+  String reasonRuleHighNEyespot(String crop);
+
+  /// No description provided for @reasonRuleCompactionAphanomyces.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: packed soil makes root rot hit harder.'**
+  String reasonRuleCompactionAphanomyces(String crop);
+
+  /// No description provided for @reasonRuleLowPhLegumeN.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: acid soil means it leaves less nitrogen behind.'**
+  String reasonRuleLowPhLegumeN(String crop);
+
+  /// No description provided for @reasonRuleLowPhClubroot.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: acid soil makes clubroot hurt the yield more.'**
+  String reasonRuleLowPhClubroot(String crop);
+
+  /// No description provided for @reasonRuleAcidLegumeFusarium.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: acid soil makes fusarium wilt hit harder.'**
+  String reasonRuleAcidLegumeFusarium(String crop);
+
+  /// No description provided for @reasonRuleHighNFusarium.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: a lot of nitrogen in the soil raises the risk of fusarium.'**
+  String reasonRuleHighNFusarium(String crop);
+
+  /// No description provided for @reasonRuleCompactionPotatoNematode.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: packed soil makes potato nematodes cost more yield.'**
+  String reasonRuleCompactionPotatoNematode(String crop);
+
+  /// No description provided for @reasonRuleCompactionRhizoctonia.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: packed soil makes rhizoctonia (root rot) hit harder.'**
+  String reasonRuleCompactionRhizoctonia(String crop);
+
+  /// No description provided for @reasonRuleCompactionCerealFusarium.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: packed soil makes fusarium hit harder.'**
+  String reasonRuleCompactionCerealFusarium(String crop);
+
+  /// No description provided for @reasonRuleVolunteersClubroot.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: leftover rapeseed plants keep clubroot alive.'**
+  String reasonRuleVolunteersClubroot(String crop);
+
+  /// No description provided for @reasonRuleHighNLegumeFixation.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: with plenty of nitrogen already in the soil, it fixes and leaves less.'**
+  String reasonRuleHighNLegumeFixation(String crop);
+
+  /// No description provided for @reasonRuleAlkalineTakeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'{crop}: alkaline soil makes take-all (a cereal root disease) worse.'**
+  String reasonRuleAlkalineTakeAll(String crop);
 
   /// No description provided for @overlayPlantStressTitle.
   ///
@@ -2911,6 +3127,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Land use (land register)'**
   String get fieldFactLandUse;
+
+  /// No description provided for @accountMyPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'My plans'**
+  String get accountMyPlans;
+
+  /// No description provided for @myPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My plans'**
+  String get myPlansTitle;
+
+  /// No description provided for @myPlansEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no saved plans yet. Open a report and choose Save this plan.'**
+  String get myPlansEmpty;
+
+  /// No description provided for @myPlansLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load your plans.'**
+  String get myPlansLoadError;
+
+  /// No description provided for @myPlansItemInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'{goal} · saved {date}'**
+  String myPlansItemInfo(String goal, String date);
+
+  /// No description provided for @myPlansSavedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {date}'**
+  String myPlansSavedOn(String date);
+
+  /// No description provided for @myPlansDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get myPlansDelete;
+
+  /// No description provided for @myPlansCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get myPlansCancel;
+
+  /// No description provided for @myPlansDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this plan?'**
+  String get myPlansDeleteTitle;
+
+  /// No description provided for @myPlansDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It will be removed from your profile.'**
+  String get myPlansDeleteBody;
+
+  /// No description provided for @myPlansDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan deleted.'**
+  String get myPlansDeleted;
+
+  /// No description provided for @myPlansDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete the plan. Please try again.'**
+  String get myPlansDeleteFailed;
 }
 
 class _AppLocalizationsDelegate
