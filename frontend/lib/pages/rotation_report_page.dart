@@ -1,16 +1,20 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../api/api_client.dart';
+import '../components/rotation/climate_trends_section.dart';
 import '../components/rotation/plan_reading.dart';
 import '../components/rotation/plan_timeline.dart';
 import '../components/rotation/rating_row.dart';
 import '../components/rotation/rotation_details.dart';
 import '../l10n/app_localizations.dart';
+import '../l10n/climate_trend_text.dart';
 import '../l10n/rotation_text.dart';
+import '../models/climate_trends.dart';
 import '../models/crop.dart';
 import '../models/parcel.dart';
 import '../models/rotation_report.dart';
 import '../repositories/auth_store.dart';
+import '../repositories/climate_trends_repository.dart';
 import '../repositories/crop_repository.dart';
 import '../repositories/rotation_repository.dart';
 import '../widgets/read_aloud_button.dart';
@@ -23,6 +27,7 @@ class RotationReportPage extends StatefulWidget {
     required this.answers,
     required this.authStore,
     this.repository,
+    this.climateRepository,
   });
 
   final Parcel parcel;
@@ -33,6 +38,9 @@ class RotationReportPage extends StatefulWidget {
 
   final RotationRepository? repository;
 
+  /// Long-term climate changes shown under the plan.
+  final ClimateTrendsRepository? climateRepository;
+
   @override
   State<RotationReportPage> createState() => _RotationReportPageState();
 }
@@ -42,6 +50,11 @@ class _RotationReportPageState extends State<RotationReportPage> {
       widget.repository ?? RotationRepository();
   late Future<RotationReport> _report = _load();
   List<Crop> _catalogue = const [];
+
+  /// Loaded once, next to the plan: the plan never waits for it, and a
+  /// failure only leaves the climate section out.
+  late final Future<ClimateTrends?> _climate;
+  ClimateTrends? _climateData;
 
   String? _goal;
   RotationReport? _data;
@@ -54,6 +67,18 @@ class _RotationReportPageState extends State<RotationReportPage> {
   bool _saving = false;
 
   static const _headline = ['harvest', 'humus', 'disease', 'water'];
+
+  @override
+  void initState() {
+    super.initState();
+    _climate = (widget.climateRepository ?? ClimateTrendsRepository())
+        .getTrends(
+          parcelId: widget.parcel.id,
+          lat: widget.parcel.center.latitude,
+          lon: widget.parcel.center.longitude,
+        )
+        .then((trends) => _climateData = trends);
+  }
 
   Future<RotationReport> _load() {
     CropRepository().getCrops().then((c) {
@@ -161,6 +186,7 @@ class _RotationReportPageState extends State<RotationReportPage> {
             levelLabel(l10n, plan.score(key)!.level),
           ),
       ...warnings,
+      ...climateReadingSentences(l10n, locale, _climateData),
     ]);
   }
 
@@ -459,6 +485,7 @@ class _RotationReportPageState extends State<RotationReportPage> {
           onPressed: () => _showDetails(report, plans.goal, plan, names),
         ),
         const SizedBox(height: 16),
+        ClimateTrendsSection(future: _climate),
       ],
     );
   }

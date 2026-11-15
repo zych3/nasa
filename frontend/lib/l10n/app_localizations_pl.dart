@@ -697,6 +697,185 @@ class AppLocalizationsPl extends AppLocalizations {
       'Żadna uprawa z naszej listy nie pasuje do tego pola przy tych odpowiedziach. Spróbuj zmienić odpowiedzi.';
 
   @override
+  String get climateSectionTitle => 'Jak zmienia się klimat w Twojej okolicy';
+
+  @override
+  String get climateLoading => 'Sprawdzamy dane o klimacie z wielu lat…';
+
+  @override
+  String climateNoClearTrends(String from, String to) {
+    return 'W danych z lat $from–$to nie widać wyraźnych zmian dla tej okolicy.';
+  }
+
+  @override
+  String get climateNotForecast => 'To opis minionych lat, a nie prognoza.';
+
+  @override
+  String climateFact(
+    String early,
+    String earlyFrom,
+    String earlyTo,
+    String recent,
+    String recentFrom,
+    String recentTo,
+  ) {
+    return 'Średnio $early w latach $earlyFrom–$earlyTo, a $recent w latach $recentFrom–$recentTo.';
+  }
+
+  @override
+  String climateValueDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dnia',
+      many: '$count dni',
+      few: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String climateValueHeatUnits(String value) {
+    return '$value jednostek ciepła';
+  }
+
+  @override
+  String climateValueCelsius(String value) {
+    return '$value °C';
+  }
+
+  @override
+  String climateValueMillimetres(String value) {
+    return '$value mm';
+  }
+
+  @override
+  String get climateAdviceTitle => 'Co można rozważyć na dłuższą metę:';
+
+  @override
+  String climateSource(String source, String from, String to) {
+    return 'Źródło: $source, lata $from–$to. Dane szacowane.';
+  }
+
+  @override
+  String climateNoteRegional(String km) {
+    return 'Te liczby opisują okolicę o szerokości około $km km, a nie to jedno pole.';
+  }
+
+  @override
+  String get climateNoteAirFrost =>
+      'Przymrozki liczymy z temperatury powietrza 2 m nad ziemią. Przy samej ziemi zdarzają się częściej.';
+
+  @override
+  String get climateNoteEvaporation =>
+      'Sam opad nie zmienił się wyraźnie. Bilans zmienił się przez parowanie, które szacujemy z temperatury.';
+
+  @override
+  String get climateFrostFreeUp => 'Dłuższy okres bez przymrozków';
+
+  @override
+  String get climateFrostFreeDown => 'Krótszy okres bez przymrozków';
+
+  @override
+  String get climateLastSpringFrostDown =>
+      'Ostatni wiosenny przymrozek przychodzi wcześniej';
+
+  @override
+  String get climateLastSpringFrostUp =>
+      'Ostatni wiosenny przymrozek przychodzi później';
+
+  @override
+  String get climateFirstAutumnFrostUp =>
+      'Pierwszy jesienny przymrozek przychodzi później';
+
+  @override
+  String get climateFirstAutumnFrostDown =>
+      'Pierwszy jesienny przymrozek przychodzi wcześniej';
+
+  @override
+  String get climateHotDaysUp => 'Więcej upalnych dni (30 °C i więcej)';
+
+  @override
+  String get climateHotDaysDown => 'Mniej upalnych dni (30 °C i więcej)';
+
+  @override
+  String get climateMaxTemperatureUp =>
+      'Najgorętszy dzień roku jest cieplejszy';
+
+  @override
+  String get climateMaxTemperatureDown =>
+      'Najgorętszy dzień roku jest chłodniejszy';
+
+  @override
+  String get climateGrowingWarmthUp => 'Więcej ciepła dla wzrostu roślin';
+
+  @override
+  String get climateGrowingWarmthDown => 'Mniej ciepła dla wzrostu roślin';
+
+  @override
+  String get climateDrySpellUp =>
+      'Dłuższe okresy bez deszczu (od kwietnia do września)';
+
+  @override
+  String get climateDrySpellDown =>
+      'Krótsze okresy bez deszczu (od kwietnia do września)';
+
+  @override
+  String get climateSeasonRainUp =>
+      'Więcej deszczu w sezonie wzrostu (od kwietnia do września)';
+
+  @override
+  String get climateSeasonRainDown =>
+      'Mniej deszczu w sezonie wzrostu (od kwietnia do września)';
+
+  @override
+  String get climateWaterBalanceUp =>
+      'Lepszy bilans wody: deszcz minus parowanie (od kwietnia do września)';
+
+  @override
+  String get climateWaterBalanceDown =>
+      'Gorszy bilans wody: deszcz minus parowanie (od kwietnia do września)';
+
+  @override
+  String get climateHeavyRainUp => 'Więcej dni z ulewą (ponad 20 mm)';
+
+  @override
+  String get climateHeavyRainDown => 'Mniej dni z ulewą (ponad 20 mm)';
+
+  @override
+  String get climateAdviceHeatTolerantVarieties =>
+      'Warto rozważyć odmiany, które kwitną wcześniej albo lepiej znoszą upał, oraz siew w terminie, żeby rośliny kwitły przed najgorętszymi tygodniami. Tam, gdzie to możliwe, rośliny ozime zamiast jarych.';
+
+  @override
+  String get climateAdviceKeepSoilCovered =>
+      'Warto trzymać glebę pod okrywą (międzyplony, słoma), rzadziej ją orać i dbać o próchnicę. Taka gleba traci mniej wody.';
+
+  @override
+  String get climateAdviceDroughtCropsOnLightSoil =>
+      'Twoja gleba jest lekka i słabo trzyma wodę. Warto rozważyć rośliny, które korzenią się głęboko i lepiej znoszą suszę, na przykład żyto albo łubin, oraz sprawdzić, czy opłaca się nawadnianie.';
+
+  @override
+  String get climateAdviceUseLongerSeason =>
+      'Dłuższy sezon pozwala rozważyć odmiany, które dojrzewają później, albo międzyplon po żniwach.';
+
+  @override
+  String get climateAdviceDoNotSowEarlier =>
+      'Uwaga: ostatnie wiosenne przymrozki nie przychodzą wyraźnie wcześniej. Roślin, które przymrozek może zniszczyć, na przykład kukurydzy, lepiej nie siać wcześniej niż dotąd.';
+
+  @override
+  String get climateAdviceCheckWarmSeasonCrops =>
+      'Uprawy ciepłolubne, takie jak kukurydza na ziarno czy soja, mają większą szansę dojrzeć. Warto sprawdzić je na małej części pola, zanim zmienisz plan.';
+
+  @override
+  String get climateAdviceProtectFromErosion =>
+      'Warto nie zostawiać gołej gleby: międzyplony i resztki roślin chronią ją przed zmywaniem.';
+
+  @override
+  String get climateAdviceWorkAcrossSlope =>
+      'Twoje pole ma wyraźny spadek. Warto uprawiać je w poprzek stoku i trzymać glebę pod okrywą przez cały rok.';
+
+  @override
   String get reportMainTitle => 'Najlepszy plan dla Ciebie';
 
   @override

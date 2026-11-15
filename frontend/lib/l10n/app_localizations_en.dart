@@ -692,6 +692,181 @@ class AppLocalizationsEn extends AppLocalizations {
       'No crop on our list suits this field with these answers. Try changing your answers.';
 
   @override
+  String get climateSectionTitle => 'How the climate in your area is changing';
+
+  @override
+  String get climateLoading => 'Checking many years of climate data…';
+
+  @override
+  String climateNoClearTrends(String from, String to) {
+    return 'The data for $from–$to show no clear changes for this area.';
+  }
+
+  @override
+  String get climateNotForecast =>
+      'This describes past years. It is not a forecast.';
+
+  @override
+  String climateFact(
+    String early,
+    String earlyFrom,
+    String earlyTo,
+    String recent,
+    String recentFrom,
+    String recentTo,
+  ) {
+    return 'On average $early in $earlyFrom–$earlyTo, and $recent in $recentFrom–$recentTo.';
+  }
+
+  @override
+  String climateValueDays(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String climateValueHeatUnits(String value) {
+    return '$value heat units';
+  }
+
+  @override
+  String climateValueCelsius(String value) {
+    return '$value °C';
+  }
+
+  @override
+  String climateValueMillimetres(String value) {
+    return '$value mm';
+  }
+
+  @override
+  String get climateAdviceTitle => 'What you could consider in the long run:';
+
+  @override
+  String climateSource(String source, String from, String to) {
+    return 'Source: $source, years $from–$to. Estimated data.';
+  }
+
+  @override
+  String climateNoteRegional(String km) {
+    return 'These numbers describe an area about $km km wide, not this one field.';
+  }
+
+  @override
+  String get climateNoteAirFrost =>
+      'Frost is counted from the air temperature 2 m above the ground. Close to the ground, frost comes more often.';
+
+  @override
+  String get climateNoteEvaporation =>
+      'The rain itself has not clearly changed. The balance changed because of evaporation, which we estimate from temperature.';
+
+  @override
+  String get climateFrostFreeUp => 'Longer season without frost';
+
+  @override
+  String get climateFrostFreeDown => 'Shorter season without frost';
+
+  @override
+  String get climateLastSpringFrostDown =>
+      'The last spring frost comes earlier';
+
+  @override
+  String get climateLastSpringFrostUp => 'The last spring frost comes later';
+
+  @override
+  String get climateFirstAutumnFrostUp => 'The first autumn frost comes later';
+
+  @override
+  String get climateFirstAutumnFrostDown =>
+      'The first autumn frost comes earlier';
+
+  @override
+  String get climateHotDaysUp => 'More hot days (30 °C and more)';
+
+  @override
+  String get climateHotDaysDown => 'Fewer hot days (30 °C and more)';
+
+  @override
+  String get climateMaxTemperatureUp => 'The hottest day of the year is hotter';
+
+  @override
+  String get climateMaxTemperatureDown =>
+      'The hottest day of the year is cooler';
+
+  @override
+  String get climateGrowingWarmthUp => 'More warmth for plants to grow';
+
+  @override
+  String get climateGrowingWarmthDown => 'Less warmth for plants to grow';
+
+  @override
+  String get climateDrySpellUp =>
+      'Longer spells without rain (April to September)';
+
+  @override
+  String get climateDrySpellDown =>
+      'Shorter spells without rain (April to September)';
+
+  @override
+  String get climateSeasonRainUp =>
+      'More rain in the growing season (April to September)';
+
+  @override
+  String get climateSeasonRainDown =>
+      'Less rain in the growing season (April to September)';
+
+  @override
+  String get climateWaterBalanceUp =>
+      'Better water balance: rain minus evaporation (April to September)';
+
+  @override
+  String get climateWaterBalanceDown =>
+      'Worse water balance: rain minus evaporation (April to September)';
+
+  @override
+  String get climateHeavyRainUp => 'More days with heavy rain (over 20 mm)';
+
+  @override
+  String get climateHeavyRainDown => 'Fewer days with heavy rain (over 20 mm)';
+
+  @override
+  String get climateAdviceHeatTolerantVarieties =>
+      'Consider varieties that flower earlier or cope better with heat, and sowing on time, so the crop flowers before the hottest weeks. Where possible, winter crops instead of spring crops.';
+
+  @override
+  String get climateAdviceKeepSoilCovered =>
+      'Consider keeping the soil covered (catch crops, straw), ploughing less often and building up humus. Such soil loses less water.';
+
+  @override
+  String get climateAdviceDroughtCropsOnLightSoil =>
+      'Your soil is light and holds little water. Consider crops that root deeply and cope better with drought, such as rye or lupin, and check whether watering would pay off.';
+
+  @override
+  String get climateAdviceUseLongerSeason =>
+      'A longer season lets you consider varieties that ripen later, or a catch crop after harvest.';
+
+  @override
+  String get climateAdviceDoNotSowEarlier =>
+      'Mind this: the last spring frosts do not clearly come earlier. Crops that frost can kill, such as maize, are better not sown earlier than before.';
+
+  @override
+  String get climateAdviceCheckWarmSeasonCrops =>
+      'Crops that need warmth, such as grain maize or soybean, have a better chance to ripen. It is worth trying them on a small part of the field before you change your plan.';
+
+  @override
+  String get climateAdviceProtectFromErosion =>
+      'Consider not leaving the soil bare: catch crops and crop residues protect it from being washed away.';
+
+  @override
+  String get climateAdviceWorkAcrossSlope =>
+      'Your field has a clear slope. Consider working across the slope and keeping the soil covered all year.';
+
+  @override
   String get reportMainTitle => 'Best plan for you';
 
   @override

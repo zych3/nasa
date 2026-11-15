@@ -449,6 +449,128 @@
   "reportLoading": "Working out your plan…",
   "reportLoadError": "We could not make the plan. Check your internet and try again.",
   "reportNoPlan": "No crop on our list suits this field with these answers. Try changing your answers.",
+  "climateSectionTitle": "How the climate in your area is changing",
+  "climateLoading": "Checking many years of climate data…",
+  "climateNoClearTrends": "The data for {from}–{to} show no clear changes for this area.",
+  "@climateNoClearTrends": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "climateNotForecast": "This describes past years. It is not a forecast.",
+  "climateFact": "On average {early} in {earlyFrom}–{earlyTo}, and {recent} in {recentFrom}–{recentTo}.",
+  "@climateFact": {
+    "placeholders": {
+      "early": {
+        "type": "String"
+      },
+      "earlyFrom": {
+        "type": "String"
+      },
+      "earlyTo": {
+        "type": "String"
+      },
+      "recent": {
+        "type": "String"
+      },
+      "recentFrom": {
+        "type": "String"
+      },
+      "recentTo": {
+        "type": "String"
+      }
+    }
+  },
+  "climateValueDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@climateValueDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "climateValueHeatUnits": "{value} heat units",
+  "@climateValueHeatUnits": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "climateValueCelsius": "{value} °C",
+  "@climateValueCelsius": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "climateValueMillimetres": "{value} mm",
+  "@climateValueMillimetres": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "climateAdviceTitle": "What you could consider in the long run:",
+  "climateSource": "Source: {source}, years {from}–{to}. Estimated data.",
+  "@climateSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "climateNoteRegional": "These numbers describe an area about {km} km wide, not this one field.",
+  "@climateNoteRegional": {
+    "placeholders": {
+      "km": {
+        "type": "String"
+      }
+    }
+  },
+  "climateNoteAirFrost": "Frost is counted from the air temperature 2 m above the ground. Close to the ground, frost comes more often.",
+  "climateNoteEvaporation": "The rain itself has not clearly changed. The balance changed because of evaporation, which we estimate from temperature.",
+  "climateFrostFreeUp": "Longer season without frost",
+  "climateFrostFreeDown": "Shorter season without frost",
+  "climateLastSpringFrostDown": "The last spring frost comes earlier",
+  "climateLastSpringFrostUp": "The last spring frost comes later",
+  "climateFirstAutumnFrostUp": "The first autumn frost comes later",
+  "climateFirstAutumnFrostDown": "The first autumn frost comes earlier",
+  "climateHotDaysUp": "More hot days (30 °C and more)",
+  "climateHotDaysDown": "Fewer hot days (30 °C and more)",
+  "climateMaxTemperatureUp": "The hottest day of the year is hotter",
+  "climateMaxTemperatureDown": "The hottest day of the year is cooler",
+  "climateGrowingWarmthUp": "More warmth for plants to grow",
+  "climateGrowingWarmthDown": "Less warmth for plants to grow",
+  "climateDrySpellUp": "Longer spells without rain (April to September)",
+  "climateDrySpellDown": "Shorter spells without rain (April to September)",
+  "climateSeasonRainUp": "More rain in the growing season (April to September)",
+  "climateSeasonRainDown": "Less rain in the growing season (April to September)",
+  "climateWaterBalanceUp": "Better water balance: rain minus evaporation (April to September)",
+  "climateWaterBalanceDown": "Worse water balance: rain minus evaporation (April to September)",
+  "climateHeavyRainUp": "More days with heavy rain (over 20 mm)",
+  "climateHeavyRainDown": "Fewer days with heavy rain (over 20 mm)",
+  "climateAdviceHeatTolerantVarieties": "Consider varieties that flower earlier or cope better with heat, and sowing on time, so the crop flowers before the hottest weeks. Where possible, winter crops instead of spring crops.",
+  "climateAdviceKeepSoilCovered": "Consider keeping the soil covered (catch crops, straw), ploughing less often and building up humus. Such soil loses less water.",
+  "climateAdviceDroughtCropsOnLightSoil": "Your soil is light and holds little water. Consider crops that root deeply and cope better with drought, such as rye or lupin, and check whether watering would pay off.",
+  "climateAdviceUseLongerSeason": "A longer season lets you consider varieties that ripen later, or a catch crop after harvest.",
+  "climateAdviceDoNotSowEarlier": "Mind this: the last spring frosts do not clearly come earlier. Crops that frost can kill, such as maize, are better not sown earlier than before.",
+  "climateAdviceCheckWarmSeasonCrops": "Crops that need warmth, such as grain maize or soybean, have a better chance to ripen. It is worth trying them on a small part of the field before you change your plan.",
+  "climateAdviceProtectFromErosion": "Consider not leaving the soil bare: catch crops and crop residues protect it from being washed away.",
+  "climateAdviceWorkAcrossSlope": "Your field has a clear slope. Consider working across the slope and keeping the soil covered all year.",
   "reportMainTitle": "Best plan for you",
   "reportGoalPicker": "Plan for:",
   "reportSowNext": "What to grow, year by year",

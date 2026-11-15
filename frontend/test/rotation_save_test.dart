@@ -6,12 +6,14 @@ import 'package:http/testing.dart';
 import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/account.dart';
+import 'package:hopito_field_shift/models/climate_trends.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/models/rotation_report.dart';
 import 'package:hopito_field_shift/pages/auth_page.dart';
 import 'package:hopito_field_shift/pages/rotation_report_page.dart';
 import 'package:hopito_field_shift/repositories/auth_repository.dart';
 import 'package:hopito_field_shift/repositories/auth_store.dart';
+import 'package:hopito_field_shift/repositories/climate_trends_repository.dart';
 import 'package:hopito_field_shift/repositories/rotation_repository.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -92,6 +94,17 @@ class _FakeRotations extends RotationRepository {
   }
 }
 
+/// The climate section under the plan has its own tests; here it stays empty
+/// (and makes no HTTP request, which would never finish in a widget test).
+class _NoClimate extends ClimateTrendsRepository {
+  @override
+  Future<ClimateTrends?> getTrends({
+    required String? parcelId,
+    required double lat,
+    required double lon,
+  }) async => null;
+}
+
 class _FakeAuth implements AuthRepository {
   @override
   Future<AccountSession> testLogin() async => const AccountSession(
@@ -146,6 +159,7 @@ Future<void> _open(
         answers: const RotationAnswers(pastCrops: ['rye']),
         authStore: store,
         repository: repo,
+        climateRepository: _NoClimate(),
       ),
     ),
   );

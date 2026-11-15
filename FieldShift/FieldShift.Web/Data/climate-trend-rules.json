@@ -1,0 +1,41 @@
+{
+  "_comment": "Rules of GET /api/parcels/climate-trends. The thresholds (minChange, minChangePercent) say how big a change must be before the farmer is told about it. They were chosen by the team so that small, practically invisible changes are not shown; they are not a scientific norm. Change them here, not in code.",
+
+  "minYears": 30,
+  "maxPValue": 0.05,
+  "comparedYears": 15,
+  "maxTrends": 3,
+
+  "_indicators": "Order matters: within a group the first indicator that qualifies is the one shown; later ones that say the same thing (same 'change') are merged into it. whenUp / whenDown name what a rise or fall means. water_balance comes after the two rain indicators on purpose: evaporation is estimated from temperature, so when only the balance changes, the answer says that rain itself did not (note evaporation_estimated_from_temperature).",
+  "indicators": [
+    { "id": "frost_free_days", "group": "frost", "whenUp": "longer_frost_free", "whenDown": "shorter_frost_free", "minChange": 7 },
+    { "id": "last_spring_frost", "group": "frost", "whenUp": "shorter_frost_free", "whenDown": "longer_frost_free", "minChange": 5 },
+    { "id": "first_autumn_frost", "group": "frost", "whenUp": "longer_frost_free", "whenDown": "shorter_frost_free", "minChange": 5 },
+
+    { "id": "hot_days", "group": "heat", "whenUp": "more_heat", "whenDown": "less_heat", "minChange": 3 },
+    { "id": "max_temperature", "group": "heat", "whenUp": "more_heat", "whenDown": "less_heat", "minChange": 1.0 },
+
+    { "id": "growing_degree_days", "group": "warmth", "whenUp": "more_warmth", "whenDown": "less_warmth", "minChange": 100 },
+
+    { "id": "longest_dry_spell", "group": "water", "whenUp": "drier", "whenDown": "wetter", "minChange": 3 },
+    { "id": "season_precipitation", "group": "water", "whenUp": "wetter", "whenDown": "drier", "minChangePercent": 10 },
+    { "id": "water_balance", "group": "water", "whenUp": "wetter", "whenDown": "drier", "minChange": 40 },
+
+    { "id": "heavy_rain_days", "group": "heavy_rain", "whenUp": "more_heavy_rain", "whenDown": "less_heavy_rain", "minChange": 1 }
+  ],
+
+  "_lightSoil": "Light soils hold little water. Texture codes of the top layer of the soil-agricultural map (agronomic categories I and II: sands) or its weak rye complexes.",
+  "lightSoil": {
+    "textureCodes": [ "pl", "plw", "ps", "pgl", "pgm", "p", "zp", "żp" ],
+    "complexes": [ "6", "7" ]
+  },
+
+  "_advice": "Advice codes per change; the frontend translates them. 'codes' always apply. 'onLightSoil' is added only when the parcel is known to have light soil, 'onSlope' only when its slope is known and at least slopeAtLeastPct, 'unlessEarlierSpringFrost' unless the last spring frost itself clearly comes earlier. A change without an entry is shown without advice.",
+  "advice": [
+    { "change": "more_heat", "codes": [ "heat_tolerant_varieties" ] },
+    { "change": "drier", "codes": [ "keep_soil_covered" ], "onLightSoil": [ "drought_crops_on_light_soil" ] },
+    { "change": "longer_frost_free", "codes": [ "use_longer_season" ], "unlessEarlierSpringFrost": [ "do_not_sow_earlier" ] },
+    { "change": "more_warmth", "codes": [ "check_warm_season_crops" ] },
+    { "change": "more_heavy_rain", "codes": [ "protect_from_erosion" ], "slopeAtLeastPct": 5, "onSlope": [ "work_across_slope" ] }
+  ]
+}
