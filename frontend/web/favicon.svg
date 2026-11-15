@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Field Shift">
+  <rect width="64" height="64" rx="14" fill="#1B5E20"/>
+  <path d="M32 47V30" stroke="#A5D6A7" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M32 34C32 23 24 17 14 18C14 29 21 35 32 34Z" fill="#66BB6A"/>
+  <path d="M32 30C32 19 40 12 50 13C50 24 43 31 32 30Z" fill="#A5D6A7"/>
+  <path d="M9 51Q32 43 55 51" stroke="#43A047" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M9 59Q32 51 55 59" stroke="#388E3C" stroke-width="4" stroke-linecap="round" fill="none"/>
+</svg>
