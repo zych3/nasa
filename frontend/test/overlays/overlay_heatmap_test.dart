@@ -134,4 +134,33 @@ void main() {
 
     expect(() => overlay.parseHeatmap(grid, layer), throwsFormatException);
   });
+
+  test('merge: blocks side by side become one grid, gaps stay empty', () {
+    OverlayHeatmap block(double lat, double lon, double value) =>
+        OverlayHeatmap(
+          rows: 2,
+          cols: 2,
+          southWestCenter: LatLng(lat, lon),
+          cellLat: 0.5,
+          cellLon: 0.625,
+          values: List.filled(4, value),
+          maxes: const [20, null],
+          colors: const [Color(0xFFFF0000), Color(0xFF0000FF)],
+        );
+    final home = block(52.0, 21.25, 10);
+    final east = block(52.0, 22.5, 30); // 2 cells east
+    final northEast = block(53.0, 22.5, 50); // 2 cells north of that
+
+    expect(OverlayHeatmap.merge([home]), same(home));
+    expect(OverlayHeatmap.merge([]), isNull);
+
+    final merged = OverlayHeatmap.merge([home, east, northEast])!;
+    expect(merged.rows, 4);
+    expect(merged.cols, 4);
+    expect(merged.cellCenter(0, 0), const LatLng(52.0, 21.25));
+    expect(merged.valueAt(0, 0), 10);
+    expect(merged.valueAt(1, 3), 30);
+    expect(merged.valueAt(3, 2), 50);
+    expect(merged.valueAt(3, 0), isNull, reason: 'no block north of home');
+  });
 }

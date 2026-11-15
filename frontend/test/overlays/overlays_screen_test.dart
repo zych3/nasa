@@ -4,7 +4,9 @@ import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/l10n/app_localizations.dart';
 import 'package:hopito_field_shift/models/parcel.dart';
 import 'package:hopito_field_shift/repositories/selected_plot_store.dart';
+import 'package:hopito_field_shift/overlays/soil_moisture_overlay.dart';
 import 'package:hopito_field_shift/screens/overlays_screen.dart';
+import 'package:hopito_field_shift/widgets/overlay_map.dart';
 import 'package:hopito_field_shift/widgets/read_aloud_button.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_ui/material_ui.dart';
@@ -151,6 +153,7 @@ void main() {
     await pumpScreen(tester);
     repo.complete(OverlaysScreen.examplePlace, loadSample());
     repo.completeGrid(OverlaysScreen.examplePlace, loadGridSample());
+    repo.answerGridAtOnce = true; // the blocks next to it
     await tester.pump();
 
     expect(find.byType(CircleLayer), findsOneWidget);
@@ -163,7 +166,9 @@ void main() {
     expect(find.text('umiarkowanie sucho (0,35–0,45)'), findsNWidgets(2));
     await tester.scrollUntilVisible(find.text(_pl.overlayHeatmapNote), 100);
     expect(find.text(_pl.overlayHeatmapNote), findsOneWidget);
-    expect(repo.gridRequests, [OverlaysScreen.examplePlace]);
+    expect(repo.gridRequests.first, OverlaysScreen.examplePlace);
+    // The map shows the cell size of the NASA data.
+    expect(find.text(_pl.overlaysHeatmapCellSize), findsOneWidget);
   });
 
   testWidgets('while the heat map loads the map says so; on failure a circle', (
@@ -191,6 +196,25 @@ void main() {
     expect(find.text(_pl.overlaysHeatmapLoading), findsNothing);
     expect(find.byType(CircleLayer), findsOneWidget);
     expect(find.text(_pl.overlayHeatmapNote), findsNothing);
+  });
+
+  testWidgets('zoomed out too far: no colours, a note to zoom in', (
+    tester,
+  ) async {
+    final layer = const SoilMoistureOverlay().parse(loadSample());
+    await tester.pumpWidget(
+      _app(
+        OverlayMap(
+          center: OverlaysScreen.examplePlace,
+          layer: layer,
+          heatmapTooFar: true,
+        ),
+      ),
+    );
+
+    expect(find.text(_pl.overlaysHeatmapZoomIn), findsOneWidget);
+    expect(find.byType(OverlayImageLayer), findsNothing);
+    expect(find.text(_pl.overlaysHeatmapCellSize), findsNothing);
   });
 
   testWidgets('reads the value card aloud', (tester) async {

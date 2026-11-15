@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter_map/flutter_map.dart';
@@ -19,8 +20,13 @@ import 'single_world_crs.dart';
 /// applies to as a tinted circle), a label "icon + word" with the value
 /// (never colour alone) and the outline of the user's field.
 ///
-/// The camera fits what is drawn whenever it changes: the whole heat map
-/// (about 250 km), or the circle (about 1 km for soil, 50 km for NASA data).
+/// The camera fits what is drawn whenever it changes: the heat map block
+/// around the field (about 250 km), or the circle (about 1 km for soil, 50 km
+/// for NASA data). When the user stops moving the map, [onVisibleAreaChanged]
+/// says what is visible, so more of the heat map can be loaded.
+///
+/// A strip along the top says what the heat map is doing: loading, hidden
+/// because the map shows too much, or how coarse the NASA data is.
 class OverlayMap extends StatefulWidget {
   const OverlayMap({
     super.key,
@@ -28,7 +34,10 @@ class OverlayMap extends StatefulWidget {
     this.layer,
     this.field,
     this.heatmap,
+    this.heatmapHome,
     this.heatmapLoading = false,
+    this.heatmapTooFar = false,
+    this.onVisibleAreaChanged,
     this.initialZoom = 13,
   });
 
@@ -46,8 +55,18 @@ class OverlayMap extends StatefulWidget {
   /// [layer]).
   final OverlayHeatmap? heatmap;
 
+  /// Where the camera goes for a heat map: the block around the field. It
+  /// stays the same while more blocks load, so the map does not jump.
+  final LatLngBounds? heatmapHome;
+
   /// Shows "Loading the map of the area…" on the map.
   final bool heatmapLoading;
+
+  /// Shows "Zoom in to see the colours" (the heat map is hidden).
+  final bool heatmapTooFar;
+
+  /// The visible area, after the map stopped moving.
+  final ValueChanged<LatLngBounds>? onVisibleAreaChanged;
 
   @override
   State<OverlayMap> createState() => _OverlayMapState();
@@ -63,6 +82,18 @@ class _OverlayMapState extends State<OverlayMap> {
 
   HeatmapImageProvider? _image;
 
+  /// Waits until the map stops moving before reporting the visible area.
+  Timer? _moveEnd;
+  static const _moveEndDelay = Duration(milliseconds: 400);
+
+  void _onPositionChanged(MapCamera camera, bool hasGesture) {
+    if (widget.onVisibleAreaChanged == null) return;
+    _moveEnd?.cancel();
+    _moveEnd = Timer(_moveEndDelay, () {
+      if (mounted) widget.onVisibleAreaChanged?.call(camera.visibleBounds);
+    });
+  }
+
   @override
   void didUpdateWidget(OverlayMap oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -74,15 +105,10 @@ class _OverlayMapState extends State<OverlayMap> {
     }
   }
 
-  /// What the camera shows: the heat map, else the circle.
+  /// What the camera shows: the heat map's home block, else the circle.
   static List<LatLng>? _fitPoints(OverlayMap map) {
-    final heatmap = map.heatmap;
-    if (heatmap != null) {
-      return [
-        LatLng(heatmap.south, heatmap.west),
-        LatLng(heatmap.north, heatmap.east),
-      ];
-    }
+    final home = map.heatmapHome;
+    if (home != null) return [home.southWest, home.northEast];
     return map.layer?.area.boundingPoints;
   }
 
@@ -100,6 +126,7 @@ class _OverlayMapState extends State<OverlayMap> {
 
   @override
   void dispose() {
+    _moveEnd?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -108,6 +135,40 @@ class _OverlayMapState extends State<OverlayMap> {
     coordinates: points,
     padding: const EdgeInsets.all(24),
   );
+
+  /// What the heat map is doing, most important first; `null` = nothing to
+  /// say (no heat map for this overlay).
+  MapPill? _topNote(AppLocalizations l10n, ColorScheme scheme) {
+    MapPill pill(String text, Widget Function(Color onColor) leading) =>
+        MapPill(
+          color: scheme.surface,
+          bordered: true,
+          text: text,
+          leading: leading,
+        );
+    if (widget.heatmapTooFar) {
+      return pill(
+        l10n.overlaysHeatmapZoomIn,
+        (onColor) => Icon(Icons.zoom_in, size: 18, color: onColor),
+      );
+    }
+    if (widget.heatmapLoading) {
+      return pill(
+        l10n.overlaysHeatmapLoading,
+        (onColor) => SizedBox.square(
+          dimension: 16,
+          child: CircularProgressIndicator(strokeWidth: 2, color: onColor),
+        ),
+      );
+    }
+    if (widget.heatmap != null) {
+      return pill(
+        l10n.overlaysHeatmapCellSize,
+        (onColor) => Icon(Icons.grid_on, size: 18, color: onColor),
+      );
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +189,9 @@ class _OverlayMapState extends State<OverlayMap> {
         initialCenter: widget.center,
         initialZoom: widget.initialZoom,
         initialCameraFit: fit == null ? null : _fit(fit),
+        onPositionChanged: _onPositionChanged,
+        // The first view counts too, before the user moves anything.
+        onMapReady: () => _onPositionChanged(_controller.camera, false),
       ),
       children: [
         TileLayer(
@@ -223,7 +287,7 @@ class _OverlayMapState extends State<OverlayMap> {
             ],
           ),
         ),
-        if (widget.heatmapLoading)
+        if (_topNote(l10n, scheme) case final note?)
           // MapPill centres itself in the box it gets: a strip along the top.
           Positioned(
             top: 8,
@@ -233,18 +297,7 @@ class _OverlayMapState extends State<OverlayMap> {
             child: IgnorePointer(
               child: MediaQuery.withClampedTextScaling(
                 maxScaleFactor: _maxLabelTextScale,
-                child: MapPill(
-                  color: scheme.surface,
-                  bordered: true,
-                  text: l10n.overlaysHeatmapLoading,
-                  leading: (onColor) => SizedBox.square(
-                    dimension: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: onColor,
-                    ),
-                  ),
-                ),
+                child: note,
               ),
             ),
           ),

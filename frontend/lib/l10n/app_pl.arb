@@ -137,5 +137,7 @@
   "readAloudStop": "Zatrzymaj czytanie",
   "readAloudUnavailable": "Czytanie na głos nie działa na tym urządzeniu.",
   "overlaysHeatmapLoading": "Wczytuję mapę okolicy…",
-  "overlayHeatmapNote": "Kolory na mapie pokazują okolicę ok. 250 km wokół pola. Przejścia między kolorami są wygładzone."
+  "overlayHeatmapNote": "Kolory na mapie to dane NASA dla okolicy pola; po przesunięciu mapy doczytują się kolejne. Przejścia między kolorami są wygładzone.",
+  "overlaysHeatmapZoomIn": "Przybliż mapę, aby zobaczyć kolory",
+  "overlaysHeatmapCellSize": "Dane NASA: jedna wartość na ok. 50 km"
 }

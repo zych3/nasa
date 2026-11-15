@@ -34,7 +34,7 @@ class FakeMapLayersRepository extends MapLayersRepository {
   @override
   Future<Map<String, dynamic>> grid(LatLng point, {bool refresh = false}) {
     gridRequests.add(point);
-    if (answerGridAtOnce) return Future.value(loadGridSample());
+    if (answerGridAtOnce) return Future.value(gridSampleAt(point));
     final completer = Completer<Map<String, dynamic>>();
     _pendingGrid.putIfAbsent(point, () => []).add(completer);
     return completer.future;
@@ -56,4 +56,21 @@ class FakeMapLayersRepository extends MapLayersRepository {
 
   void fail(LatLng point, Object error) =>
       _pending[point]!.removeAt(0).completeError(error);
+}
+
+/// The saved grid moved so that its middle cell is the cell of [point] (as
+/// the backend centres a block), for tests that load several blocks.
+Map<String, dynamic> gridSampleAt(LatLng point) {
+  final grid = loadGridSample();
+  final center = grid['center'] as Map<String, dynamic>;
+  final dLat = (point.latitude / 0.5).round() * 0.5 - (center['lat'] as num);
+  final dLon =
+      (point.longitude / 0.625).round() * 0.625 - (center['lon'] as num);
+  center['lat'] = (center['lat'] as num) + dLat;
+  center['lon'] = (center['lon'] as num) + dLon;
+  for (final cell in (grid['cells'] as List).cast<Map<String, dynamic>>()) {
+    cell['lat'] = (cell['lat'] as num) + dLat;
+    cell['lon'] = (cell['lon'] as num) + dLon;
+  }
+  return grid;
 }

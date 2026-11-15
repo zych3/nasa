@@ -554,5 +554,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overlayHeatmapNote =>
-      'The colours on the map show the area of about 250 km around the field. The changes between colours are smoothed.';
+      'The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.';
+
+  @override
+  String get overlaysHeatmapZoomIn => 'Zoom in to see the colours';
+
+  @override
+  String get overlaysHeatmapCellSize => 'NASA data: one value per about 50 km';
 }

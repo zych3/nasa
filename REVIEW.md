@@ -122,3 +122,18 @@ zostają kołem, błąd siatki → koło bez komunikatu o błędzie, wyścig sta
 w przeglądarce (wilgotność grudzień, opady lipiec).
 
 **Wysoki priorytet: brak.**
+
+## Recenzja #7 (heatmapa dociągana przy przesuwaniu, ukrywana po oddaleniu)
+
+| # | Prio | Status | Plik | Uwaga |
+|---|---|---|---|---|
+| 45 | Ś | ✅ | `overlay_map.dart` | Kamera dopasowywała się do całej heatmapy, więc każdy nowy kawałek przesuwałby widok. Teraz dopasowanie tylko do kawałka z polem (`heatmapHome`), stałego także przy ukryciu po oddaleniu. |
+| 46 | N | ⏳ | `overlay_controller.dart` | Kawałka, który się nie wczytał, nie ponawiam aż do zmiany miejsca lub „Spróbuj ponownie” (żeby nie zasypywać NASA przy każdym ruchu mapy). |
+| 47 | N | 📝 | `overlay_controller.dart` | Kawałki liczone od kawałka z polem, więc dwa pola w różnych komórkach NASA mają inaczej przesunięte kawałki i nie dzielą pamięci podręcznej backendu. Wyrównanie do stałej siatki dałoby wspólny cache, ale pierwszy widok potrzebowałby wtedy do 4 kawałków zamiast 1. |
+
+Sprawdzone: przesunięcie mapy → doczytanie kawałków (na żywo i test), najwyżej 2 naraz, powrót bez nowych zapytań,
+> 3×3 kawałki → heatmapa znika z napisem „Przybliż mapę…” i nic się nie pobiera, przybliżenie przywraca, kawałek
+z błędem zostaje pusty, dane demo bez dociągania, łączenie bez szwów (test `merge`).
+
+**Wysoki priorytet: brak.**
+

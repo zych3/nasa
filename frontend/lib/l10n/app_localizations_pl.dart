@@ -558,5 +558,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get overlayHeatmapNote =>
-      'Kolory na mapie pokazują okolicę ok. 250 km wokół pola. Przejścia między kolorami są wygładzone.';
+      'Kolory na mapie to dane NASA dla okolicy pola; po przesunięciu mapy doczytują się kolejne. Przejścia między kolorami są wygładzone.';
+
+  @override
+  String get overlaysHeatmapZoomIn => 'Przybliż mapę, aby zobaczyć kolory';
+
+  @override
+  String get overlaysHeatmapCellSize => 'Dane NASA: jedna wartość na ok. 50 km';
 }

@@ -929,8 +929,20 @@ abstract class AppLocalizations {
   /// No description provided for @overlayHeatmapNote.
   ///
   /// In en, this message translates to:
-  /// **'The colours on the map show the area of about 250 km around the field. The changes between colours are smoothed.'**
+  /// **'The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.'**
   String get overlayHeatmapNote;
+
+  /// No description provided for @overlaysHeatmapZoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in to see the colours'**
+  String get overlaysHeatmapZoomIn;
+
+  /// No description provided for @overlaysHeatmapCellSize.
+  ///
+  /// In en, this message translates to:
+  /// **'NASA data: one value per about 50 km'**
+  String get overlaysHeatmapCellSize;
 }
 
 class _AppLocalizationsDelegate

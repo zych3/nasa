@@ -6,7 +6,8 @@ import 'package:material_ui/material_ui.dart';
 
 /// One month of one overlay over the area around the field: a block of NASA
 /// POWER cells (one value each, about 55 × 43 km), from
-/// `GET /api/map-layers/grid`. Drawn as a heat map by [heatmapPixels].
+/// `GET /api/map-layers/grid`, or several such blocks put together by
+/// [OverlayHeatmap.merge]. Drawn as a heat map by [heatmapPixels].
 @immutable
 class OverlayHeatmap {
   OverlayHeatmap({
@@ -20,6 +21,50 @@ class OverlayHeatmap {
     required this.colors,
   }) : assert(values.length == rows * cols),
        assert(maxes.length == colors.length && colors.isNotEmpty);
+
+  /// One grid from several blocks of the same overlay and month (blocks
+  /// that are next to each other or apart), so the heat map blends across
+  /// their edges. Cells no block has are `null` (drawn transparent).
+  /// `null` when [parts] is empty.
+  static OverlayHeatmap? merge(List<OverlayHeatmap> parts) {
+    if (parts.isEmpty) return null;
+    if (parts.length == 1) return parts.single;
+    final first = parts.first;
+    final cellLat = first.cellLat;
+    final cellLon = first.cellLon;
+    // Cells sit on one global grid: index = centre / cell size.
+    int rowOf(OverlayHeatmap h) =>
+        (h.southWestCenter.latitude / cellLat).round();
+    int colOf(OverlayHeatmap h) =>
+        (h.southWestCenter.longitude / cellLon).round();
+    final row0 = parts.map(rowOf).reduce(math.min);
+    final col0 = parts.map(colOf).reduce(math.min);
+    final rows = parts.map((h) => rowOf(h) + h.rows).reduce(math.max) - row0;
+    final cols = parts.map((h) => colOf(h) + h.cols).reduce(math.max) - col0;
+
+    final values = List<double?>.filled(rows * cols, null);
+    for (final part in parts) {
+      assert(part.cellLat == cellLat && part.cellLon == cellLon);
+      final dr = rowOf(part) - row0;
+      final dc = colOf(part) - col0;
+      for (var r = 0; r < part.rows; r++) {
+        for (var c = 0; c < part.cols; c++) {
+          final value = part.valueAt(r, c);
+          if (value != null) values[(dr + r) * cols + dc + c] = value;
+        }
+      }
+    }
+    return OverlayHeatmap(
+      rows: rows,
+      cols: cols,
+      southWestCenter: LatLng(row0 * cellLat, col0 * cellLon),
+      cellLat: cellLat,
+      cellLon: cellLon,
+      values: values,
+      maxes: first.maxes,
+      colors: first.colors,
+    );
+  }
 
   /// Size of the block: rows south → north, columns west → east.
   final int rows;

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_map/flutter_map.dart' show LatLngBounds;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hopito_field_shift/api/api_client.dart';
 import 'package:hopito_field_shift/models/overlay_layer.dart';
@@ -325,12 +326,95 @@ void main() {
       expect(c.isHeatmapLoading, isTrue);
     });
 
+    LatLngBounds bounds(double s, double w, double n, double e) =>
+        LatLngBounds(LatLng(s, w), LatLng(n, e));
+
+    Future<void> loadHome() async {
+      c.showPlace(_field);
+      repo.complete(_field, loadSample());
+      repo.completeGrid(_field, loadGridSample());
+      await pumpEventQueue();
+    }
+
+    test('loads the blocks the map shows; the home block stays put', () async {
+      await loadHome();
+      final home = c.heatmapHome;
+      expect(c.heatmap!.rows, 5);
+
+      // A bit more to the north: the block north of the field's one.
+      c.showArea(bounds(51.0, 20.0, 53.9, 22.5));
+      const north = LatLng(54.5, 21.25);
+      expect(repo.gridRequests, [_field, north]);
+      expect(c.isHeatmapLoading, isTrue);
+
+      repo.completeGrid(north, gridSampleAt(north));
+      await pumpEventQueue();
+      expect(c.isHeatmapLoading, isFalse);
+      expect(c.heatmap!.rows, 10, reason: 'one grid from both blocks');
+      expect(c.heatmap!.cols, 5);
+      expect(c.heatmapHome, home, reason: 'the camera does not jump');
+
+      // Moving back does not ask again.
+      c.showArea(bounds(51.0, 20.0, 53.9, 22.5));
+      expect(repo.gridRequests, hasLength(2));
+    });
+
+    test('at most 2 blocks load at once', () async {
+      await loadHome();
+
+      c.showArea(bounds(49.6, 18.2, 54.4, 24.3)); // 3 × 3 blocks
+      expect(
+        repo.gridRequests,
+        hasLength(1 + OverlayController.maxBlocksLoading),
+      );
+
+      final first = repo.gridRequests[1];
+      repo.completeGrid(first, gridSampleAt(first));
+      await pumpEventQueue();
+      expect(
+        repo.gridRequests,
+        hasLength(2 + OverlayController.maxBlocksLoading),
+      );
+    });
+
+    test(
+      'too far: no heat map, nothing loaded; zooming in brings it back',
+      () async {
+        await loadHome();
+
+        c.showArea(bounds(40, 0, 65, 40));
+        expect(c.isHeatmapTooFar, isTrue);
+        expect(c.heatmap, isNull);
+        expect(c.heatmapHome, isNotNull, reason: 'the camera does not jump');
+        expect(repo.gridRequests, [_field]);
+
+        c.showArea(bounds(51.5, 20.5, 52.5, 22.0));
+        expect(c.isHeatmapTooFar, isFalse);
+        expect(c.heatmap, isNotNull);
+        expect(repo.gridRequests, [_field]);
+      },
+    );
+
+    test('a failed block stays empty, the rest still shows', () async {
+      await loadHome();
+      c.showArea(bounds(51.0, 20.0, 53.9, 22.5));
+      repo.failGrid(const LatLng(54.5, 21.25), Exception('offline'));
+      await pumpEventQueue();
+
+      expect(c.isHeatmapLoading, isFalse);
+      expect(c.heatmap!.rows, 5);
+    });
+
     test('demo data comes with the demo heat map', () async {
       await c.showDemo();
       await pumpEventQueue();
 
       expect(c.isDemo, isTrue);
       expect(c.heatmap, isNotNull);
+
+      // The demo has one block only: moving the map asks for nothing.
+      c.showArea(LatLngBounds(const LatLng(49, 18), const LatLng(55, 25)));
+      expect(repo.gridRequests, isEmpty);
     });
   });
 }
