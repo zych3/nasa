@@ -10,6 +10,7 @@ import 'pages/area_map_page.dart';
 import 'pages/plot_page.dart';
 import 'repositories/auth_store.dart';
 import 'repositories/local_plans_store.dart';
+import 'repositories/my_parcels_store.dart';
 import 'repositories/selected_plot_store.dart';
 import 'screens/overlays_screen.dart';
 
@@ -18,9 +19,18 @@ Future<void> main() async {
   final plotStore = SelectedPlotStore();
   final authStore = AuthStore();
   final plans = LocalPlansStore.shared;
-  await Future.wait([plotStore.load(), authStore.load(), plans.load()]);
+  final parcels = MyParcelsStore.shared;
+  await Future.wait([
+    plotStore.load(),
+    authStore.load(),
+    plans.load(),
+    parcels.load(),
+  ]);
   // With an account the plans on the phone are merged with it on sign-in.
   plans.attach(authStore);
+  // The same for "My parcels"; the active parcel always belongs to the list.
+  await parcels.bind(plotStore);
+  parcels.attach(authStore);
   runApp(FieldShiftApp(plotStore: plotStore, authStore: authStore));
 }
 

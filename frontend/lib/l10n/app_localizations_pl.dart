@@ -173,15 +173,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Nie udało się znaleźć Twojej lokalizacji. Możesz przesunąć mapę do swojego pola ręcznie.';
 
   @override
-  String get nearbyParcelsSection => 'Działki w pobliżu';
-
-  @override
   String get parcelHere => 'Działka, na której jesteś';
-
-  @override
-  String distanceFromYou(String distance) {
-    return '$distance od Ciebie';
-  }
 
   @override
   String get myFieldMarker => 'Moje pole';
@@ -1311,4 +1303,51 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get myPlansDeleteFailed =>
       'Nie udało się usunąć planu. Spróbuj ponownie.';
+
+  @override
+  String get myParcelsTitle => 'Moje działki';
+
+  @override
+  String get myParcelsEmpty =>
+      'Nie masz jeszcze działek. Wybierz swoje pole na mapie i potwierdź, że jest Twoje.';
+
+  @override
+  String get myParcelsSwipeHint =>
+      'Dotknij działki, aby z nią pracować. Przesuń ją w prawo, aby usunąć.';
+
+  @override
+  String myParcelsSynced(String date) {
+    return 'Zsynchronizowano z kontem: $date';
+  }
+
+  @override
+  String get myParcelAskTitle => 'Czy to Twoja działka?';
+
+  @override
+  String myParcelAskBody(String name) {
+    return 'Czy $name to Twoja działka?';
+  }
+
+  @override
+  String get myParcelYes => 'Tak';
+
+  @override
+  String get myParcelNo => 'Nie';
+
+  @override
+  String get myParcelAdded => 'Działka dodana do Twoich działek.';
+
+  @override
+  String get myParcelRemoveTitle => 'Usunąć tę działkę?';
+
+  @override
+  String myParcelRemoveBody(String name) {
+    return '$name zostanie usunięta z Twoich działek.';
+  }
+
+  @override
+  String get myParcelRemoveYes => 'Usuń';
+
+  @override
+  String get myParcelRemoved => 'Działka usunięta.';
 }

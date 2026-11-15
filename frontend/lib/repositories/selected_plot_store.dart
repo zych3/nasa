@@ -43,6 +43,19 @@ class SelectedPlotStore extends ChangeNotifier {
     }
   }
 
+  /// No active field (e.g. the parcel was removed from "My parcels").
+  Future<void> clear() async {
+    if (_parcel == null) return;
+    _parcel = null;
+    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_key);
+    } catch (_) {
+      // The choice is gone for this session even if it cannot be saved.
+    }
+  }
+
   void setNearby(List<Parcel> parcels) {
     _nearby = List.unmodifiable(parcels);
     notifyListeners();

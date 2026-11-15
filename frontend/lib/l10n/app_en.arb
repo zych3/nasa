@@ -100,16 +100,7 @@
   "locationServiceOff": "Location is turned off on this device. Turn it on and try again.",
   "locationPermissionDenied": "We cannot see your location. You can still move the map by hand.",
   "locationFailed": "Could not find your location. You can move the map to your field by hand.",
-  "nearbyParcelsSection": "Parcels near you",
   "parcelHere": "Parcel where you are",
-  "distanceFromYou": "{distance} from you",
-  "@distanceFromYou": {
-    "placeholders": {
-      "distance": {
-        "type": "String"
-      }
-    }
-  },
   "myFieldMarker": "My field",
   "youAreHere": "You are here",
   "zoomInForParcels": "Zoom in to see parcels",
@@ -801,5 +792,21 @@
   "myPlansDeleted": "Plan deleted.",
   "myPlansDeleteFailed": "Could not delete the plan. Please try again.",
   "@myPlansItemInfo": { "placeholders": { "goal": { "type": "String" }, "date": { "type": "String" } } },
-  "@myPlansSavedOn": { "placeholders": { "date": { "type": "String" } } }
+  "@myPlansSavedOn": { "placeholders": { "date": { "type": "String" } } },
+  "myParcelsTitle": "My parcels",
+  "myParcelsEmpty": "You have no parcels yet. Choose your field on the map and confirm it is yours.",
+  "myParcelsSwipeHint": "Tap a parcel to work on it. Swipe it to the right to remove it.",
+  "myParcelsSynced": "Synced with your account: {date}",
+  "myParcelAskTitle": "Is this your parcel?",
+  "myParcelAskBody": "Is {name} your parcel?",
+  "myParcelYes": "Yes",
+  "myParcelNo": "No",
+  "myParcelAdded": "Parcel added to your parcels.",
+  "myParcelRemoveTitle": "Remove this parcel?",
+  "myParcelRemoveBody": "{name} will be removed from your parcels.",
+  "myParcelRemoveYes": "Remove",
+  "myParcelRemoved": "Parcel removed.",
+  "@myParcelsSynced": { "placeholders": { "date": { "type": "String" } } },
+  "@myParcelAskBody": { "placeholders": { "name": { "type": "String" } } },
+  "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } }
 }

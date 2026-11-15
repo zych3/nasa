@@ -374,23 +374,11 @@ abstract class AppLocalizations {
   /// **'Could not find your location. You can move the map to your field by hand.'**
   String get locationFailed;
 
-  /// No description provided for @nearbyParcelsSection.
-  ///
-  /// In en, this message translates to:
-  /// **'Parcels near you'**
-  String get nearbyParcelsSection;
-
   /// No description provided for @parcelHere.
   ///
   /// In en, this message translates to:
   /// **'Parcel where you are'**
   String get parcelHere;
-
-  /// No description provided for @distanceFromYou.
-  ///
-  /// In en, this message translates to:
-  /// **'{distance} from you'**
-  String distanceFromYou(String distance);
 
   /// No description provided for @myFieldMarker.
   ///
@@ -2161,6 +2149,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete the plan. Please try again.'**
   String get myPlansDeleteFailed;
+
+  /// No description provided for @myParcelsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My parcels'**
+  String get myParcelsTitle;
+
+  /// No description provided for @myParcelsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no parcels yet. Choose your field on the map and confirm it is yours.'**
+  String get myParcelsEmpty;
+
+  /// No description provided for @myParcelsSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a parcel to work on it. Swipe it to the right to remove it.'**
+  String get myParcelsSwipeHint;
+
+  /// No description provided for @myParcelsSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced with your account: {date}'**
+  String myParcelsSynced(String date);
+
+  /// No description provided for @myParcelAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this your parcel?'**
+  String get myParcelAskTitle;
+
+  /// No description provided for @myParcelAskBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Is {name} your parcel?'**
+  String myParcelAskBody(String name);
+
+  /// No description provided for @myParcelYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get myParcelYes;
+
+  /// No description provided for @myParcelNo.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get myParcelNo;
+
+  /// No description provided for @myParcelAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel added to your parcels.'**
+  String get myParcelAdded;
+
+  /// No description provided for @myParcelRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this parcel?'**
+  String get myParcelRemoveTitle;
+
+  /// No description provided for @myParcelRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} will be removed from your parcels.'**
+  String myParcelRemoveBody(String name);
+
+  /// No description provided for @myParcelRemoveYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get myParcelRemoveYes;
+
+  /// No description provided for @myParcelRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Parcel removed.'**
+  String get myParcelRemoved;
 }
 
 class _AppLocalizationsDelegate

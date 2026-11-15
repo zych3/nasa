@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../components/map_button.dart';
 import '../components/map_search_bar.dart';
+import '../components/my_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
@@ -242,8 +243,13 @@ class _AreaMapPageState extends State<AreaMapPage> {
 
   Future<void> _choose(Parcel parcel) async {
     setState(() => _foundId = null);
-    await widget.store.select(parcel);
-    widget.onParcelChosen();
+    // "Is this your parcel?": only a yes makes it one of the user's.
+    final chosen = await offerMyParcel(
+      context,
+      parcel: parcel,
+      store: widget.store,
+    );
+    if (chosen && mounted) widget.onParcelChosen();
   }
 
   void _tell(String text) {

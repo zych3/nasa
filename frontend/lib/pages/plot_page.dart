@@ -1,13 +1,15 @@
+import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../components/address_search_field.dart';
 import '../components/input/plotInput/plot_input.dart';
 import '../components/map_button.dart';
-import '../components/nearby_plot_list.dart';
+import '../components/my_plot_list.dart';
 import '../components/parcel_map.dart';
 import '../l10n/app_localizations.dart';
 import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
+import '../repositories/my_parcels_store.dart';
 import '../repositories/parcel_repository.dart';
 import '../repositories/auth_store.dart';
 import '../repositories/selected_plot_store.dart';
@@ -16,11 +18,19 @@ import 'rotation_wizard_page.dart';
 /// "Moje pole" – plot data page. Shows the chosen (saved) parcel and lets the
 /// user pick another one from the parcels nearby or by typing an address.
 class PlotPage extends StatefulWidget {
-  const PlotPage({super.key, required this.store, required this.authStore});
+  const PlotPage({
+    super.key,
+    required this.store,
+    required this.authStore,
+    this.parcels,
+  });
 
   final SelectedPlotStore store;
 
   final AuthStore authStore;
+
+  /// "My parcels" (the app's own list by default).
+  final MyParcelsStore? parcels;
 
   @override
   State<PlotPage> createState() => _PlotPageState();
@@ -28,6 +38,7 @@ class PlotPage extends StatefulWidget {
 
 class _PlotPageState extends State<PlotPage> {
   final _parcels = ParcelRepository();
+  late final MyParcelsStore _mine = widget.parcels ?? MyParcelsStore.shared;
   bool _loading = false;
 
   Future<void> _findParcel(String address) async {
@@ -38,7 +49,7 @@ class _PlotPageState extends State<PlotPage> {
       final parcel = await _parcels.searchByAddress(address);
       if (!mounted) return;
       if (parcel != null) {
-        await widget.store.select(parcel.withAddress(address));
+        await _offer(parcel.withAddress(address));
       } else {
         messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
       }
@@ -50,6 +61,23 @@ class _PlotPageState extends State<PlotPage> {
     }
   }
 
+  /// Asks "is this your parcel?" before the parcel joins "My parcels".
+  Future<void> _offer(Parcel parcel) => offerMyParcel(
+    context,
+    parcel: parcel,
+    store: widget.store,
+    parcels: _mine,
+  );
+
+  Future<void> _remove(Parcel parcel) async {
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    await _mine.remove(parcel.id);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(l10n.myParcelRemoved)));
+  }
+
   /// The user picked a full address from the hints: take the parcel there.
   Future<void> _choosePoint(AddressSuggestion hint, String text) async {
     final l10n = AppLocalizations.of(context);
@@ -59,7 +87,7 @@ class _PlotPageState extends State<PlotPage> {
       final parcel = await _parcels.parcelAt(hint.point);
       if (!mounted) return;
       if (parcel != null) {
-        await widget.store.select(parcel.withAddress(text));
+        await _offer(parcel.withAddress(text));
       } else {
         messenger.showSnackBar(SnackBar(content: Text(l10n.parcelNotFound)));
       }
@@ -74,7 +102,7 @@ class _PlotPageState extends State<PlotPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.store,
+      listenable: Listenable.merge([widget.store, _mine, widget.authStore]),
       builder: (context, _) => _buildPage(context),
     );
   }
@@ -84,6 +112,7 @@ class _PlotPageState extends State<PlotPage> {
     final l10n = AppLocalizations.of(context);
     final Parcel? parcel = widget.store.parcel;
     final nearby = widget.store.nearby;
+    final mine = _mine.parcels;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -162,17 +191,42 @@ class _PlotPageState extends State<PlotPage> {
         ),
         const SizedBox(height: 24),
 
-        // Parcels near the user's location (from the map)
-        if (nearby.isNotEmpty) ...[
-          Text(l10n.nearbyParcelsSection, style: theme.textTheme.titleMedium),
+        // The user's own parcels: added from the map or the address search,
+        // removed by swiping to the right.
+        Text(l10n.myParcelsTitle, style: theme.textTheme.titleMedium),
+        const SizedBox(height: 8),
+        if (mine.isEmpty)
+          Text(
+            l10n.myParcelsEmpty,
+            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+          )
+        else ...[
+          Text(
+            l10n.myParcelsSwipeHint,
+            style: theme.textTheme.bodyLarge?.copyWith(fontSize: 18),
+          ),
           const SizedBox(height: 8),
-          NearbyPlotList(
-            parcels: nearby,
+          MyPlotList(
+            parcels: mine,
             selectedId: parcel?.id,
             onSelected: widget.store.select,
+            onRemoved: _remove,
           ),
-          const SizedBox(height: 24),
+          if (widget.authStore.status == AuthStatus.signedIn &&
+              _mine.syncedAt != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                l10n.myParcelsSynced(
+                  DateFormat.yMd(Localizations.localeOf(context).toString())
+                      .add_Hm()
+                      .format(_mine.syncedAt!.toLocal()),
+                ),
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
         ],
+        const SizedBox(height: 24),
 
         // Plot input form (left as-is)
         // Text(l10n.plotDataSection, style: theme.textTheme.titleMedium),

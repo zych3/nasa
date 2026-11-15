@@ -171,15 +171,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Could not find your location. You can move the map to your field by hand.';
 
   @override
-  String get nearbyParcelsSection => 'Parcels near you';
-
-  @override
   String get parcelHere => 'Parcel where you are';
-
-  @override
-  String distanceFromYou(String distance) {
-    return '$distance from you';
-  }
 
   @override
   String get myFieldMarker => 'My field';
@@ -1303,4 +1295,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get myPlansDeleteFailed =>
       'Could not delete the plan. Please try again.';
+
+  @override
+  String get myParcelsTitle => 'My parcels';
+
+  @override
+  String get myParcelsEmpty =>
+      'You have no parcels yet. Choose your field on the map and confirm it is yours.';
+
+  @override
+  String get myParcelsSwipeHint =>
+      'Tap a parcel to work on it. Swipe it to the right to remove it.';
+
+  @override
+  String myParcelsSynced(String date) {
+    return 'Synced with your account: $date';
+  }
+
+  @override
+  String get myParcelAskTitle => 'Is this your parcel?';
+
+  @override
+  String myParcelAskBody(String name) {
+    return 'Is $name your parcel?';
+  }
+
+  @override
+  String get myParcelYes => 'Yes';
+
+  @override
+  String get myParcelNo => 'No';
+
+  @override
+  String get myParcelAdded => 'Parcel added to your parcels.';
+
+  @override
+  String get myParcelRemoveTitle => 'Remove this parcel?';
+
+  @override
+  String myParcelRemoveBody(String name) {
+    return '$name will be removed from your parcels.';
+  }
+
+  @override
+  String get myParcelRemoveYes => 'Remove';
+
+  @override
+  String get myParcelRemoved => 'Parcel removed.';
 }
