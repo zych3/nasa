@@ -4,6 +4,9 @@ import 'package:material_ui/material_ui.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/parcel.dart';
+import '../widgets/map_attribution.dart';
+import '../widgets/map_pill.dart';
+import '../widgets/single_world_crs.dart';
 
 /// The one map of parcels in the app, used by the "Map" and "My field"
 /// screens so a parcel looks the same everywhere:
@@ -160,7 +163,7 @@ class _ParcelMapState extends State<ParcelMap> {
     return FlutterMap(
       mapController: _controller,
       options: MapOptions(
-        crs: const _SingleWorldCrs(),
+        crs: const SingleWorldCrs(),
         initialCenter: widget.initialCenter,
         initialZoom: widget.initialZoom,
         initialCameraFit: widget.fitMyField && field != null
@@ -219,43 +222,47 @@ class _ParcelMapState extends State<ParcelMap> {
             ),
           ),
 
-        MarkerLayer(
-          markers: [
-            if (field != null)
-              Marker(
-                point: field.center,
-                width: 140,
-                height: 40,
-                child: IgnorePointer(
-                  child: _MapLabel(
-                    icon: Icons.flag,
-                    text: l10n.myFieldMarker,
-                    color: scheme.tertiary,
+        // Marker boxes have a fixed size: the label grows with the system
+        // text size up to 1.3× (like the nav bar).
+        MediaQuery.withClampedTextScaling(
+          maxScaleFactor: 1.3,
+          child: MarkerLayer(
+            markers: [
+              if (field != null)
+                Marker(
+                  point: field.center,
+                  width: 180,
+                  height: 52,
+                  child: IgnorePointer(
+                    child: MapPill(
+                      color: scheme.tertiary,
+                      text: l10n.myFieldMarker,
+                      leading: (onColor) =>
+                          Icon(Icons.flag, size: 18, color: onColor),
+                    ),
                   ),
                 ),
-              ),
-            if (userPosition != null)
-              Marker(
-                point: userPosition,
-                width: 48,
-                height: 48,
-                child: IgnorePointer(
-                  child: Icon(
-                    Icons.person_pin_circle,
-                    size: 48,
-                    color: scheme.primary,
-                    semanticLabel: l10n.youAreHere,
+              if (userPosition != null)
+                Marker(
+                  point: userPosition,
+                  width: 48,
+                  height: 48,
+                  child: IgnorePointer(
+                    child: Icon(
+                      Icons.person_pin_circle,
+                      size: 48,
+                      color: scheme.primary,
+                      semanticLabel: l10n.youAreHere,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
 
         // Plain text credit (required by OpenStreetMap) instead of an
         // unexplained "i" icon in the corner.
-        const SimpleAttributionWidget(
-          source: Text('© OpenStreetMap contributors'),
-        ),
+        const MapAttribution(),
       ],
     );
   }
@@ -296,60 +303,6 @@ class _FadeOutWhenZoomedOut extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOut,
         child: child,
-      ),
-    );
-  }
-}
-
-/// Default Web Mercator, but without sideways world copies. flutter_map paints
-/// and hit-tests polygons once per world copy until one is off-screen; in the
-/// browser that check can fail and throw "Infinite loop going beyond 30".
-/// We only show Poland, so one world is enough.
-class _SingleWorldCrs extends Epsg3857 {
-  const _SingleWorldCrs();
-
-  @override
-  bool get replicatesWorldLongitude => false;
-}
-
-/// Small pill with icon + word, drawn on the map (never colour alone).
-class _MapLabel extends StatelessWidget {
-  const _MapLabel({
-    required this.icon,
-    required this.text,
-    required this.color,
-  });
-
-  final IconData icon;
-  final String text;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final onColor =
-        ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-        ? Colors.white
-        : Colors.black;
-    return Center(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 18, color: onColor),
-              const SizedBox(width: 6),
-              Text(
-                text,
-                style: TextStyle(color: onColor, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

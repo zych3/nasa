@@ -16,7 +16,7 @@ import '../models/price_history.dart';
 /// one request per crop.
 class PriceRepository {
   PriceRepository({ApiClient? apiClient, this.useMock = false})
-    : _api = apiClient ?? ApiClient();
+    : _api = apiClient ?? ApiClient.shared;
 
   final ApiClient _api;
   final bool useMock;
@@ -27,9 +27,13 @@ class PriceRepository {
   /// Returns an empty history ("no data") when the crop has no prices.
   Future<PriceHistory> getPrices(String cropId, {int count = 10}) {
     final key = '$useMock|$cropId|$count';
-    return _cache[key] ??= _load(cropId, count).catchError((Object e) {
+    return _cache[key] ??= _load(cropId, count).catchError((
+      Object e,
+      StackTrace stackTrace,
+    ) {
       _cache.remove(key);
-      throw e;
+      // Keep the original stack trace for debugging.
+      Error.throwWithStackTrace(e, stackTrace);
     });
   }
 

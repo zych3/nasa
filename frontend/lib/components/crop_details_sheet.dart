@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:material_ui/material_ui.dart';
 
@@ -246,13 +247,16 @@ class _PriceHistoryView extends StatelessWidget {
     final maxV = values.reduce((a, b) => a > b ? a : b);
     final sourceName = history.shortSourceName;
     final note = cropNoteText(l10n, history.noteCode);
+    // "1 250" in Polish, "1,250" in English.
+    final money = NumberFormat.decimalPattern(locale)
+      ..maximumFractionDigits = 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           l10n.priceNow(
-            latest.price.toStringAsFixed(0),
+            money.format(latest.price),
             history.currency,
             history.unit,
           ),
@@ -275,8 +279,8 @@ class _PriceHistoryView extends StatelessWidget {
             label: l10n.priceChartLabel(
               dateFormat.format(points.first.date),
               dateFormat.format(latest.date),
-              minV.toStringAsFixed(0),
-              maxV.toStringAsFixed(0),
+              money.format(minV),
+              money.format(maxV),
               history.currency,
             ),
             child: SizedBox(
@@ -554,7 +558,8 @@ class _SparklinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_SparklinePainter old) =>
-      old.values != values || old.color != color;
+      // The list is new on every build; compare the prices, not the list.
+      !listEquals(old.values, values) || old.color != color;
 }
 
 /// "Measured by satellite · NASA POWER" etc.

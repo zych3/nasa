@@ -36,6 +36,11 @@ class AppNavBar extends StatelessWidget {
           selectedIcon: const Icon(Icons.trending_up),
           label: l10n.navTrends,
         ),
+        NavigationDestination(
+          icon: const Icon(Icons.layers_outlined),
+          selectedIcon: const Icon(Icons.layers),
+          label: l10n.navConditions,
+        ),
       ],
     );
   }

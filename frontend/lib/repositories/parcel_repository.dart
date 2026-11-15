@@ -3,7 +3,8 @@ import '../models/parcel.dart';
 
 /// Source of parcels for an address. Screens use this, never [ApiClient].
 class ParcelRepository {
-  ParcelRepository({ApiClient? apiClient}) : _api = apiClient ?? ApiClient();
+  ParcelRepository({ApiClient? apiClient})
+    : _api = apiClient ?? ApiClient.shared;
 
   final ApiClient _api;
 

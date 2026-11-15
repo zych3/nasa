@@ -342,4 +342,223 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get findParcel => 'Find parcel';
+
+  @override
+  String get overlaySoilTitle => 'Soil';
+
+  @override
+  String get soilClassLight => 'Light (sandy)';
+
+  @override
+  String get soilClassMedium => 'Medium';
+
+  @override
+  String get soilClassHeavy => 'Heavy (clay)';
+
+  @override
+  String get overlayCoverageSoil =>
+      'One value for an area of about 1 km. The soil can differ within your field.';
+
+  @override
+  String get navConditions => 'Conditions';
+
+  @override
+  String get overlaysTitle => 'Conditions at your field';
+
+  @override
+  String get overlaysChooseHeading => 'What to show on the map';
+
+  @override
+  String get overlaysNoField =>
+      'No field is chosen yet. We show an example place.';
+
+  @override
+  String get overlaysChooseField => 'Choose my field on the map';
+
+  @override
+  String get overlaysLoading =>
+      'Getting the data… The first time it can take up to 10 seconds.';
+
+  @override
+  String get overlaysErrorNetwork =>
+      'We could not get the data. Check your internet and try again.';
+
+  @override
+  String get overlaysErrorServer =>
+      'The data service is not working right now. Try again in a few minutes.';
+
+  @override
+  String get overlaysErrorBadData =>
+      'The data we got is incomplete. Try again later.';
+
+  @override
+  String get overlaysShowDemo => 'Show example data';
+
+  @override
+  String get overlaysDemoNotice =>
+      'Example data for another place, not for your field.';
+
+  @override
+  String get overlaysValueHeading => 'In this place';
+
+  @override
+  String get overlaysNoData => 'No data for this place';
+
+  @override
+  String overlaysSource(String source) {
+    return 'Source: $source';
+  }
+
+  @override
+  String get overlaysLegendHeading => 'What the colours mean';
+
+  @override
+  String get overlaysLegendHere => 'Here';
+
+  @override
+  String get mapAttribution => '© OpenStreetMap contributors';
+
+  @override
+  String get overlaysValueHeadingExample => 'In the example place';
+
+  @override
+  String get overlayMoistureTitle => 'Soil moisture';
+
+  @override
+  String get overlayCoverageNasa =>
+      'One value for the whole area of about 50 km. It can be different on your field.';
+
+  @override
+  String overlaysMonth(String month) {
+    return 'Month: $month';
+  }
+
+  @override
+  String overlayLegendStep(String word, String range) {
+    return '$word ($range)';
+  }
+
+  @override
+  String overlayDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStepsSoilMoisture(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'dry',
+      's1': 'rather dry',
+      's2': 'moist',
+      'other': 'very moist',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlaysEarlierMonth => 'Earlier month';
+
+  @override
+  String get overlaysLaterMonth => 'Later month';
+
+  @override
+  String get overlaysChange => 'Change';
+
+  @override
+  String get overlayRainTitle => 'Rainfall';
+
+  @override
+  String overlayStepsRain(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'very dry',
+      's1': 'dry',
+      's2': 'normal',
+      'other': 'wet',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayTemperatureTitle => 'Temperature';
+
+  @override
+  String overlayStepsTemperature(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'freezing',
+      's1': 'cool',
+      's2': 'mild',
+      'other': 'warm',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFrostTitle => 'Frost';
+
+  @override
+  String overlayStepsFrost(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'no frost',
+      's1': 'a few frost days',
+      's2': 'frequent frost',
+      'other': 'long frost',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayHeatTitle => 'Hot days';
+
+  @override
+  String overlayStepsHeat(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'no hot days',
+      's1': 'a few hot days',
+      's2': 'frequent hot days',
+      'other': 'very frequent hot days',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayErosionTitle => 'Soil erosion';
+
+  @override
+  String overlayStepsRisk(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'low',
+      's1': 'moderate',
+      's2': 'high',
+      'other': 'very high',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get readAloud => 'Read aloud';
+
+  @override
+  String get readAloudStop => 'Stop reading';
+
+  @override
+  String get readAloudUnavailable =>
+      'Reading aloud does not work on this device.';
+
+  @override
+  String get overlaysHeatmapLoading => 'Loading the map of the area…';
+
+  @override
+  String get overlayHeatmapNote =>
+      'The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.';
+
+  @override
+  String get overlaysHeatmapZoomIn => 'Zoom in to see the colours';
+
+  @override
+  String get overlaysHeatmapCellSize => 'NASA data: one value per about 50 km';
 }

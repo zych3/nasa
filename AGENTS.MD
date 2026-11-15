@@ -89,6 +89,28 @@ Change the contract only after agreeing with both frontend and backend owners.
 - `MaterialApp` uses `AppLocalizations.delegate` plus `GlobalMaterialLocalizations.delegates` **from `material_ui`**. Do not use the generated `AppLocalizations.localizationsDelegates`: it pulls in the deprecated `package:flutter/material` delegates.
 - Adding a language: add `lib/l10n/app_<code>.arb`. It is then supported, but only pickable with the flag button once it is added to `switchableLocales` in `lib/l10n/language_options.dart` and given a flag in `language_flag_button.dart` (otherwise the button shows the language code).
 
+### Map overlays ("Conditions" tab)
+
+- Code: `lib/overlays/` (one class per overlay, list in `overlay_registry.dart`, data through
+  `MapLayersRepository`), widgets `lib/widgets/overlay_*.dart`, screen `lib/screens/overlays_screen.dart`.
+- All overlays read one `GET /api/map-layers` response per place (cached in memory); switching overlays or months
+  never sends a new request. Contract: `FieldShift/docs/map-layers.md`; saved real response:
+  `assets/mock/map_layers_sample.json` (also the "example data" when the backend is down).
+- New monthly backend layer = subclass of `MonthlyLayerOverlay` (layer id, icon, title, legend words) + one line in
+  `overlayRegistry` + ARB keys (title and an `overlaySteps…` select message). Legend ranges are computed from the
+  backend's thresholds; the Polish legend must equal the backend's labels (a test checks every monthly overlay).
+  Other data shapes: subclass `MapOverlay` with its own `parse` (see `SoilQualityOverlay`).
+- Heat map: NASA overlays also read `GET /api/map-layers/grid` (5 × 5 NASA POWER cells, ~250 km per block; loaded
+  next to the value, the card never waits for it). First the block around the field, then the blocks the map shows
+  as the user pans or zooms out (`OverlayController.showArea`, nearest first, 2 at a time); with more than 3 × 3
+  blocks on screen the heat map is hidden ("zoom in") and nothing loads. Loaded blocks are merged into one grid
+  (`OverlayHeatmap.merge`) so colours blend across block edges; the camera fits only the field's block. `MonthlyLayerOverlay.parseHeatmap` picks the shown
+  month; `heatmapPixels` (`lib/models/overlay_heatmap.dart`) blends values between cell centres and colours them with
+  the legend's own steps, so every colour on the map is a legend step with words and bars, and the field's cell has
+  the card's value. Until it loads, when it fails, and for overlays with `hasHeatmap == false` (soil, erosion: they
+  need the field's soil) the value's area is a circle. Saved grid: `assets/mock/map_layers_grid_sample.json`.
+- Values are drawn as areas of their real precision (~1 km soil, ~50 km NASA POWER), never as field-level data.
+
 ## Accessibility rules (non-negotiable)
 
 - One question per screen; always a back button and progress indicator.

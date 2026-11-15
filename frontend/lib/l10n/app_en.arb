@@ -240,5 +240,127 @@
   "sourceCropDatabase": "Crop database",
   "cropDataMissing": "No data",
   "cropListLoadError": "We could not load the crops.",
-  "findParcel": "Find parcel"
+  "findParcel": "Find parcel",
+  "overlaySoilTitle": "Soil",
+  "soilClassLight": "Light (sandy)",
+  "soilClassMedium": "Medium",
+  "soilClassHeavy": "Heavy (clay)",
+  "overlayCoverageSoil": "One value for an area of about 1 km. The soil can differ within your field.",
+  "navConditions": "Conditions",
+  "overlaysTitle": "Conditions at your field",
+  "overlaysChooseHeading": "What to show on the map",
+  "overlaysNoField": "No field is chosen yet. We show an example place.",
+  "overlaysChooseField": "Choose my field on the map",
+  "overlaysLoading": "Getting the data… The first time it can take up to 10 seconds.",
+  "overlaysErrorNetwork": "We could not get the data. Check your internet and try again.",
+  "overlaysErrorServer": "The data service is not working right now. Try again in a few minutes.",
+  "overlaysErrorBadData": "The data we got is incomplete. Try again later.",
+  "overlaysShowDemo": "Show example data",
+  "overlaysDemoNotice": "Example data for another place, not for your field.",
+  "overlaysValueHeading": "In this place",
+  "overlaysNoData": "No data for this place",
+  "overlaysSource": "Source: {source}",
+  "@overlaysSource": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      }
+    }
+  },
+  "overlaysLegendHeading": "What the colours mean",
+  "overlaysLegendHere": "Here",
+  "mapAttribution": "© OpenStreetMap contributors",
+  "overlaysValueHeadingExample": "In the example place",
+  "overlayMoistureTitle": "Soil moisture",
+  "overlayCoverageNasa": "One value for the whole area of about 50 km. It can be different on your field.",
+  "overlaysMonth": "Month: {month}",
+  "@overlaysMonth": {
+    "placeholders": {
+      "month": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayLegendStep": "{word} ({range})",
+  "@overlayLegendStep": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      },
+      "range": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayDaysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@overlayDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overlayStepsSoilMoisture": "{step, select, s0{dry} s1{rather dry} s2{moist} other{very moist}}",
+  "@overlayStepsSoilMoisture": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlaysEarlierMonth": "Earlier month",
+  "overlaysLaterMonth": "Later month",
+  "overlaysChange": "Change",
+  "overlayRainTitle": "Rainfall",
+  "overlayStepsRain": "{step, select, s0{very dry} s1{dry} s2{normal} other{wet}}",
+  "@overlayStepsRain": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayTemperatureTitle": "Temperature",
+  "overlayStepsTemperature": "{step, select, s0{freezing} s1{cool} s2{mild} other{warm}}",
+  "@overlayStepsTemperature": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayFrostTitle": "Frost",
+  "overlayStepsFrost": "{step, select, s0{no frost} s1{a few frost days} s2{frequent frost} other{long frost}}",
+  "@overlayStepsFrost": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayHeatTitle": "Hot days",
+  "overlayStepsHeat": "{step, select, s0{no hot days} s1{a few hot days} s2{frequent hot days} other{very frequent hot days}}",
+  "@overlayStepsHeat": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "overlayErosionTitle": "Soil erosion",
+  "overlayStepsRisk": "{step, select, s0{low} s1{moderate} s2{high} other{very high}}",
+  "@overlayStepsRisk": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "readAloud": "Read aloud",
+  "readAloudStop": "Stop reading",
+  "readAloudUnavailable": "Reading aloud does not work on this device.",
+  "overlaysHeatmapLoading": "Loading the map of the area…",
+  "overlayHeatmapNote": "The colours on the map are NASA data for the area around the field; more loads when you move the map. The changes between colours are smoothed.",
+  "overlaysHeatmapZoomIn": "Zoom in to see the colours",
+  "overlaysHeatmapCellSize": "NASA data: one value per about 50 km"
 }

@@ -36,10 +36,39 @@ void main() {
     expect(find.text(pl.navMap), findsOneWidget);
     expect(find.text(pl.navPlot), findsOneWidget);
     expect(find.text(pl.navTrends), findsOneWidget);
+    expect(find.text(pl.navConditions), findsOneWidget);
 
     await tester.tap(find.text(pl.navTrends));
     await tester.pump();
     expect(selected, 2);
+
+    await tester.tap(find.text(pl.navConditions));
+    await tester.pump();
+    expect(selected, 3);
+  });
+
+  testWidgets('nav bar with 4 tabs fits a phone at 1.5× text', (tester) async {
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    for (final locale in AppLocalizations.supportedLocales) {
+      await tester.pumpWidget(
+        MediaQuery(
+          data: const MediaQueryData(
+            size: Size(360, 640),
+            textScaler: TextScaler.linear(1.5),
+          ),
+          child: _app(
+            locale,
+            const SizedBox(),
+            bottom: AppNavBar(selectedIndex: 3, onSelected: (_) {}),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull, reason: '$locale');
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+    }
   });
 
   testWidgets('nav bar switches language', (tester) async {

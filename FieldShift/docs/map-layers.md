@@ -29,6 +29,45 @@ Responses:
 Headers: `Cache-Control: public, max-age=3600`; responses are gzip/brotli compressed (10 years ≈ 16 kB → 7 kB).
 The first call for a new point takes ~5–10 s (NASA POWER + SoilGrids); repeated calls come from a 24 h server cache.
 
+### `GET /api/map-layers/grid`
+
+The same monthly layers for a **5 × 5 block of NASA POWER cells** around a point, to draw the area as a heat map.
+A cell is 0.5° latitude × 0.625° longitude (MERRA-2 grid, about 55 × 43 km in Poland), so the block is about
+250 km wide. The middle cell is the one that contains the point, and its values are exactly what
+`/api/map-layers` returns for that point (NASA POWER gives every point of a cell the same values).
+
+Parameters as in `/api/map-layers`. `layers` may only name layers that come from NASA POWER alone: `temperature`,
+`heatStress`, `frostRisk`, `precipitation`, `extremeRain`, `soilMoisture`, `plantStress` (the default is all of
+them). Soil and `erosionRisk` (depends on the field's soil) are point-only, because SoilGrids answers only a few
+requests per minute; `evaporation` is not on the grid either.
+
+Responses: **200** `MapLayersGridResponse`; **400** as above (also for a layer the grid does not have); **502** when
+NASA POWER did not answer for any cell. A cell NASA did not answer for has only `null` values and the response gets
+a warning; such a response is cached for 10 minutes only.
+
+The first call for a block takes ~5–15 s (25 NASA POWER requests, at most 10 at a time for all users together);
+repeated calls come from a 24 h server cache. Points in the same cell share one block. 10 years ≈ 70 kB of JSON.
+
+```ts
+interface MapLayersGridResponse {
+  center: { lat: number; lon: number };   // centre of the point's cell
+  cellSize: { lat: number; lon: number }; // 0.5, 0.625
+  rows: number; cols: number;             // 5, 5 (row 0 = south, col 0 = west)
+  period: { from: string; to: string };
+  dates: string[];                        // "yyyy-MM", like /api/map-layers
+  defaultIndex: number;                   // latest month
+  cells: { row: number; col: number; lat: number; lon: number }[]; // cell centres; off-globe cells left out
+  layers: {
+    id: string; name: string; unit: string; decimals: number;
+    isEstimate: boolean; source: string;
+    legend: Legend;                       // same as in /api/map-layers
+    values: (number | null)[][];          // values[cellIndex][monthIndex], cells in the order of `cells`
+  }[];
+  warnings: string[];                     // Polish
+  generatedAtUtc: string;
+}
+```
+
 ### `GET /api/map-layers/definitions`
 
 `LayerDefinition[]` with no data. Use it to build the layer switcher and legends before the data arrives.

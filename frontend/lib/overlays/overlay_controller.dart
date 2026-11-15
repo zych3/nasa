@@ -1,0 +1,421 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart' show setEquals;
+import 'package:flutter_map/flutter_map.dart' show LatLngBounds;
+import 'package:latlong2/latlong.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../api/api_client.dart';
+import '../models/overlay_heatmap.dart';
+import '../models/overlay_layer.dart';
+import 'map_layers_repository.dart';
+import 'map_overlay.dart';
+import 'overlay_registry.dart';
+
+enum OverlayStatus {
+  /// No place yet.
+  idle,
+  loading,
+  ready,
+  error,
+}
+
+enum OverlayError {
+  /// No connection or no answer in time: check the internet, try again.
+  network,
+
+  /// Our server answered with an error (e.g. 502 when NASA POWER is down):
+  /// the user's internet is fine, trying again later may help.
+  server,
+
+  /// The server answered, but not in the agreed shape.
+  badData,
+}
+
+/// State of the "Conditions" screen: which overlay is chosen, for which place,
+/// and what it shows.
+///
+/// Races are handled here: every load gets a number and only the newest one
+/// may change the state, so a slow answer for an old place never replaces a
+/// newer one. The response is parsed for the overlay chosen at the moment it
+/// arrives, so switching overlays while loading is safe.
+///
+/// The heat map data (`GET /api/map-layers/grid`) is loaded next to the value,
+/// on its own: the value card does not wait for it, and when it fails the map
+/// just keeps showing the area of the value as a circle. It comes in blocks of
+/// 5 × 5 NASA cells: first the block around the place, then, as the map shows
+/// more (see [showArea]), the blocks next to it, nearest first. When the map
+/// shows too much ([maxVisibleBlocks]) the heat map is hidden and nothing is
+/// loaded.
+class OverlayController extends ChangeNotifier {
+  OverlayController({required this._repository, List<MapOverlay>? overlays})
+    : overlays = List.unmodifiable(overlays ?? overlayRegistry),
+      _selected = (overlays ?? overlayRegistry).first;
+
+  final MapLayersRepository _repository;
+
+  /// Overlays to choose from, in chooser order.
+  final List<MapOverlay> overlays;
+
+  MapOverlay _selected;
+  LatLng? _place;
+  OverlayStatus _status = OverlayStatus.idle;
+  OverlayError? _error;
+  Map<String, dynamic>? _response;
+  OverlayLayer? _layer;
+
+  /// Heat map blocks by their place: (0, 0) = the block around [place],
+  /// (1, 0) = the one north of it, (0, -1) = west, ...
+  final _blocks = <(int, int), Map<String, dynamic>>{};
+
+  /// Blocks asked for (loaded, loading, waiting or failed): never twice.
+  final _requested = <(int, int)>{};
+  final _queue = <(int, int)>[];
+  int _blocksLoading = 0;
+  bool _refreshBlocks = false;
+
+  /// Size and centre of block (0, 0), read from it once it is here.
+  _BlockGrid? _blockGrid;
+  LatLngBounds? _visibleArea;
+  Set<(int, int)>? _visibleBlocks;
+  bool _tooFar = false;
+  OverlayHeatmap? _heatmap;
+  LatLngBounds? _heatmapHome;
+  int? _month;
+  bool _isDemo = false;
+  int _generation = 0;
+  bool _disposed = false;
+
+  MapOverlay get selected => _selected;
+
+  /// Place the data was asked for (e.g. the centre of the user's field).
+  LatLng? get place => _place;
+  OverlayStatus get status => _status;
+
+  /// Set when [status] is [OverlayStatus.error].
+  OverlayError? get error => _error;
+
+  /// What the chosen overlay shows; set when [status] is ready.
+  OverlayLayer? get layer => _layer;
+
+  /// The shown data is the saved demo response, not data for [place].
+  bool get isDemo => _isDemo;
+
+  /// Most blocks the map may show at once (3 × 3, about 750 km); with more
+  /// the heat map is hidden instead of loading half a continent.
+  static const maxVisibleBlocks = 9;
+
+  /// Blocks loaded at the same time (each one is 25 NASA POWER requests).
+  static const maxBlocksLoading = 2;
+
+  /// Heat map of the visible area for the shown overlay and month; `null`
+  /// while the first block loads, when it failed, when the map shows too much
+  /// ([isHeatmapTooFar]) or when the overlay has none (soil, erosion).
+  OverlayHeatmap? get heatmap => _tooFar ? null : _heatmap;
+
+  /// The block around [place]: where the camera goes to show the heat map.
+  /// Stays the same while more blocks come in and while the heat map is
+  /// hidden for being too far, so the map does not jump.
+  LatLngBounds? get heatmapHome => _heatmapHome;
+
+  /// Heat map blocks of the chosen overlay are still loading.
+  bool get isHeatmapLoading =>
+      _blocksLoading > 0 && _selected.hasHeatmap && !_tooFar;
+
+  /// The map shows too much for the heat map; zooming in brings it back.
+  bool get isHeatmapTooFar => _tooFar && _selected.hasHeatmap;
+
+  /// The map now shows [visible]: loads the heat map blocks it needs, or hides
+  /// the heat map when it would need more than [maxVisibleBlocks]. Call it
+  /// when the map stops moving.
+  void showArea(LatLngBounds visible) {
+    _visibleArea = visible;
+    if (_planBlocks()) _notify();
+  }
+
+  /// Number of months in the loaded response (0 before it is loaded).
+  int get monthCount {
+    final dates = _response?['dates'];
+    return dates is List ? dates.length : 0;
+  }
+
+  /// An earlier / a later month can be shown (monthly overlays only).
+  bool get canShowEarlierMonth => (_layer?.monthIndex ?? 0) > 0;
+  bool get canShowLaterMonth {
+    final index = _layer?.monthIndex;
+    return index != null && index < monthCount - 1;
+  }
+
+  /// Steps the shown month by [delta] (−1 = earlier). The month stays chosen
+  /// when switching to another monthly overlay, so they can be compared.
+  void stepMonth(int delta) {
+    final index = _layer?.monthIndex;
+    if (index == null || _response == null) return;
+    final next = index + delta;
+    if (next < 0 || next >= monthCount) return;
+    _month = next;
+    _parse();
+    _notify();
+  }
+
+  void select(MapOverlay overlay) {
+    if (overlay.id == _selected.id) return;
+    _selected = overlay;
+    // While loading, the answer is parsed for this overlay when it arrives.
+    if (_response != null) _parse();
+    _notify();
+  }
+
+  /// Shows the overlays for [place]. Does nothing for the current place (also
+  /// after an error or demo data: that is up to [retry]), so it is safe to
+  /// call on every rebuild.
+  void showPlace(LatLng place) {
+    if (place == _place) return;
+    _place = place;
+    _load();
+  }
+
+  /// Asks the backend again for the current place (also after demo data).
+  Future<void> retry() => _load(refresh: true);
+
+  /// Shows the saved demo data (a fixed sample place), e.g. when the backend
+  /// cannot be reached.
+  Future<void> showDemo() => _load(demo: true);
+
+  Future<void> _load({bool demo = false, bool refresh = false}) async {
+    final place = _place;
+    if (place == null && !demo) return;
+    final generation = ++_generation;
+    _status = OverlayStatus.loading;
+    _error = null;
+    _response = null;
+    _layer = null;
+    _blocks.clear();
+    _requested.clear();
+    _queue.clear();
+    _blocksLoading = 0;
+    _refreshBlocks = refresh;
+    _blockGrid = null;
+    _visibleBlocks = null;
+    _tooFar = false;
+    _heatmap = null;
+    _heatmapHome = null;
+    _month = null;
+    _isDemo = false;
+    _notify();
+
+    _requested.add((0, 0));
+    _loadBlock(generation, (0, 0), place, demo: demo);
+    try {
+      final json = demo
+          ? await _repository.demo()
+          : await _repository.mapLayers(place!, refresh: refresh);
+      if (_disposed || generation != _generation) return;
+      _response = json;
+      _isDemo = demo;
+      _parse();
+    } catch (e) {
+      if (_disposed || generation != _generation) return;
+      debugPrint('Map layers for $place failed: $e');
+      _status = OverlayStatus.error;
+      _error = switch (e) {
+        FormatException() => OverlayError.badData,
+        ApiException() => OverlayError.server,
+        _ => OverlayError.network,
+      };
+    }
+    _notify();
+  }
+
+  /// Loads one block. Demo data has only the block around the sample place.
+  Future<void> _loadBlock(
+    int generation,
+    (int, int) block,
+    LatLng? point, {
+    bool demo = false,
+  }) async {
+    _blocksLoading++;
+    Map<String, dynamic>? grid;
+    try {
+      grid = demo
+          ? await _repository.demoGrid()
+          : await _repository.grid(point!, refresh: _refreshBlocks);
+    } catch (e) {
+      // That block stays empty (transparent); the others still show.
+      debugPrint('Heat map block $block at $point failed: $e');
+    }
+    if (_disposed || generation != _generation) return;
+    _blocksLoading--;
+    if (grid != null) {
+      _blocks[block] = grid;
+      if (block == (0, 0) && !demo) _blockGrid = _BlockGrid.read(grid);
+    }
+    _planBlocks();
+    _parseHeatmap();
+    _notify();
+  }
+
+  /// Works out the blocks the visible area needs, hides the heat map when
+  /// they are too many, and starts loading the missing ones (nearest to the
+  /// middle of the map first). Returns whether anything shown changed.
+  bool _planBlocks() {
+    final grid = _blockGrid;
+    final area = _visibleArea;
+    if (grid == null || area == null) return false;
+
+    final rows = grid.blockRowsCovering(area.south, area.north);
+    final cols = grid.blockColsCovering(area.west, area.east);
+    final count = (rows.$2 - rows.$1 + 1) * (cols.$2 - cols.$1 + 1);
+    final wasTooFar = _tooFar;
+    _tooFar = count > maxVisibleBlocks;
+    if (_tooFar) {
+      _queue.clear(); // started ones still finish and are kept
+      return wasTooFar != _tooFar;
+    }
+
+    final visible = {
+      for (var r = rows.$1; r <= rows.$2; r++)
+        for (var c = cols.$1; c <= cols.$2; c++)
+          if (grid.isOnGlobe((r, c))) (r, c),
+    };
+    final visibleChanged = !setEquals(visible, _visibleBlocks);
+    _visibleBlocks = visible;
+    final middle = grid.blockAt(area.center);
+    int distance((int, int) b) =>
+        math.max((b.$1 - middle.$1).abs(), (b.$2 - middle.$2).abs());
+    _queue
+      ..clear()
+      ..addAll(visible.where((b) => !_requested.contains(b)))
+      ..sort((a, b) => distance(a).compareTo(distance(b)));
+    while (_blocksLoading < maxBlocksLoading && _queue.isNotEmpty) {
+      final block = _queue.removeAt(0);
+      _requested.add(block);
+      _loadBlock(_generation, block, grid.centerOf(block));
+    }
+    if (visibleChanged) _parseHeatmap();
+    return wasTooFar != _tooFar || visibleChanged;
+  }
+
+  void _parse() {
+    try {
+      _layer = _selected.parse(_response!, month: _month);
+      _status = OverlayStatus.ready;
+      _error = null;
+    } catch (e) {
+      // Parsers throw FormatException; anything else is a broken response too
+      // (or a parser bug, hence the log).
+      debugPrint('Overlay "${_selected.id}" could not read the response: $e');
+      _layer = null;
+      _status = OverlayStatus.error;
+      _error = OverlayError.badData;
+    }
+    _parseHeatmap();
+  }
+
+  /// Heat map for the shown overlay and month from the loaded blocks the
+  /// map shows (all of them before the map has said what it shows), merged
+  /// into one grid so it blends across block edges.
+  void _parseHeatmap() {
+    final layer = _layer;
+    _heatmap = null;
+    _heatmapHome = null;
+    if (layer == null || !_selected.hasHeatmap) return;
+    final visible = _visibleBlocks;
+    final parts = <OverlayHeatmap>[];
+    for (final MapEntry(key: block, value: grid) in _blocks.entries) {
+      final isHome = block == (0, 0);
+      if (!isHome && visible != null && !visible.contains(block)) continue;
+      try {
+        final part = _selected.parseHeatmap(grid, layer);
+        if (part == null) continue;
+        parts.add(part);
+        if (isHome) {
+          _heatmapHome = LatLngBounds(
+            LatLng(part.south, part.west),
+            LatLng(part.north, part.east),
+          );
+        }
+      } catch (e) {
+        // Only that block is missing then; the value is still right.
+        debugPrint('Overlay "${_selected.id}" could not read block $block: $e');
+      }
+    }
+    _heatmap = OverlayHeatmap.merge(parts);
+  }
+
+  void _notify() {
+    if (!_disposed) notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+}
+
+/// Where the heat map blocks lie: block (0, 0) and the size of one block, as
+/// the backend sent them (`center`, `cellSize`, `rows`, `cols`). Block (r, c)
+/// is [rows] cells north and [cols] cells east of it per step, so every block
+/// request asks for the centre cell of that block and the blocks never
+/// overlap.
+class _BlockGrid {
+  const _BlockGrid(this.center, this.height, this.width);
+
+  final LatLng center;
+
+  /// Size of one block in degrees.
+  final double height;
+  final double width;
+
+  static _BlockGrid? read(Map<String, dynamic> grid) {
+    final center = grid['center'];
+    final size = grid['cellSize'];
+    final rows = grid['rows'];
+    final cols = grid['cols'];
+    if (center is! Map<String, dynamic> ||
+        center['lat'] is! num ||
+        center['lon'] is! num ||
+        size is! Map<String, dynamic> ||
+        size['lat'] is! num ||
+        size['lon'] is! num ||
+        rows is! int ||
+        cols is! int ||
+        rows < 1 ||
+        cols < 1) {
+      debugPrint('Heat map: no block layout in the grid response');
+      return null;
+    }
+    return _BlockGrid(
+      LatLng(
+        (center['lat'] as num).toDouble(),
+        (center['lon'] as num).toDouble(),
+      ),
+      rows * (size['lat'] as num).toDouble(),
+      cols * (size['lon'] as num).toDouble(),
+    );
+  }
+
+  int _row(double lat) => ((lat - center.latitude) / height + 0.5).floor();
+  int _col(double lon) => ((lon - center.longitude) / width + 0.5).floor();
+
+  (int, int) blockAt(LatLng point) =>
+      (_row(point.latitude), _col(point.longitude));
+
+  (int, int) blockRowsCovering(double south, double north) =>
+      (_row(south), _row(north));
+
+  (int, int) blockColsCovering(double west, double east) =>
+      (_col(west), _col(east));
+
+  LatLng centerOf((int, int) block) => LatLng(
+    center.latitude + block.$1 * height,
+    center.longitude + block.$2 * width,
+  );
+
+  /// The backend only takes centres on the globe.
+  bool isOnGlobe((int, int) block) {
+    final c = centerOf(block);
+    return c.latitude.abs() <= 90 && c.longitude.abs() <= 180;
+  }
+}

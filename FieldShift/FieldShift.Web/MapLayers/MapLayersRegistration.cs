@@ -20,5 +20,6 @@ public static class MapLayersRegistration
         });
 
         builder.Services.AddScoped<MapLayersService>();
+        builder.Services.AddScoped<MapLayersGridService>();
     }
 }

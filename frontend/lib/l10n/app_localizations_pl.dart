@@ -346,4 +346,223 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get findParcel => 'Znajdź działkę';
+
+  @override
+  String get overlaySoilTitle => 'Gleba';
+
+  @override
+  String get soilClassLight => 'Lekka (piaszczysta)';
+
+  @override
+  String get soilClassMedium => 'Średnia';
+
+  @override
+  String get soilClassHeavy => 'Ciężka (gliniasta)';
+
+  @override
+  String get overlayCoverageSoil =>
+      'Jedna wartość dla okolicy ok. 1 km. W obrębie pola gleba może być inna.';
+
+  @override
+  String get navConditions => 'Warunki';
+
+  @override
+  String get overlaysTitle => 'Warunki na Twoim polu';
+
+  @override
+  String get overlaysChooseHeading => 'Co pokazać na mapie';
+
+  @override
+  String get overlaysNoField =>
+      'Pole nie jest jeszcze wybrane. Pokazujemy przykładowe miejsce.';
+
+  @override
+  String get overlaysChooseField => 'Wybierz pole na mapie';
+
+  @override
+  String get overlaysLoading =>
+      'Pobieramy dane… Za pierwszym razem może to potrwać do 10 sekund.';
+
+  @override
+  String get overlaysErrorNetwork =>
+      'Nie udało się pobrać danych. Sprawdź internet i spróbuj ponownie.';
+
+  @override
+  String get overlaysErrorServer =>
+      'Serwis z danymi chwilowo nie działa. Spróbuj ponownie za kilka minut.';
+
+  @override
+  String get overlaysErrorBadData =>
+      'Otrzymane dane są niepełne. Spróbuj ponownie później.';
+
+  @override
+  String get overlaysShowDemo => 'Pokaż przykładowe dane';
+
+  @override
+  String get overlaysDemoNotice =>
+      'Przykładowe dane dla innego miejsca, nie dla Twojego pola.';
+
+  @override
+  String get overlaysValueHeading => 'W tym miejscu';
+
+  @override
+  String get overlaysNoData => 'Brak danych dla tego miejsca';
+
+  @override
+  String overlaysSource(String source) {
+    return 'Źródło: $source';
+  }
+
+  @override
+  String get overlaysLegendHeading => 'Co oznaczają kolory';
+
+  @override
+  String get overlaysLegendHere => 'Tutaj';
+
+  @override
+  String get mapAttribution => '© Współtwórcy OpenStreetMap';
+
+  @override
+  String get overlaysValueHeadingExample => 'W przykładowym miejscu';
+
+  @override
+  String get overlayMoistureTitle => 'Wilgotność gleby';
+
+  @override
+  String get overlayCoverageNasa =>
+      'Jedna wartość dla całej okolicy (ok. 50 km). Na Twoim polu może być inaczej.';
+
+  @override
+  String overlaysMonth(String month) {
+    return 'Miesiąc: $month';
+  }
+
+  @override
+  String overlayLegendStep(String word, String range) {
+    return '$word ($range)';
+  }
+
+  @override
+  String overlayDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dni',
+      one: '1 dzień',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String overlayStepsSoilMoisture(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'sucho',
+      's1': 'umiarkowanie sucho',
+      's2': 'wilgotno',
+      'other': 'bardzo wilgotno',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlaysEarlierMonth => 'Poprzedni miesiąc';
+
+  @override
+  String get overlaysLaterMonth => 'Następny miesiąc';
+
+  @override
+  String get overlaysChange => 'Zmień';
+
+  @override
+  String get overlayRainTitle => 'Opady';
+
+  @override
+  String overlayStepsRain(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'bardzo sucho',
+      's1': 'sucho',
+      's2': 'normalnie',
+      'other': 'mokro',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayTemperatureTitle => 'Temperatura';
+
+  @override
+  String overlayStepsTemperature(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'mróz',
+      's1': 'chłodno',
+      's2': 'umiarkowanie',
+      'other': 'ciepło',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayFrostTitle => 'Mróz';
+
+  @override
+  String overlayStepsFrost(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'bez mrozu',
+      's1': 'kilka dni mrozu',
+      's2': 'częsty mróz',
+      'other': 'długi mróz',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayHeatTitle => 'Upały';
+
+  @override
+  String overlayStepsHeat(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'brak upałów',
+      's1': 'kilka dni upału',
+      's2': 'częste upały',
+      'other': 'bardzo częste upały',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get overlayErosionTitle => 'Zmywanie gleby';
+
+  @override
+  String overlayStepsRisk(String step) {
+    String _temp0 = intl.Intl.selectLogic(step, {
+      's0': 'niski',
+      's1': 'umiarkowany',
+      's2': 'wysoki',
+      'other': 'bardzo wysoki',
+    });
+    return '$_temp0';
+  }
+
+  @override
+  String get readAloud => 'Przeczytaj na głos';
+
+  @override
+  String get readAloudStop => 'Zatrzymaj czytanie';
+
+  @override
+  String get readAloudUnavailable =>
+      'Czytanie na głos nie działa na tym urządzeniu.';
+
+  @override
+  String get overlaysHeatmapLoading => 'Wczytuję mapę okolicy…';
+
+  @override
+  String get overlayHeatmapNote =>
+      'Kolory na mapie to dane NASA dla okolicy pola; po przesunięciu mapy doczytują się kolejne. Przejścia między kolorami są wygładzone.';
+
+  @override
+  String get overlaysHeatmapZoomIn => 'Przybliż mapę, aby zobaczyć kolory';
+
+  @override
+  String get overlaysHeatmapCellSize => 'Dane NASA: jedna wartość na ok. 50 km';
 }
