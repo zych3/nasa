@@ -29,6 +29,21 @@ public static partial class WebApplicationBuilderExtensions
         });
         builder.Services.AddTransient<ICountryProvider, PolandCountryProvider>();
 
+        // Search-as-you-type address hints.
+        var photonBaseUrl = Required(builder, "Poland:PhotonBaseUrl");
+        builder.Services.AddHttpClient<UugAddressSearchService>(c =>
+        {
+            c.BaseAddress = new Uri(uugBaseUrl);
+            c.Timeout = TimeSpan.FromSeconds(5);
+        });
+        builder.Services.AddHttpClient<PhotonPlaceSearchService>(c =>
+        {
+            c.BaseAddress = new Uri(photonBaseUrl);
+            c.Timeout = TimeSpan.FromSeconds(5);
+            c.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+        });
+        builder.Services.AddTransient<IAddressSuggester, PolandAddressSuggester>();
+
         AddCropData(builder);
     }
 

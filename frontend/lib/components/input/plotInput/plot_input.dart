@@ -1,4 +1,3 @@
-import 'package:hopito_field_shift/components/input/plotInput/address_input_field.dart';
 import 'package:hopito_field_shift/components/input/plotInput/crop_multi_selector.dart';
 import 'package:hopito_field_shift/components/input/plotInput/plot_data.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,35 +5,31 @@ import 'package:material_ui/material_ui.dart';
 import '../../../l10n/app_localizations.dart';
 
 class PlotInput extends StatefulWidget {
-  const PlotInput({super.key, required this.onSubmitPlot, this.onFindParcel});
+  const PlotInput({
+    super.key,
+    required this.onSubmitPlot,
+    required this.address,
+  });
 
   final void Function(PlotData) onSubmitPlot;
 
-  /// Called when the user searches for the parcel at the typed address.
-  final void Function(String address)? onFindParcel;
+  /// Address of the chosen parcel (typed at the top of the page).
+  final String address;
 
   @override
   State<PlotInput> createState() => _PlotInputState();
 }
 
 class _PlotInputState extends State<PlotInput> {
-  final TextEditingController _addressController = TextEditingController();
   final List<String> _selectedCrops = [];
 
-  @override
-  void dispose() {
-    _addressController.dispose();
-    super.dispose();
-  }
-
   void _handleSubmit() {
-    final address = _addressController.text.trim();
+    final address = widget.address.trim();
     if (address.isNotEmpty && _selectedCrops.isNotEmpty) {
       widget.onSubmitPlot(
         PlotData(address: address, crops: List.from(_selectedCrops)),
       );
 
-      _addressController.clear();
       setState(() {
         _selectedCrops.clear();
       });
@@ -51,11 +46,6 @@ class _PlotInputState extends State<PlotInput> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AddressInputField(
-            controller: _addressController,
-            onSearch: widget.onFindParcel,
-          ),
-          const SizedBox(height: 20),
           CropMultiSelector(
             selectedCrops: _selectedCrops,
             onCropToggled: (crop, isSelected) {

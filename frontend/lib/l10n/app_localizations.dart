@@ -649,6 +649,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Find parcel'**
   String get findParcel;
+
+  /// No description provided for @addressSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Wieliczka, Krakowska 1'**
+  String get addressSearchHint;
+
+  /// No description provided for @addressSearchHelper.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the town, pick it from the list, then type the street and house number.'**
+  String get addressSearchHelper;
+
+  /// No description provided for @addressSuggestionsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching address. Check the spelling, or put a comma after the town name.'**
+  String get addressSuggestionsNone;
+
+  /// No description provided for @addressKindPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'Town or village'**
+  String get addressKindPlace;
+
+  /// No description provided for @addressKindStreet.
+  ///
+  /// In en, this message translates to:
+  /// **'Street'**
+  String get addressKindStreet;
+
+  /// No description provided for @addressKindAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressKindAddress;
+
+  /// No description provided for @plotNoParcelYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Type an address or pick a parcel on the \"My area\" map.'**
+  String get plotNoParcelYet;
 }
 
 class _AppLocalizationsDelegate

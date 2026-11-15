@@ -1,4 +1,7 @@
+import 'package:latlong2/latlong.dart';
+
 import '../api/api_client.dart';
+import '../models/address_suggestion.dart';
 import '../models/parcel.dart';
 
 /// Source of parcels for an address. Screens use this, never [ApiClient].
@@ -13,6 +16,29 @@ class ParcelRepository {
       final json = await _api.getJson(
         '/api/parcels/search',
         query: {'address': address},
+      );
+      return Parcel.fromJson(json as Map<String, dynamic>);
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) return null;
+      rethrow;
+    }
+  }
+
+  /// Address hints while the user types. Empty for short input or no match.
+  Future<List<AddressSuggestion>> suggest(String text) async {
+    final json = await _api.getJson('/api/parcels/suggest', query: {'q': text});
+    return [
+      for (final item in json as List<dynamic>)
+        AddressSuggestion.fromJson(item as Map<String, dynamic>),
+    ];
+  }
+
+  /// The parcel at a point (e.g. a picked address hint); `null` when none.
+  Future<Parcel?> parcelAt(LatLng point) async {
+    try {
+      final json = await _api.getJson(
+        '/api/parcels/at',
+        query: {'lat': '${point.latitude}', 'lon': '${point.longitude}'},
       );
       return Parcel.fromJson(json as Map<String, dynamic>);
     } on ApiException catch (e) {

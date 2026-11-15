@@ -240,5 +240,12 @@
   "sourceCropDatabase": "Crop database",
   "cropDataMissing": "No data",
   "cropListLoadError": "We could not load the crops.",
-  "findParcel": "Find parcel"
+  "findParcel": "Find parcel",
+  "addressSearchHint": "e.g. Wieliczka, Krakowska 1",
+  "addressSearchHelper": "Type the town, pick it from the list, then type the street and house number.",
+  "addressSuggestionsNone": "No matching address. Check the spelling, or put a comma after the town name.",
+  "addressKindPlace": "Town or village",
+  "addressKindStreet": "Street",
+  "addressKindAddress": "Address",
+  "plotNoParcelYet": "Type an address or pick a parcel on the \"My area\" map."
 }

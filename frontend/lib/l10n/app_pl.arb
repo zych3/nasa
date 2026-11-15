@@ -39,7 +39,7 @@
   "parcelLookupFailed": "Nie udało się wyszukać działki. Sprawdź połączenie i spróbuj ponownie.",
   "plotAddressLabel": "Adres działki",
   "plotAddressHint": "Wpisz ulicę lub miejscowość",
-  "selectCropsLabel": "Uprawy na działce:",
+  "selectCropsLabel": "Ostatnie uprawy na działce:",
   "searchCropsHint": "Szukaj upraw...",
   "searchCropsSelectedHint": "{count, plural, =1{Wybrano 1 — szukaj upraw...} few{Wybrano {count} — szukaj upraw...} many{Wybrano {count} — szukaj upraw...} other{Wybrano {count} — szukaj upraw...}}",
   "noCropsFound": "Nie znaleziono upraw",
@@ -90,5 +90,12 @@
   "sourceCropDatabase": "Baza danych upraw",
   "cropDataMissing": "Brak danych",
   "cropListLoadError": "Nie udało się wczytać upraw.",
-  "findParcel": "Znajdź działkę"
+  "findParcel": "Znajdź działkę",
+  "addressSearchHint": "np. Wieliczka, Krakowska 1",
+  "addressSearchHelper": "Wpisz miejscowość, wybierz ją z listy, a potem wpisz ulicę i numer domu.",
+  "addressSuggestionsNone": "Nie znaleziono takiego adresu. Sprawdź pisownię albo postaw przecinek po nazwie miejscowości.",
+  "addressKindPlace": "Miejscowość",
+  "addressKindStreet": "Ulica",
+  "addressKindAddress": "Adres",
+  "plotNoParcelYet": "Wpisz adres albo wybierz działkę na mapie w zakładce „Moja okolica”."
 }

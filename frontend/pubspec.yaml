@@ -44,6 +44,8 @@ dependencies:
   latlong2: ^0.10.1
   geolocator: ^14.1.2
   shared_preferences: ^2.5.6
+  forui: ^0.28.0
+  forui_lucide: ^0.28.0
 
 dev_dependencies:
   flutter_test:
