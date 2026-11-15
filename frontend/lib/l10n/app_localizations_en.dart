@@ -1331,6 +1331,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsDarkMode => 'Dark mode';
+
+  @override
+  String get settingsDarkModeHint =>
+      'Switch between the light and the dark look of the app.';
+
+  @override
   String get settingsFrostAlerts => 'Frost alerts';
 
   @override

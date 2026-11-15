@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import 'app/app_theme.dart';
 import 'components/account_button.dart';
 import 'components/app_nav_bar.dart';
 import 'components/language_flag_button.dart';
@@ -71,9 +72,20 @@ class _FieldShiftAppState extends State<FieldShiftApp> {
 
   @override
   Widget build(BuildContext context) {
+    // Light or dark mode is a setting: a change redraws the whole app.
+    return ListenableBuilder(
+      listenable: widget.settings,
+      builder: (context, _) => _buildApp(),
+    );
+  }
+
+  Widget _buildApp() {
     return MaterialApp(
       onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
       locale: _locale,
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: widget.settings.themeMode,
       supportedLocales: AppLocalizations.supportedLocales,
       // material_ui ships its own Material/Cupertino/Widgets delegates; the
       // generated AppLocalizations.localizationsDelegates would pull in the

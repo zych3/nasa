@@ -2210,6 +2210,18 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// No description provided for @settingsDarkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get settingsDarkMode;
+
+  /// No description provided for @settingsDarkModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between the light and the dark look of the app.'**
+  String get settingsDarkModeHint;
+
   /// No description provided for @settingsFrostAlerts.
   ///
   /// In en, this message translates to:

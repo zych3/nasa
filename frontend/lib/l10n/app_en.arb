@@ -805,6 +805,8 @@
   "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } },
   "settings": "Settings",
   "settingsLanguage": "Language",
+  "settingsDarkMode": "Dark mode",
+  "settingsDarkModeHint": "Switch between the light and the dark look of the app.",
   "settingsFrostAlerts": "Frost alerts",
   "settingsFrostAlertsHint": "Once a week we check the weather forecast for your plots and warn you if frost is coming.",
   "frostAlertChannel": "Frost alerts",

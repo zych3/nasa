@@ -1339,6 +1339,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get settingsLanguage => 'Język';
 
   @override
+  String get settingsDarkMode => 'Tryb ciemny';
+
+  @override
+  String get settingsDarkModeHint =>
+      'Przełącz między jasnym a ciemnym wyglądem aplikacji.';
+
+  @override
   String get settingsFrostAlerts => 'Alerty o przymrozkach';
 
   @override

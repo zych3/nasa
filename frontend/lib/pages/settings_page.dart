@@ -5,7 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../l10n/language_options.dart';
 import '../repositories/settings_store.dart';
 
-/// Settings: the language and the frost alerts.
+/// Settings: the language, light or dark mode and the frost alerts.
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
     super.key,
@@ -61,6 +61,16 @@ class SettingsPage extends StatelessWidget {
                 ),
               ),
               const Divider(height: 32),
+              SwitchListTile(
+                // What is on screen now, also while the app follows the phone.
+                value: Theme.of(context).brightness == Brightness.dark,
+                onChanged: (dark) => settings.setThemeMode(
+                  dark ? ThemeMode.dark : ThemeMode.light,
+                ),
+                title: Text(l10n.settingsDarkMode),
+                subtitle: Text(l10n.settingsDarkModeHint),
+                secondary: const Icon(Icons.dark_mode_outlined),
+              ),
               SwitchListTile(
                 value: settings.frostAlerts,
                 onChanged: settings.setFrostAlerts,

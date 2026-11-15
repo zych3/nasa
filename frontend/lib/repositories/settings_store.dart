@@ -8,12 +8,17 @@ import '../l10n/language_options.dart';
 class SettingsStore extends ChangeNotifier {
   static const _frostKey = 'settings_frost_alerts';
   static const _languageKey = 'settings_language';
+  static const _themeKey = 'settings_theme';
 
   bool _frostAlerts = true;
   Locale _locale = defaultLocale;
+  ThemeMode _themeMode = ThemeMode.system;
 
   bool get frostAlerts => _frostAlerts;
   Locale get locale => _locale;
+
+  /// Light or dark; follows the phone until the user picks one.
+  ThemeMode get themeMode => _themeMode;
 
   Future<void> load() async {
     try {
@@ -21,6 +26,11 @@ class SettingsStore extends ChangeNotifier {
       _frostAlerts = prefs.getBool(_frostKey) ?? true;
       final code = prefs.getString(_languageKey);
       if (code != null) _locale = Locale(code);
+      _themeMode = switch (prefs.getString(_themeKey)) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
     } catch (_) {
       // Settings are a convenience; start with the defaults.
     }
@@ -59,6 +69,12 @@ class SettingsStore extends ChangeNotifier {
     _locale = locale;
     notifyListeners();
     await _save((p) => p.setString(_languageKey, locale.languageCode));
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    _themeMode = mode;
+    notifyListeners();
+    await _save((p) => p.setString(_themeKey, mode.name));
   }
 
   Future<void> _save(Future<bool> Function(SharedPreferences) write) async {

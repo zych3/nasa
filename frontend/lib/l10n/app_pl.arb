@@ -354,6 +354,8 @@
   "@myParcelRemoveBody": { "placeholders": { "name": { "type": "String" } } },
   "settings": "Ustawienia",
   "settingsLanguage": "Język",
+  "settingsDarkMode": "Tryb ciemny",
+  "settingsDarkModeHint": "Przełącz między jasnym a ciemnym wyglądem aplikacji.",
   "settingsFrostAlerts": "Alerty o przymrozkach",
   "settingsFrostAlertsHint": "Raz w tygodniu sprawdzimy prognozę pogody dla Twoich działek i ostrzeżemy, gdy zbliża się przymrozek.",
   "frostAlertChannel": "Alerty o przymrozkach",
